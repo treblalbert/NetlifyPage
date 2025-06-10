@@ -13,36 +13,141 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #2C3E50, #34495E);
-            color: #ECF0F1;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3) 0%, transparent 50%),
+                linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+            color: #fff;
             min-height: 100vh;
             overflow-x: auto;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: float 15s infinite linear;
+        }
+
+        .floating-circle:nth-child(1) {
+            width: 40px;
+            height: 40px;
+            top: 10%;
+            left: 80%;
+            animation-delay: 0s;
+        }
+
+        .floating-circle:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 70%;
+            right: 10%;
+            animation-delay: -5s;
+        }
+
+        .floating-circle:nth-child(3) {
+            width: 30px;
+            height: 30px;
+            top: 40%;
+            left: 5%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-15px) rotate(120deg); }
+            66% { transform: translateY(8px) rotate(240deg); }
         }
 
         .back-button {
             position: fixed;
             top: 20px;
             left: 20px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
             color: white;
             padding: 12px 20px;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-weight: 600;
             z-index: 1000;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .back-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .source-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .source-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            color: white;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            font-size: 14px;
+        }
+
+        .source-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            border-color: rgba(255, 255, 255, 0.3);
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 80px 20px 20px;
+            position: relative;
+            z-index: 10;
         }
 
         .header {
@@ -52,31 +157,59 @@
 
         .header h1 {
             font-size: 2.5rem;
-            background: linear-gradient(135deg, #3498DB, #00FF00);
+            background: linear-gradient(135deg, #fff 0%, #e1e5f2 50%, #fff 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
         }
 
         .header p {
-            color: #BDC3C7;
+            color: rgba(255, 255, 255, 0.8);
             font-size: 1.1rem;
+            margin-bottom: 5px;
         }
 
-        .controls {
-            background: rgba(52, 73, 94, 0.8);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
+        .header em {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
             padding: 25px;
             margin-bottom: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+            overflow: hidden;
         }
 
-        .controls h3 {
-            color: #3498DB;
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.4), 
+                transparent
+            );
+        }
+
+        .glass-panel h3 {
+            color: rgba(255, 255, 255, 0.95);
             margin-bottom: 20px;
             font-size: 1.3rem;
+            font-weight: 600;
         }
 
         .control-row {
@@ -105,28 +238,32 @@
         }
 
         .file-label {
-            background: linear-gradient(135deg, #3498DB, #2980B9);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
             color: white;
             padding: 10px 20px;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
             display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .file-label:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         input[type="range"] {
             width: 150px;
             height: 6px;
             border-radius: 3px;
-            background: #34495E;
+            background: rgba(255, 255, 255, 0.2);
             outline: none;
             -webkit-appearance: none;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         input[type="range"]::-webkit-slider-thumb {
@@ -135,26 +272,29 @@
             width: 18px;
             height: 18px;
             border-radius: 50%;
-            background: #3498DB;
+            background: rgba(255, 255, 255, 0.9);
             cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
         input[type="number"] {
-            background: #34495E;
-            border: 2px solid #3498DB;
-            color: #ECF0F1;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
             padding: 8px 12px;
-            border-radius: 6px;
+            border-radius: 8px;
             width: 80px;
             font-size: 14px;
         }
 
         button {
-            background: linear-gradient(135deg, #27AE60, #2ECC71);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
             color: white;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.3);
             padding: 10px 20px;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
@@ -163,30 +303,39 @@
 
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
         button:disabled {
-            background: #7F8C8D;
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
         }
 
-        .animation-controls {
-            background: rgba(52, 73, 94, 0.8);
+        select {
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            display: none;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
         }
 
-        .animation-controls h3 {
-            color: #F39C12;
-            margin-bottom: 20px;
-            font-size: 1.3rem;
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: rgba(255, 255, 255, 0.8);
         }
 
         .content-area {
@@ -196,36 +345,16 @@
             min-height: 500px;
         }
 
-        .preview-section, .output-section {
-            background: rgba(52, 73, 94, 0.8);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .preview-section h3 {
-            color: #E67E22;
-            margin-bottom: 20px;
-            font-size: 1.3rem;
-        }
-
-        .output-section h3 {
-            color: #00FF00;
-            margin-bottom: 20px;
-            font-size: 1.3rem;
-        }
-
         .image-preview {
             width: 100%;
             height: 300px;
-            border: 2px dashed #7F8C8D;
-            border-radius: 10px;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.1);
-            color: #BDC3C7;
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.7);
             text-align: center;
             font-size: 1.1rem;
             overflow: hidden;
@@ -235,33 +364,36 @@
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            border-radius: 8px;
+            border-radius: 10px;
         }
 
         .ascii-output {
             width: 100%;
             height: 400px;
-            background: #1E1E1E;
-            color: #00FF00;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            color: #00ff88;
             font-family: 'Courier New', monospace;
             font-size: 8px;
             line-height: 1;
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 15px;
             overflow: auto;
             white-space: pre;
-            border: 2px solid #3498DB;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             resize: none;
         }
 
         .status-bar {
-            background: linear-gradient(135deg, #3498DB, #2980B9);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
             color: white;
             padding: 15px;
             text-align: center;
-            border-radius: 10px;
+            border-radius: 15px;
             margin-top: 25px;
             font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .action-buttons {
@@ -271,34 +403,105 @@
             flex-wrap: wrap;
         }
 
-        .save-btn {
-            background: linear-gradient(135deg, #8E44AD, #9B59B6);
+        .frame-info {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
         }
 
-        .copy-btn {
-            background: linear-gradient(135deg, #E67E22, #F39C12);
+        /* Source Code Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
         }
 
-        select {
-            background: #34495E;
-            border: 2px solid #3498DB;
-            color: #ECF0F1;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 14px;
+        .modal-content {
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            margin: 5% auto;
+            padding: 0;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 85vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
         }
 
-        .checkbox-wrapper {
+        .modal-header {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 8px;
-            color: #ECF0F1;
         }
 
-        input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: #3498DB;
+        .modal-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close {
+            color: rgba(255, 255, 255, 0.7);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: white;
+        }
+
+        .code-container {
+            padding: 30px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            color: #f8f8f2;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         @media (max-width: 768px) {
@@ -318,34 +521,38 @@
             .header h1 {
                 font-size: 2rem;
             }
-        }
 
-        .frame-info {
-            color: #3498DB;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 15px;
-        }
+            .source-buttons {
+                position: relative;
+                top: 0;
+                right: 0;
+                justify-content: center;
+                margin-bottom: 20px;
+            }
 
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3498DB;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-left: 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            .back-button {
+                position: relative;
+                top: 0;
+                left: 0;
+                display: inline-block;
+                margin-bottom: 20px;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+    </div>
+
     <a href="../" class="back-button">← Back to Portfolio</a>
+
+    <div class="source-buttons">
+        <button class="source-btn" onclick="showPythonCode()">🐍 Python Code</button>
+        <button class="source-btn" onclick="showHTMLCode()">🌐 HTML Code</button>
+    </div>
 
     <div class="container">
         <div class="header">
@@ -354,7 +561,7 @@
             <p><em>Originally developed in Python, converted to HTML for web accessibility</em></p>
         </div>
 
-        <div class="controls">
+        <div class="glass-panel">
             <h3>🛠️ Controls</h3>
             <div class="control-row">
                 <div class="file-input-wrapper">
@@ -383,7 +590,7 @@
             </div>
         </div>
 
-        <div class="animation-controls" id="animationControls">
+        <div class="glass-panel" id="animationControls" style="display: none;">
             <h3>🎬 Animation Controls</h3>
             <div class="control-row">
                 <button id="playBtn">▶️ Play</button>
@@ -420,26 +627,56 @@
         </div>
 
         <div class="content-area">
-            <div class="preview-section">
+            <div class="glass-panel">
                 <h3>🖼️ Original Image</h3>
                 <div class="image-preview" id="imagePreview">
                     📷<br>No image loaded<br>Click 'Load Image' to start<br>Supports: JPG, PNG, GIF, BMP
                 </div>
             </div>
             
-            <div class="output-section">
+            <div class="glass-panel">
                 <h3>🎭 ASCII Art Output</h3>
                 <textarea class="ascii-output" id="asciiOutput" readonly 
                           placeholder="Your ASCII art will appear here..."></textarea>
                 <div class="action-buttons">
-                    <button class="copy-btn" id="copyBtn">📋 Copy to Clipboard</button>
-                    <button class="save-btn" id="saveBtn">💾 Save as TXT</button>
+                    <button id="copyBtn">📋 Copy to Clipboard</button>
+                    <button id="saveBtn">💾 Save as TXT</button>
                 </div>
             </div>
         </div>
 
         <div class="status-bar" id="statusBar">
             🚀 Ready to convert images to ASCII art!
+        </div>
+    </div>
+
+    <!-- Python Code Modal -->
+    <div id="pythonModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">🐍 Original Python Source Code</h2>
+                <span class="close" onclick="closeModal('pythonModal')">&times;</span>
+            </div>
+            <div class="code-container">
+                <div class="code-block">
+                    <pre id="pythonCodeContent">Loading Python code...</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HTML Code Modal -->
+    <div id="htmlModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">🌐 HTML/JavaScript Source Code</h2>
+                <span class="close" onclick="closeModal('htmlModal')">&times;</span>
+            </div>
+            <div class="code-container">
+                <div class="code-block">
+                    <pre id="htmlCodeContent">Loading HTML code...</pre>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -506,27 +743,15 @@
                 this.saveBtn.addEventListener('click', () => this.saveAsFile());
             }
             
-            updateStatus(message, color = '#3498DB') {
+            updateStatus(message) {
                 this.statusBar.textContent = message;
-                this.statusBar.style.background = `linear-gradient(135deg, ${color}, ${this.darkenColor(color)})`;
-            }
-            
-            darkenColor(color) {
-                // Simple color darkening
-                const colors = {
-                    '#3498DB': '#2980B9',
-                    '#27AE60': '#229954',
-                    '#E74C3C': '#C0392B',
-                    '#F39C12': '#E67E22'
-                };
-                return colors[color] || '#2980B9';
             }
             
             loadImage(event) {
                 const file = event.target.files[0];
                 if (!file) return;
                 
-                this.updateStatus('📁 Loading image...', '#3498DB');
+                this.updateStatus('📁 Loading image...');
                 
                 const reader = new FileReader();
                 reader.onload = (e) => {
@@ -534,7 +759,7 @@
                     img.onload = () => {
                         this.originalImage = img;
                         this.displayImagePreview(img);
-                        this.updateStatus('✅ Image loaded successfully!', '#27AE60');
+                        this.updateStatus('✅ Image loaded successfully!');
                     };
                     img.src = e.target.result;
                 };
@@ -569,32 +794,28 @@
             
             convertToAscii() {
                 if (!this.originalImage) {
-                    this.updateStatus('⚠️ Please load an image first!', '#E74C3C');
+                    this.updateStatus('⚠️ Please load an image first!');
                     return;
                 }
                 
-                this.updateStatus('🔄 Converting image to ASCII art...', '#F39C12');
+                this.updateStatus('🔄 Converting image to ASCII art...');
                 
                 try {
                     const width = parseInt(this.widthInput.value);
                     if (width <= 0) throw new Error('Width must be positive');
                     
-                    // Create canvas for image processing
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
                     
-                    // Calculate dimensions
                     const aspectRatio = this.originalImage.height / this.originalImage.width;
                     const height = Math.floor(width * aspectRatio * 0.5);
                     
                     canvas.width = width;
                     canvas.height = height;
                     
-                    // Draw and process image
                     ctx.drawImage(this.originalImage, 0, 0, width, height);
                     const imageData = ctx.getImageData(0, 0, width, height);
                     
-                    // Convert to ASCII
                     let ascii = '';
                     for (let y = 0; y < height; y++) {
                         for (let x = 0; x < width; x++) {
@@ -603,7 +824,6 @@
                             const g = imageData.data[pixelIndex + 1];
                             const b = imageData.data[pixelIndex + 2];
                             
-                            // Convert to grayscale
                             const gray = Math.floor(0.299 * r + 0.587 * g + 0.114 * b);
                             ascii += this.pixelToAscii(gray);
                         }
@@ -613,14 +833,14 @@
                     this.baseAscii = ascii;
                     this.asciiOutput.value = ascii;
                     
-                    this.updateStatus(`✨ ASCII art created! (${width}x${height} characters)`, '#27AE60');
+                    this.updateStatus(`✨ ASCII art created! (${width}x${height} characters)`);
                     
                     if (this.enableAnimation.checked) {
                         this.toggleAnimationControls();
                     }
                     
                 } catch (error) {
-                    this.updateStatus(`❌ Conversion failed: ${error.message}`, '#E74C3C');
+                    this.updateStatus(`❌ Conversion failed: ${error.message}`);
                 }
             }
             
@@ -713,12 +933,12 @@
             
             playAnimation() {
                 if (!this.baseAscii && !this.enableAnimation.checked) {
-                    this.updateStatus('⚠️ No animation to play!', '#E74C3C');
+                    this.updateStatus('⚠️ No animation to play!');
                     return;
                 }
                 
                 this.isAnimating = true;
-                this.updateStatus('▶️ Animation playing...', '#27AE60');
+                this.updateStatus('▶️ Animation playing...');
                 this.animateLoop();
             }
             
@@ -727,7 +947,7 @@
                 if (this.animationId) {
                     clearTimeout(this.animationId);
                 }
-                this.updateStatus('⏸️ Animation paused', '#F39C12');
+                this.updateStatus('⏸️ Animation paused');
             }
             
             stopAnimation() {
@@ -740,7 +960,7 @@
                     this.asciiOutput.value = this.baseAscii;
                 }
                 this.updateFrameInfo();
-                this.updateStatus('⏹️ Animation stopped', '#E74C3C');
+                this.updateStatus('⏹️ Animation stopped');
             }
             
             animateLoop() {
@@ -767,24 +987,23 @@
             
             async copyToClipboard() {
                 if (!this.asciiOutput.value) {
-                    this.updateStatus('⚠️ No ASCII art to copy!', '#E74C3C');
+                    this.updateStatus('⚠️ No ASCII art to copy!');
                     return;
                 }
                 
                 try {
                     await navigator.clipboard.writeText(this.asciiOutput.value);
-                    this.updateStatus('📋 ASCII art copied to clipboard!', '#27AE60');
+                    this.updateStatus('📋 ASCII art copied to clipboard!');
                 } catch (err) {
-                    // Fallback for older browsers
                     this.asciiOutput.select();
                     document.execCommand('copy');
-                    this.updateStatus('📋 ASCII art copied to clipboard!', '#27AE60');
+                    this.updateStatus('📋 ASCII art copied to clipboard!');
                 }
             }
             
             saveAsFile() {
                 if (!this.asciiOutput.value) {
-                    this.updateStatus('⚠️ No ASCII art to save!', '#E74C3C');
+                    this.updateStatus('⚠️ No ASCII art to save!');
                     return;
                 }
                 
@@ -798,7 +1017,106 @@
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 
-                this.updateStatus('💾 ASCII art saved as file!', '#27AE60');
+                this.updateStatus('💾 ASCII art saved as file!');
+            }
+        }
+
+        // Source code data
+        const pythonCode = `import tkinter as tk
+from tkinter import ttk, filedialog, messagebox, scrolledtext
+from PIL import Image, ImageTk
+import os
+import threading
+import time
+import random
+import math
+
+class ASCIIArtConverter:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("🎨 Animated ASCII Art Converter")
+        self.root.geometry("1400x900")
+        
+        # Set color scheme
+        self.colors = {
+            'bg': '#2C3E50',           # Dark blue-gray
+            'frame_bg': '#34495E',     # Slightly lighter blue-gray
+            'accent': '#3498DB',       # Bright blue
+            'success': '#27AE60',      # Green
+            'warning': '#F39C12',      # Orange
+            'danger': '#E74C3C',       # Red
+            'text': '#ECF0F1',         # Light gray
+            'button': '#3498DB',       # Blue
+            'button_hover': '#2980B9'  # Darker blue
+        }
+        
+        # Configure root background
+        self.root.configure(bg=self.colors['bg'])
+        
+        # ASCII characters from darkest to lightest
+        self.ascii_chars = "@%#*+=-:. "
+        self.alt_ascii_chars = [
+            "█▓▒░·",           # Block style
+            "●◐◑◒◓○",         # Circle style  
+            "♠♣♥♦·",          # Card suits
+            "▀▄█░·",          # Half blocks
+            "≡≣≢≡·",          # Line style
+            "※○◦°·"           # Star style
+        ]
+        
+        # Variables
+        self.image_path = None
+        self.original_image = None
+        self.ascii_art = ""
+        self.black_as_space = tk.BooleanVar(value=False)
+        self.enable_procedural_animation = tk.BooleanVar(value=False)
+        
+        # Animation variables
+        self.is_animated = False
+        self.ascii_frames = []
+        self.current_frame = 0
+        self.animation_running = False
+        self.animation_speed = tk.DoubleVar(value=100)
+        self.animation_thread = None
+        self.frame_durations = []
+        
+        # Procedural animation variables
+        self.base_ascii = ""  # Original static ASCII
+        self.animation_type = tk.StringVar(value="wave")
+        self.animation_intensity = tk.DoubleVar(value=50)
+        self.procedural_frame = 0
+        
+        self.setup_styles()
+        self.setup_ui()
+
+# ... (rest of the Python code continues with all methods)`;
+
+        const htmlCode = document.documentElement.outerHTML;
+
+        // Modal functions
+        function showPythonCode() {
+            document.getElementById('pythonCodeContent').textContent = pythonCode;
+            document.getElementById('pythonModal').style.display = 'block';
+        }
+
+        function showHTMLCode() {
+            document.getElementById('htmlCodeContent').textContent = htmlCode;
+            document.getElementById('htmlModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const pythonModal = document.getElementById('pythonModal');
+            const htmlModal = document.getElementById('htmlModal');
+            if (event.target == pythonModal) {
+                pythonModal.style.display = 'none';
+            }
+            if (event.target == htmlModal) {
+                htmlModal.style.display = 'none';
             }
         }
         
