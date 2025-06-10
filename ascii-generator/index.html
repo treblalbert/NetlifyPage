@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎨 ASCII Art Generator - Albert Adroer Prats</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2C3E50, #34495E);
+            color: #ECF0F1;
+            min-height: 100vh;
+            overflow-x: auto;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 80px 20px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #3498DB, #00FF00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #BDC3C7;
+            font-size: 1.1rem;
+        }
+
+        .controls {
+            background: rgba(52, 73, 94, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .controls h3 {
+            color: #3498DB;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .control-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-label {
+            background: linear-gradient(135deg, #3498DB, #2980B9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .file-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        input[type="range"] {
+            width: 150px;
+            height: 6px;
+            border-radius: 3px;
+            background: #34495E;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #3498DB;
+            cursor: pointer;
+        }
+
+        input[type="number"] {
+            background: #34495E;
+            border: 2px solid #3498DB;
+            color: #ECF0F1;
+            padding: 8px 12px;
+            border-radius: 6px;
+            width: 80px;
+            font-size: 14px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #27AE60, #2ECC71);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        button:disabled {
+            background: #7F8C8D;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .animation-controls {
+            background: rgba(52, 73, 94, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: none;
+        }
+
+        .animation-controls h3 {
+            color: #F39C12;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .content-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            min-height: 500px;
+        }
+
+        .preview-section, .output-section {
+            background: rgba(52, 73, 94, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .preview-section h3 {
+            color: #E67E22;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .output-section h3 {
+            color: #00FF00;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 300px;
+            border: 2px dashed #7F8C8D;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+            color: #BDC3C7;
+            text-align: center;
+            font-size: 1.1rem;
+            overflow: hidden;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .ascii-output {
+            width: 100%;
+            height: 400px;
+            background: #1E1E1E;
+            color: #00FF00;
+            font-family: 'Courier New', monospace;
+            font-size: 8px;
+            line-height: 1;
+            padding: 15px;
+            border-radius: 10px;
+            overflow: auto;
+            white-space: pre;
+            border: 2px solid #3498DB;
+            resize: none;
+        }
+
+        .status-bar {
+            background: linear-gradient(135deg, #3498DB, #2980B9);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 10px;
+            margin-top: 25px;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #8E44AD, #9B59B6);
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #E67E22, #F39C12);
+        }
+
+        select {
+            background: #34495E;
+            border: 2px solid #3498DB;
+            color: #ECF0F1;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #ECF0F1;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #3498DB;
+        }
+
+        @media (max-width: 768px) {
+            .content-area {
+                grid-template-columns: 1fr;
+            }
+            
+            .control-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .container {
+                padding: 60px 15px 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .frame-info {
+            color: #3498DB;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498DB;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <a href="../" class="back-button">← Back to Portfolio</a>
+
+    <div class="container">
+        <div class="header">
+            <h1>🎨 ASCII Art Generator</h1>
+            <p>Transform your images into beautiful ASCII art with animation effects</p>
+            <p><em>Originally developed in Python, converted to HTML for web accessibility</em></p>
+        </div>
+
+        <div class="controls">
+            <h3>🛠️ Controls</h3>
+            <div class="control-row">
+                <div class="file-input-wrapper">
+                    <input type="file" id="imageInput" class="file-input" accept="image/*">
+                    <label for="imageInput" class="file-label">📁 Load Image</label>
+                </div>
+                
+                <div class="control-group">
+                    <label>📐 Width:</label>
+                    <input type="number" id="widthInput" value="80" min="10" max="200">
+                </div>
+                
+                <button id="convertBtn">✨ Convert to ASCII</button>
+            </div>
+            
+            <div class="control-row">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="blackSpace">
+                    <label for="blackSpace">⚫ Use spaces for black pixels</label>
+                </div>
+                
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="enableAnimation">
+                    <label for="enableAnimation">✨ Enable procedural animation</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="animation-controls" id="animationControls">
+            <h3>🎬 Animation Controls</h3>
+            <div class="control-row">
+                <button id="playBtn">▶️ Play</button>
+                <button id="pauseBtn">⏸️ Pause</button>
+                <button id="stopBtn">⏹️ Stop</button>
+                
+                <div class="control-group">
+                    <label>🏃 Speed:</label>
+                    <input type="range" id="speedSlider" min="50" max="1000" value="200">
+                    <span id="speedValue">200ms</span>
+                </div>
+            </div>
+            
+            <div class="control-row">
+                <div class="control-group">
+                    <label>🎭 Effect:</label>
+                    <select id="effectSelect">
+                        <option value="wave">Wave</option>
+                        <option value="flicker">Flicker</option>
+                        <option value="cycle">Cycle</option>
+                        <option value="glitch">Glitch</option>
+                        <option value="rain">Rain</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label>💪 Intensity:</label>
+                    <input type="range" id="intensitySlider" min="10" max="100" value="50">
+                    <span id="intensityValue">50%</span>
+                </div>
+            </div>
+            
+            <div class="frame-info" id="frameInfo">Ready for animation</div>
+        </div>
+
+        <div class="content-area">
+            <div class="preview-section">
+                <h3>🖼️ Original Image</h3>
+                <div class="image-preview" id="imagePreview">
+                    📷<br>No image loaded<br>Click 'Load Image' to start<br>Supports: JPG, PNG, GIF, BMP
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <h3>🎭 ASCII Art Output</h3>
+                <textarea class="ascii-output" id="asciiOutput" readonly 
+                          placeholder="Your ASCII art will appear here..."></textarea>
+                <div class="action-buttons">
+                    <button class="copy-btn" id="copyBtn">📋 Copy to Clipboard</button>
+                    <button class="save-btn" id="saveBtn">💾 Save as TXT</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-bar" id="statusBar">
+            🚀 Ready to convert images to ASCII art!
+        </div>
+    </div>
+
+    <script>
+        class ASCIIArtGenerator {
+            constructor() {
+                this.asciiChars = "@%#*+=-:. ";
+                this.altAsciiChars = [
+                    "█▓▒░·",
+                    "●◐◑◒◓○",
+                    "♠♣♥♦·",
+                    "▀▄█░·",
+                    "≡≣≢≡·",
+                    "※○◦°·"
+                ];
+                
+                this.originalImage = null;
+                this.baseAscii = "";
+                this.isAnimating = false;
+                this.animationFrame = 0;
+                this.animationId = null;
+                
+                this.initElements();
+                this.bindEvents();
+            }
+            
+            initElements() {
+                this.imageInput = document.getElementById('imageInput');
+                this.widthInput = document.getElementById('widthInput');
+                this.convertBtn = document.getElementById('convertBtn');
+                this.blackSpace = document.getElementById('blackSpace');
+                this.enableAnimation = document.getElementById('enableAnimation');
+                this.animationControls = document.getElementById('animationControls');
+                this.playBtn = document.getElementById('playBtn');
+                this.pauseBtn = document.getElementById('pauseBtn');
+                this.stopBtn = document.getElementById('stopBtn');
+                this.speedSlider = document.getElementById('speedSlider');
+                this.speedValue = document.getElementById('speedValue');
+                this.effectSelect = document.getElementById('effectSelect');
+                this.intensitySlider = document.getElementById('intensitySlider');
+                this.intensityValue = document.getElementById('intensityValue');
+                this.frameInfo = document.getElementById('frameInfo');
+                this.imagePreview = document.getElementById('imagePreview');
+                this.asciiOutput = document.getElementById('asciiOutput');
+                this.copyBtn = document.getElementById('copyBtn');
+                this.saveBtn = document.getElementById('saveBtn');
+                this.statusBar = document.getElementById('statusBar');
+            }
+            
+            bindEvents() {
+                this.imageInput.addEventListener('change', (e) => this.loadImage(e));
+                this.convertBtn.addEventListener('click', () => this.convertToAscii());
+                this.enableAnimation.addEventListener('change', () => this.toggleAnimationControls());
+                this.playBtn.addEventListener('click', () => this.playAnimation());
+                this.pauseBtn.addEventListener('click', () => this.pauseAnimation());
+                this.stopBtn.addEventListener('click', () => this.stopAnimation());
+                this.speedSlider.addEventListener('input', (e) => {
+                    this.speedValue.textContent = e.target.value + 'ms';
+                });
+                this.intensitySlider.addEventListener('input', (e) => {
+                    this.intensityValue.textContent = e.target.value + '%';
+                });
+                this.copyBtn.addEventListener('click', () => this.copyToClipboard());
+                this.saveBtn.addEventListener('click', () => this.saveAsFile());
+            }
+            
+            updateStatus(message, color = '#3498DB') {
+                this.statusBar.textContent = message;
+                this.statusBar.style.background = `linear-gradient(135deg, ${color}, ${this.darkenColor(color)})`;
+            }
+            
+            darkenColor(color) {
+                // Simple color darkening
+                const colors = {
+                    '#3498DB': '#2980B9',
+                    '#27AE60': '#229954',
+                    '#E74C3C': '#C0392B',
+                    '#F39C12': '#E67E22'
+                };
+                return colors[color] || '#2980B9';
+            }
+            
+            loadImage(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                this.updateStatus('📁 Loading image...', '#3498DB');
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        this.originalImage = img;
+                        this.displayImagePreview(img);
+                        this.updateStatus('✅ Image loaded successfully!', '#27AE60');
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            displayImagePreview(img) {
+                this.imagePreview.innerHTML = '';
+                const imgElement = document.createElement('img');
+                imgElement.src = img.src;
+                this.imagePreview.appendChild(imgElement);
+            }
+            
+            toggleAnimationControls() {
+                if (this.enableAnimation.checked) {
+                    this.animationControls.style.display = 'block';
+                } else {
+                    this.animationControls.style.display = 'none';
+                    this.stopAnimation();
+                }
+            }
+            
+            pixelToAscii(pixelValue) {
+                if (this.blackSpace.checked && pixelValue < 25) {
+                    return " ";
+                }
+                
+                const chars = this.blackSpace.checked ? this.asciiChars.slice(1) : this.asciiChars;
+                const index = Math.floor(pixelValue * (chars.length - 1) / 255);
+                return chars[Math.max(0, Math.min(index, chars.length - 1))];
+            }
+            
+            convertToAscii() {
+                if (!this.originalImage) {
+                    this.updateStatus('⚠️ Please load an image first!', '#E74C3C');
+                    return;
+                }
+                
+                this.updateStatus('🔄 Converting image to ASCII art...', '#F39C12');
+                
+                try {
+                    const width = parseInt(this.widthInput.value);
+                    if (width <= 0) throw new Error('Width must be positive');
+                    
+                    // Create canvas for image processing
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Calculate dimensions
+                    const aspectRatio = this.originalImage.height / this.originalImage.width;
+                    const height = Math.floor(width * aspectRatio * 0.5);
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    // Draw and process image
+                    ctx.drawImage(this.originalImage, 0, 0, width, height);
+                    const imageData = ctx.getImageData(0, 0, width, height);
+                    
+                    // Convert to ASCII
+                    let ascii = '';
+                    for (let y = 0; y < height; y++) {
+                        for (let x = 0; x < width; x++) {
+                            const pixelIndex = (y * width + x) * 4;
+                            const r = imageData.data[pixelIndex];
+                            const g = imageData.data[pixelIndex + 1];
+                            const b = imageData.data[pixelIndex + 2];
+                            
+                            // Convert to grayscale
+                            const gray = Math.floor(0.299 * r + 0.587 * g + 0.114 * b);
+                            ascii += this.pixelToAscii(gray);
+                        }
+                        ascii += '\n';
+                    }
+                    
+                    this.baseAscii = ascii;
+                    this.asciiOutput.value = ascii;
+                    
+                    this.updateStatus(`✨ ASCII art created! (${width}x${height} characters)`, '#27AE60');
+                    
+                    if (this.enableAnimation.checked) {
+                        this.toggleAnimationControls();
+                    }
+                    
+                } catch (error) {
+                    this.updateStatus(`❌ Conversion failed: ${error.message}`, '#E74C3C');
+                }
+            }
+            
+            generateProceduralFrame() {
+                if (!this.baseAscii) return this.baseAscii;
+                
+                const lines = this.baseAscii.split('\n');
+                const effect = this.effectSelect.value;
+                const intensity = parseInt(this.intensitySlider.value) / 100;
+                const frame = this.animationFrame;
+                
+                let animatedLines = [];
+                
+                switch (effect) {
+                    case 'wave':
+                        animatedLines = lines.map((line, y) => {
+                            return line.split('').map((char, x) => {
+                                if (char !== ' ') {
+                                    const waveOffset = Math.sin((x + frame) * 0.2) * intensity;
+                                    if (waveOffset > 0.3) {
+                                        const charSet = this.altAsciiChars[0];
+                                        return charSet[Math.min(charSet.length - 1, Math.floor(waveOffset * charSet.length))];
+                                    }
+                                }
+                                return char;
+                            }).join('');
+                        });
+                        break;
+                        
+                    case 'flicker':
+                        animatedLines = lines.map(line => {
+                            return line.split('').map(char => {
+                                if (char !== ' ' && Math.random() < intensity * 0.3) {
+                                    const charSet = this.altAsciiChars[Math.floor(Math.random() * this.altAsciiChars.length)];
+                                    return charSet[Math.floor(Math.random() * charSet.length)];
+                                }
+                                return char;
+                            }).join('');
+                        });
+                        break;
+                        
+                    case 'cycle':
+                        const charSetIndex = Math.floor(frame / 10) % this.altAsciiChars.length;
+                        const charSet = this.altAsciiChars[charSetIndex];
+                        animatedLines = lines.map(line => {
+                            return line.split('').map(char => {
+                                if (char !== ' ' && Math.random() < intensity) {
+                                    return charSet[Math.floor(Math.random() * charSet.length)];
+                                }
+                                return char;
+                            }).join('');
+                        });
+                        break;
+                        
+                    case 'glitch':
+                        animatedLines = lines.map(line => {
+                            return line.split('').map(char => {
+                                if (char !== ' ' && Math.random() < intensity * 0.2) {
+                                    return Math.random() < 0.5 ? 
+                                        '!@#$%^&*'[Math.floor(Math.random() * 8)] :
+                                        this.asciiChars[Math.floor(Math.random() * this.asciiChars.length)];
+                                }
+                                return char;
+                            }).join('');
+                        });
+                        break;
+                        
+                    case 'rain':
+                        animatedLines = [...lines];
+                        const rainDrops = Math.floor(lines.length * (lines[0]?.length || 0) * intensity * 0.1);
+                        for (let i = 0; i < rainDrops; i++) {
+                            if (lines.length > 0 && lines[0]) {
+                                const x = Math.floor(Math.random() * lines[0].length);
+                                const y = (frame + Math.floor(Math.random() * 20)) % lines.length;
+                                if (y < animatedLines.length && x < animatedLines[y].length) {
+                                    const chars = animatedLines[y].split('');
+                                    chars[x] = ".,':;"[Math.floor(Math.random() * 5)];
+                                    animatedLines[y] = chars.join('');
+                                }
+                            }
+                        }
+                        break;
+                        
+                    default:
+                        animatedLines = lines;
+                }
+                
+                return animatedLines.join('\n');
+            }
+            
+            playAnimation() {
+                if (!this.baseAscii && !this.enableAnimation.checked) {
+                    this.updateStatus('⚠️ No animation to play!', '#E74C3C');
+                    return;
+                }
+                
+                this.isAnimating = true;
+                this.updateStatus('▶️ Animation playing...', '#27AE60');
+                this.animateLoop();
+            }
+            
+            pauseAnimation() {
+                this.isAnimating = false;
+                if (this.animationId) {
+                    clearTimeout(this.animationId);
+                }
+                this.updateStatus('⏸️ Animation paused', '#F39C12');
+            }
+            
+            stopAnimation() {
+                this.isAnimating = false;
+                if (this.animationId) {
+                    clearTimeout(this.animationId);
+                }
+                this.animationFrame = 0;
+                if (this.baseAscii) {
+                    this.asciiOutput.value = this.baseAscii;
+                }
+                this.updateFrameInfo();
+                this.updateStatus('⏹️ Animation stopped', '#E74C3C');
+            }
+            
+            animateLoop() {
+                if (!this.isAnimating) return;
+                
+                if (this.enableAnimation.checked && this.baseAscii) {
+                    this.animationFrame++;
+                    const animatedFrame = this.generateProceduralFrame();
+                    this.asciiOutput.value = animatedFrame;
+                    this.updateFrameInfo();
+                }
+                
+                const speed = parseInt(this.speedSlider.value);
+                this.animationId = setTimeout(() => this.animateLoop(), speed);
+            }
+            
+            updateFrameInfo() {
+                if (this.enableAnimation.checked) {
+                    this.frameInfo.textContent = `Effect: ${this.effectSelect.value} | Frame: ${this.animationFrame}`;
+                } else {
+                    this.frameInfo.textContent = 'Ready for animation';
+                }
+            }
+            
+            async copyToClipboard() {
+                if (!this.asciiOutput.value) {
+                    this.updateStatus('⚠️ No ASCII art to copy!', '#E74C3C');
+                    return;
+                }
+                
+                try {
+                    await navigator.clipboard.writeText(this.asciiOutput.value);
+                    this.updateStatus('📋 ASCII art copied to clipboard!', '#27AE60');
+                } catch (err) {
+                    // Fallback for older browsers
+                    this.asciiOutput.select();
+                    document.execCommand('copy');
+                    this.updateStatus('📋 ASCII art copied to clipboard!', '#27AE60');
+                }
+            }
+            
+            saveAsFile() {
+                if (!this.asciiOutput.value) {
+                    this.updateStatus('⚠️ No ASCII art to save!', '#E74C3C');
+                    return;
+                }
+                
+                const blob = new Blob([this.asciiOutput.value], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'ascii-art.txt';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.updateStatus('💾 ASCII art saved as file!', '#27AE60');
+            }
+        }
+        
+        // Initialize the application when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new ASCIIArtGenerator();
+        });
+    </script>
+</body>
+</html>
