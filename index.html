@@ -28,7 +28,11 @@
       width: 100%;
       height: 100%;
       z-index: 0;
-      background-image: linear-gradient(-206deg, #835EFF 0%, #FF008D 100%);
+      background: 
+    radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3) 0%, transparent 50%),
+    linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
       overflow: hidden;
     }
 
@@ -338,10 +342,10 @@
 
           const index = (y * canvas.width + x) * 4;
           if (sum > 1) {
-            data[index] = 255;
-            data[index + 1] = 255;
-            data[index + 2] = 255;
-            data[index + 3] = 60;
+            data[index] = 120;   // R
+            data[index + 1] = 180; // G
+            data[index + 2] = 255; // B
+            data[index + 3] = 70;  // Alpha
           }
         }
       }
