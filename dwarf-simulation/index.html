@@ -58,18 +58,41 @@
             position: fixed;
             top: 20px;
             left: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(30px) saturate(180%);
-            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.25) 0%, 
+                rgba(255, 255, 255, 0.1) 50%,
+                rgba(255, 255, 255, 0.2) 100%);
+            backdrop-filter: blur(15px) saturate(160%);
+            -webkit-backdrop-filter: blur(15px) saturate(160%);
             color: white;
             padding: 12px 20px;
             text-decoration: none;
             border-radius: 25px;
             font-weight: 600;
             z-index: 1000;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 6px 20px rgba(0, 0, 0, 0.15),
+                0 1px 0 rgba(255, 255, 255, 0.6) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+                0 0 0 1px rgba(255, 255, 255, 0.3);
+        }
+
+        .back-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, 
+                rgba(255, 255, 255, 0.3) 0%,
+                transparent 100%);
+            border-radius: 25px 25px 0 0;
+            pointer-events: none;
         }
 
         .source-buttons {
@@ -100,13 +123,19 @@
         }
 
         .back-button:hover, .source-btn:hover {
-            transform: translateY(-2px);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+            transform: translateY(-3px) scale(1.02);
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.35) 0%, 
+                rgba(255, 255, 255, 0.15) 50%,
+                rgba(255, 255, 255, 0.25) 100%);
+            backdrop-filter: blur(20px) saturate(200%);
+            -webkit-backdrop-filter: blur(20px) saturate(200%);
             box-shadow: 
-                0 12px 40px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.4),
-                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
+                0 12px 30px rgba(0, 0, 0, 0.25),
+                0 1px 0 rgba(255, 255, 255, 0.8) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.15) inset,
+                0 0 0 1px rgba(255, 255, 255, 0.5),
+                0 0 15px rgba(255, 255, 255, 0.2);
         }
 
         .main-container {
@@ -128,29 +157,74 @@
         }
 
         .glass-panel {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
-            -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.22) 0%, 
+                rgba(255, 255, 255, 0.08) 25%,
+                rgba(255, 255, 255, 0.04) 50%,
+                rgba(255, 255, 255, 0.08) 75%,
+                rgba(255, 255, 255, 0.22) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-radius: 25px;
             padding: 25px;
             box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.15),
-                inset 0 1px 0 rgba(255, 255, 255, 0.8),
-                0 0 0 1px rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+                0 8px 32px rgba(0, 0, 0, 0.2),
+                0 1px 0 rgba(255, 255, 255, 0.8) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.2) inset,
+                0 0 0 1px rgba(255, 255, 255, 0.3);
+            border: 1px solid transparent;
             position: relative;
             overflow: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(180deg, 
+                rgba(255, 255, 255, 0.25) 0%,
+                rgba(255, 255, 255, 0.08) 60%,
+                transparent 100%);
+            border-radius: 25px 25px 0 0;
+            pointer-events: none;
+        }
+
+        .glass-panel::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            background: linear-gradient(145deg, 
+                transparent 0%,
+                rgba(255, 255, 255, 0.08) 30%,
+                transparent 70%,
+                rgba(255, 255, 255, 0.04) 100%);
+            border-radius: 23px;
+            pointer-events: none;
         }
 
         .glass-panel:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px) scale(1.01);
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.32) 0%, 
+                rgba(255, 255, 255, 0.12) 25%,
+                rgba(255, 255, 255, 0.06) 50%,
+                rgba(255, 255, 255, 0.12) 75%,
+                rgba(255, 255, 255, 0.32) 100%);
             box-shadow: 
-                0 12px 40px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.9),
-                0 0 0 1px rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(50px) saturate(250%) brightness(1.15);
-            -webkit-backdrop-filter: blur(50px) saturate(250%) brightness(1.15);
+                0 16px 50px rgba(0, 0, 0, 0.25),
+                0 1px 0 rgba(255, 255, 255, 0.9) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.25) inset,
+                0 0 0 1px rgba(255, 255, 255, 0.4),
+                0 0 15px rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px) saturate(200%);
+            -webkit-backdrop-filter: blur(25px) saturate(200%);
         }
 
         .header {
@@ -199,17 +273,40 @@
         }
 
         input, select, button {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(25px) saturate(150%);
-            -webkit-backdrop-filter: blur(25px) saturate(150%);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.25) 0%, 
+                rgba(255, 255, 255, 0.1) 50%,
+                rgba(255, 255, 255, 0.2) 100%);
+            backdrop-filter: blur(15px) saturate(150%);
+            -webkit-backdrop-filter: blur(15px) saturate(150%);
+            border: 1px solid transparent;
             color: #fff;
             padding: 10px 15px;
             border-radius: 12px;
             font-size: 14px;
             font-weight: 500;
-            transition: all 0.3s ease;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 6px 20px rgba(0, 0, 0, 0.15),
+                0 1px 0 rgba(255, 255, 255, 0.6) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+                0 0 0 1px rgba(255, 255, 255, 0.3);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, 
+                rgba(255, 255, 255, 0.25) 0%,
+                transparent 100%);
+            border-radius: 12px 12px 0 0;
+            pointer-events: none;
         }
 
         input:focus, select:focus {
@@ -229,12 +326,19 @@
         }
 
         button:hover {
-            transform: translateY(-2px);
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(35px) saturate(200%);
-            -webkit-backdrop-filter: blur(35px) saturate(200%);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-3px) scale(1.02);
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.35) 0%, 
+                rgba(255, 255, 255, 0.15) 50%,
+                rgba(255, 255, 255, 0.25) 100%);
+            backdrop-filter: blur(20px) saturate(200%);
+            -webkit-backdrop-filter: blur(20px) saturate(200%);
+            box-shadow: 
+                0 12px 30px rgba(0, 0, 0, 0.25),
+                0 1px 0 rgba(255, 255, 255, 0.8) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.15) inset,
+                0 0 0 1px rgba(255, 255, 255, 0.5),
+                0 0 15px rgba(255, 255, 255, 0.2);
         }
 
         button:disabled {
@@ -1477,12 +1581,13 @@
             new DwarfSimulation();
         });
 
-        // Lava lamp bubbles effect (from main page)
+        // Smooth lava lamp bubbles effect
         const canvas = document.getElementById("bubble");
         const ctx = canvas.getContext("2d");
 
         const balls = [];
-        const numBalls = 20;
+        const numBalls = 15;
+        let animationTime = 0;
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -1494,19 +1599,22 @@
 
         class Ball {
             constructor() {
-                this.r = 50 + Math.random() * 40;
+                this.r = 60 + Math.random() * 50;
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 2;
-                this.vy = (Math.random() - 0.5) * 2;
+                this.vx = (Math.random() - 0.5) * 1.5;
+                this.vy = (Math.random() - 0.5) * 1.5;
+                this.phase = Math.random() * Math.PI * 2;
             }
 
             move() {
-                this.x += this.vx;
-                this.y += this.vy;
+                this.x += this.vx + Math.sin(animationTime * 0.001 + this.phase) * 0.5;
+                this.y += this.vy + Math.cos(animationTime * 0.001 + this.phase) * 0.3;
 
-                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+                if (this.x < -this.r) this.x = canvas.width + this.r;
+                if (this.x > canvas.width + this.r) this.x = -this.r;
+                if (this.y < -this.r) this.y = canvas.height + this.r;
+                if (this.y > canvas.height + this.r) this.y = -this.r;
             }
         }
 
@@ -1515,35 +1623,46 @@
         }
 
         function render() {
+            animationTime += 16;
+            
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const data = image.data;
-
-            for (let y = 0; y < canvas.height; y += 2) {
-                for (let x = 0; x < canvas.width; x += 2) {
+            
+            const imageData = ctx.createImageData(canvas.width, canvas.height);
+            const data = imageData.data;
+            
+            for (let y = 0; y < canvas.height; y += 1) {
+                for (let x = 0; x < canvas.width; x += 1) {
                     let sum = 0;
+                    
                     for (const ball of balls) {
                         const dx = ball.x - x;
                         const dy = ball.y - y;
-                        sum += (ball.r * ball.r) / (dx * dx + dy * dy);
+                        const distance = dx * dx + dy * dy;
+                        if (distance > 0) {
+                            sum += (ball.r * ball.r) / distance;
+                        }
                     }
-
+                    
                     const index = (y * canvas.width + x) * 4;
+                    
                     if (sum > 1) {
-                        data[index] = 120;   // R
-                        data[index + 1] = 180; // G
-                        data[index + 2] = 255; // B
-                        data[index + 3] = 70;  // Alpha
+                        const intensity = Math.min(1, (sum - 1) * 0.5);
+                        const alpha = Math.floor(60 + intensity * 40);
+                        
+                        data[index] = 100 + intensity * 50;
+                        data[index + 1] = 150 + intensity * 80;
+                        data[index + 2] = 255;
+                        data[index + 3] = alpha;
                     }
                 }
             }
-
-            ctx.putImageData(image, 0, 0);
-
+            
+            ctx.putImageData(imageData, 0, 0);
+            
             for (const ball of balls) {
                 ball.move();
             }
-
+            
             requestAnimationFrame(render);
         }
 
