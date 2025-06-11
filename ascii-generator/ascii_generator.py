@@ -4,13 +4,11 @@ from PIL import Image, ImageTk
 import os
 import threading
 import time
-import random
-import math
 
 class ASCIIArtConverter:
     def __init__(self, root):
         self.root = root
-        self.root.title("🎨 Animated ASCII Art Converter")
+        self.root.title("🎨 ASCII Art Converter")
         self.root.geometry("1400x900")
         
         # Set color scheme
@@ -31,21 +29,12 @@ class ASCIIArtConverter:
         
         # ASCII characters from darkest to lightest
         self.ascii_chars = "@%#*+=-:. "
-        self.alt_ascii_chars = [
-            "█▓▒░·",           # Block style
-            "●◐◑◒◓○",         # Circle style  
-            "♠♣♥♦·",          # Card suits
-            "▀▄█░·",          # Half blocks
-            "≡≣≢≡·",          # Line style
-            "※○◦°·"           # Star style
-        ]
         
         # Variables
         self.image_path = None
         self.original_image = None
         self.ascii_art = ""
         self.black_as_space = tk.BooleanVar(value=False)
-        self.enable_procedural_animation = tk.BooleanVar(value=False)
         
         # Animation variables
         self.is_animated = False
@@ -55,12 +44,6 @@ class ASCIIArtConverter:
         self.animation_speed = tk.DoubleVar(value=100)
         self.animation_thread = None
         self.frame_durations = []
-        
-        # Procedural animation variables
-        self.base_ascii = ""  # Original static ASCII
-        self.animation_type = tk.StringVar(value="wave")
-        self.animation_intensity = tk.DoubleVar(value=50)
-        self.procedural_frame = 0
         
         self.setup_styles()
         self.setup_ui()
@@ -132,7 +115,7 @@ class ASCIIArtConverter:
         # Title label
         title_label = tk.Label(
             main_frame, 
-            text="🎨 Animated ASCII Art Converter",
+            text="🎨 ASCII Art Converter",
             font=('Segoe UI', 16, 'bold'),
             bg=self.colors['bg'],
             fg=self.colors['accent']
@@ -192,15 +175,6 @@ class ASCIIArtConverter:
         )
         black_space_cb.pack(side=tk.LEFT, padx=(0, 20))
         
-        # Procedural animation option
-        procedural_cb = ttk.Checkbutton(
-            control_row2,
-            text="✨ Enable procedural animation",
-            variable=self.enable_procedural_animation,
-            style='Custom.TCheckbutton'
-        )
-        procedural_cb.pack(side=tk.LEFT, padx=(0, 20))
-        
         # Save button
         save_btn = ttk.Button(
             control_row2, 
@@ -255,7 +229,7 @@ class ASCIIArtConverter:
         )
         self.stop_btn.pack(side=tk.LEFT, padx=(0, 20))
         
-        # Frame navigation (for GIF animations)
+        # Frame navigation
         self.prev_btn = ttk.Button(
             anim_buttons_frame, 
             text="⏮️ Prev", 
@@ -290,36 +264,6 @@ class ASCIIArtConverter:
         self.speed_label = ttk.Label(speed_frame, text="100", style='Custom.TLabel')
         self.speed_label.pack(side=tk.LEFT)
         speed_scale.configure(command=self.update_speed_label)
-        
-        # Procedural animation controls
-        procedural_frame = tk.Frame(self.animation_frame, bg=self.colors['frame_bg'])
-        procedural_frame.pack(fill=tk.X, pady=(10, 0))
-        
-        ttk.Label(procedural_frame, text="🎭 Effect:", style='Custom.TLabel').pack(side=tk.LEFT, padx=(0, 5))
-        
-        effect_combo = ttk.Combobox(
-            procedural_frame, 
-            textvariable=self.animation_type,
-            values=["wave", "flicker", "cycle", "glitch", "rain", "morph"],
-            state="readonly",
-            width=10
-        )
-        effect_combo.pack(side=tk.LEFT, padx=(0, 20))
-        
-        ttk.Label(procedural_frame, text="💪 Intensity:", style='Custom.TLabel').pack(side=tk.LEFT, padx=(0, 5))
-        intensity_scale = ttk.Scale(
-            procedural_frame,
-            from_=10,
-            to=100,
-            variable=self.animation_intensity,
-            orient=tk.HORIZONTAL,
-            length=120
-        )
-        intensity_scale.pack(side=tk.LEFT, padx=(0, 10))
-        
-        self.intensity_label = ttk.Label(procedural_frame, text="50", style='Custom.TLabel')
-        self.intensity_label.pack(side=tk.LEFT)
-        intensity_scale.configure(command=self.update_intensity_label)
         
         # Frame counter
         self.frame_info = ttk.Label(
@@ -401,10 +345,6 @@ class ASCIIArtConverter:
         """Update the speed label when scale changes"""
         self.speed_label.config(text=f"{int(float(value))}")
     
-    def update_intensity_label(self, value):
-        """Update the intensity label when scale changes"""
-        self.intensity_label.config(text=f"{int(float(value))}")
-    
     def update_status(self, message, color=None):
         """Update status bar message"""
         if color is None:
@@ -436,9 +376,6 @@ class ASCIIArtConverter:
                 if self.is_animated:
                     self.animation_frame.pack(fill=tk.X, pady=(0, 15), after=self.control_frame)
                     self.update_status(f"🎬 Animated GIF loaded: {self.original_image.n_frames} frames", self.colors['success'])
-                elif self.enable_procedural_animation.get():
-                    self.animation_frame.pack(fill=tk.X, pady=(0, 15), after=self.control_frame)
-                    self.update_status(f"✅ Image loaded - procedural animation enabled", self.colors['success'])
                 else:
                     self.animation_frame.pack_forget()
                     self.update_status(f"✅ Image loaded successfully", self.colors['success'])
@@ -532,13 +469,6 @@ class ASCIIArtConverter:
                 self.update_status("🔄 Converting image to ASCII art...", self.colors['accent'])
                 self.convert_static_to_ascii()
                 
-                # If procedural animation is enabled, show animation controls
-                if self.enable_procedural_animation.get():
-                    self.animation_frame.pack(fill=tk.X, pady=(0, 15), after=self.control_frame)
-                    # Hide frame navigation buttons for procedural animation
-                    self.prev_btn.pack_forget()
-                    self.next_btn.pack_forget()
-                
         except ValueError as e:
             error_msg = f"❌ Invalid width value: {str(e)}"
             self.update_status(error_msg, self.colors['warning'])
@@ -551,7 +481,6 @@ class ASCIIArtConverter:
     def convert_static_to_ascii(self):
         """Convert a static image to ASCII art"""
         self.ascii_art = self.convert_frame_to_ascii(self.original_image)
-        self.base_ascii = self.ascii_art  # Store for procedural animation
         
         # Display ASCII art
         self.ascii_text.delete(1.0, tk.END)
@@ -598,127 +527,23 @@ class ASCIIArtConverter:
         except Exception as e:
             raise e
     
-    def generate_procedural_frame(self):
-        """Generate a procedural animation frame"""
-        if not self.base_ascii:
-            return self.base_ascii
-        
-        lines = self.base_ascii.split('\n')
-        animated_lines = []
-        
-        effect = self.animation_type.get()
-        intensity = self.animation_intensity.get() / 100.0
-        frame = self.procedural_frame
-        
-        if effect == "wave":
-            # Wave effect - characters move in waves
-            for y, line in enumerate(lines):
-                new_line = ""
-                for x, char in enumerate(line):
-                    if char != ' ':
-                        wave_offset = math.sin((x + frame) * 0.2) * intensity
-                        if wave_offset > 0.3:
-                            char_set = self.alt_ascii_chars[0]
-                            new_char = char_set[min(len(char_set)-1, int(wave_offset * len(char_set)))]
-                        else:
-                            new_char = char
-                    else:
-                        new_char = char
-                    new_line += new_char
-                animated_lines.append(new_line)
-        
-        elif effect == "flicker":
-            # Flicker effect - randomly change some characters
-            for line in lines:
-                new_line = ""
-                for char in line:
-                    if char != ' ' and random.random() < intensity * 0.3:
-                        char_set = random.choice(self.alt_ascii_chars)
-                        new_line += random.choice(char_set)
-                    else:
-                        new_line += char
-                animated_lines.append(new_line)
-        
-        elif effect == "cycle":
-            # Cycle through different character sets
-            char_set_index = (frame // 10) % len(self.alt_ascii_chars)
-            char_set = self.alt_ascii_chars[char_set_index]
-            
-            for line in lines:
-                new_line = ""
-                for char in line:
-                    if char != ' ' and random.random() < intensity:
-                        new_line += random.choice(char_set)
-                    else:
-                        new_line += char
-                animated_lines.append(new_line)
-        
-        elif effect == "glitch":
-            # Glitch effect - random corruption
-            for line in lines:
-                new_line = ""
-                for x, char in enumerate(line):
-                    if char != ' ' and random.random() < intensity * 0.2:
-                        if random.random() < 0.5:
-                            new_line += random.choice("!@#$%^&*")
-                        else:
-                            new_line += random.choice(self.ascii_chars)
-                    else:
-                        new_line += char
-                animated_lines.append(new_line)
-        
-        elif effect == "rain":
-            # Rain effect - add falling characters
-            animated_lines = lines.copy()
-            for _ in range(int(len(lines) * len(lines[0] if lines else "") * intensity * 0.1)):
-                if lines:
-                    x = random.randint(0, len(lines[0]) - 1) if lines[0] else 0
-                    y = (frame + random.randint(0, 20)) % len(lines)
-                    if y < len(animated_lines) and x < len(animated_lines[y]):
-                        line_chars = list(animated_lines[y])
-                        if x < len(line_chars):
-                            line_chars[x] = random.choice(".,':;")
-                            animated_lines[y] = ''.join(line_chars)
-        
-        elif effect == "morph":
-            # Morph effect - gradually change character mapping
-            morph_stage = (frame % 100) / 100.0
-            char_set = self.alt_ascii_chars[int(morph_stage * len(self.alt_ascii_chars)) % len(self.alt_ascii_chars)]
-            
-            for line in lines:
-                new_line = ""
-                for char in line:
-                    if char != ' ' and random.random() < intensity * morph_stage:
-                        new_line += random.choice(char_set)
-                    else:
-                        new_line += char
-                animated_lines.append(new_line)
-        
-        return '\n'.join(animated_lines)
-    
     def display_current_frame(self):
         """Display the current ASCII frame"""
         if self.is_animated and self.ascii_frames and 0 <= self.current_frame < len(self.ascii_frames):
             self.ascii_text.delete(1.0, tk.END)
             self.ascii_text.insert(1.0, self.ascii_frames[self.current_frame])
-        elif self.enable_procedural_animation.get() and self.base_ascii:
-            animated_frame = self.generate_procedural_frame()
-            self.ascii_text.delete(1.0, tk.END)
-            self.ascii_text.insert(1.0, animated_frame)
     
     def update_frame_info(self):
         """Update the frame counter display"""
         if self.is_animated and self.ascii_frames:
             self.frame_info.config(text=f"Frame: {self.current_frame + 1} / {len(self.ascii_frames)}")
-        elif self.enable_procedural_animation.get():
-            self.frame_info.config(text=f"Effect: {self.animation_type.get()} | Frame: {self.procedural_frame}")
         else:
             self.frame_info.config(text="Frame: 0 / 0")
     
     def play_animation(self):
         """Start playing the ASCII animation"""
-        if not self.ascii_frames and not (self.enable_procedural_animation.get() and self.base_ascii):
-            messagebox.showwarning("Warning", "No animation to play! Please convert an image/GIF first.")
+        if not self.ascii_frames:
+            messagebox.showwarning("Warning", "No GIF animation to play! Please convert a GIF first.")
             return
         
         if not self.animation_running:
@@ -735,10 +560,7 @@ class ASCIIArtConverter:
     def stop_animation(self):
         """Stop the ASCII animation and reset to first frame"""
         self.animation_running = False
-        if self.is_animated:
-            self.current_frame = 0
-        else:
-            self.procedural_frame = 0
+        self.current_frame = 0
         self.display_current_frame()
         self.update_frame_info()
         self.update_status("⏹️ Animation stopped", self.colors['danger'])
@@ -764,16 +586,11 @@ class ASCIIArtConverter:
             time.sleep(delay)
             
             if self.animation_running:  # Check again after sleep
-                if self.is_animated and self.ascii_frames:
-                    # GIF animation
+                if self.ascii_frames:
                     self.current_frame = (self.current_frame + 1) % len(self.ascii_frames)
-                elif self.enable_procedural_animation.get() and self.base_ascii:
-                    # Procedural animation
-                    self.procedural_frame += 1
-                
-                # Update UI in main thread
-                self.root.after(0, self.display_current_frame)
-                self.root.after(0, self.update_frame_info)
+                    # Update UI in main thread
+                    self.root.after(0, self.display_current_frame)
+                    self.root.after(0, self.update_frame_info)
     
     def save_ascii(self):
         """Save ASCII art to a text file"""
@@ -823,8 +640,6 @@ class ASCIIArtConverter:
         """Save current frame of animated ASCII"""
         if self.ascii_frames and 0 <= self.current_frame < len(self.ascii_frames):
             content = self.ascii_frames[self.current_frame]
-        elif self.enable_procedural_animation.get():
-            content = self.generate_procedural_frame()
         else:
             return
         
@@ -878,13 +693,6 @@ class ASCIIArtConverter:
             self.root.clipboard_append(current_ascii)
             self.update_status("📋 Current ASCII frame copied to clipboard!", self.colors['success'])
             messagebox.showinfo("Success", "Current ASCII frame copied to clipboard!")
-        elif self.enable_procedural_animation.get() and self.base_ascii:
-            # Copy current procedural frame
-            current_ascii = self.generate_procedural_frame()
-            self.root.clipboard_clear()
-            self.root.clipboard_append(current_ascii)
-            self.update_status("📋 Current animated frame copied to clipboard!", self.colors['success'])
-            messagebox.showinfo("Success", "Current animated frame copied to clipboard!")
         elif self.ascii_art:
             # Copy single ASCII art
             self.root.clipboard_clear()
