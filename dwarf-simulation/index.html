@@ -13,20 +13,30 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: 
-                radial-gradient(circle at 30% 60%, rgba(139, 69, 19, 0.25) 0%, transparent 50%),
-                radial-gradient(circle at 70% 30%, rgba(85, 107, 47, 0.2) 0%, transparent 50%),
-                radial-gradient(circle at 50% 90%, rgba(255, 140, 0, 0.15) 0%, transparent 50%),
-                linear-gradient(135deg, #2e2e2e 0%, #4b3621 50%, #1c1c1c 100%);
             color: #fff;
             min-height: 100vh;
             overflow-x: auto;
             position: relative;
         }
 
-        body::before {
-            content: '';
+        .wrap {
             position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: 
+                radial-gradient(circle at 30% 60%, rgba(139, 69, 19, 0.25) 0%, transparent 50%),
+                radial-gradient(circle at 70% 30%, rgba(85, 107, 47, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 50% 90%, rgba(255, 140, 0, 0.15) 0%, transparent 50%),
+                linear-gradient(135deg, #2e2e2e 0%, #4b3621 50%, #1c1c1c 100%);
+            overflow: hidden;
+        }
+
+        .wrap::before {
+            content: '';
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -38,60 +48,28 @@
             z-index: 1;
         }
 
-        .floating-elements {
-            position: fixed;
-            top: 0;
-            left: 0;
+        canvas#bubble {
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        .floating-circle {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.02));
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3),
-                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-        }
-
-        .floating-circle {
-            transition: transform 0.1s ease-out;
-        }
-
-        .floating-circle.bouncing {
-            animation: deformation 0.3s ease-out;
-        }
-
-        @keyframes deformation {
-            0% { border-radius: 50%; }
-            50% { border-radius: 45% 55% 40% 60%; }
-            100% { border-radius: 50%; }
+            display: block;
         }
 
         .back-button {
             position: fixed;
             top: 20px;
             left: 20px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
             color: white;
             padding: 12px 20px;
             text-decoration: none;
-            border-radius: 12px;
+            border-radius: 25px;
             font-weight: 600;
             z-index: 1000;
             transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3),
-                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
         }
 
         .source-buttons {
@@ -150,48 +128,29 @@
         }
 
         .glass-panel {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.1) 0%, 
-                rgba(255, 255, 255, 0.05) 50%, 
-                rgba(255, 255, 255, 0.1) 100%);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
+            -webkit-backdrop-filter: blur(40px) saturate(200%) brightness(1.1);
+            border-radius: 25px;
             padding: 25px;
             box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3),
-                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+                0 8px 32px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8),
+                0 0 0 1px rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             position: relative;
             overflow: hidden;
+            transition: all 0.3s ease;
         }
 
-        .glass-panel::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.6), 
-                transparent
-            );
-        }
-
-        .glass-panel::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 2px;
-            height: 100%;
-            background: linear-gradient(180deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.3), 
-                transparent
-            );
+        .glass-panel:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 12px 40px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9),
+                0 0 0 1px rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(50px) saturate(250%) brightness(1.15);
+            -webkit-backdrop-filter: blur(50px) saturate(250%) brightness(1.15);
         }
 
         .header {
@@ -240,18 +199,17 @@
         }
 
         input, select, button {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(25px) saturate(150%);
+            -webkit-backdrop-filter: blur(25px) saturate(150%);
             border: 1px solid rgba(255, 255, 255, 0.3);
             color: #fff;
             padding: 10px 15px;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 14px;
             font-weight: 500;
             transition: all 0.3s ease;
-            box-shadow: 
-                0 4px 15px rgba(0, 0, 0, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
         }
 
         input:focus, select:focus {
@@ -272,10 +230,11 @@
 
         button:hover {
             transform: translateY(-2px);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
-            box-shadow: 
-                0 8px 25px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(35px) saturate(200%);
+            -webkit-backdrop-filter: blur(35px) saturate(200%);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
         }
 
         button:disabled {
@@ -502,13 +461,8 @@
     </style>
 </head>
 <body>
-    <div class="floating-elements">
-        <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
+    <div class="wrap">
+        <canvas id="bubble"></canvas>
     </div>
 
     <a href="../" class="back-button">← Back to Portfolio</a>
@@ -1521,139 +1475,79 @@
         // Initialize the simulation when the page loads
         document.addEventListener('DOMContentLoaded', () => {
             new DwarfSimulation();
-            new BubbleSystem();
         });
 
-        class Bubble {
-            constructor(element, index) {
-                this.element = element;
-                this.radius = [60, 80, 50, 40, 70, 55, 65, 45][index] || 60;
-                this.element.style.width = this.radius + 'px';
-                this.element.style.height = this.radius + 'px';
-                
-                // Random starting position (away from edges)
-                this.x = Math.random() * (window.innerWidth - this.radius * 2) + this.radius;
-                this.y = Math.random() * (window.innerHeight - this.radius * 2) + this.radius;
-                
-                // Random velocity (direction and speed)
-                const angle = Math.random() * Math.PI * 2;
-                const speed = 0.8 + Math.random() * 1.2; // 0.8 to 2.0 pixels per frame
-                this.vx = Math.cos(angle) * speed;
-                this.vy = Math.sin(angle) * speed;
-                
-                this.updatePosition();
+        // Lava lamp bubbles effect (from main page)
+        const canvas = document.getElementById("bubble");
+        const ctx = canvas.getContext("2d");
+
+        const balls = [];
+        const numBalls = 20;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        class Ball {
+            constructor() {
+                this.r = 50 + Math.random() * 40;
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = (Math.random() - 0.5) * 2;
             }
-            
-            updatePosition() {
-                this.element.style.left = (this.x - this.radius) + 'px';
-                this.element.style.top = (this.y - this.radius) + 'px';
-            }
-            
-            update() {
-                // Move the bubble
+
+            move() {
                 this.x += this.vx;
                 this.y += this.vy;
-                
-                // Check screen edge collisions
-                if (this.x - this.radius <= 0 || this.x + this.radius >= window.innerWidth) {
-                    this.vx = -this.vx;
-                    this.x = Math.max(this.radius, Math.min(window.innerWidth - this.radius, this.x));
-                }
-                
-                if (this.y - this.radius <= 0 || this.y + this.radius >= window.innerHeight) {
-                    this.vy = -this.vy;
-                    this.y = Math.max(this.radius, Math.min(window.innerHeight - this.radius, this.y));
-                }
-                
-                this.updatePosition();
-            }
-            
-            checkCollision(other) {
-                const dx = this.x - other.x;
-                const dy = this.y - other.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                const minDistance = this.radius + other.radius;
-                
-                if (distance <= minDistance && distance > 0) {
-                    // Calculate collision normal
-                    const normalX = dx / distance;
-                    const normalY = dy / distance;
-                    
-                    // Calculate relative velocity
-                    const relativeVx = this.vx - other.vx;
-                    const relativeVy = this.vy - other.vy;
-                    
-                    // Calculate relative velocity along normal
-                    const velocityAlongNormal = relativeVx * normalX + relativeVy * normalY;
-                    
-                    // Don't resolve if velocities are separating
-                    if (velocityAlongNormal > 0) return false;
-                    
-                    // Apply collision response
-                    this.vx -= velocityAlongNormal * normalX;
-                    this.vy -= velocityAlongNormal * normalY;
-                    other.vx += velocityAlongNormal * normalX;
-                    other.vy += velocityAlongNormal * normalY;
-                    
-                    return true;
-                }
-                return false;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
             }
         }
-        
-        class BubbleSystem {
-            constructor() {
-                this.bubbles = [];
-                this.init();
-                this.animate();
-                
-                // Handle window resize
-                window.addEventListener('resize', () => {
-                    this.handleResize();
-                });
-            }
-            
-            init() {
-                const bubbleElements = document.querySelectorAll('.floating-circle');
-                bubbleElements.forEach((element, index) => {
-                    this.bubbles.push(new Bubble(element, index));
-                });
-            }
-            
-            handleResize() {
-                // Adjust bubble positions if they're outside the new screen bounds
-                this.bubbles.forEach(bubble => {
-                    if (bubble.x + bubble.radius > window.innerWidth) {
-                        bubble.x = window.innerWidth - bubble.radius;
+
+        for (let i = 0; i < numBalls; i++) {
+            balls.push(new Ball());
+        }
+
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = image.data;
+
+            for (let y = 0; y < canvas.height; y += 2) {
+                for (let x = 0; x < canvas.width; x += 2) {
+                    let sum = 0;
+                    for (const ball of balls) {
+                        const dx = ball.x - x;
+                        const dy = ball.y - y;
+                        sum += (ball.r * ball.r) / (dx * dx + dy * dy);
                     }
-                    if (bubble.y + bubble.radius > window.innerHeight) {
-                        bubble.y = window.innerHeight - bubble.radius;
-                    }
-                    bubble.updatePosition();
-                });
-            }
-            
-            animate() {
-                // Update all bubbles
-                this.bubbles.forEach(bubble => {
-                    bubble.update();
-                });
-                
-                // Check collisions between bubbles
-                for (let i = 0; i < this.bubbles.length; i++) {
-                    for (let j = i + 1; j < this.bubbles.length; j++) {
-                        this.bubbles[i].checkCollision(this.bubbles[j]);
+
+                    const index = (y * canvas.width + x) * 4;
+                    if (sum > 1) {
+                        data[index] = 120;   // R
+                        data[index + 1] = 180; // G
+                        data[index + 2] = 255; // B
+                        data[index + 3] = 70;  // Alpha
                     }
                 }
-                
-                requestAnimationFrame(() => this.animate());
             }
+
+            ctx.putImageData(image, 0, 0);
+
+            for (const ball of balls) {
+                ball.move();
+            }
+
+            requestAnimationFrame(render);
         }
-        
-        // Initialize bubble system when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            new BubbleSystem();
-        });
+
+        render();
     </script>
 </body>
 </html>
