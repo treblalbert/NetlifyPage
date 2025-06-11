@@ -656,25 +656,28 @@
         </div>
 
         <div class="glass-panel" id="gifControls" style="display: none;">
-            <h3>🎬 GIF Animation Controls</h3>
+            <h3>🎬 Animation Controls</h3>
             <div class="control-row">
-                <button id="playGifBtn">▶️ Play ASCII GIF</button>
+                <button id="playGifBtn">▶️ Play</button>
                 <button id="pauseGifBtn">⏸️ Pause</button>
                 <button id="stopGifBtn">⏹️ Stop</button>
                 
+                <button id="prevFrameBtn">⏮️ Prev</button>
+                <button id="nextFrameBtn">⏭️ Next</button>
+                
                 <div class="control-group">
-                    <label>🏃 Speed:</label>
-                    <input type="range" id="gifSpeedSlider" min="50" max="1000" value="200">
-                    <span id="gifSpeedValue">200ms</span>
+                    <label>🏃 Speed (ms):</label>
+                    <input type="range" id="gifSpeedSlider" min="50" max="1000" value="100">
+                    <span id="gifSpeedValue">100</span>
                 </div>
             </div>
             
-            <div class="frame-info" id="gifFrameInfo">Ready for GIF animation</div>
+            <div class="frame-info" id="gifFrameInfo">Frame: 0 / 0</div>
         </div>
 
         <div class="content-area">
             <div class="glass-panel">
-                <h3>🖼️ Original Image</h3>
+                <h3>🖼️ Original Image/GIF</h3>
                 <div class="image-preview" id="imagePreview">
                     📷<br>No image loaded<br>Click 'Load Image/GIF' to start<br>Supports: JPG, PNG, GIF, BMP
                 </div>
@@ -692,7 +695,7 @@
         </div>
 
         <div class="status-bar" id="statusBar">
-            🚀 Ready to convert images to ASCII art!
+            🚀 Ready to convert images and GIFs to ASCII art!
         </div>
     </div>
 
@@ -727,25 +730,31 @@
     </div>
 
     <script>
-        class ASCIIArtGenerator {
+        class ASCIIArtConverter {
             constructor() {
-                this.asciiChars = "@%#*+=-:. ";
+                // ASCII characters from darkest to lightest (matching Python version)
+                this.ascii_chars = "@%#*+=-:. ";
                 
-                this.originalImage = null;
-                this.isGif = false;
-                this.gifImageElement = null;
-                this.asciiFrames = [];
-                this.isAnimating = false;
-                this.animationFrame = 0;
-                this.animationId = null;
-                this.staticAscii = "";
-                this.frameDelay = 200;
+                // Variables
+                this.image_path = null;
+                this.original_image = null;
+                this.ascii_art = "";
+                this.black_as_space = false;
                 
-                this.initElements();
+                // Animation variables
+                this.is_animated = false;
+                this.ascii_frames = [];
+                this.current_frame = 0;
+                this.animation_running = false;
+                this.animation_speed = 100;
+                this.animation_id = null;
+                this.frame_durations = [];
+                
+                this.initializeElements();
                 this.bindEvents();
             }
             
-            initElements() {
+            initializeElements() {
                 this.imageInput = document.getElementById('imageInput');
                 this.widthInput = document.getElementById('widthInput');
                 this.convertBtn = document.getElementById('convertBtn');
@@ -754,6 +763,8 @@
                 this.playGifBtn = document.getElementById('playGifBtn');
                 this.pauseGifBtn = document.getElementById('pauseGifBtn');
                 this.stopGifBtn = document.getElementById('stopGifBtn');
+                this.prevFrameBtn = document.getElementById('prevFrameBtn');
+                this.nextFrameBtn = document.getElementById('nextFrameBtn');
                 this.gifSpeedSlider = document.getElementById('gifSpeedSlider');
                 this.gifSpeedValue = document.getElementById('gifSpeedValue');
                 this.gifFrameInfo = document.getElementById('gifFrameInfo');
@@ -767,15 +778,19 @@
             bindEvents() {
                 this.imageInput.addEventListener('change', (e) => this.loadImage(e));
                 this.convertBtn.addEventListener('click', () => this.convertToAscii());
-                this.playGifBtn.addEventListener('click', () => this.playGifAnimation());
-                this.pauseGifBtn.addEventListener('click', () => this.pauseGifAnimation());
-                this.stopGifBtn.addEventListener('click', () => this.stopGifAnimation());
-                this.gifSpeedSlider.addEventListener('input', (e) => {
-                    this.frameDelay = parseInt(e.target.value);
-                    this.gifSpeedValue.textContent = e.target.value + 'ms';
-                });
+                this.playGifBtn.addEventListener('click', () => this.playAnimation());
+                this.pauseGifBtn.addEventListener('click', () => this.pauseAnimation());
+                this.stopGifBtn.addEventListener('click', () => this.stopAnimation());
+                this.prevFrameBtn.addEventListener('click', () => this.prevFrame());
+                this.nextFrameBtn.addEventListener('click', () => this.nextFrame());
+                this.gifSpeedSlider.addEventListener('input', (e) => this.updateSpeedLabel(e.target.value));
                 this.copyBtn.addEventListener('click', () => this.copyToClipboard());
-                this.saveBtn.addEventListener('click', () => this.saveAsFile());
+                this.saveBtn.addEventListener('click', () => this.saveAscii());
+            }
+            
+            updateSpeedLabel(value) {
+                this.animation_speed = parseInt(value);
+                this.gifSpeedValue.textContent = value;
             }
             
             updateStatus(message) {
@@ -788,49 +803,36 @@
                 
                 this.updateStatus('📁 Loading image...');
                 
-                // Check if it's a GIF
-                this.isGif = file.type === 'image/gif';
-                
-                if (this.isGif) {
-                    await this.loadGif(file);
-                } else {
-                    this.loadStaticImage(file);
-                }
-            }
-            
-            loadStaticImage(file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const img = new Image();
-                    img.onload = () => {
-                        this.originalImage = img;
-                        this.displayImagePreview(img);
-                        this.updateStatus('✅ Image loaded successfully!');
-                        this.gifControls.style.display = 'none';
-                    };
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-            
-            async loadGif(file) {
                 try {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const img = new Image();
-                        img.onload = () => {
-                            this.originalImage = img;
-                            this.gifImageElement = img; // Store the GIF image element
-                            this.displayImagePreview(img);
-                            this.updateStatus('🎬 GIF loaded! Convert to see ASCII animation.');
+                    // Create image element
+                    const img = new Image();
+                    const url = URL.createObjectURL(file);
+                    
+                    img.onload = () => {
+                        this.original_image = img;
+                        this.is_animated = file.type === 'image/gif';
+                        
+                        if (this.is_animated) {
                             this.gifControls.style.display = 'block';
-                        };
-                        img.src = e.target.result;
+                            this.updateStatus('🎬 Animated GIF loaded! Convert to see ASCII animation.');
+                        } else {
+                            this.gifControls.style.display = 'none';
+                            this.updateStatus('✅ Image loaded successfully!');
+                        }
+                        
+                        this.displayImagePreview(img);
+                        URL.revokeObjectURL(url);
                     };
-                    reader.readAsDataURL(file);
+                    
+                    img.onerror = () => {
+                        this.updateStatus('❌ Failed to load image');
+                        URL.revokeObjectURL(url);
+                    };
+                    
+                    img.src = url;
                     
                 } catch (error) {
-                    this.updateStatus('❌ Error loading GIF: ' + error.message);
+                    this.updateStatus(`❌ Failed to load image: ${error.message}`);
                 }
             }
             
@@ -841,293 +843,356 @@
                 this.imagePreview.appendChild(imgElement);
             }
             
-            pixelToAscii(pixelValue) {
-                if (this.blackSpace.checked && pixelValue < 25) {
+            pixelToAscii(pixel_value) {
+                if (this.black_as_space && pixel_value < 25) {
                     return " ";
                 }
                 
-                const chars = this.blackSpace.checked ? this.asciiChars.slice(1) : this.asciiChars;
-                const index = Math.floor(pixelValue * (chars.length - 1) / 255);
-                return chars[Math.max(0, Math.min(index, chars.length - 1))];
+                const chars = this.black_as_space ? this.ascii_chars.slice(1) : this.ascii_chars;
+                let index;
+                
+                if (this.black_as_space) {
+                    index = Math.floor((pixel_value - 25) * (chars.length - 1) / (255 - 25));
+                    index = Math.max(0, Math.min(index, chars.length - 1));
+                } else {
+                    index = Math.floor(pixel_value * (chars.length - 1) / 255);
+                }
+                
+                return chars[index];
+            }
+            
+            convertFrameToAscii(imageOrCanvas) {
+                try {
+                    const width = parseInt(this.widthInput.value);
+                    if (width <= 0) {
+                        throw new Error("Width must be positive");
+                    }
+                    
+                    // Calculate height maintaining aspect ratio
+                    const aspect_ratio = imageOrCanvas.height / imageOrCanvas.width;
+                    const height = Math.floor(width * aspect_ratio * 0.5); // 0.5 to account for character height/width ratio
+                    
+                    // Create canvas for processing
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = width;
+                    canvas.height = height;
+                    
+                    // Draw and resize image
+                    ctx.drawImage(imageOrCanvas, 0, 0, width, height);
+                    
+                    // Get image data
+                    const imageData = ctx.getImageData(0, 0, width, height);
+                    const data = imageData.data;
+                    
+                    // Convert to ASCII
+                    const ascii_lines = [];
+                    for (let y = 0; y < height; y++) {
+                        let line = "";
+                        for (let x = 0; x < width; x++) {
+                            const pixel_index = (y * width + x) * 4;
+                            const r = data[pixel_index];
+                            const g = data[pixel_index + 1];
+                            const b = data[pixel_index + 2];
+                            
+                            // Convert to grayscale using luminance formula
+                            const gray = Math.floor(0.299 * r + 0.587 * g + 0.114 * b);
+                            line += this.pixelToAscii(gray);
+                        }
+                        ascii_lines.push(line);
+                    }
+                    
+                    return ascii_lines.join('\n');
+                    
+                } catch (error) {
+                    throw error;
+                }
             }
             
             convertToAscii() {
-                if (!this.originalImage) {
+                if (!this.original_image) {
                     this.updateStatus('⚠️ Please load an image first!');
                     return;
                 }
                 
-                if (this.isGif) {
-                    this.convertGifToAscii();
-                } else {
-                    this.convertStaticToAscii();
-                }
-            }
-            
-            convertStaticToAscii() {
-                this.updateStatus('🔄 Converting image to ASCII art...');
+                this.black_as_space = this.blackSpace.checked;
                 
                 try {
-                    const ascii = this.imageToAscii(this.originalImage);
-                    this.staticAscii = ascii;
-                    this.asciiOutput.value = ascii;
-                    
-                    const width = parseInt(this.widthInput.value);
-                    const height = Math.floor(width * (this.originalImage.height / this.originalImage.width) * 0.5);
-                    this.updateStatus(`✨ ASCII art created! (${width}x${height} characters)`);
-                    
+                    if (this.is_animated) {
+                        this.updateStatus('🔄 Converting animated GIF to ASCII art...');
+                        this.convertAnimatedToAscii();
+                    } else {
+                        this.updateStatus('🔄 Converting image to ASCII art...');
+                        this.convertStaticToAscii();
+                    }
                 } catch (error) {
                     this.updateStatus(`❌ Conversion failed: ${error.message}`);
                 }
             }
             
-            async convertGifToAscii() {
-                this.updateStatus('🔄 Converting GIF to ASCII animation...');
-                
+            convertStaticToAscii() {
                 try {
-                    // Extract frames from the GIF using a different approach
-                    await this.extractGifFramesFromCanvas();
+                    this.ascii_art = this.convertFrameToAscii(this.original_image);
                     
-                    if (this.asciiFrames.length > 0) {
-                        this.asciiOutput.value = this.asciiFrames[0];
-                        this.animationFrame = 0;
-                        this.updateGifFrameInfo();
-                        
-                        const width = parseInt(this.widthInput.value);
-                        this.updateStatus(`✨ ASCII GIF created! ${this.asciiFrames.length} frames (${width} chars wide)`);
-                    }
+                    // Display ASCII art
+                    this.asciiOutput.value = this.ascii_art;
+                    
+                    const width = parseInt(this.widthInput.value);
+                    const height = Math.floor(width * (this.original_image.height / this.original_image.width) * 0.5);
+                    this.updateStatus(`✨ ASCII art created! (${width}x${height} characters)`);
                     
                 } catch (error) {
-                    this.updateStatus(`❌ GIF conversion failed: ${error.message}`);
+                    throw error;
                 }
             }
             
-            async extractGifFramesFromCanvas() {
+            async convertAnimatedToAscii() {
+                try {
+                    // For GIFs, we'll extract frames by drawing to canvas at intervals
+                    this.ascii_frames = [];
+                    this.frame_durations = [];
+                    
+                    await this.extractGifFrames();
+                    
+                    if (this.ascii_frames.length > 0) {
+                        // Reset to first frame
+                        this.current_frame = 0;
+                        this.displayCurrentFrame();
+                        this.updateFrameInfo();
+                        
+                        const width = parseInt(this.widthInput.value);
+                        const height = Math.floor(width * (this.original_image.height / this.original_image.width) * 0.5);
+                        this.updateStatus(`✨ Animated ASCII art created! ${this.ascii_frames.length} frames (${width}x${height} characters each)`);
+                    } else {
+                        throw new Error("No frames could be extracted from the GIF");
+                    }
+                    
+                } catch (error) {
+                    throw error;
+                }
+            }
+            
+            async extractGifFrames() {
                 return new Promise((resolve) => {
-                    // Create a temporary canvas to capture GIF frames
+                    // Create temporary canvas
                     const tempCanvas = document.createElement('canvas');
                     const tempCtx = tempCanvas.getContext('2d');
+                    tempCanvas.width = this.original_image.naturalWidth;
+                    tempCanvas.height = this.original_image.naturalHeight;
                     
-                    // Set canvas size
-                    tempCanvas.width = this.originalImage.width;
-                    tempCanvas.height = this.originalImage.height;
-                    
-                    this.asciiFrames = [];
                     let frameCount = 0;
-                    const maxFrames = 50; // Limit frames to prevent memory issues
+                    const maxFrames = 50; // Reasonable limit
+                    const frameInterval = 100; // milliseconds between frame captures
                     
-                    // Use a different approach: draw the GIF at intervals to capture different frames
                     const captureFrame = () => {
                         if (frameCount >= maxFrames) {
-                            if (this.asciiFrames.length === 0) {
-                                // Fallback: create at least one frame
-                                const ascii = this.imageToAscii(this.originalImage);
-                                this.asciiFrames.push(ascii);
-                            }
                             resolve();
                             return;
                         }
                         
-                        // Clear and draw the current frame
+                        // Clear and draw current frame
                         tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
-                        tempCtx.drawImage(this.originalImage, 0, 0);
+                        tempCtx.drawImage(this.original_image, 0, 0);
                         
-                        // Convert this frame to ASCII
                         try {
-                            const ascii = this.imageToAscii(tempCanvas);
+                            // Convert frame to ASCII
+                            const ascii_frame = this.convertFrameToAscii(tempCanvas);
                             
-                            // Only add if it's different from the last frame
-                            if (this.asciiFrames.length === 0 || 
-                                this.asciiFrames[this.asciiFrames.length - 1] !== ascii) {
-                                this.asciiFrames.push(ascii);
+                            // Only add if different from last frame (avoid duplicates)
+                            if (this.ascii_frames.length === 0 || 
+                                this.ascii_frames[this.ascii_frames.length - 1] !== ascii_frame) {
+                                this.ascii_frames.push(ascii_frame);
+                                this.frame_durations.push(frameInterval);
                             }
+                            
                         } catch (e) {
                             console.warn('Frame conversion error:', e);
                         }
                         
                         frameCount++;
                         
-                        // Continue capturing frames
-                        setTimeout(() => {
-                            requestAnimationFrame(captureFrame);
-                        }, 100); // Wait 100ms between frame captures
+                        // Update progress
+                        const progress = Math.floor((frameCount / maxFrames) * 100);
+                        this.updateStatus(`🔄 Processing frames... ${progress}%`);
+                        
+                        // Continue capturing
+                        setTimeout(captureFrame, frameInterval);
                     };
                     
-                    // Start capturing frames
+                    // Start frame extraction
                     captureFrame();
                     
                     // Fallback timeout
                     setTimeout(() => {
-                        if (this.asciiFrames.length === 0) {
-                            // Create a basic animation by modifying the static image
-                            this.createFallbackAnimation();
+                        if (this.ascii_frames.length === 0) {
+                            // Create at least one frame as fallback
+                            try {
+                                const ascii_frame = this.convertFrameToAscii(this.original_image);
+                                this.ascii_frames.push(ascii_frame);
+                                this.frame_durations.push(100);
+                            } catch (e) {
+                                console.error('Fallback frame creation failed:', e);
+                            }
                         }
                         resolve();
-                    }, 5000); // 5 second timeout
+                    }, 5000);
                 });
             }
             
-            createFallbackAnimation() {
-                // Create a simple animation effect by varying the ASCII conversion parameters
-                this.asciiFrames = [];
-                
-                const originalSpaceUsage = this.blackSpace.checked;
-                
-                // Create frames with different effects
-                for (let i = 0; i < 10; i++) {
-                    // Vary the space usage to create animation effect
-                    this.blackSpace.checked = i % 2 === 0;
-                    
-                    try {
-                        const ascii = this.imageToAscii(this.originalImage);
-                        this.asciiFrames.push(ascii);
-                    } catch (e) {
-                        console.warn('Fallback frame creation error:', e);
-                    }
-                }
-                
-                // Restore original setting
-                this.blackSpace.checked = originalSpaceUsage;
-                
-                // If still no frames, create at least one
-                if (this.asciiFrames.length === 0) {
-                    const ascii = this.imageToAscii(this.originalImage);
-                    this.asciiFrames.push(ascii);
+            displayCurrentFrame() {
+                if (this.is_animated && this.ascii_frames && 
+                    this.current_frame >= 0 && this.current_frame < this.ascii_frames.length) {
+                    this.asciiOutput.value = this.ascii_frames[this.current_frame];
                 }
             }
             
-            imageToAscii(imageSource) {
-                const width = parseInt(this.widthInput.value);
-                if (width <= 0) throw new Error('Width must be positive');
-                
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                
-                let sourceWidth, sourceHeight;
-                if (imageSource instanceof HTMLCanvasElement) {
-                    sourceWidth = imageSource.width;
-                    sourceHeight = imageSource.height;
+            updateFrameInfo() {
+                if (this.is_animated && this.ascii_frames) {
+                    this.gifFrameInfo.textContent = `Frame: ${this.current_frame + 1} / ${this.ascii_frames.length}`;
                 } else {
-                    sourceWidth = imageSource.width || imageSource.naturalWidth;
-                    sourceHeight = imageSource.height || imageSource.naturalHeight;
+                    this.gifFrameInfo.textContent = "Frame: 0 / 0";
                 }
-                
-                const aspectRatio = sourceHeight / sourceWidth;
-                const height = Math.floor(width * aspectRatio * 0.5);
-                
-                canvas.width = width;
-                canvas.height = height;
-                
-                ctx.drawImage(imageSource, 0, 0, width, height);
-                const imageData = ctx.getImageData(0, 0, width, height);
-                
-                let ascii = '';
-                for (let y = 0; y < height; y++) {
-                    for (let x = 0; x < width; x++) {
-                        const pixelIndex = (y * width + x) * 4;
-                        const r = imageData.data[pixelIndex];
-                        const g = imageData.data[pixelIndex + 1];
-                        const b = imageData.data[pixelIndex + 2];
-                        
-                        const gray = Math.floor(0.299 * r + 0.587 * g + 0.114 * b);
-                        ascii += this.pixelToAscii(gray);
-                    }
-                    ascii += '\n';
-                }
-                
-                return ascii;
             }
             
-            playGifAnimation() {
-                if (!this.asciiFrames || this.asciiFrames.length === 0) {
-                    this.updateStatus('⚠️ No GIF animation to play! Convert the GIF first.');
+            playAnimation() {
+                if (!this.ascii_frames || this.ascii_frames.length === 0) {
+                    this.updateStatus('⚠️ No GIF animation to play! Please convert a GIF first.');
                     return;
                 }
                 
-                if (this.asciiFrames.length === 1) {
-                    this.updateStatus('⚠️ Only one frame available. Try a different GIF for animation.');
-                    return;
+                if (!this.animation_running) {
+                    this.animation_running = true;
+                    this.animationLoop();
+                    this.updateStatus('▶️ Animation playing...');
+                }
+            }
+            
+            pauseAnimation() {
+                this.animation_running = false;
+                if (this.animation_id) {
+                    clearTimeout(this.animation_id);
+                }
+                this.updateStatus('⏸️ Animation paused');
+            }
+            
+            stopAnimation() {
+                this.animation_running = false;
+                if (this.animation_id) {
+                    clearTimeout(this.animation_id);
+                }
+                this.current_frame = 0;
+                this.displayCurrentFrame();
+                this.updateFrameInfo();
+                this.updateStatus('⏹️ Animation stopped');
+            }
+            
+            prevFrame() {
+                if (this.ascii_frames && this.ascii_frames.length > 0) {
+                    this.current_frame = (this.current_frame - 1 + this.ascii_frames.length) % this.ascii_frames.length;
+                    this.displayCurrentFrame();
+                    this.updateFrameInfo();
+                }
+            }
+            
+            nextFrame() {
+                if (this.ascii_frames && this.ascii_frames.length > 0) {
+                    this.current_frame = (this.current_frame + 1) % this.ascii_frames.length;
+                    this.displayCurrentFrame();
+                    this.updateFrameInfo();
+                }
+            }
+            
+            animationLoop() {
+                if (!this.animation_running) return;
+                
+                if (this.ascii_frames && this.ascii_frames.length > 0) {
+                    this.current_frame = (this.current_frame + 1) % this.ascii_frames.length;
+                    this.displayCurrentFrame();
+                    this.updateFrameInfo();
                 }
                 
-                this.isAnimating = true;
-                this.updateStatus(`▶️ GIF animation playing... (${this.asciiFrames.length} frames)`);
-                this.animateGifLoop();
-            }
-            
-            pauseGifAnimation() {
-                this.isAnimating = false;
-                if (this.animationId) {
-                    clearTimeout(this.animationId);
-                }
-                this.updateStatus('⏸️ GIF animation paused');
-            }
-            
-            stopGifAnimation() {
-                this.isAnimating = false;
-                if (this.animationId) {
-                    clearTimeout(this.animationId);
-                }
-                this.animationFrame = 0;
-                if (this.asciiFrames.length > 0) {
-                    this.asciiOutput.value = this.asciiFrames[0];
-                }
-                this.updateGifFrameInfo();
-                this.updateStatus('⏹️ GIF animation stopped');
-            }
-            
-            animateGifLoop() {
-                if (!this.isAnimating) return;
-                
-                if (this.asciiFrames.length > 0) {
-                    this.asciiOutput.value = this.asciiFrames[this.animationFrame];
-                    this.animationFrame = (this.animationFrame + 1) % this.asciiFrames.length;
-                    this.updateGifFrameInfo();
-                }
-                
-                this.animationId = setTimeout(() => this.animateGifLoop(), this.frameDelay);
-            }
-            
-            updateGifFrameInfo() {
-                if (this.asciiFrames.length > 0) {
-                    this.gifFrameInfo.textContent = `Frame: ${this.animationFrame + 1} / ${this.asciiFrames.length}`;
-                } else {
-                    this.gifFrameInfo.textContent = 'Ready for GIF animation';
-                }
+                this.animation_id = setTimeout(() => this.animationLoop(), this.animation_speed);
             }
             
             async copyToClipboard() {
-                if (!this.asciiOutput.value) {
+                let content = '';
+                
+                if (this.ascii_frames && this.ascii_frames.length > 0 && 
+                    this.current_frame >= 0 && this.current_frame < this.ascii_frames.length) {
+                    // Copy current GIF frame
+                    content = this.ascii_frames[this.current_frame];
+                } else if (this.ascii_art) {
+                    // Copy single ASCII art
+                    content = this.ascii_art;
+                } else {
                     this.updateStatus('⚠️ No ASCII art to copy!');
                     return;
                 }
                 
                 try {
-                    await navigator.clipboard.writeText(this.asciiOutput.value);
-                    this.updateStatus('📋 ASCII art copied to clipboard!');
+                    await navigator.clipboard.writeText(content);
+                    if (this.ascii_frames && this.ascii_frames.length > 0) {
+                        this.updateStatus('📋 Current ASCII frame copied to clipboard!');
+                    } else {
+                        this.updateStatus('📋 ASCII art copied to clipboard!');
+                    }
                 } catch (err) {
+                    // Fallback for older browsers
                     this.asciiOutput.select();
                     document.execCommand('copy');
                     this.updateStatus('📋 ASCII art copied to clipboard!');
                 }
             }
             
-            saveAsFile() {
-                if (!this.asciiOutput.value) {
+            saveAscii() {
+                if (!this.ascii_art && !this.ascii_frames) {
                     this.updateStatus('⚠️ No ASCII art to save!');
                     return;
                 }
                 
-                const blob = new Blob([this.asciiOutput.value], { type: 'text/plain' });
+                if (this.ascii_frames && this.ascii_frames.length > 0) {
+                    // For animated ASCII, save current frame
+                    this.saveCurrentFrame();
+                } else {
+                    // Save single ASCII art
+                    this.saveSingleAscii();
+                }
+            }
+            
+            saveSingleAscii() {
+                if (!this.ascii_art) return;
+                
+                const blob = new Blob([this.ascii_art], { type: 'text/plain' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = this.isGif ? 'ascii-gif-frame.txt' : 'ascii-art.txt';
+                a.download = 'ascii-art.txt';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 
-                this.updateStatus('💾 ASCII art saved as file!');
+                this.updateStatus('💾 ASCII art saved as: ascii-art.txt');
+            }
+            
+            saveCurrentFrame() {
+                if (!this.ascii_frames || this.ascii_frames.length === 0 || 
+                    this.current_frame < 0 || this.current_frame >= this.ascii_frames.length) {
+                    return;
+                }
+                
+                const content = this.ascii_frames[this.current_frame];
+                const blob = new Blob([content], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `ascii-frame-${this.current_frame + 1}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                this.updateStatus(`💾 Current frame saved as: ascii-frame-${this.current_frame + 1}.txt`);
             }
         }
 
@@ -1182,7 +1247,7 @@
         
         // Initialize the application when the page loads
         document.addEventListener('DOMContentLoaded', () => {
-            new ASCIIArtGenerator();
+            new ASCIIArtConverter();
         });
 
         // WebGL Lava Lamp Background
