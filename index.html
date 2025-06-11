@@ -1,684 +1,361 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Albert Adroer Prats - Developer Portfolio</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Albert Adroer Prats - Developer Portfolio</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            line-height: 1.6;
-            color: #fff;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3) 0%, transparent 50%),
-                linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-        }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      color: #fff;
+      background: transparent;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 1;
-        }
+    .wrap {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      background-image: linear-gradient(-206deg, #835EFF 0%, #FF008D 100%);
+      overflow: hidden;
+    }
 
-        .floating-elements {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 2;
-        }
+    canvas#bubble {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
 
-        .floating-circle {
-            position: absolute;
-            border-radius: 50%;
-            background: 
-                radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 30%, rgba(255, 255, 255, 0.05) 60%, rgba(255, 255, 255, 0.02) 100%),
-                radial-gradient(circle at 80% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%);
-            backdrop-filter: blur(20px);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.15),
-                inset 0 2px 4px rgba(255, 255, 255, 0.4),
-                inset 0 -2px 4px rgba(0, 0, 0, 0.1),
-                0 0 20px rgba(255, 255, 255, 0.1);
-        }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      position: relative;
+      z-index: 10;
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-            position: relative;
-            z-index: 10;
-        }
+    header {
+      text-align: center;
+      margin-bottom: 4rem;
+      animation: fadeInUp 0.8s ease-out;
+    }
 
-        header {
-            text-align: center;
-            margin-bottom: 4rem;
-            animation: fadeInUp 0.8s ease-out;
-        }
+    .hero {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0.1) 100%);
+      backdrop-filter: blur(20px);
+      border-radius: 25px;
+      padding: 3rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
 
-        .hero {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.1) 0%, 
-                rgba(255, 255, 255, 0.05) 50%, 
-                rgba(255, 255, 255, 0.1) 100%);
-            backdrop-filter: blur(20px);
-            border-radius: 25px;
-            padding: 3rem;
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3),
-                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            margin-bottom: 3rem;
-            position: relative;
-            overflow: hidden;
-        }
+    h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 0%, #e1e5f2 50%, #fff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+      position: relative;
+      z-index: 2;
+    }
 
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.1), 
-                transparent
-            );
-            animation: shimmer 3s infinite;
-        }
+    .subtitle {
+      font-size: 1.3rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 2rem;
+      font-weight: 300;
+    }
 
-        .hero::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 2px;
-            height: 100%;
-            background: linear-gradient(180deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.4), 
-                transparent
-            );
-        }
+    .bio {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.8);
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      line-height: 1.8;
+      position: relative;
+      z-index: 2;
+    }
 
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
+    .bio strong {
+      color: rgba(255, 255, 255, 0.95);
+      font-weight: 600;
+    }
 
-        h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #fff 0%, #e1e5f2 50%, #fff 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 1rem;
-            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-            position: relative;
-            z-index: 2;
-        }
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 2;
+    }
 
-        .subtitle {
-            font-size: 1.3rem;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 2rem;
-            font-weight: 300;
-        }
+    .contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.8rem 1.5rem;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+      backdrop-filter: blur(15px);
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
 
-        .bio {
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.8);
-            max-width: 600px;
-            margin: 0 auto 2rem;
-            line-height: 1.8;
-            position: relative;
-            z-index: 2;
-        }
+    .contact-link:hover {
+      transform: translateY(-3px);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+    }
 
-        .bio strong {
-            color: rgba(255, 255, 255, 0.95);
-            font-weight: 600;
-        }
+    .projects-section {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0.1) 100%);
+      backdrop-filter: blur(20px);
+      border-radius: 25px;
+      padding: 3rem;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
 
-        .contact-links {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-            position: relative;
-            z-index: 2;
-        }
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 3rem;
+      color: rgba(255, 255, 255, 0.95);
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    }
 
-        .contact-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.8rem 1.5rem;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-            backdrop-filter: blur(15px);
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 
-                0 4px 15px rgba(0, 0, 0, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
-        }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      justify-content: center;
+    }
 
-        .contact-link:hover {
-            transform: translateY(-3px);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
-            box-shadow: 
-                0 8px 25px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
+    .project-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0.1) 100%);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 2rem;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
 
-        .projects-section {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.1) 0%, 
-                rgba(255, 255, 255, 0.05) 50%, 
-                rgba(255, 255, 255, 0.1) 100%);
-            backdrop-filter: blur(20px);
-            border-radius: 25px;
-            padding: 3rem;
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3),
-                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            position: relative;
-            overflow: hidden;
-        }
+    .project-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: rgba(255, 255, 255, 0.95);
+      position: relative;
+      z-index: 2;
+    }
 
-        .projects-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.6), 
-                transparent
-            );
-        }
+    .project-description {
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+      position: relative;
+      z-index: 2;
+    }
 
-        .projects-section::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 2px;
-            height: 100%;
-            background: linear-gradient(180deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.4), 
-                transparent
-            );
-        }
+    .project-tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      position: relative;
+      z-index: 2;
+    }
 
-        .section-title {
-            font-size: 2.5rem;
-            font-weight: 600;
-            text-align: center;
-            margin-bottom: 3rem;
-            color: rgba(255, 255, 255, 0.95);
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-        }
+    .tech-tag {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+      backdrop-filter: blur(10px);
+      color: rgba(255, 255, 255, 0.9);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
 
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            justify-content: center;
-        }
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+      backdrop-filter: blur(15px);
+      color: white;
+      text-decoration: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      position: relative;
+      z-index: 2;
+    }
 
-        .project-card {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.1) 0%, 
-                rgba(255, 255, 255, 0.05) 50%, 
-                rgba(255, 255, 255, 0.1) 100%);
-            backdrop-filter: blur(15px);
-            border-radius: 20px;
-            padding: 2rem;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            position: relative;
-            overflow: hidden;
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
-        }
-
-        .project-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.6) 0%, 
-                rgba(255, 255, 255, 0.3) 50%, 
-                rgba(255, 255, 255, 0.6) 100%
-            );
-        }
-
-        .project-card::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 3px;
-            height: 100%;
-            background: linear-gradient(180deg, 
-                rgba(255, 255, 255, 0.5) 0%, 
-                rgba(255, 255, 255, 0.2) 50%, 
-                rgba(255, 255, 255, 0.5) 100%
-            );
-        }
-
-        .project-card:hover {
-            transform: translateY(-15px) scale(1.02);
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.15) 0%, 
-                rgba(255, 255, 255, 0.08) 50%, 
-                rgba(255, 255, 255, 0.15) 100%);
-            box-shadow: 
-                0 20px 50px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.4);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        .project-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: rgba(255, 255, 255, 0.95);
-            position: relative;
-            z-index: 2;
-        }
-
-        .project-description {
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-            position: relative;
-            z-index: 2;
-        }
-
-        .project-tech {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .tech-tag {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
-            backdrop-filter: blur(10px);
-            color: rgba(255, 255, 255, 0.9);
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .project-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
-            backdrop-filter: blur(15px);
-            color: white;
-            text-decoration: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 
-                0 4px 15px rgba(0, 0, 0, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
-            position: relative;
-            z-index: 2;
-        }
-
-        .project-link:hover {
-            transform: translateY(-2px);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.15) 100%);
-            box-shadow: 
-                0 6px 20px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-
-        .arrow {
-            transition: transform 0.3s ease;
-        }
-
-        .project-link:hover .arrow {
-            transform: translateX(3px);
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .project-card {
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-
-            h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero {
-                padding: 2rem;
-            }
-
-            .projects-section {
-                padding: 2rem;
-            }
-
-            .contact-links {
-                flex-direction: row;
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
-
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 3rem;
-            padding: 2rem;
-            color: rgba(255, 255, 255, 0.7);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 
-                0 4px 15px rgba(0, 0, 0, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
-        }
-    </style>
-    <script>
-        class Bubble {
-            constructor(element, index) {
-                this.element = element;
-                this.radius = [60, 80, 50, 40, 70, 55, 65, 45][index] || 60;
-                this.element.style.width = this.radius + 'px';
-                this.element.style.height = this.radius + 'px';
-                
-                // Random starting position (away from edges)
-                this.x = Math.random() * (window.innerWidth - this.radius * 2) + this.radius;
-                this.y = Math.random() * (window.innerHeight - this.radius * 2) + this.radius;
-                
-                // Random velocity (direction and speed)
-                const angle = Math.random() * Math.PI * 2;
-                const speed = 0.8 + Math.random() * 1.2; // 0.8 to 2.0 pixels per frame
-                this.vx = Math.cos(angle) * speed;
-                this.vy = Math.sin(angle) * speed;
-                
-                this.updatePosition();
-            }
-            
-            updatePosition() {
-                this.element.style.left = (this.x - this.radius) + 'px';
-                this.element.style.top = (this.y - this.radius) + 'px';
-            }
-            
-            update() {
-                // Move the bubble
-                this.x += this.vx;
-                this.y += this.vy;
-                
-                // Check screen edge collisions
-                if (this.x - this.radius <= 0 || this.x + this.radius >= window.innerWidth) {
-                    this.vx = -this.vx;
-                    this.x = Math.max(this.radius, Math.min(window.innerWidth - this.radius, this.x));
-                }
-                
-                if (this.y - this.radius <= 0 || this.y + this.radius >= window.innerHeight) {
-                    this.vy = -this.vy;
-                    this.y = Math.max(this.radius, Math.min(window.innerHeight - this.radius, this.y));
-                }
-                
-                this.updatePosition();
-            }
-            
-            checkCollision(other) {
-                const dx = this.x - other.x;
-                const dy = this.y - other.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                const minDistance = this.radius + other.radius;
-                
-                if (distance <= minDistance && distance > 0) {
-                    // Calculate collision normal
-                    const normalX = dx / distance;
-                    const normalY = dy / distance;
-                    
-                    // Calculate relative velocity
-                    const relativeVx = this.vx - other.vx;
-                    const relativeVy = this.vy - other.vy;
-                    
-                    // Calculate relative velocity along normal
-                    const velocityAlongNormal = relativeVx * normalX + relativeVy * normalY;
-                    
-                    // Don't resolve if velocities are separating
-                    if (velocityAlongNormal > 0) return false;
-                    
-                    // Apply collision response
-                    this.vx -= velocityAlongNormal * normalX;
-                    this.vy -= velocityAlongNormal * normalY;
-                    other.vx += velocityAlongNormal * normalX;
-                    other.vy += velocityAlongNormal * normalY;
-                    
-                    return true;
-                }
-                return false;
-            }
-        }
-        
-        class BubbleSystem {
-            constructor() {
-                this.bubbles = [];
-                this.init();
-                this.animate();
-                
-                // Handle window resize
-                window.addEventListener('resize', () => {
-                    this.handleResize();
-                });
-            }
-            
-            init() {
-                const bubbleElements = document.querySelectorAll('.floating-circle');
-                bubbleElements.forEach((element, index) => {
-                    this.bubbles.push(new Bubble(element, index));
-                });
-            }
-            
-            handleResize() {
-                // Adjust bubble positions if they're outside the new screen bounds
-                this.bubbles.forEach(bubble => {
-                    if (bubble.x + bubble.radius > window.innerWidth) {
-                        bubble.x = window.innerWidth - bubble.radius;
-                    }
-                    if (bubble.y + bubble.radius > window.innerHeight) {
-                        bubble.y = window.innerHeight - bubble.radius;
-                    }
-                    bubble.updatePosition();
-                });
-            }
-            
-            animate() {
-                // Update all bubbles
-                this.bubbles.forEach(bubble => {
-                    bubble.update();
-                });
-                
-                // Check collisions between bubbles
-                for (let i = 0; i < this.bubbles.length; i++) {
-                    for (let j = i + 1; j < this.bubbles.length; j++) {
-                        this.bubbles[i].checkCollision(this.bubbles[j]);
-                    }
-                }
-                
-                requestAnimationFrame(() => this.animate());
-            }
-        }
-        
-        // Initialize bubble system when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            new BubbleSystem();
-        });
-    </script>
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding: 2rem;
+      color: rgba(255, 255, 255, 0.7);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+  </style>
 </head>
 <body>
-    <div class="floating-elements">
-        <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
-    </div>
+  <div class="wrap">
+    <canvas id="bubble"></canvas>
+  </div>
 
-    <div class="container">
-        <header>
-            <div class="hero">
-                <h1>Albert Adroer Prats</h1>
-                <div class="subtitle">Game Developer • Data Analyst • Creative Technologist</div>
-                <div class="bio">
-                    Hi! I'm Albert, a 27-year-old developer from Barcelona with a passion for creating interactive experiences. 
-                    I specialize in <strong>C# game development with Unity</strong> and <strong>Python for data analytics and software development</strong>. 
-                    <br><br>
-                    Currently, I'm working on prototype after prototype to discover my next big game project, while continuously 
-                    sharpening my Python skills through data analytics and crafting useful tools. Thanks to the power of AI, 
-                    I can transform these Python experiments into HTML files that you can try right here on my site.
-                    <br><br>
-                    My current portfolio showcases two major projects: an ASCII Art Generator with animation effects, and a complex 
-                    ASCII Dwarf Civilization Simulation with AI-driven characters, relationships, and emergent gameplay. Both started 
-                    as Python desktop applications and were converted to interactive web experiences.
-                    <br><br>
-                    When I'm not coding, you'll find me expressing creativity through music 
-                    and oil painting. Art and technology have always been intertwined in my life, and I love bringing 
-                    that creative perspective into my development work.
-                </div>
-                <div class="contact-links">
-                    <a href="mailto:albertadroer@gmail.com" class="contact-link">
-                        📧 Email
-                    </a>
-                    <a href="https://github.com/treblalbert" class="contact-link">
-                        🐙 GitHub
-                    </a>
-                    <a href="https://www.linkedin.com/in/albert-adroer-prats-615388160/" class="contact-link">
-                        💼 LinkedIn
-                    </a>
-                    <a href="https://store.steampowered.com/app/3489590/Bald_Ball/" class="contact-link">
-                        🎮 Steam Game
-                    </a>
-                    <a href="https://albertfreeman.itch.io/" class="contact-link">
-                        🎯 Itch.io
-                    </a>
-                </div>
-            </div>
-        </header>
+  <div class="container">
+    <header>
+      <div class="hero">
+        <h1>Albert Adroer Prats</h1>
+        <div class="subtitle">Game Developer • Data Analyst • Creative Technologist</div>
+        <div class="bio">
+          Hi! I'm Albert, a 27-year-old developer from Barcelona...
+        </div>
+        <div class="contact-links">
+          <a href="mailto:albertadroer@gmail.com" class="contact-link">📧 Email</a>
+          <a href="https://github.com/treblalbert" class="contact-link">🐙 GitHub</a>
+          <a href="https://www.linkedin.com/in/albert-adroer-prats-615388160/" class="contact-link">💼 LinkedIn</a>
+          <a href="https://store.steampowered.com/app/3489590/Bald_Ball/" class="contact-link">🎮 Steam Game</a>
+          <a href="https://albertfreeman.itch.io/" class="contact-link">🎯 Itch.io</a>
+        </div>
+      </div>
+    </header>
 
-        <main>
-            <section class="projects-section">
-                <h2 class="section-title">Portfolio Projects</h2>
-                <div class="projects-grid">
-                    <div class="project-card">
-                        <h3 class="project-title">ASCII Art Generator</h3>
-                        <p class="project-description">
-                            A web-based tool that converts images into ASCII art with animated effects. 
-                            Originally developed in Python, converted to HTML for web accessibility and real-time interaction.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-tag">HTML</span>
-                            <span class="tech-tag">Python (Original)</span>
-                        </div>
-                        <a href="./ascii-generator/" class="project-link">
-                            View Project <span class="arrow">→</span>
-                        </a>
-                    </div>
+    <main>
+      <section class="projects-section">
+        <h2 class="section-title">Portfolio Projects</h2>
+        <div class="projects-grid">
+          <div class="project-card">
+            <h3 class="project-title">ASCII Art Generator</h3>
+            <p class="project-description">A web-based tool...</p>
+            <div class="project-tech"><span class="tech-tag">HTML</span><span class="tech-tag">Python (Original)</span></div>
+            <a href="./ascii-generator/" class="project-link">View Project <span class="arrow">→</span></a>
+          </div>
+          <div class="project-card">
+            <h3 class="project-title">ASCII Dwarf Simulation</h3>
+            <p class="project-description">A complex civilization simulation...</p>
+            <div class="project-tech"><span class="tech-tag">HTML</span><span class="tech-tag">Python (Original)</span><span class="tech-tag">AI Systems</span></div>
+            <a href="./dwarf-simulation/" class="project-link">View Project <span class="arrow">→</span></a>
+          </div>
+        </div>
+      </section>
+    </main>
 
-                    <div class="project-card">
-                        <h3 class="project-title">ASCII Dwarf Simulation</h3>
-                        <p class="project-description">
-                            A complex civilization simulation where AI-driven dwarfs live, work, fight, and build societies. 
-                            Features advanced behavioral systems, relationships, and procedural world generation.
-                        </p>
-                        <div class="project-tech">
-                            <span class="tech-tag">HTML</span>
-                            <span class="tech-tag">Python (Original)</span>
-                            <span class="tech-tag">AI Systems</span>
-                        </div>
-                        <a href="./dwarf-simulation/" class="project-link">
-                            View Project <span class="arrow">→</span>
-                        </a>
-                    </div>
-                </div>
-            </section>
-        </main>
+    <footer>
+      <p>&copy; 2025 Albert Adroer Prats. Built with passion and deployed on Netlify.</p>
+    </footer>
+  </div>
 
-        <footer>
-            <p>&copy; 2025 Albert Adroer Prats. Built with passion and deployed on Netlify.</p>
-        </footer>
-    </div>
+  <script>
+    // Bubbles from CodePen (lava lamp effect)
+    const canvas = document.getElementById("bubble");
+    const ctx = canvas.getContext("2d");
+
+    const balls = [];
+    const numBalls = 20;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    class Ball {
+      constructor() {
+        this.r = 50 + Math.random() * 40;
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 2;
+        this.vy = (Math.random() - 0.5) * 2;
+      }
+
+      move() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+      }
+    }
+
+    for (let i = 0; i < numBalls; i++) {
+      balls.push(new Ball());
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const image = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = image.data;
+
+      for (let y = 0; y < canvas.height; y += 2) {
+        for (let x = 0; x < canvas.width; x += 2) {
+          let sum = 0;
+          for (const ball of balls) {
+            const dx = ball.x - x;
+            const dy = ball.y - y;
+            sum += (ball.r * ball.r) / (dx * dx + dy * dy);
+          }
+
+          const index = (y * canvas.width + x) * 4;
+          if (sum > 1) {
+            data[index] = 255;
+            data[index + 1] = 255;
+            data[index + 2] = 255;
+            data[index + 3] = 60;
+          }
+        }
+      }
+
+      ctx.putImageData(image, 0, 0);
+
+      for (const ball of balls) {
+        ball.move();
+      }
+
+      requestAnimationFrame(render);
+    }
+
+    render();
+  </script>
 </body>
 </html>
