@@ -52,40 +52,136 @@
         .floating-circle {
             position: absolute;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: float 20s infinite linear;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.02));
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
         }
 
         .floating-circle:nth-child(1) {
-            width: 60px;
-            height: 60px;
-            top: 20%;
-            left: 10%;
-            animation-delay: 0s;
+            width: 100px;
+            height: 100px;
+            top: 15%;
+            left: 85%;
+            animation: bounce1 14s infinite ease-in-out;
         }
 
         .floating-circle:nth-child(2) {
-            width: 40px;
-            height: 40px;
-            top: 60%;
-            right: 15%;
-            animation-delay: -7s;
+            width: 130px;
+            height: 130px;
+            top: 70%;
+            right: 8%;
+            animation: bounce2 11s infinite ease-in-out;
+            animation-delay: -2s;
         }
 
         .floating-circle:nth-child(3) {
             width: 80px;
             height: 80px;
-            top: 80%;
-            left: 20%;
-            animation-delay: -14s;
+            top: 35%;
+            left: 5%;
+            animation: bounce3 16s infinite ease-in-out;
+            animation-delay: -4s;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            33% { transform: translateY(-20px) rotate(120deg); }
-            66% { transform: translateY(10px) rotate(240deg); }
+        .floating-circle:nth-child(4) {
+            width: 60px;
+            height: 60px;
+            top: 80%;
+            left: 75%;
+            animation: bounce4 9s infinite ease-in-out;
+            animation-delay: -1s;
+        }
+
+        .floating-circle:nth-child(5) {
+            width: 110px;
+            height: 110px;
+            top: 10%;
+            left: 40%;
+            animation: bounce5 13s infinite ease-in-out;
+            animation-delay: -3s;
+        }
+
+        .floating-circle:nth-child(6) {
+            width: 70px;
+            height: 70px;
+            top: 60%;
+            left: 25%;
+            animation: bounce6 10s infinite ease-in-out;
+            animation-delay: -0.5s;
+        }
+
+        .floating-circle:nth-child(7) {
+            width: 90px;
+            height: 90px;
+            top: 25%;
+            right: 30%;
+            animation: bounce7 12s infinite ease-in-out;
+            animation-delay: -5s;
+        }
+
+        .floating-circle:nth-child(8) {
+            width: 50px;
+            height: 50px;
+            top: 50%;
+            right: 15%;
+            animation: bounce8 8s infinite ease-in-out;
+            animation-delay: -2.5s;
+        }
+
+        @keyframes bounce1 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            25% { transform: translate(-50px, -40px) rotate(90deg) scale(1.2); }
+            50% { transform: translate(-100px, 40px) rotate(180deg) scale(0.8); }
+            75% { transform: translate(40px, 80px) rotate(270deg) scale(1.1); }
+        }
+
+        @keyframes bounce2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            33% { transform: translate(60px, -80px) rotate(120deg) scale(1.3); }
+            66% { transform: translate(-40px, -50px) rotate(240deg) scale(0.7); }
+        }
+
+        @keyframes bounce3 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            20% { transform: translate(70px, 50px) rotate(72deg) scale(1.4); }
+            40% { transform: translate(50px, -60px) rotate(144deg) scale(0.6); }
+            60% { transform: translate(-60px, -40px) rotate(216deg) scale(1.2); }
+            80% { transform: translate(-50px, 60px) rotate(288deg) scale(0.9); }
+        }
+
+        @keyframes bounce4 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            50% { transform: translate(-80px, -100px) rotate(180deg) scale(1.5); }
+        }
+
+        @keyframes bounce5 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            25% { transform: translate(40px, 70px) rotate(90deg) scale(0.5); }
+            50% { transform: translate(-50px, 50px) rotate(180deg) scale(1.3); }
+            75% { transform: translate(-70px, -40px) rotate(270deg) scale(0.8); }
+        }
+
+        @keyframes bounce6 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            33% { transform: translate(-45px, 55px) rotate(120deg) scale(1.1); }
+            66% { transform: translate(55px, -45px) rotate(240deg) scale(0.7); }
+        }
+
+        @keyframes bounce7 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            30% { transform: translate(-30px, 60px) rotate(108deg) scale(1.2); }
+            60% { transform: translate(60px, 30px) rotate(216deg) scale(0.9); }
+            90% { transform: translate(20px, -50px) rotate(324deg) scale(1.1); }
+        }
+
+        @keyframes bounce8 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            40% { transform: translate(-70px, 40px) rotate(144deg) scale(1.6); }
+            80% { transform: translate(30px, -60px) rotate(288deg) scale(0.4); }
         }
 
         .container {
@@ -103,13 +199,16 @@
         }
 
         .hero {
-            background: rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.05) 50%, 
+                rgba(255, 255, 255, 0.1) 100%);
             backdrop-filter: blur(20px);
             border-radius: 25px;
             padding: 3rem;
             box-shadow: 
                 0 8px 32px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
                 inset 0 -1px 0 rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.15);
             margin-bottom: 3rem;
@@ -130,6 +229,20 @@
                 transparent
             );
             animation: shimmer 3s infinite;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.4), 
+                transparent
+            );
         }
 
         @keyframes shimmer {
@@ -187,32 +300,39 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.8rem 1.5rem;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(15px);
             color: white;
             text-decoration: none;
             border-radius: 50px;
             font-weight: 500;
             transition: all 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
         .contact-link:hover {
             transform: translateY(-3px);
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
             border-color: rgba(255, 255, 255, 0.3);
         }
 
         .projects-section {
-            background: rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.05) 50%, 
+                rgba(255, 255, 255, 0.1) 100%);
             backdrop-filter: blur(20px);
             border-radius: 25px;
             padding: 3rem;
             box-shadow: 
                 0 8px 32px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
                 inset 0 -1px 0 rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.15);
             position: relative;
@@ -228,7 +348,21 @@
             height: 2px;
             background: linear-gradient(90deg, 
                 transparent, 
-                rgba(255, 255, 255, 0.5), 
+                rgba(255, 255, 255, 0.6), 
+                transparent
+            );
+        }
+
+        .projects-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(180deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.4), 
                 transparent
             );
         }
@@ -250,7 +384,10 @@
         }
 
         .project-card {
-            background: rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.05) 50%, 
+                rgba(255, 255, 255, 0.1) 100%);
             backdrop-filter: blur(15px);
             border-radius: 20px;
             padding: 2rem;
@@ -277,9 +414,26 @@
             );
         }
 
+        .project-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, 
+                rgba(255, 255, 255, 0.5) 0%, 
+                rgba(255, 255, 255, 0.2) 50%, 
+                rgba(255, 255, 255, 0.5) 100%
+            );
+        }
+
         .project-card:hover {
             transform: translateY(-15px) scale(1.02);
-            background: rgba(255, 255, 255, 0.15);
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.15) 0%, 
+                rgba(255, 255, 255, 0.08) 50%, 
+                rgba(255, 255, 255, 0.15) 100%);
             box-shadow: 
                 0 20px 50px rgba(0, 0, 0, 0.2),
                 inset 0 1px 0 rgba(255, 255, 255, 0.4);
@@ -291,12 +445,16 @@
             font-weight: 600;
             margin-bottom: 1rem;
             color: rgba(255, 255, 255, 0.95);
+            position: relative;
+            z-index: 2;
         }
 
         .project-description {
             color: rgba(255, 255, 255, 0.8);
             margin-bottom: 1.5rem;
             line-height: 1.6;
+            position: relative;
+            z-index: 2;
         }
 
         .project-tech {
@@ -304,10 +462,12 @@
             flex-wrap: wrap;
             gap: 0.5rem;
             margin-bottom: 2rem;
+            position: relative;
+            z-index: 2;
         }
 
         .tech-tag {
-            background: rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
             backdrop-filter: blur(10px);
             color: rgba(255, 255, 255, 0.9);
             padding: 0.3rem 0.8rem;
@@ -315,14 +475,15 @@
             font-size: 0.8rem;
             font-weight: 500;
             border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
         .project-link {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+            backdrop-filter: blur(15px);
             color: white;
             text-decoration: none;
             padding: 0.8rem 1.5rem;
@@ -330,13 +491,19 @@
             font-weight: 500;
             transition: all 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 2;
         }
 
         .project-link:hover {
             transform: translateY(-2px);
-            background: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.15) 100%);
+            box-shadow: 
+                0 6px 20px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
             border-color: rgba(255, 255, 255, 0.4);
         }
 
@@ -396,15 +563,23 @@
             margin-top: 3rem;
             padding: 2rem;
             color: rgba(255, 255, 255, 0.7);
-            background: rgba(255, 255, 255, 0.05);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
             backdrop-filter: blur(10px);
             border-radius: 15px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
 <body>
     <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
         <div class="floating-circle"></div>
         <div class="floating-circle"></div>
         <div class="floating-circle"></div>
