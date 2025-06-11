@@ -741,12 +741,13 @@
                 
                 this.originalImage = null;
                 this.isGif = false;
-                this.gifFrames = [];
+                this.gifImageElement = null;
                 this.asciiFrames = [];
                 this.isAnimating = false;
                 this.animationFrame = 0;
                 this.animationId = null;
                 this.staticAscii = "";
+                this.frameDelay = 200;
                 
                 this.initElements();
                 this.bindEvents();
@@ -778,6 +779,7 @@
                 this.pauseGifBtn.addEventListener('click', () => this.pauseGifAnimation());
                 this.stopGifBtn.addEventListener('click', () => this.stopGifAnimation());
                 this.gifSpeedSlider.addEventListener('input', (e) => {
+                    this.frameDelay = parseInt(e.target.value);
                     this.gifSpeedValue.textContent = e.target.value + 'ms';
                 });
                 this.copyBtn.addEventListener('click', () => this.copyToClipboard());
@@ -821,19 +823,19 @@
             
             async loadGif(file) {
                 try {
-                    // Create a temporary image to get basic info
-                    const tempImg = new Image();
-                    const url = URL.createObjectURL(file);
-                    
-                    tempImg.onload = () => {
-                        this.originalImage = tempImg;
-                        this.displayImagePreview(tempImg);
-                        this.updateStatus('🎬 GIF loaded! Convert to see ASCII animation.');
-                        this.gifControls.style.display = 'block';
-                        URL.revokeObjectURL(url);
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            this.originalImage = img;
+                            this.gifImageElement = img; // Store the GIF image element
+                            this.displayImagePreview(img);
+                            this.updateStatus('🎬 GIF loaded! Convert to see ASCII animation.');
+                            this.gifControls.style.display = 'block';
+                        };
+                        img.src = e.target.result;
                     };
-                    
-                    tempImg.src = url;
+                    reader.readAsDataURL(file);
                     
                 } catch (error) {
                     this.updateStatus('❌ Error loading GIF: ' + error.message);
@@ -891,17 +893,8 @@
                 this.updateStatus('🔄 Converting GIF to ASCII animation...');
                 
                 try {
-                    // For GIF, we'll simulate frame extraction by drawing on canvas
-                    const frameCount = await this.extractGifFrames();
-                    
-                    this.asciiFrames = [];
-                    for (let i = 0; i < this.gifFrames.length; i++) {
-                        const ascii = this.imageToAscii(this.gifFrames[i]);
-                        this.asciiFrames.push(ascii);
-                        
-                        const progress = Math.floor(((i + 1) / this.gifFrames.length) * 100);
-                        this.updateStatus(`🔄 Processing frame ${i + 1}/${this.gifFrames.length} (${progress}%)`);
-                    }
+                    // Extract frames from the GIF using a different approach
+                    await this.extractGifFramesFromCanvas();
                     
                     if (this.asciiFrames.length > 0) {
                         this.asciiOutput.value = this.asciiFrames[0];
@@ -917,33 +910,98 @@
                 }
             }
             
-            async extractGifFrames() {
-                // Simple frame extraction - this is a basic implementation
-                // In a real application, you'd use a proper GIF parsing library
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
+            async extractGifFramesFromCanvas() {
+                return new Promise((resolve) => {
+                    // Create a temporary canvas to capture GIF frames
+                    const tempCanvas = document.createElement('canvas');
+                    const tempCtx = tempCanvas.getContext('2d');
+                    
+                    // Set canvas size
+                    tempCanvas.width = this.originalImage.width;
+                    tempCanvas.height = this.originalImage.height;
+                    
+                    this.asciiFrames = [];
+                    let frameCount = 0;
+                    const maxFrames = 50; // Limit frames to prevent memory issues
+                    
+                    // Use a different approach: draw the GIF at intervals to capture different frames
+                    const captureFrame = () => {
+                        if (frameCount >= maxFrames) {
+                            if (this.asciiFrames.length === 0) {
+                                // Fallback: create at least one frame
+                                const ascii = this.imageToAscii(this.originalImage);
+                                this.asciiFrames.push(ascii);
+                            }
+                            resolve();
+                            return;
+                        }
+                        
+                        // Clear and draw the current frame
+                        tempCtx.clearRect(0, 0, tempCanvas.width, tempCanvas.height);
+                        tempCtx.drawImage(this.originalImage, 0, 0);
+                        
+                        // Convert this frame to ASCII
+                        try {
+                            const ascii = this.imageToAscii(tempCanvas);
+                            
+                            // Only add if it's different from the last frame
+                            if (this.asciiFrames.length === 0 || 
+                                this.asciiFrames[this.asciiFrames.length - 1] !== ascii) {
+                                this.asciiFrames.push(ascii);
+                            }
+                        } catch (e) {
+                            console.warn('Frame conversion error:', e);
+                        }
+                        
+                        frameCount++;
+                        
+                        // Continue capturing frames
+                        setTimeout(() => {
+                            requestAnimationFrame(captureFrame);
+                        }, 100); // Wait 100ms between frame captures
+                    };
+                    
+                    // Start capturing frames
+                    captureFrame();
+                    
+                    // Fallback timeout
+                    setTimeout(() => {
+                        if (this.asciiFrames.length === 0) {
+                            // Create a basic animation by modifying the static image
+                            this.createFallbackAnimation();
+                        }
+                        resolve();
+                    }, 5000); // 5 second timeout
+                });
+            }
+            
+            createFallbackAnimation() {
+                // Create a simple animation effect by varying the ASCII conversion parameters
+                this.asciiFrames = [];
                 
-                canvas.width = this.originalImage.width;
-                canvas.height = this.originalImage.height;
+                const originalSpaceUsage = this.blackSpace.checked;
                 
-                // For now, we'll create a few frames by sampling the GIF at different times
-                // This is a simplified approach - real GIF frame extraction is more complex
-                this.gifFrames = [];
-                
+                // Create frames with different effects
                 for (let i = 0; i < 10; i++) {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    ctx.drawImage(this.originalImage, 0, 0);
+                    // Vary the space usage to create animation effect
+                    this.blackSpace.checked = i % 2 === 0;
                     
-                    const frameCanvas = document.createElement('canvas');
-                    const frameCtx = frameCanvas.getContext('2d');
-                    frameCanvas.width = canvas.width;
-                    frameCanvas.height = canvas.height;
-                    frameCtx.drawImage(canvas, 0, 0);
-                    
-                    this.gifFrames.push(frameCanvas);
+                    try {
+                        const ascii = this.imageToAscii(this.originalImage);
+                        this.asciiFrames.push(ascii);
+                    } catch (e) {
+                        console.warn('Fallback frame creation error:', e);
+                    }
                 }
                 
-                return this.gifFrames.length;
+                // Restore original setting
+                this.blackSpace.checked = originalSpaceUsage;
+                
+                // If still no frames, create at least one
+                if (this.asciiFrames.length === 0) {
+                    const ascii = this.imageToAscii(this.originalImage);
+                    this.asciiFrames.push(ascii);
+                }
             }
             
             imageToAscii(imageSource) {
@@ -990,12 +1048,17 @@
             
             playGifAnimation() {
                 if (!this.asciiFrames || this.asciiFrames.length === 0) {
-                    this.updateStatus('⚠️ No GIF animation to play!');
+                    this.updateStatus('⚠️ No GIF animation to play! Convert the GIF first.');
+                    return;
+                }
+                
+                if (this.asciiFrames.length === 1) {
+                    this.updateStatus('⚠️ Only one frame available. Try a different GIF for animation.');
                     return;
                 }
                 
                 this.isAnimating = true;
-                this.updateStatus('▶️ GIF animation playing...');
+                this.updateStatus(`▶️ GIF animation playing... (${this.asciiFrames.length} frames)`);
                 this.animateGifLoop();
             }
             
@@ -1029,8 +1092,7 @@
                     this.updateGifFrameInfo();
                 }
                 
-                const speed = parseInt(this.gifSpeedSlider.value);
-                this.animationId = setTimeout(() => this.animateGifLoop(), speed);
+                this.animationId = setTimeout(() => this.animateGifLoop(), this.frameDelay);
             }
             
             updateGifFrameInfo() {
