@@ -522,7 +522,7 @@
         <div class="left-panel">
             <div class="glass-panel">
                 <div class="header">
-                    <h1>🧔 ASCII Dwarf Simulation</h1>
+                    <h1><span class="emoji">🧔</span> <span class="text">ASCII Dwarf Simulation</span></h1>
                     <p>Watch dwarfs build a thriving civilization in ASCII art</p>
                     <p><em>Complex AI simulation originally developed in Python</em></p>
                 </div>
@@ -1537,7 +1537,7 @@
                 
                 // Random velocity (direction and speed)
                 const angle = Math.random() * Math.PI * 2;
-                const speed = 0.3 + Math.random() * 0.8; // Slightly slower for dwarf page
+                const speed = 0.8 + Math.random() * 1.2; // Same speed as main page
                 this.vx = Math.cos(angle) * speed;
                 this.vy = Math.sin(angle) * speed;
                 
@@ -1555,22 +1555,14 @@
                 this.y += this.vy;
                 
                 // Check screen edge collisions
-                let bounced = false;
-                
                 if (this.x - this.radius <= 0 || this.x + this.radius >= window.innerWidth) {
                     this.vx = -this.vx;
                     this.x = Math.max(this.radius, Math.min(window.innerWidth - this.radius, this.x));
-                    bounced = true;
                 }
                 
                 if (this.y - this.radius <= 0 || this.y + this.radius >= window.innerHeight) {
                     this.vy = -this.vy;
                     this.y = Math.max(this.radius, Math.min(window.innerHeight - this.radius, this.y));
-                    bounced = true;
-                }
-                
-                if (bounced) {
-                    this.deform();
                 }
                 
                 this.updatePosition();
@@ -1582,52 +1574,30 @@
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 const minDistance = this.radius + other.radius;
                 
-                if (distance < minDistance) {
-                    // Calculate collision response
-                    const angle = Math.atan2(dy, dx);
-                    const sin = Math.sin(angle);
-                    const cos = Math.cos(angle);
+                if (distance <= minDistance && distance > 0) {
+                    // Calculate collision normal
+                    const normalX = dx / distance;
+                    const normalY = dy / distance;
                     
-                    // Rotate velocities
-                    const vx1 = this.vx * cos + this.vy * sin;
-                    const vy1 = this.vy * cos - this.vx * sin;
-                    const vx2 = other.vx * cos + other.vy * sin;
-                    const vy2 = other.vy * cos - other.vx * sin;
+                    // Calculate relative velocity
+                    const relativeVx = this.vx - other.vx;
+                    const relativeVy = this.vy - other.vy;
                     
-                    // Collision response (elastic collision)
-                    const finalVx1 = vx2;
-                    const finalVx2 = vx1;
+                    // Calculate relative velocity along normal
+                    const velocityAlongNormal = relativeVx * normalX + relativeVy * normalY;
                     
-                    // Rotate back
-                    this.vx = finalVx1 * cos - vy1 * sin;
-                    this.vy = vy1 * cos + finalVx1 * sin;
-                    other.vx = finalVx2 * cos - vy2 * sin;
-                    other.vy = vy2 * cos + finalVx2 * sin;
+                    // Don't resolve if velocities are separating
+                    if (velocityAlongNormal > 0) return false;
                     
-                    // Separate bubbles
-                    const overlap = minDistance - distance;
-                    const separationX = (dx / distance) * overlap * 0.5;
-                    const separationY = (dy / distance) * overlap * 0.5;
-                    
-                    this.x += separationX;
-                    this.y += separationY;
-                    other.x -= separationX;
-                    other.y -= separationY;
-                    
-                    // Trigger deformation on both bubbles
-                    this.deform();
-                    other.deform();
+                    // Apply collision response
+                    this.vx -= velocityAlongNormal * normalX;
+                    this.vy -= velocityAlongNormal * normalY;
+                    other.vx += velocityAlongNormal * normalX;
+                    other.vy += velocityAlongNormal * normalY;
                     
                     return true;
                 }
                 return false;
-            }
-            
-            deform() {
-                this.element.classList.add('bouncing');
-                setTimeout(() => {
-                    this.element.classList.remove('bouncing');
-                }, 300);
             }
         }
         
