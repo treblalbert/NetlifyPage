@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fresnel Equations Simulator - By Lil Bingus</title>
+    <title>Advanced Fresnel Simulator - By Lil Bingus</title>
     
     <style>
         * {
@@ -16,8 +16,9 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #fff;
             min-height: 100vh;
-            overflow-x: auto;
+            overflow: hidden;
             position: relative;
+            background: #000;
         }
 
         .background-canvas {
@@ -99,41 +100,37 @@
                 0 0 15px rgba(255, 255, 255, 0.2);
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 80px 20px 20px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .header {
+        .title-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             text-align: center;
-            margin-bottom: 30px;
+            z-index: 500;
+            pointer-events: none;
         }
 
-        .header h1 {
-            font-size: 2.5rem;
+        .title-overlay h1 {
+            font-size: 3rem;
             background: linear-gradient(135deg, #fff 0%, #e1e5f2 50%, #fff 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 10px;
             text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
         }
 
-        .header p {
+        .title-overlay p {
             color: rgba(255, 255, 255, 0.8);
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             margin-bottom: 5px;
         }
 
-        .header em {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.95rem;
-        }
-
-        .glass-panel {
+        .controls-panel {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
             background: linear-gradient(135deg, 
                 rgba(255, 255, 255, 0.22) 0%, 
                 rgba(255, 255, 255, 0.08) 25%,
@@ -142,224 +139,57 @@
                 rgba(255, 255, 255, 0.22) 100%);
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-radius: 25px;
-            padding: 25px;
-            margin-bottom: 25px;
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 300px;
             box-shadow: 
                 0 8px 32px rgba(0, 0, 0, 0.2),
                 0 1px 0 rgba(255, 255, 255, 0.8) inset,
                 0 -1px 0 rgba(0, 0, 0, 0.2) inset,
                 0 0 0 1px rgba(255, 255, 255, 0.3);
             border: 1px solid transparent;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.1s ease-out, box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-style: preserve-3d;
+            z-index: 900;
         }
 
-        .glass-panel::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 40%;
-            background: linear-gradient(180deg, 
-                rgba(255, 255, 255, 0.25) 0%,
-                rgba(255, 255, 255, 0.08) 60%,
-                transparent 100%);
-            border-radius: 25px 25px 0 0;
-            pointer-events: none;
-        }
-
-        .glass-panel::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            right: 2px;
-            bottom: 2px;
-            background: linear-gradient(145deg, 
-                transparent 0%,
-                rgba(255, 255, 255, 0.08) 30%,
-                transparent 70%,
-                rgba(255, 255, 255, 0.04) 100%);
-            border-radius: 23px;
-            pointer-events: none;
-        }
-
-        .glass-panel:hover {
-            transform: translateY(-3px) scale(1.01);
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.32) 0%, 
-                rgba(255, 255, 255, 0.12) 25%,
-                rgba(255, 255, 255, 0.06) 50%,
-                rgba(255, 255, 255, 0.12) 75%,
-                rgba(255, 255, 255, 0.32) 100%);
-            box-shadow: 
-                0 16px 50px rgba(0, 0, 0, 0.25),
-                0 1px 0 rgba(255, 255, 255, 0.9) inset,
-                0 -1px 0 rgba(0, 0, 0, 0.25) inset,
-                0 0 0 1px rgba(255, 255, 255, 0.4),
-                0 0 15px rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(25px) saturate(200%);
-            -webkit-backdrop-filter: blur(25px) saturate(200%);
-        }
-
-        .glass-panel h3 {
+        .controls-panel h3 {
             color: rgba(255, 255, 255, 0.95);
-            margin-bottom: 20px;
-            font-size: 1.3rem;
-            font-weight: 600;
-            position: relative;
-            z-index: 2;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
         }
-        
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 400px 300px;
-            gap: 30px;
-            align-items: start;
-        }
-        
-        .canvas-container {
-            position: relative;
-            z-index: 2;
-        }
-        
-        canvas {
-            border: 2px solid #555;
-            border-radius: 15px;
-            display: block;
-            background: linear-gradient(180deg, #f5f5f5 0%, #e8e8e8 100%);
-            width: 100%;
-            height: 400px;
-        }
-        
-        .controls {
-            position: relative;
-            z-index: 2;
-        }
-        
-        .glass-sphere-container {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .glass-sphere {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            position: relative;
-            margin: 20px 0;
-            background: radial-gradient(circle at 30% 30%, 
-                rgba(255, 255, 255, 0.8) 0%,
-                rgba(255, 255, 255, 0.4) 30%,
-                rgba(200, 200, 200, 0.6) 70%,
-                rgba(100, 100, 100, 0.8) 100%);
-            box-shadow: 
-                0 20px 40px rgba(0, 0, 0, 0.5),
-                inset 0 10px 20px rgba(255, 255, 255, 0.2),
-                inset 0 -10px 20px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .glass-sphere::before {
-            content: '';
-            position: absolute;
-            top: 15%;
-            left: 20%;
-            width: 30%;
-            height: 30%;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
-            filter: blur(2px);
-        }
-        
-        .glass-sphere::after {
-            content: '';
-            position: absolute;
-            bottom: 10%;
-            right: 15%;
-            width: 20%;
-            height: 20%;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
-            filter: blur(1px);
-        }
-        
-        .sphere-glow {
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            transition: all 0.3s ease;
-        }
-        
+
         .control-group {
-            margin-bottom: 25px;
-        }
-        
-        .control-group h3 {
-            margin: 0 0 15px 0;
-            color: rgba(255, 255, 255, 0.95);
-            font-size: 1.2rem;
-        }
-        
-        .sphere-info {
-            text-align: center;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.9em;
-            margin-top: 15px;
-        }
-        
-        .slider-container {
             margin-bottom: 15px;
         }
-        
-        .slider-container label {
+
+        .control-group label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
             color: rgba(255, 255, 255, 0.9);
         }
-        
-        .slider-value {
-            float: right;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-            backdrop-filter: blur(15px);
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.9em;
-            color: rgba(255, 255, 255, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 
-                0 4px 15px rgba(0, 0, 0, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        
+
         input[type="range"] {
-            width: 100%;
-            height: 6px;
-            border-radius: 3px;
+            flex: 1;
+            height: 4px;
+            border-radius: 2px;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
             outline: none;
             -webkit-appearance: none;
             border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        
+
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
             cursor: pointer;
@@ -368,129 +198,103 @@
                 inset 0 1px 0 rgba(255, 255, 255, 0.5);
             border: 1px solid rgba(255, 255, 255, 0.4);
         }
-        
-        .polarization-buttons {
-            display: flex;
-            gap: 10px;
+
+        .slider-value {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(15px);
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            min-width: 50px;
+            text-align: center;
         }
-        
-        .polarization-buttons button {
-            flex: 1;
-            padding: 12px;
+
+        .material-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .material-btn {
+            padding: 8px 12px;
             border: none;
-            border-radius: 15px;
+            border-radius: 10px;
             background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.25) 0%, 
-                rgba(255, 255, 255, 0.1) 50%,
-                rgba(255, 255, 255, 0.2) 100%);
-            backdrop-filter: blur(15px) saturate(150%);
-            -webkit-backdrop-filter: blur(15px) saturate(150%);
+                rgba(255, 255, 255, 0.15) 0%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(15px);
             color: white;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 14px;
-            position: relative;
-            overflow: hidden;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .material-btn.active {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.3) 0%, 
+                rgba(255, 255, 255, 0.15) 100%);
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .info-panel {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.22) 0%, 
+                rgba(255, 255, 255, 0.08) 25%,
+                rgba(255, 255, 255, 0.04) 50%,
+                rgba(255, 255, 255, 0.08) 75%,
+                rgba(255, 255, 255, 0.22) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 250px;
             box-shadow: 
-                0 6px 20px rgba(0, 0, 0, 0.15),
-                0 1px 0 rgba(255, 255, 255, 0.6) inset,
-                0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+                0 8px 32px rgba(0, 0, 0, 0.2),
+                0 1px 0 rgba(255, 255, 255, 0.8) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.2) inset,
                 0 0 0 1px rgba(255, 255, 255, 0.3);
             border: 1px solid transparent;
+            z-index: 900;
         }
 
-        .polarization-buttons button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 50%;
-            background: linear-gradient(180deg, 
-                rgba(255, 255, 255, 0.25) 0%,
-                transparent 100%);
-            border-radius: 15px 15px 0 0;
-            pointer-events: none;
-        }
-
-        .polarization-buttons button:hover {
-            transform: translateY(-3px) scale(1.02);
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.35) 0%, 
-                rgba(255, 255, 255, 0.15) 50%,
-                rgba(255, 255, 255, 0.25) 100%);
-            backdrop-filter: blur(20px) saturate(200%);
-            -webkit-backdrop-filter: blur(20px) saturate(200%);
-            box-shadow: 
-                0 12px 30px rgba(0, 0, 0, 0.25),
-                0 1px 0 rgba(255, 255, 255, 0.8) inset,
-                0 -1px 0 rgba(0, 0, 0, 0.15) inset,
-                0 0 0 1px rgba(255, 255, 255, 0.5),
-                0 0 15px rgba(255, 255, 255, 0.2);
-        }
-        
-        .polarization-buttons button.active {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.35) 0%, 
-                rgba(255, 255, 255, 0.15) 50%,
-                rgba(255, 255, 255, 0.25) 100%);
-            transform: scale(1.05);
-            box-shadow: 
-                0 8px 25px rgba(0, 0, 0, 0.3),
-                0 1px 0 rgba(255, 255, 255, 0.8) inset,
-                0 -1px 0 rgba(0, 0, 0, 0.15) inset,
-                0 0 0 1px rgba(255, 255, 255, 0.5),
-                0 0 10px rgba(255, 255, 255, 0.2);
-        }
-        
-        .results {
-            background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 100%);
-            backdrop-filter: blur(15px);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 
-                inset 0 4px 15px rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        }
-        
-        .results h3 {
-            margin-top: 0;
+        .info-panel h3 {
             color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
         }
-        
-        .result-row {
+
+        .info-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 12px;
-            padding: 8px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-            backdrop-filter: blur(15px);
-            border-radius: 8px;
-            color: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 
-                0 4px 15px rgba(0, 0, 0, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
         }
-        
-        .special-angles {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-            backdrop-filter: blur(20px);
-            border-radius: 15px;
-            padding: 15px;
-            margin-top: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+
+        .info-row span:first-child {
+            color: rgba(255, 255, 255, 0.8);
         }
-        
-        .special-angles h4 {
-            margin-top: 0;
-            color: rgba(255, 255, 255, 0.95);
+
+        .info-row span:last-child {
+            color: rgba(255, 255, 255, 1);
+            font-weight: 600;
+        }
+
+        #threejs-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
         }
 
         /* Source Code Modal */
@@ -574,167 +378,121 @@
             white-space: pre;
         }
 
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top: 3px solid rgba(255, 255, 255, 0.9);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-left: 10px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        @media (max-width: 1200px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-        }
-        
         @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .glass-sphere {
-                width: 150px;
-                height: 150px;
+            .controls-panel, .info-panel {
+                position: relative;
+                margin: 10px;
+                max-width: calc(100vw - 20px);
             }
 
-            .container {
-                padding: 60px 15px 15px;
-            }
-            
-            .header h1 {
+            .title-overlay h1 {
                 font-size: 2rem;
             }
 
-            .source-buttons {
-                position: relative;
-                top: 0;
-                right: 0;
-                justify-content: center;
-                margin-bottom: 20px;
-            }
-
-            .back-button {
-                position: relative;
-                top: 0;
-                left: 0;
-                display: inline-block;
-                margin-bottom: 20px;
+            .title-overlay p {
+                font-size: 1rem;
             }
         }
     </style>
 </head>
 <body>
     <canvas class="background-canvas"></canvas>
+    <canvas id="threejs-canvas"></canvas>
 
     <a href="#" class="back-button">← Back to Portfolio</a>
 
     <div class="source-buttons">
-        <button class="source-btn" onclick="showHTMLCode()">🌐 HTML Code</button>
+        <button class="source-btn" onclick="showHTMLCode()">🌐 Source Code</button>
     </div>
 
-    <div class="container">
-        <div class="header">
-            <h1>🌈 Fresnel Equations Simulator</h1>
-            <p>Transform light physics into visual understanding with interactive optics</p>
-            <p><em>Made with love by Lil Bingus ✨</em></p>
+    <div class="title-overlay">
+        <h1>🌈 Advanced Fresnel Simulator</h1>
+        <p>Real-time 3D visualization of Fresnel effects with environmental reflections</p>
+        <p><em>Made with pure WebGL wizardry by Lil Bingus ✨</em></p>
+    </div>
+
+    <div class="controls-panel">
+        <h3>🔧 Material Properties</h3>
+        
+        <div class="material-buttons">
+            <button class="material-btn active" data-material="glass">Glass</button>
+            <button class="material-btn" data-material="water">Water</button>
+            <button class="material-btn" data-material="diamond">Diamond</button>
+            <button class="material-btn" data-material="air">Air→Glass</button>
         </div>
 
-        <div class="main-content">
-            <div class="glass-panel canvas-container">
-                <h3>🔬 Optical Interface Simulation</h3>
-                <canvas id="fresnelCanvas" width="500" height="400"></canvas>
+        <div class="control-group">
+            <label>Refractive Index (η)</label>
+            <div class="slider-container">
+                <input type="range" id="refractionSlider" min="100" max="250" value="150">
+                <span class="slider-value" id="refractionValue">1.50</span>
             </div>
-            
-            <div class="glass-panel controls">
-                <div class="control-group">
-                    <h3>🔧 Light Properties</h3>
-                    <div class="slider-container">
-                        <label>
-                            Incident Angle: <span class="slider-value" id="angleValue">30°</span>
-                        </label>
-                        <input type="range" id="angleSlider" min="0" max="89" value="30">
-                    </div>
-                    
-                    <div class="polarization-buttons">
-                        <button id="sPol" class="active">S-Polarized</button>
-                        <button id="pPol">P-Polarized</button>
-                    </div>
-                </div>
-                
-                <div class="control-group">
-                    <h3>🔬 Media Properties</h3>
-                    <div class="slider-container">
-                        <label>
-                            Medium 1 (n₁): <span class="slider-value" id="n1Value">1.00</span>
-                        </label>
-                        <input type="range" id="n1Slider" min="100" max="250" value="100">
-                    </div>
-                    
-                    <div class="slider-container">
-                        <label>
-                            Medium 2 (n₂): <span class="slider-value" id="n2Value">1.50</span>
-                        </label>
-                        <input type="range" id="n2Slider" min="100" max="250" value="150">
-                    </div>
-                </div>
-                
-                <div class="results">
-                    <h3>📊 Results</h3>
-                    <div class="result-row">
-                        <span>Reflection Coefficient (r):</span>
-                        <span id="reflectionCoeff">-0.200</span>
-                    </div>
-                    <div class="result-row">
-                        <span>Transmission Coefficient (t):</span>
-                        <span id="transmissionCoeff">0.800</span>
-                    </div>
-                    <div class="result-row">
-                        <span>Reflectance (R):</span>
-                        <span id="reflectance">4.0%</span>
-                    </div>
-                    <div class="result-row">
-                        <span>Transmittance (T):</span>
-                        <span id="transmittance">96.0%</span>
-                    </div>
-                    <div class="result-row">
-                        <span>Refracted Angle:</span>
-                        <span id="refractedAngle">19.5°</span>
-                    </div>
-                </div>
-                
-                <div class="special-angles">
-                    <h4>⭐ Special Angles</h4>
-                    <div class="result-row">
-                        <span>Brewster's Angle:</span>
-                        <span id="brewsterAngle">56.3°</span>
-                    </div>
-                    <div class="result-row">
-                        <span>Critical Angle:</span>
-                        <span id="criticalAngle">41.8°</span>
-                    </div>
-                </div>
+        </div>
+
+        <div class="control-group">
+            <label>Fresnel Bias</label>
+            <div class="slider-container">
+                <input type="range" id="biasSlider" min="0" max="100" value="10">
+                <span class="slider-value" id="biasValue">0.10</span>
             </div>
-            
-            <div class="glass-panel glass-sphere-container">
-                <h3>🔮 Glass Sphere Demo</h3>
-                <div class="glass-sphere" id="glassSphere">
-                    <div class="sphere-glow" id="sphereGlow"></div>
-                </div>
-                <div class="sphere-info">
-                    <div>Reflection: <span id="sphereReflection">4.0%</span></div>
-                    <div>Transmission: <span id="sphereTransmission">96.0%</span></div>
-                    <div id="sphereStatus">Normal Refraction</div>
-                </div>
+        </div>
+
+        <div class="control-group">
+            <label>Fresnel Scale</label>
+            <div class="slider-container">
+                <input type="range" id="scaleSlider" min="0" max="500" value="100">
+                <span class="slider-value" id="scaleValue">1.00</span>
             </div>
+        </div>
+
+        <div class="control-group">
+            <label>Fresnel Power</label>
+            <div class="slider-container">
+                <input type="range" id="powerSlider" min="50" max="500" value="200">
+                <span class="slider-value" id="powerValue">2.00</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label>Environment Intensity</label>
+            <div class="slider-container">
+                <input type="range" id="envSlider" min="0" max="200" value="100">
+                <span class="slider-value" id="envValue">100%</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-panel">
+        <h3>📊 Physics Info</h3>
+        
+        <div class="info-row">
+            <span>Material:</span>
+            <span id="currentMaterial">Glass</span>
+        </div>
+        
+        <div class="info-row">
+            <span>Index of Refraction:</span>
+            <span id="currentIndex">1.50</span>
+        </div>
+        
+        <div class="info-row">
+            <span>Critical Angle:</span>
+            <span id="criticalAngle">41.8°</span>
+        </div>
+        
+        <div class="info-row">
+            <span>Brewster Angle:</span>
+            <span id="brewsterAngle">56.3°</span>
+        </div>
+        
+        <div class="info-row">
+            <span>Camera Distance:</span>
+            <span id="cameraDistance">5.0</span>
+        </div>
+        
+        <div class="info-row">
+            <span>FPS:</span>
+            <span id="fpsCounter">60</span>
         </div>
     </div>
 
@@ -742,350 +500,455 @@
     <div id="htmlModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">🌐 HTML/JavaScript Source Code</h2>
+                <h2 class="modal-title">🌐 Source Code</h2>
                 <span class="close" onclick="closeModal('htmlModal')">&times;</span>
             </div>
             <div class="code-container">
                 <div class="code-block">
-                    <pre id="htmlCodeContent">Loading HTML code...</pre>
+                    <pre id="htmlCodeContent">Loading source code...</pre>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        class FresnelSimulator {
+    <script type="module">
+        // Import Three.js from CDN
+        import * as THREE from 'https://cdn.skypack.dev/three@0.132.2';
+
+        class AdvancedFresnelSimulator {
             constructor() {
-                this.canvas = document.getElementById('fresnelCanvas');
-                this.ctx = this.canvas.getContext('2d');
-                this.glassSphere = document.getElementById('glassSphere');
-                this.sphereGlow = document.getElementById('sphereGlow');
-                this.angle = 30;
-                this.n1 = 1.0;
-                this.n2 = 1.5;
-                this.polarization = 's';
-                
-                this.setupEventListeners();
-                this.calculate();
-                this.draw();
-                this.updateGlassSphere();
-            }
-            
-            setupEventListeners() {
-                // Angle slider
-                const angleSlider = document.getElementById('angleSlider');
-                const angleValue = document.getElementById('angleValue');
-                angleSlider.addEventListener('input', (e) => {
-                    this.angle = parseFloat(e.target.value);
-                    angleValue.textContent = this.angle.toFixed(0) + '°';
-                    this.calculate();
-                    this.draw();
-                    this.updateGlassSphere();
+                this.scene = new THREE.Scene();
+                this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                this.renderer = new THREE.WebGLRenderer({ 
+                    canvas: document.getElementById('threejs-canvas'),
+                    antialias: true,
+                    alpha: true 
                 });
                 
-                // Refractive index sliders
-                const n1Slider = document.getElementById('n1Slider');
-                const n1Value = document.getElementById('n1Value');
-                n1Slider.addEventListener('input', (e) => {
-                    this.n1 = parseFloat(e.target.value) / 100;
-                    n1Value.textContent = this.n1.toFixed(2);
-                    this.calculate();
-                    this.draw();
-                    this.updateGlassSphere();
+                this.clock = new THREE.Clock();
+                this.materials = {
+                    glass: { index: 1.5, bias: 0.1, scale: 1.0, power: 2.0 },
+                    water: { index: 1.33, bias: 0.05, scale: 0.8, power: 1.5 },
+                    diamond: { index: 2.42, bias: 0.2, scale: 1.2, power: 3.0 },
+                    air: { index: 1.0, bias: 0.0, scale: 0.5, power: 1.0 }
+                };
+                this.currentMaterial = 'glass';
+                this.spheres = [];
+                this.cubeCamera = null;
+                this.cubeRenderTarget = null;
+                this.frameCount = 0;
+                this.lastTime = 0;
+                
+                this.init();
+                this.setupControls();
+                this.animate();
+            }
+
+            init() {
+                // Setup renderer
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
+                this.renderer.setClearColor(0x000000, 0);
+                this.renderer.shadowMap.enabled = true;
+                this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+                // Setup camera
+                this.camera.position.set(0, 0, 5);
+
+                // Create cube render target for environment mapping
+                this.cubeRenderTarget = new THREE.WebGLCubeRenderTarget(256, {
+                    format: THREE.RGBAFormat,
+                    generateMipmaps: true,
+                    minFilter: THREE.LinearMipmapLinearFilter,
+                    encoding: THREE.sRGBEncoding
                 });
+
+                this.cubeCamera = new THREE.CubeCamera(0.1, 100, this.cubeRenderTarget);
+
+                // Create environment
+                this.createEnvironment();
                 
-                const n2Slider = document.getElementById('n2Slider');
-                const n2Value = document.getElementById('n2Value');
-                n2Slider.addEventListener('input', (e) => {
-                    this.n2 = parseFloat(e.target.value) / 100;
-                    n2Value.textContent = this.n2.toFixed(2);
-                    this.calculate();
-                    this.draw();
-                    this.updateGlassSphere();
+                // Create Fresnel spheres
+                this.createFresnelSpheres();
+
+                // Add lights
+                this.addLights();
+
+                // Add mouse controls
+                this.addMouseControls();
+
+                // Handle window resize
+                window.addEventListener('resize', () => this.onWindowResize());
+            }
+
+            createEnvironment() {
+                // Create animated background spheres
+                const bgGeometry = new THREE.SphereGeometry(1.5, 32, 32);
+                
+                // Background sphere materials with animated shaders
+                const bgMaterial1 = new THREE.ShaderMaterial({
+                    uniforms: {
+                        uTime: { value: 0 },
+                        uColor1: { value: new THREE.Color(0x0066ff) },
+                        uColor2: { value: new THREE.Color(0x00ffff) },
+                        uColor3: { value: new THREE.Color(0xffffff) }
+                    },
+                    vertexShader: `
+                        varying vec2 vUv;
+                        varying vec3 vPosition;
+                        void main() {
+                            vUv = uv;
+                            vPosition = position;
+                            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                        }
+                    `,
+                    fragmentShader: `
+                        uniform float uTime;
+                        uniform vec3 uColor1;
+                        uniform vec3 uColor2;
+                        uniform vec3 uColor3;
+                        varying vec2 vUv;
+                        varying vec3 vPosition;
+                        
+                        float noise(vec3 p) {
+                            vec3 a = floor(p);
+                            vec3 d = p - a;
+                            d = d * d * (3.0 - 2.0 * d);
+                            vec4 b = a.xxyy + vec4(0.0, 1.0, 0.0, 1.0);
+                            vec4 k1 = fract(sin(b.xyxy * 1.0) * 43758.5453);
+                            vec4 k2 = fract(sin((b.xyxy + b.zzww) * 1.0) * 43758.5453);
+                            vec4 c = k2 + a.zzzz;
+                            vec4 k3 = fract(sin(c * 1.0) * 43758.5453);
+                            vec4 k4 = fract(sin((c + 1.0) * 1.0) * 43758.5453);
+                            vec4 o1 = fract(k3 * (1.0 / 41.0));
+                            vec4 o2 = fract(k4 * (1.0 / 41.0));
+                            vec4 o3 = o2 * d.z + o1 * (1.0 - d.z);
+                            vec2 o4 = o3.yw * d.x + o3.xz * (1.0 - d.x);
+                            return o4.y * d.y + o4.x * (1.0 - d.y);
+                        }
+                        
+                        void main() {
+                            float n = noise(vPosition * 2.0 + uTime * 0.5);
+                            float pattern = sin(vUv.x * 10.0 + uTime) * cos(vUv.y * 8.0 + uTime * 0.7);
+                            
+                            vec3 color = mix(uColor1, uColor2, n);
+                            color = mix(color, uColor3, pattern * 0.3);
+                            
+                            gl_FragColor = vec4(color, 1.0);
+                        }
+                    `,
+                    side: THREE.DoubleSide
                 });
-                
-                // Polarization buttons
-                document.getElementById('sPol').addEventListener('click', () => {
-                    this.polarization = 's';
-                    document.getElementById('sPol').classList.add('active');
-                    document.getElementById('pPol').classList.remove('active');
-                    this.calculate();
-                    this.draw();
-                    this.updateGlassSphere();
+
+                // Create multiple background spheres
+                const bgSphere1 = new THREE.Mesh(bgGeometry, bgMaterial1);
+                bgSphere1.position.set(-3, 2, -5);
+                bgSphere1.scale.set(0.8, 0.8, 0.8);
+                this.scene.add(bgSphere1);
+
+                const bgMaterial2 = bgMaterial1.clone();
+                bgMaterial2.uniforms.uColor1.value = new THREE.Color(0xff0066);
+                bgMaterial2.uniforms.uColor2.value = new THREE.Color(0xff6600);
+                const bgSphere2 = new THREE.Mesh(bgGeometry, bgMaterial2);
+                bgSphere2.position.set(3, -1, -4);
+                bgSphere2.scale.set(0.6, 0.6, 0.6);
+                this.scene.add(bgSphere2);
+
+                const bgMaterial3 = bgMaterial1.clone();
+                bgMaterial3.uniforms.uColor1.value = new THREE.Color(0x00ff66);
+                bgMaterial3.uniforms.uColor2.value = new THREE.Color(0x66ff00);
+                const bgSphere3 = new THREE.Mesh(bgGeometry, bgMaterial3);
+                bgSphere3.position.set(0, -3, -6);
+                bgSphere3.scale.set(1.2, 1.2, 1.2);
+                this.scene.add(bgSphere3);
+
+                this.backgroundSpheres = [bgSphere1, bgSphere2, bgSphere3];
+                this.backgroundMaterials = [bgMaterial1, bgMaterial2, bgMaterial3];
+            }
+
+            createFresnelSpheres() {
+                // Create Fresnel shader material
+                const fresnelMaterial = new THREE.ShaderMaterial({
+                    uniforms: {
+                        mRefractionRatio: { value: 1.0 / this.materials[this.currentMaterial].index },
+                        mFresnelBias: { value: this.materials[this.currentMaterial].bias },
+                        mFresnelScale: { value: this.materials[this.currentMaterial].scale },
+                        mFresnelPower: { value: this.materials[this.currentMaterial].power },
+                        tCube: { value: null },
+                        uEnvironmentIntensity: { value: 1.0 }
+                    },
+                    vertexShader: `
+                        uniform float mRefractionRatio;
+                        uniform float mFresnelBias;
+                        uniform float mFresnelScale;
+                        uniform float mFresnelPower;
+                        
+                        varying vec3 vReflect;
+                        varying vec3 vRefract[3];
+                        varying float vReflectionFactor;
+                        
+                        void main() {
+                            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                            vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+                            
+                            vec3 worldNormal = normalize(mat3(modelMatrix[0].xyz, modelMatrix[1].xyz, modelMatrix[2].xyz) * normal);
+                            vec3 I = worldPosition.xyz - cameraPosition;
+                            
+                            vReflect = reflect(I, worldNormal);
+                            vRefract[0] = refract(normalize(I), worldNormal, mRefractionRatio);
+                            vRefract[1] = refract(normalize(I), worldNormal, mRefractionRatio * 0.99);
+                            vRefract[2] = refract(normalize(I), worldNormal, mRefractionRatio * 0.98);
+                            
+                            vReflectionFactor = mFresnelBias + mFresnelScale * pow(1.0 + dot(normalize(I), worldNormal), mFresnelPower);
+                            
+                            gl_Position = projectionMatrix * mvPosition;
+                        }
+                    `,
+                    fragmentShader: `
+                        uniform samplerCube tCube;
+                        uniform float uEnvironmentIntensity;
+                        
+                        varying vec3 vReflect;
+                        varying vec3 vRefract[3];
+                        varying float vReflectionFactor;
+                        
+                        void main() {
+                            vec4 reflectedColor = textureCube(tCube, vec3(-vReflect.x, vReflect.yz)) * uEnvironmentIntensity;
+                            vec4 refractedColor = vec4(1.0);
+                            
+                            refractedColor.r = textureCube(tCube, vec3(-vRefract[0].x, vRefract[0].yz)).r;
+                            refractedColor.g = textureCube(tCube, vec3(-vRefract[1].x, vRefract[1].yz)).g;
+                            refractedColor.b = textureCube(tCube, vec3(-vRefract[2].x, vRefract[2].yz)).b;
+                            
+                            gl_FragColor = mix(refractedColor, reflectedColor, clamp(vReflectionFactor, 0.0, 1.0));
+                        }
+                    `
                 });
-                
-                document.getElementById('pPol').addEventListener('click', () => {
-                    this.polarization = 'p';
-                    document.getElementById('pPol').classList.add('active');
-                    document.getElementById('sPol').classList.remove('active');
-                    this.calculate();
-                    this.draw();
-                    this.updateGlassSphere();
+
+                // Create main Fresnel sphere
+                const sphereGeometry = new THREE.SphereGeometry(0.8, 64, 64);
+                const fresnelSphere = new THREE.Mesh(sphereGeometry, fresnelMaterial);
+                fresnelSphere.position.set(0, 0, 0);
+                this.scene.add(fresnelSphere);
+
+                // Create smaller orbiting spheres
+                for (let i = 0; i < 3; i++) {
+                    const smallSphere = new THREE.Mesh(
+                        new THREE.SphereGeometry(0.2, 32, 32),
+                        fresnelMaterial.clone()
+                    );
+                    smallSphere.position.set(
+                        Math.cos(i * Math.PI * 2 / 3) * 2,
+                        Math.sin(i * Math.PI * 2 / 3) * 0.5,
+                        Math.sin(i * Math.PI * 2 / 3) * 2
+                    );
+                    this.scene.add(smallSphere);
+                    this.spheres.push(smallSphere);
+                }
+
+                this.mainSphere = fresnelSphere;
+                this.spheres.push(fresnelSphere);
+            }
+
+            addLights() {
+                // Ambient light
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+                this.scene.add(ambientLight);
+
+                // Directional light
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                directionalLight.position.set(5, 5, 5);
+                directionalLight.castShadow = true;
+                this.scene.add(directionalLight);
+
+                // Point lights for extra drama
+                const pointLight1 = new THREE.PointLight(0x66aaff, 0.6, 10);
+                pointLight1.position.set(-3, 2, 3);
+                this.scene.add(pointLight1);
+
+                const pointLight2 = new THREE.PointLight(0xff6666, 0.6, 10);
+                pointLight2.position.set(3, -2, 3);
+                this.scene.add(pointLight2);
+            }
+
+            addMouseControls() {
+                let mouseX = 0, mouseY = 0;
+
+                document.addEventListener('mousemove', (event) => {
+                    mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+                    mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+
+                    // Rotate camera around the scene
+                    this.camera.position.x = Math.sin(mouseX * Math.PI) * 5;
+                    this.camera.position.y = mouseY * 2;
+                    this.camera.lookAt(0, 0, 0);
+
+                    // Update info panel
+                    const distance = this.camera.position.distanceTo(new THREE.Vector3(0, 0, 0));
+                    document.getElementById('cameraDistance').textContent = distance.toFixed(1);
+                });
+
+                // Mouse wheel for zoom
+                document.addEventListener('wheel', (event) => {
+                    const zoomSpeed = 0.1;
+                    const newZ = this.camera.position.z + (event.deltaY > 0 ? zoomSpeed : -zoomSpeed);
+                    this.camera.position.z = Math.max(2, Math.min(10, newZ));
                 });
             }
-            
-            calculate() {
-                const theta1 = this.angle * Math.PI / 180;
-                
-                // Check for total internal reflection
-                const sinTheta2 = (this.n1 / this.n2) * Math.sin(theta1);
-                
-                if (sinTheta2 > 1 && this.n1 > this.n2) {
-                    // Total internal reflection
-                    this.totalInternalReflection = true;
-                    this.r = 1;
-                    this.t = 0;
-                    this.theta2 = 0;
-                } else {
-                    this.totalInternalReflection = false;
-                    this.theta2 = Math.asin(sinTheta2);
-                    
-                    const cosTheta1 = Math.cos(theta1);
-                    const cosTheta2 = Math.cos(this.theta2);
-                    
-                    if (this.polarization === 's') {
-                        this.r = (this.n1 * cosTheta1 - this.n2 * cosTheta2) / 
-                                 (this.n1 * cosTheta1 + this.n2 * cosTheta2);
-                        this.t = (2 * this.n1 * cosTheta1) / 
-                                 (this.n1 * cosTheta1 + this.n2 * cosTheta2);
-                    } else {
-                        this.r = (this.n2 * cosTheta1 - this.n1 * cosTheta2) / 
-                                 (this.n2 * cosTheta1 + this.n1 * cosTheta2);
-                        this.t = (2 * this.n1 * cosTheta1) / 
-                                 (this.n2 * cosTheta1 + this.n1 * cosTheta2);
-                    }
-                }
-                
-                this.R = this.r * this.r;
-                this.T = 1 - this.R;
-                
-                // Special angles
-                this.brewsterAngle = Math.atan(this.n2 / this.n1) * 180 / Math.PI;
-                this.criticalAngle = this.n1 > this.n2 ? 
-                    Math.asin(this.n2 / this.n1) * 180 / Math.PI : null;
-                
-                this.updateDisplay();
+
+            setupControls() {
+                // Material buttons
+                document.querySelectorAll('.material-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        document.querySelectorAll('.material-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        this.currentMaterial = btn.dataset.material;
+                        this.updateMaterial();
+                    });
+                });
+
+                // Sliders
+                this.setupSlider('refractionSlider', 'refractionValue', (value) => {
+                    const index = value / 100;
+                    this.materials[this.currentMaterial].index = index;
+                    this.updateMaterial();
+                    return index.toFixed(2);
+                });
+
+                this.setupSlider('biasSlider', 'biasValue', (value) => {
+                    const bias = value / 100;
+                    this.materials[this.currentMaterial].bias = bias;
+                    this.updateMaterial();
+                    return bias.toFixed(2);
+                });
+
+                this.setupSlider('scaleSlider', 'scaleValue', (value) => {
+                    const scale = value / 100;
+                    this.materials[this.currentMaterial].scale = scale;
+                    this.updateMaterial();
+                    return scale.toFixed(2);
+                });
+
+                this.setupSlider('powerSlider', 'powerValue', (value) => {
+                    const power = value / 100;
+                    this.materials[this.currentMaterial].power = power;
+                    this.updateMaterial();
+                    return power.toFixed(2);
+                });
+
+                this.setupSlider('envSlider', 'envValue', (value) => {
+                    const intensity = value / 100;
+                    this.spheres.forEach(sphere => {
+                        sphere.material.uniforms.uEnvironmentIntensity.value = intensity;
+                    });
+                    return value + '%';
+                });
             }
-            
-            updateDisplay() {
-                document.getElementById('reflectionCoeff').textContent = this.r.toFixed(3);
-                document.getElementById('transmissionCoeff').textContent = this.t.toFixed(3);
-                document.getElementById('reflectance').textContent = (this.R * 100).toFixed(1) + '%';
-                document.getElementById('transmittance').textContent = (this.T * 100).toFixed(1) + '%';
-                document.getElementById('refractedAngle').textContent = 
-                    this.totalInternalReflection ? 'N/A' : (this.theta2 * 180 / Math.PI).toFixed(1) + '°';
-                
-                document.getElementById('brewsterAngle').textContent = this.brewsterAngle.toFixed(1) + '°';
-                document.getElementById('criticalAngle').textContent = 
-                    this.criticalAngle ? this.criticalAngle.toFixed(1) + '°' : 'N/A';
+
+            setupSlider(sliderId, valueId, callback) {
+                const slider = document.getElementById(sliderId);
+                const valueDisplay = document.getElementById(valueId);
+
+                slider.addEventListener('input', (e) => {
+                    const displayValue = callback(parseFloat(e.target.value));
+                    valueDisplay.textContent = displayValue;
+                });
             }
-            
-            updateGlassSphere() {
-                // Update sphere info
-                document.getElementById('sphereReflection').textContent = (this.R * 100).toFixed(1) + '%';
-                document.getElementById('sphereTransmission').textContent = (this.T * 100).toFixed(1) + '%';
+
+            updateMaterial() {
+                const material = this.materials[this.currentMaterial];
                 
-                // Update status
-                let status = 'Normal Refraction';
-                if (this.totalInternalReflection) {
-                    status = 'Total Internal Reflection';
-                } else if (Math.abs(this.angle - this.brewsterAngle) < 2 && this.polarization === 'p') {
-                    status = 'Near Brewster\'s Angle';
-                }
-                document.getElementById('sphereStatus').textContent = status;
+                this.spheres.forEach(sphere => {
+                    sphere.material.uniforms.mRefractionRatio.value = 1.0 / material.index;
+                    sphere.material.uniforms.mFresnelBias.value = material.bias;
+                    sphere.material.uniforms.mFresnelScale.value = material.scale;
+                    sphere.material.uniforms.mFresnelPower.value = material.power;
+                });
+
+                // Update info panel
+                document.getElementById('currentMaterial').textContent = this.currentMaterial.charAt(0).toUpperCase() + this.currentMaterial.slice(1);
+                document.getElementById('currentIndex').textContent = material.index.toFixed(2);
                 
-                // Visual effects on sphere
-                const reflectionIntensity = this.R;
-                const transmissionIntensity = this.T;
+                // Calculate special angles
+                const criticalAngle = material.index > 1 ? Math.asin(1 / material.index) * 180 / Math.PI : 0;
+                const brewsterAngle = Math.atan(material.index) * 180 / Math.PI;
                 
-                // Update sphere appearance based on reflection/transmission
-                let sphereOpacity = 0.6 + 0.4 * transmissionIntensity;
-                let glowIntensity = reflectionIntensity;
-                
-                // Special effects for total internal reflection
-                if (this.totalInternalReflection) {
-                    sphereOpacity = 0.9;
-                    glowIntensity = 1.0;
-                    this.glassSphere.style.background = `radial-gradient(circle at 30% 30%, 
-                        rgba(255, 255, 255, 0.9) 0%,
-                        rgba(255, 255, 255, 0.6) 30%,
-                        rgba(220, 220, 220, 0.8) 70%,
-                        rgba(150, 150, 150, 0.9) 100%)`;
-                } else {
-                    this.glassSphere.style.background = `radial-gradient(circle at 30% 30%, 
-                        rgba(255, 255, 255, ${0.8 * sphereOpacity}) 0%,
-                        rgba(255, 255, 255, ${0.4 * sphereOpacity}) 30%,
-                        rgba(200, 200, 200, ${0.6 * sphereOpacity}) 70%,
-                        rgba(100, 100, 100, ${0.8 * sphereOpacity}) 100%)`;
-                }
-                
-                // Update glow
-                this.sphereGlow.style.background = `radial-gradient(circle, 
-                    rgba(255, 255, 255, ${0.2 * glowIntensity}) 0%, 
-                    transparent 70%)`;
-                
-                // Subtle rotation based on angle
-                this.glassSphere.style.transform = `rotate(${this.angle * 0.5}deg)`;
+                document.getElementById('criticalAngle').textContent = criticalAngle.toFixed(1) + '°';
+                document.getElementById('brewsterAngle').textContent = brewsterAngle.toFixed(1) + '°';
+
+                // Update sliders to reflect current material
+                document.getElementById('refractionSlider').value = material.index * 100;
+                document.getElementById('refractionValue').textContent = material.index.toFixed(2);
+                document.getElementById('biasSlider').value = material.bias * 100;
+                document.getElementById('biasValue').textContent = material.bias.toFixed(2);
+                document.getElementById('scaleSlider').value = material.scale * 100;
+                document.getElementById('scaleValue').textContent = material.scale.toFixed(2);
+                document.getElementById('powerSlider').value = material.power * 100;
+                document.getElementById('powerValue').textContent = material.power.toFixed(2);
             }
-            
-            draw() {
-                const ctx = this.ctx;
-                const width = this.canvas.width;
-                const height = this.canvas.height;
+
+            animate() {
+                requestAnimationFrame(() => this.animate());
+
+                const time = this.clock.getElapsedTime();
                 
-                // Clear canvas
-                ctx.clearRect(0, 0, width, height);
-                
-                // Draw media background (grayscale)
-                ctx.fillStyle = 'rgba(200, 200, 200, 0.3)';
-                ctx.fillRect(0, 0, width, height / 2);
-                ctx.fillStyle = 'rgba(150, 150, 150, 0.3)';
-                ctx.fillRect(0, height / 2, width, height / 2);
-                
-                // Draw interface
-                ctx.strokeStyle = '#333';
-                ctx.lineWidth = 3;
-                ctx.setLineDash([10, 5]);
-                ctx.beginPath();
-                ctx.moveTo(0, height / 2);
-                ctx.lineTo(width, height / 2);
-                ctx.stroke();
-                ctx.setLineDash([]);
-                
-                // Draw normal line
-                ctx.strokeStyle = '#666';
-                ctx.lineWidth = 1;
-                ctx.setLineDash([5, 5]);
-                ctx.beginPath();
-                ctx.moveTo(width / 2, 0);
-                ctx.lineTo(width / 2, height);
-                ctx.stroke();
-                ctx.setLineDash([]);
-                
-                // Calculate ray positions
-                const centerX = width / 2;
-                const centerY = height / 2;
-                const rayLength = 120;
-                
-                const theta1Rad = this.angle * Math.PI / 180;
-                const theta2Rad = this.theta2;
-                
-                // Incident ray (keep colored for clarity)
-                const incidentEndX = centerX - rayLength * Math.sin(theta1Rad);
-                const incidentEndY = centerY - rayLength * Math.cos(theta1Rad);
-                this.drawRay(incidentEndX, incidentEndY, centerX, centerY, '#FF6B6B', 'Incident', 3);
-                
-                // Reflected ray
-                const reflectedEndX = centerX + rayLength * Math.sin(theta1Rad);
-                const reflectedEndY = centerY - rayLength * Math.cos(theta1Rad);
-                const reflectedIntensity = Math.sqrt(this.R);
-                this.drawRay(centerX, centerY, reflectedEndX, reflectedEndY, 
-                           `rgba(255, 107, 107, ${0.3 + 0.7 * reflectedIntensity})`, 'Reflected', 3 * reflectedIntensity);
-                
-                // Transmitted ray (if not total internal reflection)
-                if (!this.totalInternalReflection) {
-                    const transmittedEndX = centerX + rayLength * Math.sin(theta2Rad);
-                    const transmittedEndY = centerY + rayLength * Math.cos(theta2Rad);
-                    const transmittedIntensity = Math.sqrt(this.T);
-                    this.drawRay(centerX, centerY, transmittedEndX, transmittedEndY, 
-                               `rgba(75, 192, 192, ${0.3 + 0.7 * transmittedIntensity})`, 'Transmitted', 3 * transmittedIntensity);
-                }
-                
-                // Draw angles
-                this.drawAngle(centerX, centerY, theta1Rad, 40, '#FF6B6B', 'θ₁');
-                this.drawAngle(centerX, centerY, -theta1Rad, 40, '#FF6B6B', 'θ₁', true);
-                
-                if (!this.totalInternalReflection) {
-                    this.drawAngle(centerX, centerY, theta2Rad, 60, '#4BC0C0', 'θ₂', false, true);
-                }
-                
-                // Labels
-                ctx.fillStyle = '#333';
-                ctx.font = 'bold 16px Arial';
-                ctx.textAlign = 'left';
-                ctx.fillText(`Medium 1 (n₁ = ${this.n1.toFixed(2)})`, 10, 30);
-                ctx.fillText(`Medium 2 (n₂ = ${this.n2.toFixed(2)})`, 10, height - 10);
-                
-                // Special case warnings
-                if (this.totalInternalReflection) {
-                    ctx.fillStyle = '#FF4444';
-                    ctx.font = 'bold 18px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText('TOTAL INTERNAL REFLECTION', centerX, 50);
-                }
-                
-                if (Math.abs(this.angle - this.brewsterAngle) < 1 && this.polarization === 'p') {
-                    ctx.fillStyle = '#888';
-                    ctx.font = 'bold 16px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText('Near Brewster\'s Angle!', centerX, height - 30);
+                // Update background animations
+                this.backgroundMaterials.forEach(material => {
+                    material.uniforms.uTime.value = time;
+                });
+
+                // Animate background spheres
+                this.backgroundSpheres.forEach((sphere, index) => {
+                    sphere.rotation.x = time * 0.3 * (index + 1);
+                    sphere.rotation.y = time * 0.2 * (index + 1);
+                });
+
+                // Animate small spheres orbiting
+                this.spheres.slice(1).forEach((sphere, index) => {
+                    const angle = time * 0.5 + (index * Math.PI * 2 / 3);
+                    sphere.position.x = Math.cos(angle) * 2;
+                    sphere.position.z = Math.sin(angle) * 2;
+                    sphere.position.y = Math.sin(time * 0.7 + index) * 0.5;
+                    sphere.rotation.y = time * 0.8;
+                });
+
+                // Rotate main sphere
+                this.mainSphere.rotation.y = time * 0.3;
+                this.mainSphere.rotation.x = Math.sin(time * 0.2) * 0.2;
+
+                // Update cube camera for reflections
+                this.spheres.forEach(sphere => sphere.visible = false);
+                this.cubeCamera.update(this.renderer, this.scene);
+                this.spheres.forEach(sphere => {
+                    sphere.visible = true;
+                    sphere.material.uniforms.tCube.value = this.cubeRenderTarget.texture;
+                });
+
+                // Render main scene
+                this.renderer.render(this.scene, this.camera);
+
+                // Update FPS counter
+                this.frameCount++;
+                if (time - this.lastTime > 1) {
+                    document.getElementById('fpsCounter').textContent = Math.round(this.frameCount / (time - this.lastTime));
+                    this.frameCount = 0;
+                    this.lastTime = time;
                 }
             }
-            
-            drawRay(x1, y1, x2, y2, color, label, lineWidth) {
-                const ctx = this.ctx;
-                
-                ctx.strokeStyle = color;
-                ctx.lineWidth = lineWidth;
-                ctx.beginPath();
-                ctx.moveTo(x1, y1);
-                ctx.lineTo(x2, y2);
-                ctx.stroke();
-                
-                // Arrow head
-                const angle = Math.atan2(y2 - y1, x2 - x1);
-                const headLength = 10;
-                ctx.beginPath();
-                ctx.moveTo(x2, y2);
-                ctx.lineTo(x2 - headLength * Math.cos(angle - Math.PI/6), 
-                          y2 - headLength * Math.sin(angle - Math.PI/6));
-                ctx.moveTo(x2, y2);
-                ctx.lineTo(x2 - headLength * Math.cos(angle + Math.PI/6), 
-                          y2 - headLength * Math.sin(angle + Math.PI/6));
-                ctx.stroke();
-            }
-            
-            drawAngle(centerX, centerY, angle, radius, color, label, reflected = false, transmitted = false) {
-                const ctx = this.ctx;
-                
-                ctx.strokeStyle = color;
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                
-                let startAngle, endAngle;
-                if (transmitted) {
-                    startAngle = Math.PI / 2;
-                    endAngle = Math.PI / 2 + angle;
-                } else if (reflected) {
-                    startAngle = Math.PI / 2;
-                    endAngle = Math.PI / 2 + angle;
-                } else {
-                    startAngle = Math.PI / 2 - angle;
-                    endAngle = Math.PI / 2;
-                }
-                
-                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-                ctx.stroke();
-                
-                // Label
-                const labelAngle = (startAngle + endAngle) / 2;
-                const labelX = centerX + (radius + 15) * Math.cos(labelAngle);
-                const labelY = centerY + (radius + 15) * Math.sin(labelAngle);
-                
-                ctx.fillStyle = color;
-                ctx.font = 'bold 14px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText(label, labelX, labelY + 5);
+
+            onWindowResize() {
+                this.camera.aspect = window.innerWidth / window.innerHeight;
+                this.camera.updateProjectionMatrix();
+                this.renderer.setSize(window.innerWidth, window.innerHeight);
             }
         }
 
-        // Source code loading functions
+        // Source code modal functions
         async function showHTMLCode() {
             const codeContent = document.getElementById('htmlCodeContent');
-            codeContent.innerHTML = '<div class="loading"></div> Loading HTML source code...';
+            codeContent.textContent = 'Loading source code...';
             document.getElementById('htmlModal').style.display = 'block';
             
-            // For HTML, we can show the current document
+            // Show the current document HTML
             const htmlCode = document.documentElement.outerHTML;
             codeContent.textContent = htmlCode;
         }
@@ -1101,13 +964,17 @@
                 htmlModal.style.display = 'none';
             }
         }
-        
-        // Initialize the application when the page loads
+
+        // Make functions global
+        window.showHTMLCode = showHTMLCode;
+        window.closeModal = closeModal;
+
+        // Initialize the simulator
         document.addEventListener('DOMContentLoaded', () => {
-            new FresnelSimulator();
+            new AdvancedFresnelSimulator();
         });
 
-        // WebGL Lava Lamp Background
+        // Background WebGL lava lamp (same as before)
         window.addEventListener('load', () => {
             const canvas = document.querySelector('.background-canvas');
             const gl = canvas.getContext("webgl");
@@ -1145,34 +1012,30 @@
             let circles = [];
             function initCircles() {
                 circles = [];
-                const baseRadius = (width + height) * 0.2;
-                for (let i = 0; i < 5; i++) {
-                    const radius = baseRadius;
+                const baseRadius = (width + height) * 0.15;
+                for (let i = 0; i < 4; i++) {
+                    const radius = baseRadius * (0.8 + Math.random() * 0.4);
                     const x = Math.random() * width;
                     const y = Math.random() * height;
-                    const speedMultiplier = Math.random() * 4 + 1;
+                    const speedMultiplier = Math.random() * 2 + 0.5;
                     const vx = (Math.random() - 0.5) * speedMultiplier;
                     const vy = (Math.random() - 0.5) * speedMultiplier;
                     circles.push({
-                        x,
-                        y,
-                        radius,
+                        x, y, radius,
                         color: circleColors[i],
-                        vx,
-                        vy,
+                        vx, vy,
                         interactive: false,
                     });
                 }
 
-                // interactive circle
-                const interactiveRadius = (width + height) * 0.1;
+                // Interactive circle
+                const interactiveRadius = (width + height) * 0.08;
                 circles.push({
                     x: width / 2,
                     y: height / 2,
                     radius: interactiveRadius,
-                    color: circleColors[5],
-                    vx: 0,
-                    vy: 0,
+                    color: circleColors[4],
+                    vx: 0, vy: 0,
                     interactive: true,
                 });
             }
@@ -1192,17 +1055,13 @@
             const fragmentSrc = `
                 precision mediump float;
                 varying vec2 v_uv;
-
                 uniform vec2 u_resolution;
-                uniform bool u_darkMode;
                 uniform int u_circleCount;
-                uniform vec3 u_circlesColor[6];
-                uniform vec3 u_circlesPosRad[6];
-                uniform vec2 u_mouse;
+                uniform vec3 u_circlesColor[5];
+                uniform vec3 u_circlesPosRad[5];
 
                 void main(void) {
                     vec2 st = v_uv * u_resolution;
-
                     vec3 topColor = vec3(108.0/255.0, 0.0, 162.0/255.0);
                     vec3 bottomColor = vec3(0.0, 17.0/255.0, 82.0/255.0);
                     vec3 bgColor = mix(topColor, bottomColor, st.y / u_resolution.y);
@@ -1210,7 +1069,7 @@
                     float fieldSum = 0.0;
                     vec3 weightedColorSum = vec3(0.0);
                     
-                    for (int i = 0; i < 6; i++) {
+                    for (int i = 0; i < 5; i++) {
                         if (i >= u_circleCount) { break; }
                         vec3 posRad = u_circlesPosRad[i];
                         vec2 cPos = vec2(posRad.r, posRad.g);
@@ -1227,9 +1086,9 @@
                         finalCirclesColor = weightedColorSum / fieldSum;
                     }
 
-                    float intensity = pow(fieldSum, 1.4);
-                    vec3 finalColor = mix(bgColor, finalCirclesColor, clamp(intensity, 0.0, 1.0));
-                    gl_FragColor = vec4(finalColor, 1.0);
+                    float intensity = pow(fieldSum, 1.2);
+                    vec3 finalColor = mix(bgColor, finalCirclesColor, clamp(intensity * 0.7, 0.0, 1.0));
+                    gl_FragColor = vec4(finalColor, 0.3);
                 }
             `;
 
@@ -1252,9 +1111,6 @@
             gl.attachShader(program, vertShader);
             gl.attachShader(program, fragShader);
             gl.linkProgram(program);
-            if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-                console.error("Program link error:", gl.getProgramInfoLog(program));
-            }
 
             gl.useProgram(program);
 
@@ -1268,13 +1124,9 @@
             gl.vertexAttribPointer(a_position, 2, gl.FLOAT, false, 0, 0);
 
             const u_resolution = gl.getUniformLocation(program, "u_resolution");
-            const u_darkMode = gl.getUniformLocation(program, "u_darkMode");
             const u_circleCount = gl.getUniformLocation(program, "u_circleCount");
             const u_circlesColor = gl.getUniformLocation(program, "u_circlesColor");
             const u_circlesPosRad = gl.getUniformLocation(program, "u_circlesPosRad");
-            const u_mouse = gl.getUniformLocation(program, "u_mouse");
-
-            gl.uniform2f(u_resolution, width, height);
 
             function updateCircles() {
                 for (let i = 0; i < circles.length; i++) {
@@ -1287,8 +1139,8 @@
                         if (c.y - c.radius > height) c.y = -c.radius;
                         if (c.y + c.radius < 0) c.y = height + c.radius;
                     } else {
-                        c.x += (mouse.x - c.x) * 0.1;
-                        c.y += (mouse.y - c.y) * 0.1;
+                        c.x += (mouse.x - c.x) * 0.05;
+                        c.y += (mouse.y - c.y) * 0.05;
                     }
                 }
             }
@@ -1297,18 +1149,15 @@
                 updateCircles();
 
                 gl.viewport(0, 0, width, height);
-                gl.clearColor(0, 0, 0, 1);
+                gl.clearColor(0, 0, 0, 0);
                 gl.clear(gl.COLOR_BUFFER_BIT);
-
-                gl.useProgram(program);
 
                 gl.uniform1i(u_circleCount, circles.length);
                 gl.uniform2f(u_resolution, width, height);
-                gl.uniform2f(u_mouse, mouse.x, mouse.y);
 
                 let colorsArr = [];
                 let posRadArr = [];
-                for (let i = 0; i < 6; i++) {
+                for (let i = 0; i < 5; i++) {
                     if (i < circles.length) {
                         const c = circles[i];
                         colorsArr.push(c.color[0], c.color[1], c.color[2]);
