@@ -296,7 +296,6 @@
 
     <script>
         // ============== CONFIGURATION ==============
-        // TODO: Replace with your Supabase credentials
         const SUPABASE_URL = 'https://kncwqtqmbyukguuargsg.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtuY3dxdHFtYnl1a2d1dWFyZ3NnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk3NDQ4MDUsImV4cCI6MjA2NTMyMDgwNX0.WvxeazNz2y-F57JE0fvT4XVXkEMZQ-R_sviYaSrRuNg';
         
@@ -304,17 +303,15 @@
         let supabase = null;
         let isOnlineMode = false;
 
-        // Try to initialize Supabase (will fallback to offline mode if credentials not set)
+        // Try to initialize Supabase
         try {
-            if (SUPABASE_URL !== 'https://kncwqtqmbyukguuargsg.supabase.co' && SUPABASE_ANON_KEY !== 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtuY3dxdHFtYnl1a2d1dWFyZ3NnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk3NDQ4MDUsImV4cCI6MjA2NTMyMDgwNX0.WvxeazNz2y-F57JE0fvT4XVXkEMZQ-R_sviYaSrRuNg') {
-                supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                isOnlineMode = true;
-                console.log('🟢 Online mode: Connected to Supabase');
-            } else {
-                console.log('🟡 Offline mode: Using localStorage (temporary storage)');
-            }
+            supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            isOnlineMode = true;
+            console.log('🟢 Online mode: Connected to Supabase');
+            console.log('Database URL:', SUPABASE_URL);
         } catch (error) {
-            console.log('🟡 Offline mode: Supabase not available, using localStorage');
+            console.log('🟡 Offline mode: Supabase connection failed', error);
+            isOnlineMode = false;
         }
 
         // ============== DATA MANAGEMENT ==============
@@ -434,12 +431,21 @@
         async function loadAllStars() {
             if (isOnlineMode) {
                 try {
+                    console.log('🔄 Loading stars from database...');
                     const { data, error } = await supabase
                         .from('galaxy_stars')
                         .select('*')
                         .order('created_at', { ascending: true });
                     
-                    if (data && !error) {
+                    if (error) {
+                        console.error('❌ Database error:', error);
+                        console.log('💡 Make sure you created the database tables! Check the setup instructions.');
+                        // Fall back to default star
+                        return [{ name: "PointZero", color: "#ff6b6b", position: { x: 0, y: 0, z: 0 }, timestamp: new Date().toISOString() }];
+                    }
+                    
+                    if (data) {
+                        console.log(`✅ Loaded ${data.length} stars from database`);
                         return data.map(star => ({
                             id: star.id,
                             name: star.name,
@@ -449,7 +455,8 @@
                         }));
                     }
                 } catch (error) {
-                    console.error('Error loading stars:', error);
+                    console.error('❌ Error loading stars:', error);
+                    console.log('💡 This might mean the database tables don\'t exist yet. Check the setup instructions.');
                 }
             } else {
                 // Offline mode: load from localStorage
@@ -466,6 +473,7 @@
         async function saveStar(starData) {
             if (isOnlineMode) {
                 try {
+                    console.log('💾 Saving star to database:', starData.name);
                     const { data, error } = await supabase
                         .from('galaxy_stars')
                         .insert([{
@@ -477,11 +485,19 @@
                         .select()
                         .single();
                     
-                    if (!error) {
+                    if (error) {
+                        console.error('❌ Error saving star:', error);
+                        console.log('💡 Make sure you created the database tables and set up the policies!');
+                        return null;
+                    }
+                    
+                    if (data) {
+                        console.log('✅ Star saved successfully!');
                         return { ...starData, id: data.id };
                     }
                 } catch (error) {
-                    console.error('Error saving star:', error);
+                    console.error('❌ Database connection error:', error);
+                    return null;
                 }
             } else {
                 // Offline mode: save to localStorage
@@ -489,6 +505,7 @@
                 const newStar = { ...starData, id: Date.now() };
                 existingStars.push(newStar);
                 localStorage.setItem('galaxy_stars', JSON.stringify(existingStars));
+                console.log('💾 Star saved to localStorage (offline mode)');
                 return newStar;
             }
             
@@ -601,7 +618,7 @@
             // Save to database
             const savedStar = await saveStar(starData);
             if (!savedStar) {
-                alert('Error saving star. Please try again.');
+                alert('Error saving star to database. Please check the browser console for details and make sure the database tables are set up correctly.');
                 return;
             }
 
