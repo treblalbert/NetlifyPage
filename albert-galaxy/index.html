@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Star Galaxy - Leave Your Mark</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Supabase JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/supabase-js/2.39.0/umd/index.js"></script>
     <style>
         * {
             margin: 0;
@@ -109,6 +111,45 @@
             backdrop-filter: blur(10px);
         }
 
+        #star-details {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            pointer-events: auto;
+            backdrop-filter: blur(10px);
+            max-width: 250px;
+            min-width: 200px;
+        }
+
+        #star-info-content {
+            margin-top: 10px;
+        }
+
+        #star-info-content p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .star-name {
+            color: #4da6ff;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .star-color-badge {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 1px solid #fff;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
         /* Modal Styles */
         #welcome-modal {
             position: fixed;
@@ -189,9 +230,20 @@
         .hidden {
             display: none !important;
         }
+
+        #loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #4da6ff;
+            font-size: 18px;
+            z-index: 500;
+        }
     </style>
 </head>
 <body>
+    <div id="loading">🌟 Loading galaxy...</div>
     <div id="canvas-container"></div>
     
     <div id="ui-overlay">
@@ -202,7 +254,7 @@
             <p>• Scroll: Zoom in/out</p>
             <p>• Click stars to focus</p>
             <p>• Space: Reset to center</p>
-            <p><br><em>Welcome to the galaxy! Your star has been added to this cosmic collection.</em></p>
+            <p><br><em>Welcome to the galaxy! Your star will be saved forever.</em></p>
         </div>
 
         <div id="search-container">
@@ -225,7 +277,7 @@
     </div>
 
     <!-- Welcome Modal -->
-    <div id="welcome-modal">
+    <div id="welcome-modal" class="hidden">
         <div class="modal-content">
             <h2>🌟 Welcome to the Star Galaxy!</h2>
             <p>Leave your mark in the cosmos by creating your own star.</p>
@@ -243,15 +295,36 @@
     </div>
 
     <script>
-        // Galaxy data storage (in real implementation, this would be in a database)
+        // ============== CONFIGURATION ==============
+        // TODO: Replace with your Supabase credentials
+        const SUPABASE_URL = 'https://kncwqtqmbyukguuargsg.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtuY3dxdHFtYnl1a2d1dWFyZ3NnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk3NDQ4MDUsImV4cCI6MjA2NTMyMDgwNX0.WvxeazNz2y-F57JE0fvT4XVXkEMZQ-R_sviYaSrRuNg';
+        
+        // Initialize Supabase client
+        let supabase = null;
+        let isOnlineMode = false;
+
+        // Try to initialize Supabase (will fallback to offline mode if credentials not set)
+        try {
+            if (SUPABASE_URL !== 'https://kncwqtqmbyukguuargsg.supabase.co' && SUPABASE_ANON_KEY !== 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtuY3dxdHFtYnl1a2d1dWFyZ3NnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk3NDQ4MDUsImV4cCI6MjA2NTMyMDgwNX0.WvxeazNz2y-F57JE0fvT4XVXkEMZQ-R_sviYaSrRuNg') {
+                supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                isOnlineMode = true;
+                console.log('🟢 Online mode: Connected to Supabase');
+            } else {
+                console.log('🟡 Offline mode: Using localStorage (temporary storage)');
+            }
+        } catch (error) {
+            console.log('🟡 Offline mode: Supabase not available, using localStorage');
+        }
+
+        // ============== DATA MANAGEMENT ==============
         let galaxyData = {
             stars: [],
-            visitors: new Set(),
             visitCount: 0
         };
 
         // Three.js setup
-        let scene, camera, renderer, controls;
+        let scene, camera, renderer;
         let starMeshes = [];
         let selectedStar = null;
 
@@ -263,8 +336,203 @@
         let focusTarget = new THREE.Vector3(0, 0, 0);
         const rotationSpeed = 0.005;
 
-        // Initialize the 3D scene
-        function init() {
+        // User identification
+        let currentUser = null;
+
+        // ============== DATABASE FUNCTIONS ==============
+        
+        async function checkExistingUser() {
+            const fingerprint = await generateUserFingerprint();
+            
+            if (isOnlineMode) {
+                try {
+                    const { data, error } = await supabase
+                        .from('galaxy_users')
+                        .select('*')
+                        .eq('fingerprint', fingerprint)
+                        .single();
+                    
+                    if (data && !error) {
+                        currentUser = data;
+                        return true;
+                    }
+                } catch (error) {
+                    console.log('User not found in database');
+                }
+            } else {
+                // Offline mode: check localStorage
+                const existingUser = localStorage.getItem('galaxy_user_' + fingerprint);
+                if (existingUser) {
+                    currentUser = JSON.parse(existingUser);
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+
+        async function generateUserFingerprint() {
+            // Create a semi-unique fingerprint based on browser/device characteristics
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.textBaseline = 'top';
+            ctx.font = '14px Arial';
+            ctx.fillText('Browser fingerprint', 2, 2);
+            
+            const fingerprint = [
+                navigator.userAgent,
+                navigator.language,
+                screen.width + 'x' + screen.height,
+                new Date().getTimezoneOffset(),
+                canvas.toDataURL()
+            ].join('|');
+            
+            // Simple hash function
+            let hash = 0;
+            for (let i = 0; i < fingerprint.length; i++) {
+                const char = fingerprint.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32-bit integer
+            }
+            
+            return Math.abs(hash).toString();
+        }
+
+        async function saveUser(userData) {
+            const fingerprint = await generateUserFingerprint();
+            const userRecord = {
+                fingerprint: fingerprint,
+                name: userData.name,
+                created_at: new Date().toISOString()
+            };
+
+            if (isOnlineMode) {
+                try {
+                    const { data, error } = await supabase
+                        .from('galaxy_users')
+                        .insert([userRecord])
+                        .select()
+                        .single();
+                    
+                    if (!error) {
+                        currentUser = data;
+                        return true;
+                    }
+                } catch (error) {
+                    console.error('Error saving user:', error);
+                }
+            } else {
+                // Offline mode: save to localStorage
+                localStorage.setItem('galaxy_user_' + fingerprint, JSON.stringify(userRecord));
+                currentUser = userRecord;
+                return true;
+            }
+            
+            return false;
+        }
+
+        async function loadAllStars() {
+            if (isOnlineMode) {
+                try {
+                    const { data, error } = await supabase
+                        .from('galaxy_stars')
+                        .select('*')
+                        .order('created_at', { ascending: true });
+                    
+                    if (data && !error) {
+                        return data.map(star => ({
+                            id: star.id,
+                            name: star.name,
+                            color: star.color,
+                            position: star.position,
+                            timestamp: star.created_at
+                        }));
+                    }
+                } catch (error) {
+                    console.error('Error loading stars:', error);
+                }
+            } else {
+                // Offline mode: load from localStorage
+                const starsData = localStorage.getItem('galaxy_stars');
+                if (starsData) {
+                    return JSON.parse(starsData);
+                }
+            }
+            
+            // Return default star if no data available
+            return [{ name: "PointZero", color: "#ff6b6b", position: { x: 0, y: 0, z: 0 }, timestamp: new Date().toISOString() }];
+        }
+
+        async function saveStar(starData) {
+            if (isOnlineMode) {
+                try {
+                    const { data, error } = await supabase
+                        .from('galaxy_stars')
+                        .insert([{
+                            name: starData.name,
+                            color: starData.color,
+                            position: starData.position,
+                            created_at: starData.timestamp
+                        }])
+                        .select()
+                        .single();
+                    
+                    if (!error) {
+                        return { ...starData, id: data.id };
+                    }
+                } catch (error) {
+                    console.error('Error saving star:', error);
+                }
+            } else {
+                // Offline mode: save to localStorage
+                const existingStars = JSON.parse(localStorage.getItem('galaxy_stars') || '[]');
+                const newStar = { ...starData, id: Date.now() };
+                existingStars.push(newStar);
+                localStorage.setItem('galaxy_stars', JSON.stringify(existingStars));
+                return newStar;
+            }
+            
+            return null;
+        }
+
+        // ============== INITIALIZATION ==============
+        
+        async function init() {
+            document.getElementById('loading').style.display = 'block';
+            
+            // Check if user already exists
+            const userExists = await checkExistingUser();
+            
+            // Load existing stars from database
+            const stars = await loadAllStars();
+            galaxyData.stars = stars;
+            galaxyData.visitCount = stars.length;
+            
+            // Initialize 3D scene
+            initThreeJS();
+            
+            // Load stars into scene
+            stars.forEach(star => createStarMesh(star));
+            updateCounters();
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Start animation loop
+            animate();
+            
+            // Hide loading
+            document.getElementById('loading').style.display = 'none';
+            
+            // Show welcome modal only if user doesn't exist
+            if (!userExists) {
+                setTimeout(() => {
+                    document.getElementById('welcome-modal').classList.remove('hidden');
+                }, 500);
+            }
+        }
+
+        function initThreeJS() {
             // Scene setup
             scene = new THREE.Scene();
             scene.fog = new THREE.Fog(0x000020, 1, 1000);
@@ -279,17 +547,8 @@
             renderer.setClearColor(0x000011);
             document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-            // Add some background stars
+            // Add background stars
             createBackgroundStars();
-
-            // Load existing stars (in real app, this would load from server)
-            loadExistingStars();
-
-            // Event listeners
-            setupEventListeners();
-
-            // Animation loop
-            animate();
         }
 
         function createBackgroundStars() {
@@ -315,22 +574,7 @@
             scene.add(bgStars);
         }
 
-        function loadExistingStars() {
-            // Simulate some existing stars (in real app, load from database)
-            const existingStars = [
-                { name: "PointZero", color: "#ff6b6b", position: { x: 10, y: 5, z: -10 } },
-            ];
-
-            existingStars.forEach(star => {
-                galaxyData.stars.push(star);
-                createStarMesh(star);
-            });
-
-            galaxyData.visitCount = existingStars.length;
-            updateCounters();
-        }
-
-        function createUserStar() {
+        async function createUserStar() {
             const name = document.getElementById('user-name').value.trim();
             const color = document.getElementById('star-color').value;
 
@@ -339,7 +583,7 @@
                 return;
             }
 
-            // Check if user already exists (simplified - in real app, check by IP)
+            // Check if name already exists
             const existingStar = galaxyData.stars.find(star => star.name.toLowerCase() === name.toLowerCase());
             if (existingStar) {
                 alert('A star with this name already exists! Please choose a different name.');
@@ -354,25 +598,35 @@
                 timestamp: new Date().toISOString()
             };
 
-            // Add to galaxy
-            galaxyData.stars.push(starData);
+            // Save to database
+            const savedStar = await saveStar(starData);
+            if (!savedStar) {
+                alert('Error saving star. Please try again.');
+                return;
+            }
+
+            // Save user
+            const userSaved = await saveUser({ name: name });
+            if (!userSaved) {
+                console.warn('Could not save user data');
+            }
+
+            // Add to local data
+            galaxyData.stars.push(savedStar);
             galaxyData.visitCount++;
 
             // Create 3D star
-            createStarMesh(starData);
-
-            // Update UI
+            createStarMesh(savedStar);
             updateCounters();
             
             // Hide modal
             document.getElementById('welcome-modal').classList.add('hidden');
-
-            // Focus on the new star
-            focusOnStar(starData);
+            
+            // Focus on new star
+            focusOnStar(savedStar);
         }
 
         function generateStarPosition() {
-            // Generate position in a roughly spherical distribution
             const radius = Math.random() * 40 + 10;
             const theta = Math.random() * Math.PI * 2;
             const phi = Math.random() * Math.PI;
@@ -397,7 +651,7 @@
             star.position.set(starData.position.x, starData.position.y, starData.position.z);
             star.userData = starData;
 
-            // Create multiple glow layers for better effect
+            // Create multiple glow layers
             const glowLayers = [];
             
             // Inner glow
@@ -439,26 +693,24 @@
         }
 
         function focusOnStar(starData) {
-            // Set new focus target
             const targetFocus = new THREE.Vector3(
                 starData.position.x,
                 starData.position.y,
                 starData.position.z
             );
             
-            // Animate focus target transition
             animateFocusTo(targetFocus);
         }
 
         function animateFocusTo(targetFocus) {
             const startFocus = focusTarget.clone();
             const startTime = Date.now();
-            const duration = 2000; // 2 seconds
+            const duration = 2000;
 
             function updateFocus() {
                 const elapsed = Date.now() - startTime;
                 const progress = Math.min(elapsed / duration, 1);
-                const easing = 1 - Math.pow(1 - progress, 3); // Ease out cubic
+                const easing = 1 - Math.pow(1 - progress, 3);
 
                 focusTarget.lerpVectors(startFocus, targetFocus, easing);
 
@@ -471,11 +723,10 @@
         }
 
         function setupEventListeners() {
-            // Mouse drag controls
             let hasMouseMoved = false;
             
             document.addEventListener('mousedown', (event) => {
-                if (event.target.closest('#ui-overlay')) return; // Don't drag when clicking UI
+                if (event.target.closest('#ui-overlay')) return;
                 isDragging = true;
                 hasMouseMoved = false;
                 previousMousePosition.x = event.clientX;
@@ -495,8 +746,6 @@
                 
                 cameraRotation.y -= deltaX * rotationSpeed;
                 cameraRotation.x -= deltaY * rotationSpeed;
-                
-                // Limit vertical rotation
                 cameraRotation.x = Math.max(-Math.PI/2 + 0.1, Math.min(Math.PI/2 - 0.1, cameraRotation.x));
                 
                 previousMousePosition.x = event.clientX;
@@ -505,7 +754,6 @@
 
             document.addEventListener('mouseup', (event) => {
                 if (isDragging && !hasMouseMoved) {
-                    // This was a click, not a drag
                     onStarClick(event);
                 }
                 isDragging = false;
@@ -513,29 +761,21 @@
                 document.body.style.cursor = 'grab';
             });
 
-            // Mouse wheel for zoom
             document.addEventListener('wheel', (event) => {
                 cameraDistance += event.deltaY * 0.1;
                 cameraDistance = Math.max(5, Math.min(200, cameraDistance));
             });
 
-            // Search functionality
             document.getElementById('search-input').addEventListener('input', onSearch);
-
-            // Color preview update
             document.getElementById('star-color').addEventListener('input', (e) => {
                 document.getElementById('color-preview').style.backgroundColor = e.target.value;
             });
 
-            // Window resize
             window.addEventListener('resize', onWindowResize);
-
-            // Enter key for star creation
             document.getElementById('user-name').addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') createUserStar();
             });
 
-            // Reset focus to center with Space key
             document.addEventListener('keydown', (e) => {
                 if (e.code === 'Space') {
                     e.preventDefault();
@@ -563,7 +803,15 @@
         }
 
         function showStarInfo(starData) {
-            alert(`⭐ Star Owner: ${starData.name}\n🎨 Color: ${starData.color}\n📅 Created: ${starData.timestamp ? new Date(starData.timestamp).toLocaleString() : 'Unknown'}`);
+            const starInfoContent = document.getElementById('star-info-content');
+            const createdDate = starData.timestamp ? new Date(starData.timestamp).toLocaleDateString() : 'Unknown';
+            
+            starInfoContent.innerHTML = `
+                <p class="star-name">⭐ ${starData.name}</p>
+                <p><span class="star-color-badge" style="background-color: ${starData.color};"></span>Color: ${starData.color}</p>
+                <p>📅 Created: ${createdDate}</p>
+                <p>📍 Position: (${Math.round(starData.position.x)}, ${Math.round(starData.position.y)}, ${Math.round(starData.position.z)})</p>
+            `;
         }
 
         function onSearch(event) {
@@ -609,25 +857,21 @@
         function animate() {
             requestAnimationFrame(animate);
 
-            // Update camera position based on rotation around focus target
             camera.position.x = focusTarget.x + cameraDistance * Math.sin(cameraRotation.y) * Math.cos(cameraRotation.x);
             camera.position.y = focusTarget.y + cameraDistance * Math.sin(cameraRotation.x);
             camera.position.z = focusTarget.z + cameraDistance * Math.cos(cameraRotation.y) * Math.cos(cameraRotation.x);
             
             camera.lookAt(focusTarget);
 
-            // Animate star effects
             starMeshes.forEach((starObj, index) => {
                 const time = Date.now() * 0.001;
                 
-                // Animate glow layers
                 starObj.glowLayers.forEach((glow, layerIndex) => {
                     glow.material.opacity = (0.6 - layerIndex * 0.25) + Math.sin(time + index) * 0.1;
                     glow.rotation.y += 0.002 * (layerIndex + 1);
                     glow.rotation.x += 0.001 * (layerIndex + 1);
                 });
                 
-                // Rotate main star
                 starObj.star.rotation.y += 0.01;
                 starObj.star.rotation.x += 0.005;
             });
@@ -637,15 +881,6 @@
 
         // Start the application
         init();
-
-        // Simulate user detection (in real app, this would be done server-side with IP checking)
-        window.addEventListener('load', () => {
-            // For demo purposes, always show the modal
-            // In a real implementation, you'd check if the user's IP has visited before
-            setTimeout(() => {
-                document.getElementById('welcome-modal').style.display = 'flex';
-            }, 500);
-        });
     </script>
 </body>
 </html>
