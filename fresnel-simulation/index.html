@@ -4,44 +4,215 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fresnel Equations Simulator - By Lil Bingus</title>
+    
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
-            color: #e0e0e0;
+            color: #fff;
             min-height: 100vh;
+            overflow-x: auto;
+            position: relative;
         }
-        
+
+        .background-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.25) 0%, 
+                rgba(255, 255, 255, 0.1) 50%,
+                rgba(255, 255, 255, 0.2) 100%);
+            backdrop-filter: blur(15px) saturate(160%);
+            -webkit-backdrop-filter: blur(15px) saturate(160%);
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            z-index: 1000;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 6px 20px rgba(0, 0, 0, 0.15),
+                0 1px 0 rgba(255, 255, 255, 0.6) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+                0 0 0 1px rgba(255, 255, 255, 0.3);
+        }
+
+        .source-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .source-btn {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(20px);
+            color: white;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+        }
+
+        .back-button:hover, .source-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.35) 0%, 
+                rgba(255, 255, 255, 0.15) 50%,
+                rgba(255, 255, 255, 0.25) 100%);
+            backdrop-filter: blur(20px) saturate(200%);
+            -webkit-backdrop-filter: blur(20px) saturate(200%);
+            box-shadow: 
+                0 12px 30px rgba(0, 0, 0, 0.25),
+                0 1px 0 rgba(255, 255, 255, 0.8) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.15) inset,
+                0 0 0 1px rgba(255, 255, 255, 0.5),
+                0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            padding: 30px;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 80px 20px 20px;
+            position: relative;
+            z-index: 10;
         }
-        
-        h1 {
+
+        .header {
             text-align: center;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            background: linear-gradient(45deg, #ffffff, #cccccc);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #fff 0%, #e1e5f2 50%, #fff 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
         }
-        
-        .subtitle {
-            text-align: center;
-            opacity: 0.7;
-            margin-bottom: 30px;
-            font-style: italic;
-            color: #b0b0b0;
+
+        .header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .header em {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+        }
+
+        .glass-panel {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.22) 0%, 
+                rgba(255, 255, 255, 0.08) 25%,
+                rgba(255, 255, 255, 0.04) 50%,
+                rgba(255, 255, 255, 0.08) 75%,
+                rgba(255, 255, 255, 0.22) 100%);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.2),
+                0 1px 0 rgba(255, 255, 255, 0.8) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.2) inset,
+                0 0 0 1px rgba(255, 255, 255, 0.3);
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.1s ease-out, box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(180deg, 
+                rgba(255, 255, 255, 0.25) 0%,
+                rgba(255, 255, 255, 0.08) 60%,
+                transparent 100%);
+            border-radius: 25px 25px 0 0;
+            pointer-events: none;
+        }
+
+        .glass-panel::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            background: linear-gradient(145deg, 
+                transparent 0%,
+                rgba(255, 255, 255, 0.08) 30%,
+                transparent 70%,
+                rgba(255, 255, 255, 0.04) 100%);
+            border-radius: 23px;
+            pointer-events: none;
+        }
+
+        .glass-panel:hover {
+            transform: translateY(-3px) scale(1.01);
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.32) 0%, 
+                rgba(255, 255, 255, 0.12) 25%,
+                rgba(255, 255, 255, 0.06) 50%,
+                rgba(255, 255, 255, 0.12) 75%,
+                rgba(255, 255, 255, 0.32) 100%);
+            box-shadow: 
+                0 16px 50px rgba(0, 0, 0, 0.25),
+                0 1px 0 rgba(255, 255, 255, 0.9) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.25) inset,
+                0 0 0 1px rgba(255, 255, 255, 0.4),
+                0 0 15px rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px) saturate(200%);
+            -webkit-backdrop-filter: blur(25px) saturate(200%);
+        }
+
+        .glass-panel h3 {
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
         }
         
         .main-content {
@@ -52,36 +223,27 @@
         }
         
         .canvas-container {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 2;
         }
         
         canvas {
             border: 2px solid #555;
-            border-radius: 10px;
+            border-radius: 15px;
             display: block;
             background: linear-gradient(180deg, #f5f5f5 0%, #e8e8e8 100%);
+            width: 100%;
+            height: 400px;
         }
         
         .controls {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 15px;
-            padding: 25px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 2;
         }
         
         .glass-sphere-container {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 15px;
-            padding: 25px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 2;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -146,19 +308,13 @@
         
         .control-group h3 {
             margin: 0 0 15px 0;
-            color: #d0d0d0;
-            font-size: 1.2em;
-        }
-        
-        .glass-sphere-container h3 {
-            color: #d0d0d0;
-            text-align: center;
-            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1.2rem;
         }
         
         .sphere-info {
             text-align: center;
-            color: #a0a0a0;
+            color: rgba(255, 255, 255, 0.8);
             font-size: 0.9em;
             margin-top: 15px;
         }
@@ -171,36 +327,46 @@
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
-            color: #c0c0c0;
+            color: rgba(255, 255, 255, 0.9);
         }
         
         .slider-value {
             float: right;
-            background: rgba(255, 255, 255, 0.15);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(15px);
             padding: 2px 8px;
             border-radius: 12px;
             font-size: 0.9em;
-            color: #e0e0e0;
+            color: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
         
         input[type="range"] {
             width: 100%;
-            height: 8px;
-            border-radius: 4px;
-            background: rgba(255, 255, 255, 0.2);
+            height: 6px;
+            border-radius: 3px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
             outline: none;
             -webkit-appearance: none;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #ffffff, #cccccc);
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
             cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
         
         .polarization-buttons {
@@ -212,33 +378,87 @@
             flex: 1;
             padding: 12px;
             border: none;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #d0d0d0;
-            font-weight: bold;
+            border-radius: 15px;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.25) 0%, 
+                rgba(255, 255, 255, 0.1) 50%,
+                rgba(255, 255, 255, 0.2) 100%);
+            backdrop-filter: blur(15px) saturate(150%);
+            -webkit-backdrop-filter: blur(15px) saturate(150%);
+            color: white;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 6px 20px rgba(0, 0, 0, 0.15),
+                0 1px 0 rgba(255, 255, 255, 0.6) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+                0 0 0 1px rgba(255, 255, 255, 0.3);
+            border: 1px solid transparent;
+        }
+
+        .polarization-buttons button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, 
+                rgba(255, 255, 255, 0.25) 0%,
+                transparent 100%);
+            border-radius: 15px 15px 0 0;
+            pointer-events: none;
+        }
+
+        .polarization-buttons button:hover {
+            transform: translateY(-3px) scale(1.02);
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.35) 0%, 
+                rgba(255, 255, 255, 0.15) 50%,
+                rgba(255, 255, 255, 0.25) 100%);
+            backdrop-filter: blur(20px) saturate(200%);
+            -webkit-backdrop-filter: blur(20px) saturate(200%);
+            box-shadow: 
+                0 12px 30px rgba(0, 0, 0, 0.25),
+                0 1px 0 rgba(255, 255, 255, 0.8) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.15) inset,
+                0 0 0 1px rgba(255, 255, 255, 0.5),
+                0 0 15px rgba(255, 255, 255, 0.2);
         }
         
         .polarization-buttons button.active {
-            background: linear-gradient(45deg, #ffffff, #cccccc);
-            color: #333;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.35) 0%, 
+                rgba(255, 255, 255, 0.15) 50%,
+                rgba(255, 255, 255, 0.25) 100%);
             transform: scale(1.05);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.3),
+                0 1px 0 rgba(255, 255, 255, 0.8) inset,
+                0 -1px 0 rgba(0, 0, 0, 0.15) inset,
+                0 0 0 1px rgba(255, 255, 255, 0.5),
+                0 0 10px rgba(255, 255, 255, 0.2);
         }
         
         .results {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 100%);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
             padding: 20px;
             margin-top: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                inset 0 4px 15px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
         
         .results h3 {
             margin-top: 0;
-            color: #d0d0d0;
+            color: rgba(255, 255, 255, 0.95);
         }
         
         .result-row {
@@ -246,22 +466,128 @@
             justify-content: space-between;
             margin-bottom: 12px;
             padding: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 6px;
-            color: #c0c0c0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(15px);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
         
         .special-angles {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
             padding: 15px;
             margin-top: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
         }
         
         .special-angles h4 {
             margin-top: 0;
-            color: #e0e0e0;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        /* Source Code Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.95) 0%, rgba(30, 30, 30, 0.95) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            margin: 5% auto;
+            padding: 0;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 85vh;
+            overflow: hidden;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            padding: 20px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close {
+            color: rgba(255, 255, 255, 0.7);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: white;
+        }
+
+        .code-container {
+            padding: 30px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .code-block {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            overflow-x: auto;
+            box-shadow: inset 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .code-block pre {
+            color: #f8f8f2;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            margin: 0;
+            white-space: pre;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
         @media (max-width: 1200px) {
@@ -279,20 +605,56 @@
                 width: 150px;
                 height: 150px;
             }
+
+            .container {
+                padding: 60px 15px 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .source-buttons {
+                position: relative;
+                top: 0;
+                right: 0;
+                justify-content: center;
+                margin-bottom: 20px;
+            }
+
+            .back-button {
+                position: relative;
+                top: 0;
+                left: 0;
+                display: inline-block;
+                margin-bottom: 20px;
+            }
         }
     </style>
 </head>
 <body>
+    <canvas class="background-canvas"></canvas>
+
+    <a href="#" class="back-button">← Back to Portfolio</a>
+
+    <div class="source-buttons">
+        <button class="source-btn" onclick="showHTMLCode()">🌐 HTML Code</button>
+    </div>
+
     <div class="container">
-        <h1>🌈 Fresnel Equations Simulator</h1>
-        <p class="subtitle">Made with love by Lil Bingus ✨</p>
-        
+        <div class="header">
+            <h1>🌈 Fresnel Equations Simulator</h1>
+            <p>Transform light physics into visual understanding with interactive optics</p>
+            <p><em>Made with love by Lil Bingus ✨</em></p>
+        </div>
+
         <div class="main-content">
-            <div class="canvas-container">
+            <div class="glass-panel canvas-container">
+                <h3>🔬 Optical Interface Simulation</h3>
                 <canvas id="fresnelCanvas" width="500" height="400"></canvas>
             </div>
             
-            <div class="controls">
+            <div class="glass-panel controls">
                 <div class="control-group">
                     <h3>🔧 Light Properties</h3>
                     <div class="slider-container">
@@ -362,7 +724,7 @@
                 </div>
             </div>
             
-            <div class="glass-sphere-container">
+            <div class="glass-panel glass-sphere-container">
                 <h3>🔮 Glass Sphere Demo</h3>
                 <div class="glass-sphere" id="glassSphere">
                     <div class="sphere-glow" id="sphereGlow"></div>
@@ -371,6 +733,21 @@
                     <div>Reflection: <span id="sphereReflection">4.0%</span></div>
                     <div>Transmission: <span id="sphereTransmission">96.0%</span></div>
                     <div id="sphereStatus">Normal Refraction</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HTML Code Modal -->
+    <div id="htmlModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">🌐 HTML/JavaScript Source Code</h2>
+                <span class="close" onclick="closeModal('htmlModal')">&times;</span>
+            </div>
+            <div class="code-container">
+                <div class="code-block">
+                    <pre id="htmlCodeContent">Loading HTML code...</pre>
                 </div>
             </div>
         </div>
@@ -701,10 +1078,255 @@
                 ctx.fillText(label, labelX, labelY + 5);
             }
         }
+
+        // Source code loading functions
+        async function showHTMLCode() {
+            const codeContent = document.getElementById('htmlCodeContent');
+            codeContent.innerHTML = '<div class="loading"></div> Loading HTML source code...';
+            document.getElementById('htmlModal').style.display = 'block';
+            
+            // For HTML, we can show the current document
+            const htmlCode = document.documentElement.outerHTML;
+            codeContent.textContent = htmlCode;
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const htmlModal = document.getElementById('htmlModal');
+            if (event.target == htmlModal) {
+                htmlModal.style.display = 'none';
+            }
+        }
         
-        // Initialize the simulator when the page loads
-        window.addEventListener('load', () => {
+        // Initialize the application when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
             new FresnelSimulator();
+        });
+
+        // WebGL Lava Lamp Background
+        window.addEventListener('load', () => {
+            const canvas = document.querySelector('.background-canvas');
+            const gl = canvas.getContext("webgl");
+            if (!gl) {
+                console.error("WebGL not supported");
+                return;
+            }
+
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            function resizeCanvas() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+                gl.viewport(0, 0, width, height);
+            }
+            window.addEventListener("resize", resizeCanvas);
+
+            let mouse = { x: width / 2, y: height / 2 };
+            function onMouseMove(e) {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            }
+            window.addEventListener("mousemove", onMouseMove);
+
+            const circleColors = [
+                [18 / 255, 113 / 255, 1.0],
+                [221 / 255, 74 / 255, 1.0],
+                [100 / 255, 220 / 255, 1.0],
+                [200 / 255, 50 / 255, 50 / 255],
+                [180 / 255, 180 / 255, 50 / 255],
+                [140 / 255, 100 / 255, 1.0],
+            ];
+
+            let circles = [];
+            function initCircles() {
+                circles = [];
+                const baseRadius = (width + height) * 0.2;
+                for (let i = 0; i < 5; i++) {
+                    const radius = baseRadius;
+                    const x = Math.random() * width;
+                    const y = Math.random() * height;
+                    const speedMultiplier = Math.random() * 4 + 1;
+                    const vx = (Math.random() - 0.5) * speedMultiplier;
+                    const vy = (Math.random() - 0.5) * speedMultiplier;
+                    circles.push({
+                        x,
+                        y,
+                        radius,
+                        color: circleColors[i],
+                        vx,
+                        vy,
+                        interactive: false,
+                    });
+                }
+
+                // interactive circle
+                const interactiveRadius = (width + height) * 0.1;
+                circles.push({
+                    x: width / 2,
+                    y: height / 2,
+                    radius: interactiveRadius,
+                    color: circleColors[5],
+                    vx: 0,
+                    vy: 0,
+                    interactive: true,
+                });
+            }
+
+            initCircles();
+
+            const vertexSrc = `
+                attribute vec2 a_position;
+                varying vec2 v_uv;
+                void main(void) {
+                    v_uv = a_position * 0.5 + 0.5; 
+                    v_uv.y = 1.0 - v_uv.y; 
+                    gl_Position = vec4(a_position, 0.0, 1.0);
+                }
+            `;
+
+            const fragmentSrc = `
+                precision mediump float;
+                varying vec2 v_uv;
+
+                uniform vec2 u_resolution;
+                uniform bool u_darkMode;
+                uniform int u_circleCount;
+                uniform vec3 u_circlesColor[6];
+                uniform vec3 u_circlesPosRad[6];
+                uniform vec2 u_mouse;
+
+                void main(void) {
+                    vec2 st = v_uv * u_resolution;
+
+                    vec3 topColor = vec3(108.0/255.0, 0.0, 162.0/255.0);
+                    vec3 bottomColor = vec3(0.0, 17.0/255.0, 82.0/255.0);
+                    vec3 bgColor = mix(topColor, bottomColor, st.y / u_resolution.y);
+
+                    float fieldSum = 0.0;
+                    vec3 weightedColorSum = vec3(0.0);
+                    
+                    for (int i = 0; i < 6; i++) {
+                        if (i >= u_circleCount) { break; }
+                        vec3 posRad = u_circlesPosRad[i];
+                        vec2 cPos = vec2(posRad.r, posRad.g);
+                        float radius = posRad.b;
+                        float dist = length(st - cPos);
+                        float sigma = radius * 0.5;
+                        float val = exp(- (dist * dist) / (2.0 * sigma * sigma));
+                        fieldSum += val;
+                        weightedColorSum += u_circlesColor[i] * val;
+                    }
+
+                    vec3 finalCirclesColor = vec3(0.0);
+                    if (fieldSum > 0.0) {
+                        finalCirclesColor = weightedColorSum / fieldSum;
+                    }
+
+                    float intensity = pow(fieldSum, 1.4);
+                    vec3 finalColor = mix(bgColor, finalCirclesColor, clamp(intensity, 0.0, 1.0));
+                    gl_FragColor = vec4(finalColor, 1.0);
+                }
+            `;
+
+            function createShader(type, source) {
+                const shader = gl.createShader(type);
+                gl.shaderSource(shader, source);
+                gl.compileShader(shader);
+                if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                    console.error("Shader compile error:", gl.getShaderInfoLog(shader));
+                    gl.deleteShader(shader);
+                    return null;
+                }
+                return shader;
+            }
+
+            const vertShader = createShader(gl.VERTEX_SHADER, vertexSrc);
+            const fragShader = createShader(gl.FRAGMENT_SHADER, fragmentSrc);
+
+            const program = gl.createProgram();
+            gl.attachShader(program, vertShader);
+            gl.attachShader(program, fragShader);
+            gl.linkProgram(program);
+            if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+                console.error("Program link error:", gl.getProgramInfoLog(program));
+            }
+
+            gl.useProgram(program);
+
+            const quadBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
+            const vertices = new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]);
+            gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+            const a_position = gl.getAttribLocation(program, "a_position");
+            gl.enableVertexAttribArray(a_position);
+            gl.vertexAttribPointer(a_position, 2, gl.FLOAT, false, 0, 0);
+
+            const u_resolution = gl.getUniformLocation(program, "u_resolution");
+            const u_darkMode = gl.getUniformLocation(program, "u_darkMode");
+            const u_circleCount = gl.getUniformLocation(program, "u_circleCount");
+            const u_circlesColor = gl.getUniformLocation(program, "u_circlesColor");
+            const u_circlesPosRad = gl.getUniformLocation(program, "u_circlesPosRad");
+            const u_mouse = gl.getUniformLocation(program, "u_mouse");
+
+            gl.uniform2f(u_resolution, width, height);
+
+            function updateCircles() {
+                for (let i = 0; i < circles.length; i++) {
+                    const c = circles[i];
+                    if (!c.interactive) {
+                        c.x += c.vx;
+                        c.y += c.vy;
+                        if (c.x - c.radius > width) c.x = -c.radius;
+                        if (c.x + c.radius < 0) c.x = width + c.radius;
+                        if (c.y - c.radius > height) c.y = -c.radius;
+                        if (c.y + c.radius < 0) c.y = height + c.radius;
+                    } else {
+                        c.x += (mouse.x - c.x) * 0.1;
+                        c.y += (mouse.y - c.y) * 0.1;
+                    }
+                }
+            }
+
+            function render() {
+                updateCircles();
+
+                gl.viewport(0, 0, width, height);
+                gl.clearColor(0, 0, 0, 1);
+                gl.clear(gl.COLOR_BUFFER_BIT);
+
+                gl.useProgram(program);
+
+                gl.uniform1i(u_circleCount, circles.length);
+                gl.uniform2f(u_resolution, width, height);
+                gl.uniform2f(u_mouse, mouse.x, mouse.y);
+
+                let colorsArr = [];
+                let posRadArr = [];
+                for (let i = 0; i < 6; i++) {
+                    if (i < circles.length) {
+                        const c = circles[i];
+                        colorsArr.push(c.color[0], c.color[1], c.color[2]);
+                        posRadArr.push(c.x, c.y, c.radius);
+                    } else {
+                        colorsArr.push(0, 0, 0);
+                        posRadArr.push(0, 0, 0);
+                    }
+                }
+
+                gl.uniform3fv(u_circlesColor, new Float32Array(colorsArr));
+                gl.uniform3fv(u_circlesPosRad, new Float32Array(posRadArr));
+
+                gl.drawArrays(gl.TRIANGLES, 0, 6);
+                requestAnimationFrame(render);
+            }
+
+            render();
         });
     </script>
 </body>
