@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Star Galaxy - Leave Your Mark</title>
+    <title>Albert's Galaxy - Leave Your Mark!</title>
     
     <!-- External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -35,8 +35,11 @@
         return vec2(nx, ny);
         }
         void main() {
-        vec2 st = vec2(gl_FragCoord.x, u_resolution.y - gl_FragCoord.y)/u_resolution;
-        vec2 mt = vec2(u_mouse.x, u_resolution.y - u_mouse.y)/u_resolution;
+        // Convert screen coordinates to normalized coordinates (0-1)
+        vec2 st = gl_FragCoord.xy / u_resolution.xy;
+        // Convert mouse coordinates to normalized coordinates (0-1) with Y flipped for WebGL
+        vec2 mt = vec2(u_mouse.x / u_resolution.x, 1.0 - (u_mouse.y / u_resolution.y));
+        
         float dx = st.x - mt.x;
         float dy = st.y - mt.y;
         float dist = sqrt(dx * dx + dy * dy);
@@ -72,7 +75,7 @@
     
     <div id="ui-overlay">
         <div id="instructions">
-            <h3>🌟 Star Galaxy</h3>
+            <h3>🌟 Albert's Galaxy</h3>
             <p><strong>Controls:</strong></p>
             <p>• Drag: Rotate view</p>
             <p>• Scroll: Zoom in/out</p>
@@ -104,7 +107,7 @@
     <!-- Welcome Modal -->
     <div id="welcome-modal" class="hidden">
         <div class="modal-content">
-            <h2>🌟 Welcome to the Star Galaxy!</h2>
+            <h2>🌟 Welcome to the Albert Galaxy!</h2>
             <p>Leave your mark in the cosmos by creating your own star.</p>
             
             <input type="text" id="user-name" placeholder="Enter your name" maxlength="20">
