@@ -1,0 +1,255 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+    display: flex;
+    height: 100%;
+    width: 100%;
+    background-color: #000;
+    color: white;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Black hole shader background */
+#blackhole-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    margin: auto auto;
+}
+
+/* Three.js star galaxy layer */
+#canvas-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    cursor: grab;
+}
+
+#canvas-container:active {
+    cursor: grabbing;
+}
+
+#ui-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+}
+
+#star-counter {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #333;
+    pointer-events: auto;
+    backdrop-filter: blur(10px);
+}
+
+#search-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #333;
+    pointer-events: auto;
+    backdrop-filter: blur(10px);
+}
+
+#search-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #555;
+    border-radius: 5px;
+    padding: 8px;
+    color: white;
+    width: 200px;
+}
+
+#search-input::placeholder {
+    color: #aaa;
+}
+
+#search-results {
+    max-height: 150px;
+    overflow-y: auto;
+    margin-top: 10px;
+}
+
+.search-result {
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 3px;
+    margin: 2px 0;
+}
+
+.search-result:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#instructions {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #333;
+    max-width: 250px;
+    pointer-events: auto;
+    backdrop-filter: blur(10px);
+}
+
+#star-details {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #333;
+    pointer-events: auto;
+    backdrop-filter: blur(10px);
+    max-width: 250px;
+    min-width: 200px;
+}
+
+#star-info-content {
+    margin-top: 10px;
+}
+
+#star-info-content p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.star-name {
+    color: #4da6ff;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.star-color-badge {
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 1px solid #fff;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+/* Modal Styles */
+#welcome-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    pointer-events: auto;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    padding: 30px;
+    border-radius: 15px;
+    border: 2px solid #333;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 0 30px rgba(0, 150, 255, 0.3);
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+    color: #4da6ff;
+    text-shadow: 0 0 10px rgba(77, 166, 255, 0.5);
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #555;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 16px;
+}
+
+.modal-content input::placeholder {
+    color: #aaa;
+}
+
+.modal-content button {
+    background: linear-gradient(45deg, #4da6ff, #0073e6);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+    transition: transform 0.2s;
+}
+
+.modal-content button:hover {
+    transform: scale(1.05);
+}
+
+.modal-content button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#color-preview {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    margin: 10px auto;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#loading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #4da6ff;
+    font-size: 18px;
+    z-index: 500;
+}
