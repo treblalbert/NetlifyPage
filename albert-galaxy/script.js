@@ -79,10 +79,15 @@ function initBlackHole(image) {
     blackholeCanvas = document.getElementById('blackhole-canvas');
     blackholeGl = blackholeCanvas.getContext('webgl') || blackholeCanvas.getContext('experimental-webgl');
     
-    blackholeCanvas.width = window.innerWidth >= window.innerHeight ? window.innerWidth : window.innerHeight;
-    blackholeCanvas.height = window.innerWidth >= window.innerHeight ? window.innerWidth : window.innerHeight;
+    // Make canvas fill the full window (not square!)
+    blackholeCanvas.width = window.innerWidth;
+    blackholeCanvas.height = window.innerHeight;
     
-    blackholeMouse = {x: originX/2, y: -(originY/2) + blackholeCanvas.height, moved: false};
+    // Set canvas style to cover full screen
+    blackholeCanvas.style.width = window.innerWidth + 'px';
+    blackholeCanvas.style.height = window.innerHeight + 'px';
+    
+    blackholeMouse = {x: window.innerWidth/2, y: window.innerHeight/2, moved: false};
     
     // Mouse events for black hole effect
     $(document).mousedown(function(){
@@ -93,13 +98,14 @@ function initBlackHole(image) {
     });
     
     $(document).mousemove(function(e) {
+        // Direct mouse coordinates (no transformation needed)
         blackholeMouse.x = e.pageX;
-        blackholeMouse.y = -e.pageY + blackholeCanvas.height;
+        blackholeMouse.y = e.pageY;
         blackholeMouse.moved = true;
     });
 
-    // WebGL setup
-    blackholeGl.viewport(0, 0, blackholeGl.drawingBufferWidth, blackholeGl.drawingBufferHeight);
+    // WebGL setup with correct viewport
+    blackholeGl.viewport(0, 0, blackholeCanvas.width, blackholeCanvas.height);
     
     buffer = blackholeGl.createBuffer();
     blackholeGl.bindBuffer(blackholeGl.ARRAY_BUFFER, buffer);
@@ -141,7 +147,7 @@ function initBlackHole(image) {
     locationOfTime = blackholeGl.getUniformLocation(program, "u_time");
     locationOfclickedTime = blackholeGl.getUniformLocation(program, "u_clickedTime");
 
-    // Set initial uniforms
+    // Set initial uniforms with correct resolution
     blackholeGl.uniform2f(locationOfResolution, blackholeCanvas.width, blackholeCanvas.height);
     blackholeGl.uniform2f(locationOfMouse, blackholeMouse.x, blackholeMouse.y);
     blackholeGl.uniform1f(locationOfMass, curblackholeMass*0.00001);
@@ -187,9 +193,11 @@ function renderBlackHole() {
     } else if(clickedTime > 0 && clicked == false) {
         clickedTime += -(clickedTime*0.015);
     }
+    
+    // Auto-movement when mouse hasn't moved (fixed coordinates)
     if(blackholeMouse.moved == false){
-        blackholeMouse.y = (-(originY/2) + Math.sin(currentTime * 0.7) * ((originY * 0.25))) + blackholeCanvas.height;
-        blackholeMouse.x = (originX/2) + Math.sin(currentTime * 0.6) * -(originX * 0.35);
+        blackholeMouse.x = (window.innerWidth/2) + Math.sin(currentTime * 0.6) * (window.innerWidth * 0.35);
+        blackholeMouse.y = (window.innerHeight/2) + Math.sin(currentTime * 0.7) * (window.innerHeight * 0.25);
     }
 
     blackholeGl.uniform1f(locationOfMass, curblackholeMass*0.00001);
@@ -695,10 +703,23 @@ function setupEventListeners() {
     // Resize listener for black hole shader
     window.addEventListener('resize', function(event){
         if (blackholeCanvas && blackholeGl) {
-            blackholeCanvas.width = window.innerWidth >= window.innerHeight ? window.innerWidth : window.innerHeight;
-            blackholeCanvas.height = window.innerWidth >= window.innerHeight ? window.innerWidth : window.innerHeight;
+            // Resize canvas to match window
+            blackholeCanvas.width = window.innerWidth;
+            blackholeCanvas.height = window.innerHeight;
+            blackholeCanvas.style.width = window.innerWidth + 'px';
+            blackholeCanvas.style.height = window.innerHeight + 'px';
+            
+            // Update WebGL viewport
             blackholeGl.viewport(0, 0, blackholeCanvas.width, blackholeCanvas.height);
-            locationOfResolution = blackholeGl.getUniformLocation(program, "u_resolution");
+            
+            // Update resolution uniform
+            blackholeGl.uniform2f(locationOfResolution, blackholeCanvas.width, blackholeCanvas.height);
+            
+            // Reset mouse to center if not moved
+            if (!blackholeMouse.moved) {
+                blackholeMouse.x = window.innerWidth / 2;
+                blackholeMouse.y = window.innerHeight / 2;
+            }
         }
     });
 }
