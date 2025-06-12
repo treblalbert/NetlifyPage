@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fresnel Equations Simulator - By Lil Bingus</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(45deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            text-align: center;
+            opacity: 0.7;
+            margin-bottom: 30px;
+            font-style: italic;
+            color: #b0b0b0;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px 300px;
+            gap: 30px;
+            align-items: start;
+        }
+        
+        .canvas-container {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        canvas {
+            border: 2px solid #555;
+            border-radius: 10px;
+            display: block;
+            background: linear-gradient(180deg, #f5f5f5 0%, #e8e8e8 100%);
+        }
+        
+        .controls {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-sphere-container {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .glass-sphere {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            position: relative;
+            margin: 20px 0;
+            background: radial-gradient(circle at 30% 30%, 
+                rgba(255, 255, 255, 0.8) 0%,
+                rgba(255, 255, 255, 0.4) 30%,
+                rgba(200, 200, 200, 0.6) 70%,
+                rgba(100, 100, 100, 0.8) 100%);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.5),
+                inset 0 10px 20px rgba(255, 255, 255, 0.2),
+                inset 0 -10px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-sphere::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 20%;
+            width: 30%;
+            height: 30%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+            filter: blur(2px);
+        }
+        
+        .glass-sphere::after {
+            content: '';
+            position: absolute;
+            bottom: 10%;
+            right: 15%;
+            width: 20%;
+            height: 20%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+            filter: blur(1px);
+        }
+        
+        .sphere-glow {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            transition: all 0.3s ease;
+        }
+        
+        .control-group {
+            margin-bottom: 25px;
+        }
+        
+        .control-group h3 {
+            margin: 0 0 15px 0;
+            color: #d0d0d0;
+            font-size: 1.2em;
+        }
+        
+        .glass-sphere-container h3 {
+            color: #d0d0d0;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .sphere-info {
+            text-align: center;
+            color: #a0a0a0;
+            font-size: 0.9em;
+            margin-top: 15px;
+        }
+        
+        .slider-container {
+            margin-bottom: 15px;
+        }
+        
+        .slider-container label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #c0c0c0;
+        }
+        
+        .slider-value {
+            float: right;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            color: #e0e0e0;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ffffff, #cccccc);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+        
+        .polarization-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .polarization-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #d0d0d0;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .polarization-buttons button.active {
+            background: linear-gradient(45deg, #ffffff, #cccccc);
+            color: #333;
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .results {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .results h3 {
+            margin-top: 0;
+            color: #d0d0d0;
+        }
+        
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            color: #c0c0c0;
+        }
+        
+        .special-angles {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        
+        .special-angles h4 {
+            margin-top: 0;
+            color: #e0e0e0;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .glass-sphere {
+                width: 150px;
+                height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌈 Fresnel Equations Simulator</h1>
+        <p class="subtitle">Made with love by Lil Bingus ✨</p>
+        
+        <div class="main-content">
+            <div class="canvas-container">
+                <canvas id="fresnelCanvas" width="500" height="400"></canvas>
+            </div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <h3>🔧 Light Properties</h3>
+                    <div class="slider-container">
+                        <label>
+                            Incident Angle: <span class="slider-value" id="angleValue">30°</span>
+                        </label>
+                        <input type="range" id="angleSlider" min="0" max="89" value="30">
+                    </div>
+                    
+                    <div class="polarization-buttons">
+                        <button id="sPol" class="active">S-Polarized</button>
+                        <button id="pPol">P-Polarized</button>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <h3>🔬 Media Properties</h3>
+                    <div class="slider-container">
+                        <label>
+                            Medium 1 (n₁): <span class="slider-value" id="n1Value">1.00</span>
+                        </label>
+                        <input type="range" id="n1Slider" min="100" max="250" value="100">
+                    </div>
+                    
+                    <div class="slider-container">
+                        <label>
+                            Medium 2 (n₂): <span class="slider-value" id="n2Value">1.50</span>
+                        </label>
+                        <input type="range" id="n2Slider" min="100" max="250" value="150">
+                    </div>
+                </div>
+                
+                <div class="results">
+                    <h3>📊 Results</h3>
+                    <div class="result-row">
+                        <span>Reflection Coefficient (r):</span>
+                        <span id="reflectionCoeff">-0.200</span>
+                    </div>
+                    <div class="result-row">
+                        <span>Transmission Coefficient (t):</span>
+                        <span id="transmissionCoeff">0.800</span>
+                    </div>
+                    <div class="result-row">
+                        <span>Reflectance (R):</span>
+                        <span id="reflectance">4.0%</span>
+                    </div>
+                    <div class="result-row">
+                        <span>Transmittance (T):</span>
+                        <span id="transmittance">96.0%</span>
+                    </div>
+                    <div class="result-row">
+                        <span>Refracted Angle:</span>
+                        <span id="refractedAngle">19.5°</span>
+                    </div>
+                </div>
+                
+                <div class="special-angles">
+                    <h4>⭐ Special Angles</h4>
+                    <div class="result-row">
+                        <span>Brewster's Angle:</span>
+                        <span id="brewsterAngle">56.3°</span>
+                    </div>
+                    <div class="result-row">
+                        <span>Critical Angle:</span>
+                        <span id="criticalAngle">41.8°</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="glass-sphere-container">
+                <h3>🔮 Glass Sphere Demo</h3>
+                <div class="glass-sphere" id="glassSphere">
+                    <div class="sphere-glow" id="sphereGlow"></div>
+                </div>
+                <div class="sphere-info">
+                    <div>Reflection: <span id="sphereReflection">4.0%</span></div>
+                    <div>Transmission: <span id="sphereTransmission">96.0%</span></div>
+                    <div id="sphereStatus">Normal Refraction</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class FresnelSimulator {
+            constructor() {
+                this.canvas = document.getElementById('fresnelCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.glassSphere = document.getElementById('glassSphere');
+                this.sphereGlow = document.getElementById('sphereGlow');
+                this.angle = 30;
+                this.n1 = 1.0;
+                this.n2 = 1.5;
+                this.polarization = 's';
+                
+                this.setupEventListeners();
+                this.calculate();
+                this.draw();
+                this.updateGlassSphere();
+            }
+            
+            setupEventListeners() {
+                // Angle slider
+                const angleSlider = document.getElementById('angleSlider');
+                const angleValue = document.getElementById('angleValue');
+                angleSlider.addEventListener('input', (e) => {
+                    this.angle = parseFloat(e.target.value);
+                    angleValue.textContent = this.angle.toFixed(0) + '°';
+                    this.calculate();
+                    this.draw();
+                    this.updateGlassSphere();
+                });
+                
+                // Refractive index sliders
+                const n1Slider = document.getElementById('n1Slider');
+                const n1Value = document.getElementById('n1Value');
+                n1Slider.addEventListener('input', (e) => {
+                    this.n1 = parseFloat(e.target.value) / 100;
+                    n1Value.textContent = this.n1.toFixed(2);
+                    this.calculate();
+                    this.draw();
+                    this.updateGlassSphere();
+                });
+                
+                const n2Slider = document.getElementById('n2Slider');
+                const n2Value = document.getElementById('n2Value');
+                n2Slider.addEventListener('input', (e) => {
+                    this.n2 = parseFloat(e.target.value) / 100;
+                    n2Value.textContent = this.n2.toFixed(2);
+                    this.calculate();
+                    this.draw();
+                    this.updateGlassSphere();
+                });
+                
+                // Polarization buttons
+                document.getElementById('sPol').addEventListener('click', () => {
+                    this.polarization = 's';
+                    document.getElementById('sPol').classList.add('active');
+                    document.getElementById('pPol').classList.remove('active');
+                    this.calculate();
+                    this.draw();
+                    this.updateGlassSphere();
+                });
+                
+                document.getElementById('pPol').addEventListener('click', () => {
+                    this.polarization = 'p';
+                    document.getElementById('pPol').classList.add('active');
+                    document.getElementById('sPol').classList.remove('active');
+                    this.calculate();
+                    this.draw();
+                    this.updateGlassSphere();
+                });
+            }
+            
+            calculate() {
+                const theta1 = this.angle * Math.PI / 180;
+                
+                // Check for total internal reflection
+                const sinTheta2 = (this.n1 / this.n2) * Math.sin(theta1);
+                
+                if (sinTheta2 > 1 && this.n1 > this.n2) {
+                    // Total internal reflection
+                    this.totalInternalReflection = true;
+                    this.r = 1;
+                    this.t = 0;
+                    this.theta2 = 0;
+                } else {
+                    this.totalInternalReflection = false;
+                    this.theta2 = Math.asin(sinTheta2);
+                    
+                    const cosTheta1 = Math.cos(theta1);
+                    const cosTheta2 = Math.cos(this.theta2);
+                    
+                    if (this.polarization === 's') {
+                        this.r = (this.n1 * cosTheta1 - this.n2 * cosTheta2) / 
+                                 (this.n1 * cosTheta1 + this.n2 * cosTheta2);
+                        this.t = (2 * this.n1 * cosTheta1) / 
+                                 (this.n1 * cosTheta1 + this.n2 * cosTheta2);
+                    } else {
+                        this.r = (this.n2 * cosTheta1 - this.n1 * cosTheta2) / 
+                                 (this.n2 * cosTheta1 + this.n1 * cosTheta2);
+                        this.t = (2 * this.n1 * cosTheta1) / 
+                                 (this.n2 * cosTheta1 + this.n1 * cosTheta2);
+                    }
+                }
+                
+                this.R = this.r * this.r;
+                this.T = 1 - this.R;
+                
+                // Special angles
+                this.brewsterAngle = Math.atan(this.n2 / this.n1) * 180 / Math.PI;
+                this.criticalAngle = this.n1 > this.n2 ? 
+                    Math.asin(this.n2 / this.n1) * 180 / Math.PI : null;
+                
+                this.updateDisplay();
+            }
+            
+            updateDisplay() {
+                document.getElementById('reflectionCoeff').textContent = this.r.toFixed(3);
+                document.getElementById('transmissionCoeff').textContent = this.t.toFixed(3);
+                document.getElementById('reflectance').textContent = (this.R * 100).toFixed(1) + '%';
+                document.getElementById('transmittance').textContent = (this.T * 100).toFixed(1) + '%';
+                document.getElementById('refractedAngle').textContent = 
+                    this.totalInternalReflection ? 'N/A' : (this.theta2 * 180 / Math.PI).toFixed(1) + '°';
+                
+                document.getElementById('brewsterAngle').textContent = this.brewsterAngle.toFixed(1) + '°';
+                document.getElementById('criticalAngle').textContent = 
+                    this.criticalAngle ? this.criticalAngle.toFixed(1) + '°' : 'N/A';
+            }
+            
+            updateGlassSphere() {
+                // Update sphere info
+                document.getElementById('sphereReflection').textContent = (this.R * 100).toFixed(1) + '%';
+                document.getElementById('sphereTransmission').textContent = (this.T * 100).toFixed(1) + '%';
+                
+                // Update status
+                let status = 'Normal Refraction';
+                if (this.totalInternalReflection) {
+                    status = 'Total Internal Reflection';
+                } else if (Math.abs(this.angle - this.brewsterAngle) < 2 && this.polarization === 'p') {
+                    status = 'Near Brewster\'s Angle';
+                }
+                document.getElementById('sphereStatus').textContent = status;
+                
+                // Visual effects on sphere
+                const reflectionIntensity = this.R;
+                const transmissionIntensity = this.T;
+                
+                // Update sphere appearance based on reflection/transmission
+                let sphereOpacity = 0.6 + 0.4 * transmissionIntensity;
+                let glowIntensity = reflectionIntensity;
+                
+                // Special effects for total internal reflection
+                if (this.totalInternalReflection) {
+                    sphereOpacity = 0.9;
+                    glowIntensity = 1.0;
+                    this.glassSphere.style.background = `radial-gradient(circle at 30% 30%, 
+                        rgba(255, 255, 255, 0.9) 0%,
+                        rgba(255, 255, 255, 0.6) 30%,
+                        rgba(220, 220, 220, 0.8) 70%,
+                        rgba(150, 150, 150, 0.9) 100%)`;
+                } else {
+                    this.glassSphere.style.background = `radial-gradient(circle at 30% 30%, 
+                        rgba(255, 255, 255, ${0.8 * sphereOpacity}) 0%,
+                        rgba(255, 255, 255, ${0.4 * sphereOpacity}) 30%,
+                        rgba(200, 200, 200, ${0.6 * sphereOpacity}) 70%,
+                        rgba(100, 100, 100, ${0.8 * sphereOpacity}) 100%)`;
+                }
+                
+                // Update glow
+                this.sphereGlow.style.background = `radial-gradient(circle, 
+                    rgba(255, 255, 255, ${0.2 * glowIntensity}) 0%, 
+                    transparent 70%)`;
+                
+                // Subtle rotation based on angle
+                this.glassSphere.style.transform = `rotate(${this.angle * 0.5}deg)`;
+            }
+            
+            draw() {
+                const ctx = this.ctx;
+                const width = this.canvas.width;
+                const height = this.canvas.height;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw media background (grayscale)
+                ctx.fillStyle = 'rgba(200, 200, 200, 0.3)';
+                ctx.fillRect(0, 0, width, height / 2);
+                ctx.fillStyle = 'rgba(150, 150, 150, 0.3)';
+                ctx.fillRect(0, height / 2, width, height / 2);
+                
+                // Draw interface
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([10, 5]);
+                ctx.beginPath();
+                ctx.moveTo(0, height / 2);
+                ctx.lineTo(width, height / 2);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // Draw normal line
+                ctx.strokeStyle = '#666';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(width / 2, 0);
+                ctx.lineTo(width / 2, height);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // Calculate ray positions
+                const centerX = width / 2;
+                const centerY = height / 2;
+                const rayLength = 120;
+                
+                const theta1Rad = this.angle * Math.PI / 180;
+                const theta2Rad = this.theta2;
+                
+                // Incident ray (keep colored for clarity)
+                const incidentEndX = centerX - rayLength * Math.sin(theta1Rad);
+                const incidentEndY = centerY - rayLength * Math.cos(theta1Rad);
+                this.drawRay(incidentEndX, incidentEndY, centerX, centerY, '#FF6B6B', 'Incident', 3);
+                
+                // Reflected ray
+                const reflectedEndX = centerX + rayLength * Math.sin(theta1Rad);
+                const reflectedEndY = centerY - rayLength * Math.cos(theta1Rad);
+                const reflectedIntensity = Math.sqrt(this.R);
+                this.drawRay(centerX, centerY, reflectedEndX, reflectedEndY, 
+                           `rgba(255, 107, 107, ${0.3 + 0.7 * reflectedIntensity})`, 'Reflected', 3 * reflectedIntensity);
+                
+                // Transmitted ray (if not total internal reflection)
+                if (!this.totalInternalReflection) {
+                    const transmittedEndX = centerX + rayLength * Math.sin(theta2Rad);
+                    const transmittedEndY = centerY + rayLength * Math.cos(theta2Rad);
+                    const transmittedIntensity = Math.sqrt(this.T);
+                    this.drawRay(centerX, centerY, transmittedEndX, transmittedEndY, 
+                               `rgba(75, 192, 192, ${0.3 + 0.7 * transmittedIntensity})`, 'Transmitted', 3 * transmittedIntensity);
+                }
+                
+                // Draw angles
+                this.drawAngle(centerX, centerY, theta1Rad, 40, '#FF6B6B', 'θ₁');
+                this.drawAngle(centerX, centerY, -theta1Rad, 40, '#FF6B6B', 'θ₁', true);
+                
+                if (!this.totalInternalReflection) {
+                    this.drawAngle(centerX, centerY, theta2Rad, 60, '#4BC0C0', 'θ₂', false, true);
+                }
+                
+                // Labels
+                ctx.fillStyle = '#333';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'left';
+                ctx.fillText(`Medium 1 (n₁ = ${this.n1.toFixed(2)})`, 10, 30);
+                ctx.fillText(`Medium 2 (n₂ = ${this.n2.toFixed(2)})`, 10, height - 10);
+                
+                // Special case warnings
+                if (this.totalInternalReflection) {
+                    ctx.fillStyle = '#FF4444';
+                    ctx.font = 'bold 18px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('TOTAL INTERNAL REFLECTION', centerX, 50);
+                }
+                
+                if (Math.abs(this.angle - this.brewsterAngle) < 1 && this.polarization === 'p') {
+                    ctx.fillStyle = '#888';
+                    ctx.font = 'bold 16px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('Near Brewster\'s Angle!', centerX, height - 30);
+                }
+            }
+            
+            drawRay(x1, y1, x2, y2, color, label, lineWidth) {
+                const ctx = this.ctx;
+                
+                ctx.strokeStyle = color;
+                ctx.lineWidth = lineWidth;
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+                
+                // Arrow head
+                const angle = Math.atan2(y2 - y1, x2 - x1);
+                const headLength = 10;
+                ctx.beginPath();
+                ctx.moveTo(x2, y2);
+                ctx.lineTo(x2 - headLength * Math.cos(angle - Math.PI/6), 
+                          y2 - headLength * Math.sin(angle - Math.PI/6));
+                ctx.moveTo(x2, y2);
+                ctx.lineTo(x2 - headLength * Math.cos(angle + Math.PI/6), 
+                          y2 - headLength * Math.sin(angle + Math.PI/6));
+                ctx.stroke();
+            }
+            
+            drawAngle(centerX, centerY, angle, radius, color, label, reflected = false, transmitted = false) {
+                const ctx = this.ctx;
+                
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                
+                let startAngle, endAngle;
+                if (transmitted) {
+                    startAngle = Math.PI / 2;
+                    endAngle = Math.PI / 2 + angle;
+                } else if (reflected) {
+                    startAngle = Math.PI / 2;
+                    endAngle = Math.PI / 2 + angle;
+                } else {
+                    startAngle = Math.PI / 2 - angle;
+                    endAngle = Math.PI / 2;
+                }
+                
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.stroke();
+                
+                // Label
+                const labelAngle = (startAngle + endAngle) / 2;
+                const labelX = centerX + (radius + 15) * Math.cos(labelAngle);
+                const labelY = centerY + (radius + 15) * Math.sin(labelAngle);
+                
+                ctx.fillStyle = color;
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(label, labelX, labelY + 5);
+            }
+        }
+        
+        // Initialize the simulator when the page loads
+        window.addEventListener('load', () => {
+            new FresnelSimulator();
+        });
+    </script>
+</body>
+</html>
