@@ -264,6 +264,7 @@
 
         <div id="star-counter">
             <h3>⭐ Galaxy Stats</h3>
+            <p>Status: <span id="connection-status">🔄 Connecting...</span></p>
             <p>Total Stars: <span id="star-count">0</span></p>
             <p>Unique Visitors: <span id="visitor-count">0</span></p>
         </div>
@@ -312,6 +313,17 @@
         } catch (error) {
             console.log('🟡 Offline mode: Supabase connection failed', error);
             isOnlineMode = false;
+        }
+
+        function updateConnectionStatus() {
+            const statusElement = document.getElementById('connection-status');
+            if (isOnlineMode) {
+                statusElement.innerHTML = '🟢 Online (Database)';
+                statusElement.style.color = '#4da6ff';
+            } else {
+                statusElement.innerHTML = '🟡 Offline (Local)';
+                statusElement.style.color = '#f9ca24';
+            }
         }
 
         // ============== DATA MANAGEMENT ==============
@@ -440,6 +452,9 @@
                     if (error) {
                         console.error('❌ Database error:', error);
                         console.log('💡 Make sure you created the database tables! Check the setup instructions.');
+                        // Switch to offline mode due to database issues
+                        isOnlineMode = false;
+                        updateConnectionStatus();
                         // Fall back to default star
                         return [{ name: "PointZero", color: "#ff6b6b", position: { x: 0, y: 0, z: 0 }, timestamp: new Date().toISOString() }];
                     }
@@ -457,6 +472,9 @@
                 } catch (error) {
                     console.error('❌ Error loading stars:', error);
                     console.log('💡 This might mean the database tables don\'t exist yet. Check the setup instructions.');
+                    // Switch to offline mode due to connection issues
+                    isOnlineMode = false;
+                    updateConnectionStatus();
                 }
             } else {
                 // Offline mode: load from localStorage
@@ -516,6 +534,9 @@
         
         async function init() {
             document.getElementById('loading').style.display = 'block';
+            
+            // Update connection status display
+            updateConnectionStatus();
             
             // Check if user already exists
             const userExists = await checkExistingUser();
