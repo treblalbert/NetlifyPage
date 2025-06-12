@@ -6,7 +6,7 @@
     <title>Star Galaxy - Leave Your Mark</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- Supabase JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/supabase-js/2.39.0/umd/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -301,17 +301,24 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtuY3dxdHFtYnl1a2d1dWFyZ3NnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk3NDQ4MDUsImV4cCI6MjA2NTMyMDgwNX0.WvxeazNz2y-F57JE0fvT4XVXkEMZQ-R_sviYaSrRuNg';
         
         // Initialize Supabase client
-        let supabase = null;
+        let supabaseClient = null;
         let isOnlineMode = false;
 
         // Try to initialize Supabase
         try {
-            supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            isOnlineMode = true;
-            console.log('🟢 Online mode: Connected to Supabase');
-            console.log('Database URL:', SUPABASE_URL);
+            // Check if Supabase library loaded correctly from CDN
+            if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                const { createClient } = window.supabase;
+                supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                isOnlineMode = true;
+                console.log('🟢 Online mode: Connected to Supabase');
+                console.log('Database URL:', SUPABASE_URL);
+            } else {
+                throw new Error('Supabase library not found - make sure CDN loaded');
+            }
         } catch (error) {
             console.log('🟡 Offline mode: Supabase connection failed', error);
+            console.log('Make sure Supabase library is loaded correctly');
             isOnlineMode = false;
         }
 
@@ -355,7 +362,7 @@
             
             if (isOnlineMode) {
                 try {
-                    const { data, error } = await supabase
+                    const { data, error } = await supabaseClient
                         .from('galaxy_users')
                         .select('*')
                         .eq('fingerprint', fingerprint)
@@ -417,7 +424,7 @@
 
             if (isOnlineMode) {
                 try {
-                    const { data, error } = await supabase
+                    const { data, error } = await supabaseClient
                         .from('galaxy_users')
                         .insert([userRecord])
                         .select()
@@ -444,7 +451,7 @@
             if (isOnlineMode) {
                 try {
                     console.log('🔄 Loading stars from database...');
-                    const { data, error } = await supabase
+                    const { data, error } = await supabaseClient
                         .from('galaxy_stars')
                         .select('*')
                         .order('created_at', { ascending: true });
@@ -492,7 +499,7 @@
             if (isOnlineMode) {
                 try {
                     console.log('💾 Saving star to database:', starData.name);
-                    const { data, error } = await supabase
+                    const { data, error } = await supabaseClient
                         .from('galaxy_stars')
                         .insert([{
                             name: starData.name,
@@ -506,7 +513,10 @@
                     if (error) {
                         console.error('❌ Error saving star:', error);
                         console.log('💡 Make sure you created the database tables and set up the policies!');
-                        return null;
+                        // Switch to offline mode and try saving locally
+                        isOnlineMode = false;
+                        updateConnectionStatus();
+                        return await saveStar(starData); // Retry in offline mode
                     }
                     
                     if (data) {
@@ -515,7 +525,10 @@
                     }
                 } catch (error) {
                     console.error('❌ Database connection error:', error);
-                    return null;
+                    // Switch to offline mode and try saving locally
+                    isOnlineMode = false;
+                    updateConnectionStatus();
+                    return await saveStar(starData); // Retry in offline mode
                 }
             } else {
                 // Offline mode: save to localStorage
