@@ -105,9 +105,9 @@
 
         .title-overlay {
             position: fixed;
-            top: 50%;
+            top: 80px;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
             text-align: center;
             z-index: 500;
             pointer-events: none;
@@ -554,7 +554,7 @@
                 this.renderer.shadowMap.enabled = true;
                 this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-                // Setup camera
+                // Setup camera - fixed position, no mouse movement controls
                 this.camera.position.set(0, 0, 5);
 
                 // Create cube render target for environment mapping
@@ -576,7 +576,7 @@
                 // Add lights
                 this.addLights();
 
-                // Add mouse controls
+                // Add mouse controls (only zoom)
                 this.addMouseControls();
 
                 // Handle window resize
@@ -774,28 +774,19 @@
             }
 
             addMouseControls() {
-                let mouseX = 0, mouseY = 0;
-
-                document.addEventListener('mousemove', (event) => {
-                    mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-                    mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-
-                    // Rotate camera around the scene
-                    this.camera.position.x = Math.sin(mouseX * Math.PI) * 5;
-                    this.camera.position.y = mouseY * 2;
-                    this.camera.lookAt(0, 0, 0);
-
+                // Only mouse wheel for zoom - no mouse movement controls
+                document.addEventListener('wheel', (event) => {
+                    const zoomSpeed = 0.1;
+                    const newZ = this.camera.position.z + (event.deltaY > 0 ? zoomSpeed : -zoomSpeed);
+                    this.camera.position.z = Math.max(2, Math.min(10, newZ));
+                    
                     // Update info panel
                     const distance = this.camera.position.distanceTo(new THREE.Vector3(0, 0, 0));
                     document.getElementById('cameraDistance').textContent = distance.toFixed(1);
                 });
 
-                // Mouse wheel for zoom
-                document.addEventListener('wheel', (event) => {
-                    const zoomSpeed = 0.1;
-                    const newZ = this.camera.position.z + (event.deltaY > 0 ? zoomSpeed : -zoomSpeed);
-                    this.camera.position.z = Math.max(2, Math.min(10, newZ));
-                });
+                // Keep camera looking at center
+                this.camera.lookAt(0, 0, 0);
             }
 
             setupControls() {
