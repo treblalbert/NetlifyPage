@@ -441,6 +441,180 @@
       border-color: rgba(255, 255, 255, 0.4);
     }
 
+    /* SECRET SECTION STYLES */
+    .secret-section {
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.15) 0%, 
+        rgba(255, 255, 255, 0.05) 25%,
+        rgba(255, 255, 255, 0.02) 50%,
+        rgba(255, 255, 255, 0.05) 75%,
+        rgba(255, 255, 255, 0.15) 100%);
+      backdrop-filter: blur(15px) saturate(160%);
+      -webkit-backdrop-filter: blur(15px) saturate(160%);
+      border-radius: 25px;
+      padding: 2rem;
+      margin: 3rem 0;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 
+        0 6px 25px rgba(0, 0, 0, 0.1),
+        0 1px 0 rgba(255, 255, 255, 0.4) inset,
+        0 -1px 0 rgba(0, 0, 0, 0.05) inset;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .secret-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 30%;
+      background: linear-gradient(180deg, 
+        rgba(255, 255, 255, 0.15) 0%,
+        rgba(255, 255, 255, 0.03) 70%,
+        transparent 100%);
+      border-radius: 25px 25px 0 0;
+      pointer-events: none;
+    }
+
+    .secret-section:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.2) 0%, 
+        rgba(255, 255, 255, 0.08) 25%,
+        rgba(255, 255, 255, 0.04) 50%,
+        rgba(255, 255, 255, 0.08) 75%,
+        rgba(255, 255, 255, 0.2) 100%);
+      box-shadow: 
+        0 12px 35px rgba(0, 0, 0, 0.15),
+        0 1px 0 rgba(255, 255, 255, 0.6) inset,
+        0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+        0 0 0 1px rgba(255, 255, 255, 0.3);
+    }
+
+    .secret-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .secret-hint {
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .secret-form {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 2;
+    }
+
+    .secret-input {
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.25) 0%, 
+        rgba(255, 255, 255, 0.1) 100%);
+      backdrop-filter: blur(15px) saturate(180%);
+      -webkit-backdrop-filter: blur(15px) saturate(180%);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 15px;
+      padding: 0.8rem 1.2rem;
+      color: white;
+      font-size: 1rem;
+      font-weight: 500;
+      min-width: 200px;
+      transition: all 0.3s ease;
+      box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.1),
+        0 1px 0 rgba(255, 255, 255, 0.4) inset;
+    }
+
+    .secret-input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .secret-input:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.6);
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.3) 0%, 
+        rgba(255, 255, 255, 0.15) 100%);
+      box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.15),
+        0 1px 0 rgba(255, 255, 255, 0.6) inset,
+        0 0 0 3px rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .secret-button {
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.3) 0%, 
+        rgba(255, 255, 255, 0.15) 100%);
+      backdrop-filter: blur(15px) saturate(180%);
+      -webkit-backdrop-filter: blur(15px) saturate(180%);
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: 15px;
+      padding: 0.8rem 1.5rem;
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.1),
+        0 1px 0 rgba(255, 255, 255, 0.5) inset;
+    }
+
+    .secret-button:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.4) 0%, 
+        rgba(255, 255, 255, 0.2) 100%);
+      border-color: rgba(255, 255, 255, 0.6);
+      box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.15),
+        0 1px 0 rgba(255, 255, 255, 0.7) inset,
+        0 0 0 2px rgba(255, 255, 255, 0.2);
+    }
+
+    .secret-button:active {
+      transform: translateY(-1px);
+    }
+
+    .secret-feedback {
+      margin-top: 1rem;
+      padding: 0.8rem;
+      border-radius: 10px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 2;
+    }
+
+    .secret-feedback.success {
+      background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(76, 175, 80, 0.1));
+      color: #e8f5e8;
+      border: 1px solid rgba(76, 175, 80, 0.5);
+    }
+
+    .secret-feedback.error {
+      background: linear-gradient(135deg, rgba(244, 67, 54, 0.3), rgba(244, 67, 54, 0.1));
+      color: #ffebee;
+      border: 1px solid rgba(244, 67, 54, 0.5);
+    }
+
     footer {
       text-align: center;
       margin-top: 3rem;
@@ -487,6 +661,15 @@
       
       .contact-links {
         gap: 1rem;
+      }
+
+      .secret-form {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .secret-input {
+        min-width: 250px;
       }
     }
   </style>
@@ -560,6 +743,23 @@
           </div>
         </div>
       </section>
+
+      <!-- SECRET SECTION -->
+      <section class="secret-section">
+        <h3 class="secret-title">🔐 Secret Area</h3>
+        <p class="secret-hint">There might be something hidden here... Know any secret words?</p>
+        <div class="secret-form">
+          <input 
+            type="password" 
+            id="secretInput" 
+            class="secret-input" 
+            placeholder="Enter secret password..."
+            autocomplete="off"
+          >
+          <button type="button" class="secret-button" onclick="checkSecretPassword()">Unlock</button>
+        </div>
+        <div id="secretFeedback" class="secret-feedback" style="display: none;"></div>
+      </section>
     </main>
 
     <footer>
@@ -568,6 +768,43 @@
   </div>
 
   <script>
+// Secret password functionality
+function checkSecretPassword() {
+  const input = document.getElementById('secretInput');
+  const feedback = document.getElementById('secretFeedback');
+  const password = input.value.toLowerCase().trim();
+  
+  if (password === 'wrecky') {
+    feedback.textContent = '🎮 Access granted! Redirecting to secret project...';
+    feedback.className = 'secret-feedback success';
+    feedback.style.display = 'block';
+    
+    // Redirect after a short delay
+    setTimeout(() => {
+      window.location.href = './wrecky/';
+    }, 1500);
+  } else if (password === '') {
+    feedback.style.display = 'none';
+  } else {
+    feedback.textContent = '❌ Incorrect password. Try again!';
+    feedback.className = 'secret-feedback error';
+    feedback.style.display = 'block';
+    
+    // Clear the error after 3 seconds
+    setTimeout(() => {
+      feedback.style.display = 'none';
+      input.value = '';
+    }, 3000);
+  }
+}
+
+// Allow Enter key to submit
+document.getElementById('secretInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    checkSecretPassword();
+  }
+});
+
 window.addEventListener('load', () => {
   const canvas = document.querySelector('.background-canvas');
   const gl = canvas.getContext("webgl");
