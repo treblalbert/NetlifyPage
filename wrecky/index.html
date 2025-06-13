@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WRECKY KART - Game Concept Document</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Nunito:wght@400;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="white" opacity="0.3"/><circle cx="80" cy="40" r="1.5" fill="white" opacity="0.4"/><circle cx="40" cy="80" r="1" fill="white" opacity="0.3"/><circle cx="90" cy="90" r="2.5" fill="white" opacity="0.2"/><circle cx="10" cy="60" r="1.8" fill="white" opacity="0.3"/></svg>') repeat;
+            animation: sparkle 10s linear infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes sparkle {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(100px, 100px); }
+        }
+        
+        .title {
+            font-family: 'Fredoka One', cursive;
+            font-size: 4rem;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .company-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(120, 70, 70, 0.9);
+            color: #f4e4c1;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 2px solid #8b5a3c;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 3;
+        }
+        
+        .content {
+            padding: 2rem;
+        }
+        
+        .section {
+            margin-bottom: 2.5rem;
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+        
+        .section.gameplay { border-left-color: #ff6b6b; }
+        .section.scoring { border-left-color: #feca57; }
+        .section.features { border-left-color: #48dbfb; }
+        .section.art-style { border-left-color: #ff9ff3; }
+        .section.content-scope { border-left-color: #54a0ff; }
+        
+        .section-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title::before {
+            content: '';
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .gameplay .section-title::before { background: linear-gradient(45deg, #ff6b6b, #ff8e8e); }
+        .scoring .section-title::before { background: linear-gradient(45deg, #feca57, #ffd700); }
+        .features .section-title::before { background: linear-gradient(45deg, #48dbfb, #7ed6df); }
+        .art-style .section-title::before { background: linear-gradient(45deg, #ff9ff3, #fca3ff); }
+        .content-scope .section-title::before { background: linear-gradient(45deg, #54a0ff, #74b9ff); }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea15, #764ba215);
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            position: relative;
+        }
+        
+        .highlight-box::before {
+            content: '💡';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: white;
+            padding: 0 10px;
+            font-size: 1.2rem;
+        }
+        
+        .scoring-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .score-card {
+            background: linear-gradient(135deg, #667eea10, #764ba210);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 2px solid #e0e6ff;
+            transition: all 0.3s ease;
+        }
+        
+        .score-card:hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.2);
+        }
+        
+        .score-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #667eea;
+            display: block;
+        }
+        
+        .score-description {
+            font-weight: 600;
+            color: #555;
+            margin-top: 0.5rem;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            border-color: #48dbfb;
+            transform: translateY(-3px);
+        }
+        
+        .feature-emoji {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .feature-title {
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .inspiration-box {
+            background: linear-gradient(135deg, #ff6b6b15, #feca5715);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            border: 2px dashed #ff6b6b;
+        }
+        
+        .inspiration-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+        }
+        
+        .game-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin: 1rem 0;
+        }
+        
+        .game-logo {
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 700;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .plus-sign {
+            font-size: 2rem;
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+        
+        .footer {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .footer-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .company-badge {
+                position: static;
+                display: inline-block;
+                margin-top: 1rem;
+            }
+            
+            .content {
+                padding: 1rem;
+            }
+            
+            .section {
+                padding: 1.5rem;
+            }
+            
+            .game-logos {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="company-badge">THE WRENCH</div>
+            <h1 class="title">WRECKY KART</h1>
+            <p class="subtitle">Chaotic Racing • Strategic Trapping • Endless Fun</p>
+        </header>
+        
+        <div class="content">
+            <section class="section gameplay">
+                <h2 class="section-title">Core Gameplay</h2>
+                <p>WRECKY KART combines the thrill of kart racing with the strategic chaos of trap placement. Each race consists of <strong>3 laps</strong> with infinite rounds, but here's the twist: before each round begins, every player strategically places <strong>3 traps</strong> around the track.</p>
+                
+                <div class="highlight-box">
+                    <strong>The Paradox:</strong> Players must work together to ensure the track remains finishable while simultaneously working against each other to claim victory. It's cooperation meets competition in the most delightfully chaotic way possible!
+                </div>
+                
+                <p>During races, players can collect items scattered around the track to gain advantages, dodge traps, or create new obstacles for their opponents. Every race becomes a unique puzzle of navigation, timing, and tactical thinking.</p>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <span class="feature-emoji">🧱</span>
+                        <div class="feature-title">Walls</div>
+                        <p>Block pathways and force detours</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-emoji">💥</span>
+                        <div class="feature-title">Explosive Barrels</div>
+                        <p>Timed destruction for maximum chaos</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-emoji">⚙️</span>
+                        <div class="feature-title">Moving Chainsaws</div>
+                        <p>Dynamic hazards that patrol areas</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-emoji">💣</span>
+                        <div class="feature-title">Cannonball Launchers</div>
+                        <p>Projectile-based area denial</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section scoring">
+                <h2 class="section-title">Scoring System</h2>
+                <p>Victory requires <strong>30 points</strong> - but there are multiple paths to success!</p>
+                
+                <div class="scoring-grid">
+                    <div class="score-card">
+                        <span class="score-value">3</span>
+                        <div class="score-description">Finishing First</div>
+                    </div>
+                    <div class="score-card">
+                        <span class="score-value">2</span>
+                        <div class="score-description">Destroying an Opponent with Your Trap</div>
+                    </div>
+                    <div class="score-card">
+                        <span class="score-value">1</span>
+                        <div class="score-description">Finishing the Race</div>
+                    </div>
+                    <div class="score-card">
+                        <span class="score-value">0</span>
+                        <div class="score-description">Getting Destroyed</div>
+                    </div>
+                </div>
+                
+                <div class="highlight-box">
+                    <strong>Comeback Mechanic:</strong> Lose 2 races in a row but win the 3rd? Earn a massive <strong>4 points</strong> for your triumphant return! This keeps everyone in the game until the very end.
+                </div>
+            </section>
+            
+            <section class="section features">
+                <h2 class="section-title">Key Features</h2>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <span class="feature-emoji">🏁</span>
+                        <div class="feature-title">Infinite Rounds</div>
+                        <p>Each race is fresh with new trap configurations</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-emoji">🎯</span>
+                        <div class="feature-title">Strategic Depth</div>
+                        <p>Balance cooperation and competition</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-emoji">🎁</span>
+                        <div class="feature-title">Track Items</div>
+                        <p>Power-ups and tools scattered throughout</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="feature-emoji">🏆</span>
+                        <div class="feature-title">Dynamic Scoring</div>
+                        <p>Multiple ways to earn points and win</p>
+                    </div>
+                </div>
+                
+                <div class="inspiration-box">
+                    <div class="inspiration-title">Genre-Defining Fusion</div>
+                    <div class="game-logos">
+                        <div class="game-logo" style="color: #e74c3c;">Mario Kart</div>
+                        <div class="plus-sign">+</div>
+                        <div class="game-logo" style="color: #f39c12;">Ultimate Chicken Horse</div>
+                    </div>
+                    <p>The beloved racing mechanics of Mario Kart meet the creative chaos of Ultimate Chicken Horse's level building!</p>
+                </div>
+            </section>
+            
+            <section class="section art-style">
+                <h2 class="section-title">Art Direction</h2>
+                <p>WRECKY KART features <strong>adorable 3D animal characters</strong> in a unique visual style that blends the charming plasticky aesthetic of <em>The Legend of Zelda: Link's Awakening Remake</em> with realistic elements like detailed fur textures and metallic surfaces.</p>
+                
+                <div class="highlight-box">
+                    <strong>Visual Identity:</strong> This hybrid approach creates a world that feels both whimsical and tactile - cute enough for families, detailed enough for gaming enthusiasts. Characters pop with personality while environments feel substantial and interactive.
+                </div>
+                
+                <p>The contrast between stylized character design and realistic material properties creates a distinctive look that stands out in the crowded kart racing market while maintaining broad appeal across age groups.</p>
+            </section>
+            
+            <section class="section content-scope">
+                <h2 class="section-title">Content & Expansion</h2>
+                <p>Launch with <strong>15 meticulously designed tracks</strong>, each offering unique layout challenges and trap placement opportunities. Every track tells a story and provides different strategic considerations for trap placement.</p>
+                
+                <div class="highlight-box">
+                    <strong>Post-Launch Vision:</strong> Expand the WRECKY KART universe through regular DLC releases featuring new tracks, trap types, characters, and game modes. The modular design ensures fresh content can seamlessly integrate into the core experience.
+                </div>
+                
+                <p>Future content may include seasonal events, community-created tracks, new trap mechanics, and expanded character rosters - all designed to keep the WRECKY KART community engaged and growing.</p>
+            </section>
+        </div>
+        
+        <footer class="footer">
+            <div class="footer-title">Developed by THE WRENCH</div>
+            <p>Where creativity meets controlled chaos • Built for gamers, by gamers</p>
+        </footer>
+    </div>
+</body>
+</html>
