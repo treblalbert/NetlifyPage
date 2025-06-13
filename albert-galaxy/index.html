@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
     <title>Albert's Galaxy - Leave Your Mark!</title>
     
     <!-- External Libraries -->
@@ -353,6 +353,148 @@
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.5);
         }
+
+        /* ============== MOBILE RESPONSIVE STYLES ============== */
+        @media (max-width: 768px) {
+            .liquid-crystal-panel {
+                padding: 15px;
+                font-size: 14px;
+            }
+
+            #instructions {
+                max-width: 200px;
+                top: 10px;
+                left: 10px;
+            }
+
+            #search-container {
+                top: 10px;
+                right: 10px;
+                min-width: 200px;
+            }
+
+            #star-counter {
+                bottom: 10px;
+                right: 10px;
+                font-size: 13px;
+            }
+
+            #star-details {
+                bottom: 10px;
+                left: 10px;
+                max-width: 200px;
+                font-size: 13px;
+            }
+
+            #search-input, #user-name {
+                padding: 15px;
+                font-size: 16px; /* Prevents zoom on iOS */
+                -webkit-appearance: none;
+                border-radius: 8px;
+            }
+
+            .search-result {
+                padding: 12px 8px;
+                margin: 5px 0;
+                font-size: 14px;
+                min-height: 44px; /* Apple touch target size */
+                display: flex;
+                align-items: center;
+            }
+
+            .modal-content {
+                margin: 20px;
+                padding: 25px;
+                max-width: calc(100% - 40px);
+            }
+
+            .modal-content input {
+                padding: 15px;
+                font-size: 16px; /* Prevents zoom on iOS */
+                -webkit-appearance: none;
+            }
+
+            .modal-content button {
+                padding: 18px 30px;
+                font-size: 18px;
+                min-height: 44px; /* Apple touch target size */
+            }
+
+            #instructions h3 {
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+
+            #instructions p {
+                font-size: 13px;
+                line-height: 1.4;
+                margin: 5px 0;
+            }
+
+            /* Touch-friendly star info */
+            #star-info-content p {
+                margin: 6px 0;
+                font-size: 13px;
+                line-height: 1.3;
+            }
+
+            .star-name {
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .liquid-crystal-panel {
+                padding: 12px;
+                font-size: 13px;
+            }
+
+            #instructions, #search-container, #star-counter, #star-details {
+                position: absolute;
+                width: calc(100% - 20px);
+                left: 10px;
+                right: 10px;
+                max-width: none;
+            }
+
+            #instructions {
+                top: 10px;
+            }
+
+            #search-container {
+                top: auto;
+                bottom: 200px;
+            }
+
+            #star-counter {
+                bottom: 100px;
+            }
+
+            #star-details {
+                bottom: 10px;
+            }
+
+            .modal-content {
+                margin: 10px;
+                padding: 20px;
+                max-width: calc(100% - 20px);
+            }
+        }
+
+        /* Prevent text selection during touch interactions */
+        #canvas-container {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            touch-action: none;
+        }
+
+        /* Improve touch targets */
+        button, input, .search-result {
+            -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -410,6 +552,11 @@
     
     <div id="loading">🌟 Loading galaxy...</div>
     
+    <!-- Mobile touch hint -->
+    <div id="mobile-hint" class="mobile-hint hidden">
+        👆 Drag to rotate • 🤏 Pinch to zoom • 👇 Tap stars
+    </div>
+    
     <!-- Three.js star galaxy layer -->
     <div id="canvas-container"></div>
     
@@ -418,10 +565,10 @@
             <h3>🌟 Albert's Galaxy</h3>
             <p><strong>Controls:</strong></p>
             <p>• Drag: Rotate view</p>
-            <p>• Scroll: Zoom in/out</p>
-            <p>• Click stars to focus</p>
+            <p>• Scroll/Pinch: Zoom in/out</p>
+            <p>• Tap/Click stars to focus</p>
             <p>• Space: Reset to center</p>
-            <p><br><em>Welcome to the galaxy! Your star will be saved forever and connected to nearby stars in clusters.</em></p>
+            <p><br><em>Welcome to the galaxy! Your star will be saved forever and may develop its own planetary system, connecting to nearby stars in clusters.</em></p>
         </div>
 
         <div id="search-container" class="liquid-crystal-panel">
@@ -434,13 +581,15 @@
             <p>Status: <span id="connection-status">🔄 Connecting...</span></p>
             <p>Total Stars: <span id="star-count">0</span></p>
             <p>Star Clusters: <span id="cluster-count">0</span></p>
+            <p>Planetary Systems: <span id="system-count">0</span></p>
+            <p>Total Planets: <span id="planet-count">0</span></p>
             <p>Unique Visitors: <span id="visitor-count">0</span></p>
         </div>
 
         <div id="star-details" class="liquid-crystal-panel">
             <h3>🌟 Star Details</h3>
             <div id="star-info-content">
-                <p><em>Click on a star to see its details and cluster connections</em></p>
+                <p><em>Click on a star to see its details, cluster connections, and planetary system</em></p>
             </div>
         </div>
     </div>
@@ -449,7 +598,7 @@
     <div id="welcome-modal" class="hidden">
         <div class="modal-content">
             <h2>🌟 Welcome to the Albert Galaxy!</h2>
-            <p>Leave your mark in the cosmos by creating your own star.</p>
+            <p>Leave your mark in the cosmos by creating your own star. Your star may develop its own planetary system and connect to nearby stars!</p>
             
             <input type="text" id="user-name" placeholder="Enter your name" maxlength="20">
             
@@ -514,6 +663,7 @@
         let starMeshes = [];
         let starClusters = [];
         let clusterLines = [];
+        let planetarySystems = [];
         let selectedStar = null;
         let isDragging = false;
         let previousMousePosition = { x: 0, y: 0 };
@@ -799,6 +949,124 @@
             return null;
         }
 
+        // ============== PLANETARY SYSTEM FUNCTIONS ==============
+        function createRandomPlanetarySystems() {
+            const PLANET_CHANCE = 0.4; // 40% of stars get planets
+            planetarySystems = [];
+
+            starMeshes.forEach((starObj, starIndex) => {
+                if (Math.random() < PLANET_CHANCE) {
+                    const planetCount = Math.floor(Math.random() * 7) + 1; // 1-7 planets
+                    const starName = starObj.data.name;
+                    const starPosition = starObj.data.position;
+                    
+                    const systemData = {
+                        starIndex: starIndex,
+                        starName: starName,
+                        planets: [],
+                        orbitLines: []
+                    };
+
+                    // Create planets at different orbital distances
+                    for (let p = 0; p < planetCount; p++) {
+                        const orbitRadius = 2 + (p * 1.5) + Math.random() * 0.8; // Increasing orbit sizes
+                        const planetSize = 0.1 + Math.random() * 0.15; // Small random sizes
+                        const orbitalSpeed = (0.02 + Math.random() * 0.03) / (p + 1); // Closer planets orbit faster
+                        const startAngle = Math.random() * Math.PI * 2; // Random starting position
+                        
+                        // Random planet colors (more muted than stars)
+                        const planetColors = [
+                            '#8B4513', '#CD853F', '#DEB887', '#F4A460', // Browns/tans
+                            '#4169E1', '#6495ED', '#87CEEB', '#B0C4DE', // Blues
+                            '#228B22', '#32CD32', '#90EE90', '#98FB98', // Greens
+                            '#DC143C', '#FF6347', '#FF7F50', '#FFA07A', // Reds
+                            '#9370DB', '#BA55D3', '#DDA0DD', '#E6E6FA'  // Purples
+                        ];
+                        const planetColor = planetColors[Math.floor(Math.random() * planetColors.length)];
+
+                        // Create planet mesh
+                        const planetGeometry = new THREE.SphereGeometry(planetSize, 8, 8);
+                        const planetMaterial = new THREE.MeshBasicMaterial({ color: planetColor });
+                        const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
+                        
+                        // Position planet initially
+                        planetMesh.position.set(
+                            starPosition.x + orbitRadius * Math.cos(startAngle),
+                            starPosition.y,
+                            starPosition.z + orbitRadius * Math.sin(startAngle)
+                        );
+
+                        scene.add(planetMesh);
+
+                        // Create orbit line
+                        const orbitGeometry = new THREE.RingGeometry(orbitRadius - 0.02, orbitRadius + 0.02, 32);
+                        const orbitMaterial = new THREE.MeshBasicMaterial({
+                            color: 0xffffff,
+                            transparent: true,
+                            opacity: 0.15,
+                            side: THREE.DoubleSide
+                        });
+                        const orbitLine = new THREE.Mesh(orbitGeometry, orbitMaterial);
+                        
+                        // Position orbit around star
+                        orbitLine.position.set(starPosition.x, starPosition.y, starPosition.z);
+                        orbitLine.rotation.x = Math.PI / 2; // Make it horizontal
+                        
+                        scene.add(orbitLine);
+
+                        // Store planet data
+                        const planetData = {
+                            name: `${starName}-${p + 1}`,
+                            mesh: planetMesh,
+                            orbitRadius: orbitRadius,
+                            orbitalSpeed: orbitalSpeed,
+                            currentAngle: startAngle,
+                            color: planetColor,
+                            size: planetSize,
+                            starPosition: starPosition
+                        };
+
+                        systemData.planets.push(planetData);
+                        systemData.orbitLines.push(orbitLine);
+                    }
+
+                    planetarySystems.push(systemData);
+                }
+            });
+
+            console.log(`🪐 Created ${planetarySystems.length} planetary systems with ${planetarySystems.reduce((total, sys) => total + sys.planets.length, 0)} total planets`);
+        }
+
+        function animatePlanets() {
+            planetarySystems.forEach(system => {
+                system.planets.forEach(planetData => {
+                    // Update planet orbital position
+                    planetData.currentAngle += planetData.orbitalSpeed;
+                    
+                    // Calculate new position
+                    const x = planetData.starPosition.x + planetData.orbitRadius * Math.cos(planetData.currentAngle);
+                    const z = planetData.starPosition.z + planetData.orbitRadius * Math.sin(planetData.currentAngle);
+                    
+                    planetData.mesh.position.set(x, planetData.starPosition.y, z);
+                    
+                    // Add slight rotation to planet
+                    planetData.mesh.rotation.y += 0.05;
+                });
+            });
+        }
+
+        function getStarPlanetaryInfo(starData) {
+            const system = planetarySystems.find(sys => sys.starName === starData.name);
+            if (system) {
+                return {
+                    planetCount: system.planets.length,
+                    planetNames: system.planets.map(p => p.name),
+                    hasSystem: true
+                };
+            }
+            return { hasSystem: false };
+        }
+
         // ============== STAR CLUSTER FUNCTIONS ==============
         function calculateDistance(pos1, pos2) {
             const dx = pos1.x - pos2.x;
@@ -921,6 +1189,21 @@
             return null;
         }
 
+        // ============== MOBILE DETECTION AND HINTS ==============
+        function isMobileDevice() {
+            return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1) || /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        function showMobileHint() {
+            if (isMobileDevice()) {
+                const mobileHint = document.getElementById('mobile-hint');
+                mobileHint.classList.remove('hidden');
+                setTimeout(() => {
+                    mobileHint.classList.add('hidden');
+                }, 4000);
+            }
+        }
+
         // ============== INITIALIZATION ==============
         async function init() {
             document.getElementById('loading').style.display = 'block';
@@ -941,6 +1224,9 @@
             initThreeJS();
             stars.forEach(star => createStarWithBloom(star));
             
+            // Create planetary systems after all stars are loaded
+            createRandomPlanetarySystems();
+            
             // Create star clusters after all stars are loaded
             createClusterLines();
             
@@ -949,6 +1235,9 @@
             animate();
             
             document.getElementById('loading').style.display = 'none';
+            
+            // Show mobile hint if on mobile device
+            showMobileHint();
             
             if (!userExists) {
                 setTimeout(() => {
@@ -1074,6 +1363,9 @@
 
             createStarWithBloom(savedStar);
             
+            // Recreate planetary systems to potentially include the new star
+            createRandomPlanetarySystems();
+            
             // Recreate clusters to include the new star
             createClusterLines();
             
@@ -1126,7 +1418,11 @@
 
         function setupEventListeners() {
             let hasMouseMoved = false;
+            let hasTouchMoved = false;
+            let lastTouchDistance = 0;
+            let touchStartTime = 0;
             
+            // ============== DESKTOP MOUSE CONTROLS ==============
             document.addEventListener('mousedown', (event) => {
                 if (event.target.closest('#ui-overlay')) return;
                 isDragging = true;
@@ -1164,10 +1460,121 @@
             });
 
             document.addEventListener('wheel', (event) => {
+                event.preventDefault();
                 cameraDistance += event.deltaY * 0.1;
                 cameraDistance = Math.max(5, Math.min(200, cameraDistance));
+            }, { passive: false });
+
+            // ============== MOBILE TOUCH CONTROLS ==============
+            // Single touch for rotation
+            document.addEventListener('touchstart', (event) => {
+                if (event.target.closest('#ui-overlay')) return;
+                
+                touchStartTime = Date.now();
+                hasTouchMoved = false;
+                
+                if (event.touches.length === 1) {
+                    // Single touch - rotation
+                    isDragging = true;
+                    const touch = event.touches[0];
+                    previousMousePosition.x = touch.clientX;
+                    previousMousePosition.y = touch.clientY;
+                } else if (event.touches.length === 2) {
+                    // Two finger touch - prepare for pinch zoom
+                    isDragging = false;
+                    const touch1 = event.touches[0];
+                    const touch2 = event.touches[1];
+                    const dx = touch1.clientX - touch2.clientX;
+                    const dy = touch1.clientY - touch2.clientY;
+                    lastTouchDistance = Math.sqrt(dx * dx + dy * dy);
+                }
+                
+                event.preventDefault();
+            }, { passive: false });
+
+            document.addEventListener('touchmove', (event) => {
+                if (event.target.closest('#ui-overlay')) return;
+                
+                if (event.touches.length === 1 && isDragging) {
+                    // Single touch drag - rotation
+                    const touch = event.touches[0];
+                    const deltaX = touch.clientX - previousMousePosition.x;
+                    const deltaY = touch.clientY - previousMousePosition.y;
+                    
+                    if (Math.abs(deltaX) > 3 || Math.abs(deltaY) > 3) {
+                        hasTouchMoved = true;
+                    }
+                    
+                    // Slightly more sensitive for touch
+                    cameraRotation.y -= deltaX * rotationSpeed * 1.5;
+                    cameraRotation.x -= deltaY * rotationSpeed * 1.5;
+                    cameraRotation.x = Math.max(-Math.PI/2 + 0.1, Math.min(Math.PI/2 - 0.1, cameraRotation.x));
+                    
+                    previousMousePosition.x = touch.clientX;
+                    previousMousePosition.y = touch.clientY;
+                } else if (event.touches.length === 2) {
+                    // Two finger pinch - zoom
+                    const touch1 = event.touches[0];
+                    const touch2 = event.touches[1];
+                    const dx = touch1.clientX - touch2.clientX;
+                    const dy = touch1.clientY - touch2.clientY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (lastTouchDistance > 0) {
+                        const scale = distance / lastTouchDistance;
+                        const zoomSensitivity = 1.0; // Adjust for comfort
+                        cameraDistance /= (scale * zoomSensitivity + (1 - zoomSensitivity));
+                        cameraDistance = Math.max(5, Math.min(200, cameraDistance));
+                    }
+                    
+                    lastTouchDistance = distance;
+                    hasTouchMoved = true;
+                }
+                
+                event.preventDefault();
+            }, { passive: false });
+
+            document.addEventListener('touchend', (event) => {
+                if (event.target.closest('#ui-overlay')) return;
+                
+                const touchEndTime = Date.now();
+                const touchDuration = touchEndTime - touchStartTime;
+                
+                if (event.touches.length === 0) {
+                    // All touches ended
+                    if (isDragging && !hasTouchMoved && touchDuration < 500) {
+                        // Quick tap - simulate click for star selection
+                        const touch = event.changedTouches[0];
+                        const fakeEvent = {
+                            clientX: touch.clientX,
+                            clientY: touch.clientY
+                        };
+                        onStarClick(fakeEvent);
+                    }
+                    
+                    isDragging = false;
+                    hasTouchMoved = false;
+                    lastTouchDistance = 0;
+                }
+                
+                event.preventDefault();
+            }, { passive: false });
+
+            // Prevent default browser zoom and scroll on the canvas
+            document.getElementById('canvas-container').addEventListener('touchstart', (e) => {
+                e.preventDefault();
+            }, { passive: false });
+
+            document.getElementById('canvas-container').addEventListener('touchmove', (e) => {
+                e.preventDefault();
+            }, { passive: false });
+
+            // Prevent context menu on long press
+            document.getElementById('canvas-container').addEventListener('contextmenu', (e) => {
+                e.preventDefault();
             });
 
+            // Standard event listeners
             document.getElementById('search-input').addEventListener('input', onSearch);
             document.getElementById('star-color').addEventListener('input', (e) => {
                 document.getElementById('color-preview').style.backgroundColor = e.target.value;
@@ -1232,6 +1639,9 @@
             // Get cluster information
             const clusterInfo = getStarClusterInfo(starData);
             
+            // Get planetary system information
+            const planetaryInfo = getStarPlanetaryInfo(starData);
+            
             let clusterText = '';
             if (clusterInfo) {
                 clusterText = `
@@ -1241,12 +1651,23 @@
             } else {
                 clusterText = '<p>🌌 Solitary star (no nearby connections)</p>';
             }
+
+            let planetaryText = '';
+            if (planetaryInfo.hasSystem) {
+                planetaryText = `
+                    <p>🪐 Planets: ${planetaryInfo.planetCount}</p>
+                    <p>🌍 System: ${planetaryInfo.planetNames.slice(0, 4).join(', ')}${planetaryInfo.planetCount > 4 ? '...' : ''}</p>
+                `;
+            } else {
+                planetaryText = '<p>🪐 No planetary system</p>';
+            }
             
             starInfoContent.innerHTML = `
                 <p class="star-name">⭐ ${starData.name}</p>
                 <p><span class="star-color-badge" style="background-color: ${starData.color};"></span>Color: ${starData.color}</p>
                 <p>📅 Created: ${createdDate}</p>
                 <p>📍 Position: (${Math.round(starData.position.x)}, ${Math.round(starData.position.y)}, ${Math.round(starData.position.z)})</p>
+                ${planetaryText}
                 ${clusterText}
             `;
         }
@@ -1281,9 +1702,13 @@
         }
 
         function updateCounters() {
+            const totalPlanets = planetarySystems.reduce((total, sys) => total + sys.planets.length, 0);
+            
             document.getElementById('star-count').textContent = galaxyData.stars.length;
             document.getElementById('visitor-count').textContent = galaxyData.visitCount;
             document.getElementById('cluster-count').textContent = starClusters.length;
+            document.getElementById('system-count').textContent = planetarySystems.length;
+            document.getElementById('planet-count').textContent = totalPlanets;
         }
 
         function onWindowResize() {
@@ -1325,6 +1750,9 @@
                     line.material.opacity = baseOpacity + Math.sin(time * 0.5 + index * 0.1) * 0.15;
                 }
             });
+
+            // Animate planets orbiting their stars
+            animatePlanets();
 
             renderer.render(scene, camera);
         }
