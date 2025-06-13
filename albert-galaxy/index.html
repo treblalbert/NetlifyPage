@@ -491,6 +491,25 @@
             touch-action: none;
         }
 
+        /* Modal should block all background interaction */
+        #welcome-modal {
+            touch-action: none;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Modal content should allow normal interaction */
+        .modal-content {
+            touch-action: auto;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
         /* Improve touch targets */
         button, input, .search-result {
             -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
@@ -950,91 +969,103 @@
         }
 
         // ============== PLANETARY SYSTEM FUNCTIONS ==============
-        function createRandomPlanetarySystems() {
-            const PLANET_CHANCE = 0.4; // 40% of stars get planets
-            planetarySystems = [];
+        function createPlanetarySystemForStar(starObj, starIndex) {
+            const PLANET_CHANCE = 0.4; // 40% chance for new stars to get planets
+            
+            if (Math.random() < PLANET_CHANCE) {
+                const planetCount = Math.floor(Math.random() * 7) + 1; // 1-7 planets
+                const starName = starObj.data.name;
+                const starPosition = starObj.data.position;
+                
+                const systemData = {
+                    starIndex: starIndex,
+                    starName: starName,
+                    planets: [],
+                    orbitLines: []
+                };
 
-            starMeshes.forEach((starObj, starIndex) => {
-                if (Math.random() < PLANET_CHANCE) {
-                    const planetCount = Math.floor(Math.random() * 7) + 1; // 1-7 planets
-                    const starName = starObj.data.name;
-                    const starPosition = starObj.data.position;
+                // Create planets at different orbital distances
+                for (let p = 0; p < planetCount; p++) {
+                    const orbitRadius = 2 + (p * 1.5) + Math.random() * 0.8; // Increasing orbit sizes
+                    const planetSize = 0.1 + Math.random() * 0.15; // Small random sizes
+                    const orbitalSpeed = (0.02 + Math.random() * 0.03) / (p + 1); // Closer planets orbit faster
+                    const startAngle = Math.random() * Math.PI * 2; // Random starting position
                     
-                    const systemData = {
-                        starIndex: starIndex,
-                        starName: starName,
-                        planets: [],
-                        orbitLines: []
+                    // Random planet colors (more muted than stars)
+                    const planetColors = [
+                        '#8B4513', '#CD853F', '#DEB887', '#F4A460', // Browns/tans
+                        '#4169E1', '#6495ED', '#87CEEB', '#B0C4DE', // Blues
+                        '#228B22', '#32CD32', '#90EE90', '#98FB98', // Greens
+                        '#DC143C', '#FF6347', '#FF7F50', '#FFA07A', // Reds
+                        '#9370DB', '#BA55D3', '#DDA0DD', '#E6E6FA'  // Purples
+                    ];
+                    const planetColor = planetColors[Math.floor(Math.random() * planetColors.length)];
+
+                    // Create planet mesh
+                    const planetGeometry = new THREE.SphereGeometry(planetSize, 8, 8);
+                    const planetMaterial = new THREE.MeshBasicMaterial({ color: planetColor });
+                    const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
+                    
+                    // Position planet initially
+                    planetMesh.position.set(
+                        starPosition.x + orbitRadius * Math.cos(startAngle),
+                        starPosition.y,
+                        starPosition.z + orbitRadius * Math.sin(startAngle)
+                    );
+
+                    scene.add(planetMesh);
+
+                    // Create orbit line
+                    const orbitGeometry = new THREE.RingGeometry(orbitRadius - 0.02, orbitRadius + 0.02, 32);
+                    const orbitMaterial = new THREE.MeshBasicMaterial({
+                        color: 0xffffff,
+                        transparent: true,
+                        opacity: 0.15,
+                        side: THREE.DoubleSide
+                    });
+                    const orbitLine = new THREE.Mesh(orbitGeometry, orbitMaterial);
+                    
+                    // Position orbit around star
+                    orbitLine.position.set(starPosition.x, starPosition.y, starPosition.z);
+                    orbitLine.rotation.x = Math.PI / 2; // Make it horizontal
+                    
+                    scene.add(orbitLine);
+
+                    // Store planet data
+                    const planetData = {
+                        name: `${starName}-${p + 1}`,
+                        mesh: planetMesh,
+                        orbitRadius: orbitRadius,
+                        orbitalSpeed: orbitalSpeed,
+                        currentAngle: startAngle,
+                        color: planetColor,
+                        size: planetSize,
+                        starPosition: starPosition
                     };
 
-                    // Create planets at different orbital distances
-                    for (let p = 0; p < planetCount; p++) {
-                        const orbitRadius = 2 + (p * 1.5) + Math.random() * 0.8; // Increasing orbit sizes
-                        const planetSize = 0.1 + Math.random() * 0.15; // Small random sizes
-                        const orbitalSpeed = (0.02 + Math.random() * 0.03) / (p + 1); // Closer planets orbit faster
-                        const startAngle = Math.random() * Math.PI * 2; // Random starting position
-                        
-                        // Random planet colors (more muted than stars)
-                        const planetColors = [
-                            '#8B4513', '#CD853F', '#DEB887', '#F4A460', // Browns/tans
-                            '#4169E1', '#6495ED', '#87CEEB', '#B0C4DE', // Blues
-                            '#228B22', '#32CD32', '#90EE90', '#98FB98', // Greens
-                            '#DC143C', '#FF6347', '#FF7F50', '#FFA07A', // Reds
-                            '#9370DB', '#BA55D3', '#DDA0DD', '#E6E6FA'  // Purples
-                        ];
-                        const planetColor = planetColors[Math.floor(Math.random() * planetColors.length)];
+                    systemData.planets.push(planetData);
+                    systemData.orbitLines.push(orbitLine);
+                }
 
-                        // Create planet mesh
-                        const planetGeometry = new THREE.SphereGeometry(planetSize, 8, 8);
-                        const planetMaterial = new THREE.MeshBasicMaterial({ color: planetColor });
-                        const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
-                        
-                        // Position planet initially
-                        planetMesh.position.set(
-                            starPosition.x + orbitRadius * Math.cos(startAngle),
-                            starPosition.y,
-                            starPosition.z + orbitRadius * Math.sin(startAngle)
-                        );
+                planetarySystems.push(systemData);
+                return true;
+            }
+            return false;
+        }
 
-                        scene.add(planetMesh);
+        function createRandomPlanetarySystems() {
+            planetarySystems = [];
+            let totalSystemsCreated = 0;
+            let totalPlanetsCreated = 0;
 
-                        // Create orbit line
-                        const orbitGeometry = new THREE.RingGeometry(orbitRadius - 0.02, orbitRadius + 0.02, 32);
-                        const orbitMaterial = new THREE.MeshBasicMaterial({
-                            color: 0xffffff,
-                            transparent: true,
-                            opacity: 0.15,
-                            side: THREE.DoubleSide
-                        });
-                        const orbitLine = new THREE.Mesh(orbitGeometry, orbitMaterial);
-                        
-                        // Position orbit around star
-                        orbitLine.position.set(starPosition.x, starPosition.y, starPosition.z);
-                        orbitLine.rotation.x = Math.PI / 2; // Make it horizontal
-                        
-                        scene.add(orbitLine);
-
-                        // Store planet data
-                        const planetData = {
-                            name: `${starName}-${p + 1}`,
-                            mesh: planetMesh,
-                            orbitRadius: orbitRadius,
-                            orbitalSpeed: orbitalSpeed,
-                            currentAngle: startAngle,
-                            color: planetColor,
-                            size: planetSize,
-                            starPosition: starPosition
-                        };
-
-                        systemData.planets.push(planetData);
-                        systemData.orbitLines.push(orbitLine);
-                    }
-
-                    planetarySystems.push(systemData);
+            starMeshes.forEach((starObj, starIndex) => {
+                if (createPlanetarySystemForStar(starObj, starIndex)) {
+                    totalSystemsCreated++;
+                    totalPlanetsCreated += planetarySystems[planetarySystems.length - 1].planets.length;
                 }
             });
 
-            console.log(`🪐 Created ${planetarySystems.length} planetary systems with ${planetarySystems.reduce((total, sys) => total + sys.planets.length, 0)} total planets`);
+            console.log(`🪐 Created ${totalSystemsCreated} planetary systems with ${totalPlanetsCreated} total planets`);
         }
 
         function animatePlanets() {
@@ -1363,8 +1394,10 @@
 
             createStarWithBloom(savedStar);
             
-            // Recreate planetary systems to potentially include the new star
-            createRandomPlanetarySystems();
+            // Check if new star should get a planetary system
+            const newStarIndex = starMeshes.length - 1;
+            const newStarObj = starMeshes[newStarIndex];
+            createPlanetarySystemForStar(newStarObj, newStarIndex);
             
             // Recreate clusters to include the new star
             createClusterLines();
@@ -1424,6 +1457,11 @@
             
             // ============== DESKTOP MOUSE CONTROLS ==============
             document.addEventListener('mousedown', (event) => {
+                // Don't control galaxy if modal is open
+                if (!document.getElementById('welcome-modal').classList.contains('hidden')) {
+                    return;
+                }
+                
                 if (event.target.closest('#ui-overlay')) return;
                 isDragging = true;
                 hasMouseMoved = false;
@@ -1433,6 +1471,11 @@
             });
 
             document.addEventListener('mousemove', (event) => {
+                // Don't control galaxy if modal is open
+                if (!document.getElementById('welcome-modal').classList.contains('hidden')) {
+                    return;
+                }
+                
                 if (!isDragging) return;
                 
                 const deltaX = event.clientX - previousMousePosition.x;
@@ -1451,6 +1494,11 @@
             });
 
             document.addEventListener('mouseup', (event) => {
+                // Don't control galaxy if modal is open
+                if (!document.getElementById('welcome-modal').classList.contains('hidden')) {
+                    return;
+                }
+                
                 if (isDragging && !hasMouseMoved) {
                     onStarClick(event);
                 }
@@ -1460,6 +1508,11 @@
             });
 
             document.addEventListener('wheel', (event) => {
+                // Don't control galaxy if modal is open
+                if (!document.getElementById('welcome-modal').classList.contains('hidden')) {
+                    return;
+                }
+                
                 event.preventDefault();
                 cameraDistance += event.deltaY * 0.1;
                 cameraDistance = Math.max(5, Math.min(200, cameraDistance));
@@ -1468,6 +1521,11 @@
             // ============== MOBILE TOUCH CONTROLS ==============
             // Single touch for rotation
             document.addEventListener('touchstart', (event) => {
+                // Don't control galaxy if modal is open
+                if (!document.getElementById('welcome-modal').classList.contains('hidden')) {
+                    return;
+                }
+                
                 if (event.target.closest('#ui-overlay')) return;
                 
                 touchStartTime = Date.now();
@@ -1493,6 +1551,11 @@
             }, { passive: false });
 
             document.addEventListener('touchmove', (event) => {
+                // Don't control galaxy if modal is open
+                if (!document.getElementById('welcome-modal').classList.contains('hidden')) {
+                    return;
+                }
+                
                 if (event.target.closest('#ui-overlay')) return;
                 
                 if (event.touches.length === 1 && isDragging) {
@@ -1535,6 +1598,11 @@
             }, { passive: false });
 
             document.addEventListener('touchend', (event) => {
+                // Don't control galaxy if modal is open
+                if (!document.getElementById('welcome-modal').classList.contains('hidden')) {
+                    return;
+                }
+                
                 if (event.target.closest('#ui-overlay')) return;
                 
                 const touchEndTime = Date.now();
@@ -1574,6 +1642,20 @@
                 e.preventDefault();
             });
 
+            // ============== MODAL TOUCH BLOCKING ==============
+            // Block all touch events on modal background from reaching galaxy
+            document.getElementById('welcome-modal').addEventListener('touchstart', (e) => {
+                e.stopPropagation();
+            }, { passive: false });
+
+            document.getElementById('welcome-modal').addEventListener('touchmove', (e) => {
+                e.stopPropagation();
+            }, { passive: false });
+
+            document.getElementById('welcome-modal').addEventListener('touchend', (e) => {
+                e.stopPropagation();
+            }, { passive: false });
+
             // Standard event listeners
             document.getElementById('search-input').addEventListener('input', onSearch);
             document.getElementById('star-color').addEventListener('input', (e) => {
@@ -1586,6 +1668,11 @@
             });
 
             document.addEventListener('keydown', (e) => {
+                // Don't use keyboard shortcuts if modal is open
+                if (!document.getElementById('welcome-modal').classList.contains('hidden')) {
+                    return;
+                }
+                
                 if (e.code === 'Space') {
                     e.preventDefault();
                     animateFocusTo(new THREE.Vector3(0, 0, 0));
