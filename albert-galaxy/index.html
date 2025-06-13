@@ -641,9 +641,10 @@
                 <p><strong>Controls:</strong></p>
                 <p>• Drag: Rotate view</p>
                 <p>• Scroll/Pinch: Zoom in/out</p>
-                <p>• Tap/Click stars to focus</p>
-                <p>• Space: Reset to center</p>
-                <p><br><em>Welcome to the galaxy! Your star will be saved forever and may develop its own planetary system, connecting to nearby stars in clusters.</em></p>
+                <p>• Tap/Click stars to focus & follow</p>
+                <p>• Space: Return to center & stop following</p>
+                <p>• H/I: Toggle interface</p>
+                <p><br><em>Welcome to the galaxy! Your star will orbit the central black hole and may develop its own planetary system, connecting to nearby stars in clusters.</em></p>
             </div>
 
             <div id="search-container" class="liquid-crystal-panel">
@@ -674,7 +675,7 @@
     <div id="welcome-modal" class="hidden">
         <div class="modal-content">
             <h2>🌟 Welcome to the Albert Galaxy!</h2>
-            <p>Leave your mark in the cosmos by creating your own star. Your star may develop its own planetary system and connect to nearby stars!</p>
+            <p>Leave your mark in the cosmos by creating your own star. Your star will orbit the central black hole, may develop its own planetary system, and connect to nearby stars!</p>
             
             <input type="text" id="user-name" placeholder="Enter your name" maxlength="20">
             
@@ -740,6 +741,8 @@
         let starClusters = [];
         let clusterLines = [];
         let planetarySystems = [];
+        let centralBlackHole = null;
+        let followingTarget = null;
         let selectedStar = null;
         let isDragging = false;
         let previousMousePosition = { x: 0, y: 0 };
@@ -958,18 +961,20 @@
                             color: "#ff6b6b", 
                             position: { x: 0, y: 0, z: 0 }, 
                             planets: generatePlanetData("PointZero"),
+                            orbital: generateOrbitalData("PointZero", 0),
                             timestamp: new Date().toISOString() 
                         }];
                     }
                     
                     if (data) {
                         console.log(`✅ Loaded ${data.length} stars from database`);
-                        return data.map(star => ({
+                        return data.map((star, index) => ({
                             id: star.id,
                             name: star.name,
                             color: star.color,
                             position: star.position,
-                            planets: star.planets || generatePlanetData(star.name), // Generate if missing
+                            planets: star.planets || generatePlanetData(star.name),
+                            orbital: star.orbital || generateOrbitalData(star.name, index),
                             timestamp: star.created_at
                         }));
                     }
@@ -982,9 +987,10 @@
                 const starsData = localStorage.getItem('galaxy_stars');
                 if (starsData) {
                     const stars = JSON.parse(starsData);
-                    return stars.map(star => ({
+                    return stars.map((star, index) => ({
                         ...star,
-                        planets: star.planets || generatePlanetData(star.name) // Generate if missing
+                        planets: star.planets || generatePlanetData(star.name),
+                        orbital: star.orbital || generateOrbitalData(star.name, index)
                     }));
                 }
             }
@@ -994,6 +1000,7 @@
                 color: "#ff6b6b", 
                 position: { x: 0, y: 0, z: 0 }, 
                 planets: generatePlanetData("PointZero"),
+                orbital: generateOrbitalData("PointZero", 0),
                 timestamp: new Date().toISOString() 
             }];
         }
@@ -1009,6 +1016,7 @@
                             color: starData.color,
                             position: starData.position,
                             planets: starData.planets, // Save planet data
+                            orbital: starData.orbital, // Save orbital data
                             created_at: starData.timestamp
                         }])
                         .select()
@@ -1170,6 +1178,139 @@
             });
 
             console.log(`🪐 Created ${totalSystemsCreated} planetary systems with ${totalPlanetsCreated} total planets`);
+        }
+
+        // ============== CENTRAL BLACK HOLE & ORBITAL MECHANICS ==============
+        function generateOrbitalData(starName, starIndex) {
+            // Create deterministic random based on star name
+            let seed = 0;
+            for (let i = 0; i < starName.length; i++) {
+                seed += starName.charCodeAt(i);
+            }
+            seed += starIndex * 1000; // Add index for variety
+            
+            // Simple seeded random function
+            function seededRandom() {
+                seed = (seed * 9301 + 49297) % 233280;
+                return seed / 233280;
+            }
+            
+            // Special case for center star (PointZero)
+            if (starName === "PointZero") {
+                return {
+                    radius: 15, // Close to center
+                    speed: 0.001,
+                    currentAngle: 0,
+                    originalPosition: { x: 0, y: 0, z: 0 }
+                };
+            }
+            
+            // Generate orbital parameters
+            const orbitRadius = 20 + seededRandom() * 60; // 20-80 units from center
+            const orbitalSpeed = (0.0005 + seededRandom() * 0.002); // Very slow orbital motion
+            const startAngle = seededRandom() * Math.PI * 2;
+            
+            // Calculate initial position based on orbital parameters
+            const x = orbitRadius * Math.cos(startAngle);
+            const z = orbitRadius * Math.sin(startAngle);
+            const y = (seededRandom() - 0.5) * 20; // Some vertical spread
+            
+            return {
+                radius: orbitRadius,
+                speed: orbitalSpeed,
+                currentAngle: startAngle,
+                originalPosition: { x, y, z }
+            };
+        }
+
+        function createCentralBlackHole() {
+            // Create black hole geometry (5x bigger than stars)
+            const blackHoleGeometry = new THREE.SphereGeometry(2.5, 32, 32);
+            
+            // Create black hole material with subtle effects
+            const blackHoleMaterial = new THREE.MeshBasicMaterial({ 
+                color: 0x0a0a0a,
+                transparent: true,
+                opacity: 0.9
+            });
+            
+            centralBlackHole = new THREE.Mesh(blackHoleGeometry, blackHoleMaterial);
+            centralBlackHole.position.set(0, 0, 0);
+            
+            // Add subtle glow effect around black hole
+            const glowGeometry = new THREE.SphereGeometry(4, 16, 16);
+            const glowMaterial = new THREE.MeshBasicMaterial({
+                color: 0x4400aa,
+                transparent: true,
+                opacity: 0.1,
+                blending: THREE.AdditiveBlending
+            });
+            const blackHoleGlow = new THREE.Mesh(glowGeometry, glowMaterial);
+            blackHoleGlow.position.set(0, 0, 0);
+            
+            scene.add(centralBlackHole);
+            scene.add(blackHoleGlow);
+            
+            // Store glow for animation
+            centralBlackHole.userData.glow = blackHoleGlow;
+            
+            console.log('🕳️ Created central black hole');
+        }
+
+        function updateStarOrbitalPositions() {
+            starMeshes.forEach((starObj, index) => {
+                const orbital = starObj.data.orbital;
+                if (!orbital) return;
+                
+                // Update orbital angle
+                orbital.currentAngle += orbital.speed;
+                
+                // Calculate new position
+                const x = orbital.radius * Math.cos(orbital.currentAngle);
+                const z = orbital.radius * Math.sin(orbital.currentAngle);
+                const y = orbital.originalPosition.y; // Keep original Y
+                
+                // Update star position
+                starObj.group.position.set(x, y, z);
+                starObj.data.position = { x, y, z };
+                
+                // Update planetary system positions
+                const system = planetarySystems.find(sys => sys.starName === starObj.data.name);
+                if (system) {
+                    // Update star position for planetary calculations
+                    system.planets.forEach(planetData => {
+                        planetData.starPosition = { x, y, z };
+                    });
+                    
+                    // Update orbit line positions
+                    system.orbitLines.forEach(orbitLine => {
+                        orbitLine.position.set(x, y, z);
+                    });
+                }
+            });
+            
+            // Update cluster lines to follow stars
+            updateClusterLines();
+        }
+
+        function updateClusterLines() {
+            clusterLines.forEach(line => {
+                const star1Index = line.userData.star1;
+                const star2Index = line.userData.star2;
+                
+                if (star1Index < starMeshes.length && star2Index < starMeshes.length) {
+                    const star1Pos = starMeshes[star1Index].data.position;
+                    const star2Pos = starMeshes[star2Index].data.position;
+                    
+                    // Update line geometry
+                    const positions = new Float32Array([
+                        star1Pos.x, star1Pos.y, star1Pos.z,
+                        star2Pos.x, star2Pos.y, star2Pos.z
+                    ]);
+                    line.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                }
+            });
+        }
         }
 
         function animatePlanets() {
@@ -1377,6 +1518,10 @@
             galaxyData.visitCount = stars.length;
             
             initThreeJS();
+            
+            // Create central black hole first
+            createCentralBlackHole();
+            
             stars.forEach(star => createStarWithBloom(star));
             
             // Create planetary systems using saved data
@@ -1499,11 +1644,15 @@
                 return;
             }
 
+            const starIndex = galaxyData.stars.length;
+            const orbitalData = generateOrbitalData(name, starIndex);
+
             const starData = {
                 name: name,
                 color: color,
-                position: generateStarPosition(),
+                position: orbitalData.originalPosition, // Use orbital position
                 planets: generatePlanetData(name), // Generate consistent planet data
+                orbital: orbitalData, // Add orbital data
                 timestamp: new Date().toISOString()
             };
 
@@ -1546,12 +1695,22 @@
         }
 
         function focusOnStar(starData) {
+            // Set following target
+            followingTarget = starData;
+            
             const targetFocus = new THREE.Vector3(
                 starData.position.x,
                 starData.position.y,
                 starData.position.z
             );
             animateFocusTo(targetFocus);
+            
+            console.log(`🎯 Now following star: ${starData.name}`);
+        }
+
+        function stopFollowing() {
+            followingTarget = null;
+            console.log('🎯 Stopped following star');
         }
 
         function animateFocusTo(targetFocus) {
@@ -1805,6 +1964,8 @@
                 
                 if (e.code === 'Space') {
                     e.preventDefault();
+                    // Stop following and return to center
+                    stopFollowing();
                     animateFocusTo(new THREE.Vector3(0, 0, 0));
                 } else if (e.code === 'KeyH' || e.code === 'KeyI') {
                     // H or I key to toggle interface
@@ -1881,14 +2042,32 @@
             } else {
                 planetaryText = '<p>🪐 No planetary system</p>';
             }
+
+            // Show orbital information
+            const orbital = starData.orbital;
+            let orbitalText = '';
+            if (orbital) {
+                orbitalText = `
+                    <p>🌀 Orbit Radius: ${Math.round(orbital.radius)} units</p>
+                    <p>🌀 Orbital Speed: ${(orbital.speed * 1000).toFixed(2)} units/s</p>
+                `;
+            }
+
+            // Following status
+            const isFollowing = followingTarget && followingTarget.name === starData.name;
+            const followingText = isFollowing ? 
+                '<p>📹 <strong>Camera Following</strong> <button onclick="stopFollowing()" style="margin-left: 10px; padding: 4px 8px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; color: white; cursor: pointer;">Stop Following</button></p>' : 
+                '';
             
             starInfoContent.innerHTML = `
                 <p class="star-name">⭐ ${starData.name}</p>
                 <p><span class="star-color-badge" style="background-color: ${starData.color};"></span>Color: ${starData.color}</p>
                 <p>📅 Created: ${createdDate}</p>
                 <p>📍 Position: (${Math.round(starData.position.x)}, ${Math.round(starData.position.y)}, ${Math.round(starData.position.z)})</p>
+                ${orbitalText}
                 ${planetaryText}
                 ${clusterText}
+                ${followingText}
             `;
         }
 
@@ -1940,6 +2119,19 @@
         function animate() {
             requestAnimationFrame(animate);
 
+            // Update star orbital positions around black hole
+            updateStarOrbitalPositions();
+
+            // Update camera following
+            if (followingTarget) {
+                // Update focus target to follow the star
+                focusTarget.set(
+                    followingTarget.position.x,
+                    followingTarget.position.y,
+                    followingTarget.position.z
+                );
+            }
+
             camera.position.x = focusTarget.x + cameraDistance * Math.sin(cameraRotation.y) * Math.cos(cameraRotation.x);
             camera.position.y = focusTarget.y + cameraDistance * Math.sin(cameraRotation.x);
             camera.position.z = focusTarget.z + cameraDistance * Math.cos(cameraRotation.y) * Math.cos(cameraRotation.x);
@@ -1948,6 +2140,7 @@
 
             const time = Date.now() * 0.001;
             
+            // Animate star effects
             starMeshes.forEach((starObj, index) => {
                 starObj.core.rotation.y += 0.01;
                 starObj.core.rotation.x += 0.005;
@@ -1962,6 +2155,16 @@
                     glow.scale.setScalar(scale);
                 });
             });
+
+            // Animate central black hole
+            if (centralBlackHole) {
+                centralBlackHole.rotation.y += 0.005;
+                if (centralBlackHole.userData.glow) {
+                    const glow = centralBlackHole.userData.glow;
+                    glow.material.opacity = 0.1 + Math.sin(time * 0.5) * 0.05;
+                    glow.rotation.y -= 0.002;
+                }
+            }
 
             // Animate cluster lines with subtle pulsing
             clusterLines.forEach((line, index) => {
@@ -1979,6 +2182,10 @@
 
         // Start the application
         init();
+
+        // Make functions globally available for buttons
+        window.toggleUI = toggleUI;
+        window.stopFollowing = stopFollowing;
     </script>
 </body>
 </html>
