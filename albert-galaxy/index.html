@@ -684,7 +684,7 @@
             <div id="star-details" class="liquid-crystal-panel">
                 <h3>🌟 Star Details</h3>
                 <div id="star-info-content">
-                    <p><em>Click on a star to see its details, orbital motion, planetary system, and start following it with the camera</em></p>
+                    <p><em>Click on a star or the black hole to see details and start following it with the camera</em></p>
                 </div>
             </div>
         </div>
@@ -1184,32 +1184,114 @@
         }
 
         function createCentralBlackHole() {
+            // Create the main black hole
             const blackHoleGeometry = new THREE.SphereGeometry(2.5, 32, 32);
             const blackHoleMaterial = new THREE.MeshBasicMaterial({ 
                 color: 0x0a0a0a,
                 transparent: true,
-                opacity: 0.9
+                opacity: 0.95
             });
             
             centralBlackHole = new THREE.Mesh(blackHoleGeometry, blackHoleMaterial);
             centralBlackHole.position.set(0, 0, 0);
             
-            const glowGeometry = new THREE.SphereGeometry(4, 16, 16);
-            const glowMaterial = new THREE.MeshBasicMaterial({
-                color: 0x4400aa,
-                transparent: true,
-                opacity: 0.1,
-                blending: THREE.AdditiveBlending
+            // Add special properties to make it selectable like a star
+            centralBlackHole.userData = {
+                name: "Lil Bingus",
+                type: "black-hole",
+                color: "#000000",
+                position: { x: 0, y: 0, z: 0 },
+                timestamp: "Beginning of Time"
+            };
+            
+            // Create multiple glow layers
+            const glowLayers = [];
+            const glowSizes = [4, 6, 8, 12];
+            const glowColors = [0x4400aa, 0x6600cc, 0x8800ee, 0xaa00ff];
+            const glowOpacities = [0.15, 0.1, 0.06, 0.03];
+            
+            glowSizes.forEach((size, index) => {
+                const glowGeometry = new THREE.SphereGeometry(size, 16, 16);
+                const glowMaterial = new THREE.MeshBasicMaterial({
+                    color: glowColors[index],
+                    transparent: true,
+                    opacity: glowOpacities[index],
+                    blending: THREE.AdditiveBlending,
+                    side: THREE.BackSide
+                });
+                const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+                glow.position.set(0, 0, 0);
+                scene.add(glow);
+                glowLayers.push(glow);
             });
-            const blackHoleGlow = new THREE.Mesh(glowGeometry, glowMaterial);
-            blackHoleGlow.position.set(0, 0, 0);
+            
+            // Create accretion disk
+            const diskGeometry = new THREE.RingGeometry(3, 15, 64);
+            const diskMaterial = new THREE.MeshBasicMaterial({
+                color: 0xff4400,
+                transparent: true,
+                opacity: 0.3,
+                blending: THREE.AdditiveBlending,
+                side: THREE.DoubleSide
+            });
+            const accretionDisk = new THREE.Mesh(diskGeometry, diskMaterial);
+            accretionDisk.rotation.x = Math.PI / 2 + 0.1;
+            accretionDisk.position.set(0, 0, 0);
+            scene.add(accretionDisk);
+            
+            // Create inner hot disk
+            const innerDiskGeometry = new THREE.RingGeometry(3, 8, 32);
+            const innerDiskMaterial = new THREE.MeshBasicMaterial({
+                color: 0xffaa00,
+                transparent: true,
+                opacity: 0.6,
+                blending: THREE.AdditiveBlending,
+                side: THREE.DoubleSide
+            });
+            const innerDisk = new THREE.Mesh(innerDiskGeometry, innerDiskMaterial);
+            innerDisk.rotation.x = Math.PI / 2 + 0.1;
+            innerDisk.position.set(0, 0, 0);
+            scene.add(innerDisk);
+            
+            // Create particle jets
+            const jetParticles = [];
+            for (let i = 0; i < 2; i++) {
+                const jetGeometry = new THREE.BufferGeometry();
+                const jetCount = 100;
+                const positions = new Float32Array(jetCount * 3);
+                
+                for (let j = 0; j < jetCount; j++) {
+                    const t = j / jetCount;
+                    const y = (i === 0 ? 1 : -1) * (5 + t * 30);
+                    const spread = 0.2 + t * 0.5;
+                    positions[j * 3] = (Math.random() - 0.5) * spread;
+                    positions[j * 3 + 1] = y;
+                    positions[j * 3 + 2] = (Math.random() - 0.5) * spread;
+                }
+                
+                jetGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                const jetMaterial = new THREE.PointsMaterial({
+                    color: 0x00aaff,
+                    size: 0.3,
+                    transparent: true,
+                    opacity: 0.8,
+                    blending: THREE.AdditiveBlending
+                });
+                
+                const jet = new THREE.Points(jetGeometry, jetMaterial);
+                scene.add(jet);
+                jetParticles.push(jet);
+            }
             
             scene.add(centralBlackHole);
-            scene.add(blackHoleGlow);
             
-            centralBlackHole.userData.glow = blackHoleGlow;
+            // Store all the components for animation
+            centralBlackHole.userData.glowLayers = glowLayers;
+            centralBlackHole.userData.accretionDisk = accretionDisk;
+            centralBlackHole.userData.innerDisk = innerDisk;
+            centralBlackHole.userData.jetParticles = jetParticles;
             
-            console.log('🕳️ Created central black hole');
+            console.log('🕳️ Created enhanced central black hole "Lil Bingus" with accretion disk');
         }
 
         function updateStarOrbitalPositions() {
@@ -1273,27 +1355,96 @@
                 starIndex: starIndex,
                 starName: starName,
                 planets: [],
-                orbitLines: []
+                orbitLines: [],
+                moons: [],
+                rings: []
             };
 
             planetData.forEach((planetInfo, p) => {
-                const planetGeometry = new THREE.SphereGeometry(planetInfo.size, 8, 8);
-                const planetMaterial = new THREE.MeshBasicMaterial({ color: planetInfo.color });
+                // Create main planet with enhanced materials
+                const planetGeometry = new THREE.SphereGeometry(planetInfo.size, 16, 16);
+                
+                // Enhanced planet material with subtle glow
+                const planetMaterial = new THREE.MeshBasicMaterial({ 
+                    color: planetInfo.color
+                });
                 const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
                 
-                planetMesh.position.set(
+                // Add planet atmosphere
+                const atmosphereGeometry = new THREE.SphereGeometry(planetInfo.size * 1.1, 12, 12);
+                const atmosphereMaterial = new THREE.MeshBasicMaterial({
+                    color: new THREE.Color(planetInfo.color).multiplyScalar(0.7),
+                    transparent: true,
+                    opacity: 0.2,
+                    blending: THREE.AdditiveBlending,
+                    side: THREE.BackSide
+                });
+                const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+                
+                const planetGroup = new THREE.Group();
+                planetGroup.add(planetMesh);
+                planetGroup.add(atmosphere);
+                
+                planetGroup.position.set(
                     starPosition.x + planetInfo.orbitRadius * Math.cos(planetInfo.startAngle),
                     starPosition.y,
                     starPosition.z + planetInfo.orbitRadius * Math.sin(planetInfo.startAngle)
                 );
 
-                scene.add(planetMesh);
+                scene.add(planetGroup);
 
-                const orbitGeometry = new THREE.RingGeometry(planetInfo.orbitRadius - 0.02, planetInfo.orbitRadius + 0.02, 32);
+                // Create planetary rings for larger planets
+                if (planetInfo.size > 0.15 && Math.random() > 0.7) {
+                    const ringInnerRadius = planetInfo.size * 1.5;
+                    const ringOuterRadius = planetInfo.size * 2.5;
+                    const ringGeometry = new THREE.RingGeometry(ringInnerRadius, ringOuterRadius, 32);
+                    const ringMaterial = new THREE.MeshBasicMaterial({
+                        color: new THREE.Color(planetInfo.color).multiplyScalar(0.8),
+                        transparent: true,
+                        opacity: 0.6,
+                        side: THREE.DoubleSide
+                    });
+                    const rings = new THREE.Mesh(ringGeometry, ringMaterial);
+                    rings.rotation.x = Math.PI / 2 + (Math.random() - 0.5) * 0.3;
+                    planetGroup.add(rings);
+                    systemData.rings.push(rings);
+                }
+                
+                // Create moons for planets
+                const moonCount = planetInfo.size > 0.2 ? Math.floor(Math.random() * 3) + 1 : 0;
+                const planetMoons = [];
+                
+                for (let m = 0; m < moonCount; m++) {
+                    const moonSize = planetInfo.size * (0.1 + Math.random() * 0.2);
+                    const moonOrbitRadius = planetInfo.size * (2 + m * 0.8);
+                    const moonGeometry = new THREE.SphereGeometry(moonSize, 8, 8);
+                    const moonColor = new THREE.Color(planetInfo.color).multiplyScalar(0.6 + Math.random() * 0.4);
+                    const moonMaterial = new THREE.MeshBasicMaterial({ color: moonColor });
+                    const moonMesh = new THREE.Mesh(moonGeometry, moonMaterial);
+                    
+                    const moonAngle = Math.random() * Math.PI * 2;
+                    moonMesh.position.set(
+                        moonOrbitRadius * Math.cos(moonAngle),
+                        0,
+                        moonOrbitRadius * Math.sin(moonAngle)
+                    );
+                    
+                    planetGroup.add(moonMesh);
+                    
+                    planetMoons.push({
+                        mesh: moonMesh,
+                        orbitRadius: moonOrbitRadius,
+                        currentAngle: moonAngle,
+                        orbitalSpeed: 0.1 + Math.random() * 0.1
+                    });
+                }
+
+                // Enhanced orbit visualization
+                const orbitGeometry = new THREE.RingGeometry(planetInfo.orbitRadius - 0.02, planetInfo.orbitRadius + 0.02, 64);
                 const orbitMaterial = new THREE.MeshBasicMaterial({
-                    color: 0xffffff,
+                    color: new THREE.Color(planetInfo.color).multiplyScalar(0.8),
                     transparent: true,
-                    opacity: 0.15,
+                    opacity: 0.25,
                     side: THREE.DoubleSide
                 });
                 const orbitLine = new THREE.Mesh(orbitGeometry, orbitMaterial);
@@ -1306,6 +1457,9 @@
                 const planetRuntimeData = {
                     name: planetInfo.name,
                     mesh: planetMesh,
+                    group: planetGroup,
+                    atmosphere: atmosphere,
+                    moons: planetMoons,
                     orbitRadius: planetInfo.orbitRadius,
                     orbitalSpeed: planetInfo.orbitalSpeed,
                     currentAngle: planetInfo.startAngle,
@@ -1316,6 +1470,7 @@
 
                 systemData.planets.push(planetRuntimeData);
                 systemData.orbitLines.push(orbitLine);
+                systemData.moons = systemData.moons.concat(planetMoons);
             });
 
             planetarySystems.push(systemData);
@@ -1345,8 +1500,32 @@
                     const x = planetData.starPosition.x + planetData.orbitRadius * Math.cos(planetData.currentAngle);
                     const z = planetData.starPosition.z + planetData.orbitRadius * Math.sin(planetData.currentAngle);
                     
-                    planetData.mesh.position.set(x, planetData.starPosition.y, z);
+                    planetData.group.position.set(x, planetData.starPosition.y, z);
+                    
+                    // Rotate planet on its axis
                     planetData.mesh.rotation.y += 0.05;
+                    
+                    // Animate atmosphere
+                    if (planetData.atmosphere) {
+                        planetData.atmosphere.rotation.y += 0.02;
+                        planetData.atmosphere.rotation.x += 0.01;
+                    }
+                    
+                    // Animate moons
+                    planetData.moons.forEach(moon => {
+                        moon.currentAngle += moon.orbitalSpeed;
+                        moon.mesh.position.set(
+                            moon.orbitRadius * Math.cos(moon.currentAngle),
+                            0,
+                            moon.orbitRadius * Math.sin(moon.currentAngle)
+                        );
+                        moon.mesh.rotation.y += 0.1;
+                    });
+                });
+                
+                // Animate planetary rings
+                system.rings.forEach(ring => {
+                    ring.rotation.z += 0.01;
                 });
             });
         }
@@ -1568,14 +1747,23 @@
             
             const core = new THREE.Mesh(coreGeometry, coreMaterial);
             
+            // Enhanced glow layers with varying colors
             const glowLayers = [];
-            const glowSizes = [1.2, 2.0, 3.5, 5.0];
-            const glowOpacities = [0.8, 0.6, 0.3, 0.1];
+            const baseColor = new THREE.Color(starData.color);
+            const glowSizes = [1.2, 2.0, 3.5, 5.0, 8.0];
+            const glowOpacities = [0.8, 0.6, 0.4, 0.2, 0.1];
             
             glowSizes.forEach((size, index) => {
                 const glowGeometry = new THREE.SphereGeometry(size, 12, 12);
+                
+                // Create color variation for each layer
+                const layerColor = baseColor.clone();
+                if (index > 2) {
+                    layerColor.multiplyScalar(0.7 + Math.random() * 0.3);
+                }
+                
                 const glowMaterial = new THREE.MeshBasicMaterial({
-                    color: new THREE.Color(starData.color),
+                    color: layerColor,
                     transparent: true,
                     opacity: glowOpacities[index],
                     blending: THREE.AdditiveBlending,
@@ -1584,10 +1772,74 @@
                 const glow = new THREE.Mesh(glowGeometry, glowMaterial);
                 glowLayers.push(glow);
             });
+            
+            // Create corona effect
+            const coronaGeometry = new THREE.SphereGeometry(7, 16, 16);
+            const coronaMaterial = new THREE.MeshBasicMaterial({
+                color: baseColor.clone().multiplyScalar(0.5),
+                transparent: true,
+                opacity: 0.05,
+                blending: THREE.AdditiveBlending,
+                side: THREE.BackSide
+            });
+            const corona = new THREE.Mesh(coronaGeometry, coronaMaterial);
+            
+            // Create solar flare particles
+            const flareGeometry = new THREE.BufferGeometry();
+            const flareCount = 50;
+            const flarePositions = new Float32Array(flareCount * 3);
+            
+            for (let i = 0; i < flareCount; i++) {
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.random() * Math.PI;
+                const radius = 2 + Math.random() * 4;
+                
+                flarePositions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+                flarePositions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+                flarePositions[i * 3 + 2] = radius * Math.cos(phi);
+            }
+            
+            flareGeometry.setAttribute('position', new THREE.BufferAttribute(flarePositions, 3));
+            const flareMaterial = new THREE.PointsMaterial({
+                color: baseColor,
+                size: 0.3,
+                transparent: true,
+                opacity: 0.6,
+                blending: THREE.AdditiveBlending
+            });
+            const flares = new THREE.Points(flareGeometry, flareMaterial);
+            
+            // Create stellar wind effect
+            const windGeometry = new THREE.BufferGeometry();
+            const windCount = 30;
+            const windPositions = new Float32Array(windCount * 3);
+            
+            for (let i = 0; i < windCount; i++) {
+                const radius = 8 + Math.random() * 5;
+                const theta = Math.random() * Math.PI * 2;
+                const phi = Math.random() * Math.PI;
+                
+                windPositions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+                windPositions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+                windPositions[i * 3 + 2] = radius * Math.cos(phi);
+            }
+            
+            windGeometry.setAttribute('position', new THREE.BufferAttribute(windPositions, 3));
+            const windMaterial = new THREE.PointsMaterial({
+                color: baseColor.clone().multiplyScalar(0.7),
+                size: 0.2,
+                transparent: true,
+                opacity: 0.3,
+                blending: THREE.AdditiveBlending
+            });
+            const stellarWind = new THREE.Points(windGeometry, windMaterial);
 
             const starGroup = new THREE.Group();
             starGroup.add(core);
             glowLayers.forEach(glow => starGroup.add(glow));
+            starGroup.add(corona);
+            starGroup.add(flares);
+            starGroup.add(stellarWind);
             
             starGroup.position.set(starData.position.x, starData.position.y, starData.position.z);
             starGroup.userData = starData;
@@ -1597,6 +1849,9 @@
                 group: starGroup,
                 core: core,
                 glowLayers: glowLayers,
+                corona: corona,
+                flares: flares,
+                stellarWind: stellarWind,
                 data: starData 
             });
         }
@@ -1662,12 +1917,21 @@
             );
             animateFocusTo(targetFocus);
             
-            console.log(`🎯 Now following star: ${starData.name}`);
+            console.log(`🎯 Now following: ${starData.name}`);
+        }
+
+        function focusOnBlackHole() {
+            followingTarget = centralBlackHole.userData;
+            
+            const targetFocus = new THREE.Vector3(0, 0, 0);
+            animateFocusTo(targetFocus);
+            
+            console.log('🎯 Now following: Lil Bingus (Black Hole)');
         }
 
         function stopFollowing() {
             followingTarget = null;
-            console.log('🎯 Stopped following star');
+            console.log('🎯 Stopped following');
         }
 
         function animateFocusTo(targetFocus) {
@@ -1932,6 +2196,15 @@
             const raycaster = new THREE.Raycaster();
             raycaster.setFromCamera(mouse, camera);
 
+            // Check for black hole click first
+            const blackHoleIntersect = raycaster.intersectObject(centralBlackHole);
+            if (blackHoleIntersect.length > 0) {
+                showBlackHoleInfo();
+                focusOnBlackHole();
+                return;
+            }
+
+            // Check for star clicks
             const starGroups = starMeshes.map(s => s.group);
             const intersects = raycaster.intersectObjects(starGroups, true);
 
@@ -1945,6 +2218,28 @@
                     focusOnStar(starGroup.userData);
                 }
             }
+        }
+
+        function showBlackHoleInfo() {
+            const starInfoContent = document.getElementById('star-info-content');
+            const isFollowing = followingTarget && followingTarget.name === 'Lil Bingus';
+            const followingText = isFollowing ? 
+                '<p>📹 <strong>Camera Following</strong> <button onclick="stopFollowing()" style="margin-left: 10px; padding: 4px 8px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3); border-radius: 4px; color: white; cursor: pointer;">Stop Following</button></p>' : 
+                '';
+            
+            starInfoContent.innerHTML = `
+                <p class="star-name">🕳️ Lil Bingus</p>
+                <p><span class="star-color-badge" style="background: linear-gradient(45deg, #000000, #4400aa);"></span>Type: Supermassive Black Hole</p>
+                <p>📅 Age: ${galaxyData.stars.length > 10 ? 'Ancient' : 'Eternal'}</p>
+                <p>📍 Position: Center of the Galaxy (0, 0, 0)</p>
+                <p>🌀 Schwarzschild Radius: 2.5 units</p>
+                <p>🔥 Accretion Disk: Active with plasma jets</p>
+                <p>⚡ Hawking Radiation: Minimal but detectable</p>
+                <p>🌌 Gravitational Influence: Galaxy-wide</p>
+                <p>🎭 Personality: Adorably destructive</p>
+                <p>💫 Stars in Orbit: ${galaxyData.stars.length}</p>
+                ${followingText}
+            `;
         }
 
         function showStarInfo(starData) {
@@ -2009,13 +2304,26 @@
                 return;
             }
 
-            const matches = galaxyData.stars.filter(star => 
+            const matches = [];
+            
+            // Add black hole to search results if it matches
+            if ('lil bingus'.includes(query) || 'black hole'.includes(query) || 'bingus'.includes(query)) {
+                matches.push({
+                    name: 'Lil Bingus',
+                    color: '#4400aa',
+                    type: 'black-hole'
+                });
+            }
+            
+            // Add matching stars
+            const starMatches = galaxyData.stars.filter(star => 
                 star.name.toLowerCase().includes(query)
             );
+            matches.push(...starMatches);
 
-            resultsContainer.innerHTML = matches.map(star => 
-                `<div class="search-result" onclick="focusOnStarByName('${star.name}')" style="color: ${star.color}">
-                    ⭐ ${star.name}
+            resultsContainer.innerHTML = matches.map(item => 
+                `<div class="search-result" onclick="${item.type === 'black-hole' ? 'focusOnBlackHole()' : `focusOnStarByName('${item.name}')`}" style="color: ${item.color}">
+                    ${item.type === 'black-hole' ? '🕳️' : '⭐'} ${item.name}
                 </div>`
             ).join('');
         }
@@ -2066,27 +2374,90 @@
 
             const time = Date.now() * 0.001;
             
+            // Enhanced star animations
             starMeshes.forEach((starObj, index) => {
                 starObj.core.rotation.y += 0.01;
                 starObj.core.rotation.x += 0.005;
                 
+                // Animate glow layers with more variety
                 starObj.glowLayers.forEach((glow, layerIndex) => {
-                    const baseOpacity = [0.8, 0.6, 0.3, 0.1][layerIndex] || 0.05;
-                    glow.material.opacity = baseOpacity + Math.sin(time * 2 + index + layerIndex) * 0.2;
+                    const baseOpacity = [0.8, 0.6, 0.4, 0.2, 0.1][layerIndex] || 0.05;
+                    glow.material.opacity = baseOpacity + Math.sin(time * 2 + index + layerIndex) * 0.3;
                     glow.rotation.y += 0.003 * (layerIndex + 1);
                     glow.rotation.x += 0.002 * (layerIndex + 1);
                     
-                    const scale = 1 + Math.sin(time * 3 + index + layerIndex) * 0.1;
+                    const scale = 1 + Math.sin(time * 3 + index + layerIndex) * 0.15;
                     glow.scale.setScalar(scale);
                 });
+                
+                // Animate corona
+                if (starObj.corona) {
+                    starObj.corona.material.opacity = 0.05 + Math.sin(time * 0.5 + index) * 0.03;
+                    starObj.corona.rotation.y += 0.001;
+                    const coronaScale = 1 + Math.sin(time * 0.3 + index) * 0.1;
+                    starObj.corona.scale.setScalar(coronaScale);
+                }
+                
+                // Animate solar flares
+                if (starObj.flares) {
+                    starObj.flares.material.opacity = 0.6 + Math.sin(time * 4 + index) * 0.4;
+                    starObj.flares.rotation.y += 0.02;
+                    starObj.flares.rotation.x += 0.01;
+                }
+                
+                // Animate stellar wind
+                if (starObj.stellarWind) {
+                    starObj.stellarWind.material.opacity = 0.3 + Math.sin(time * 1.5 + index) * 0.2;
+                    starObj.stellarWind.rotation.y -= 0.005;
+                    const windScale = 1 + Math.sin(time * 2 + index) * 0.2;
+                    starObj.stellarWind.scale.setScalar(windScale);
+                }
             });
 
+            // Enhanced black hole animations
             if (centralBlackHole) {
                 centralBlackHole.rotation.y += 0.005;
-                if (centralBlackHole.userData.glow) {
-                    const glow = centralBlackHole.userData.glow;
-                    glow.material.opacity = 0.1 + Math.sin(time * 0.5) * 0.05;
-                    glow.rotation.y -= 0.002;
+                
+                if (centralBlackHole.userData.glowLayers) {
+                    centralBlackHole.userData.glowLayers.forEach((glow, index) => {
+                        const baseOpacity = [0.15, 0.1, 0.06, 0.03][index] || 0.01;
+                        glow.material.opacity = baseOpacity + Math.sin(time * 0.5 + index) * 0.05;
+                        glow.rotation.y += 0.001 * (index + 1);
+                        glow.rotation.x += 0.0005 * (index + 1);
+                        
+                        const scale = 1 + Math.sin(time * 0.8 + index) * 0.1;
+                        glow.scale.setScalar(scale);
+                    });
+                }
+                
+                // Animate accretion disk
+                if (centralBlackHole.userData.accretionDisk) {
+                    const disk = centralBlackHole.userData.accretionDisk;
+                    disk.rotation.z += 0.02;
+                    disk.material.opacity = 0.3 + Math.sin(time * 1.2) * 0.15;
+                }
+                
+                // Animate inner disk
+                if (centralBlackHole.userData.innerDisk) {
+                    const innerDisk = centralBlackHole.userData.innerDisk;
+                    innerDisk.rotation.z += 0.05;
+                    innerDisk.material.opacity = 0.6 + Math.sin(time * 2) * 0.3;
+                }
+                
+                // Animate particle jets
+                if (centralBlackHole.userData.jetParticles) {
+                    centralBlackHole.userData.jetParticles.forEach((jet, index) => {
+                        jet.material.opacity = 0.8 + Math.sin(time * 3 + index) * 0.2;
+                        jet.rotation.y += 0.01;
+                        
+                        // Update particle positions for flowing effect
+                        const positions = jet.geometry.attributes.position.array;
+                        for (let i = 0; i < positions.length; i += 3) {
+                            positions[i] += (Math.random() - 0.5) * 0.02;
+                            positions[i + 2] += (Math.random() - 0.5) * 0.02;
+                        }
+                        jet.geometry.attributes.position.needsUpdate = true;
+                    });
                 }
             }
 
@@ -2110,6 +2481,7 @@
         window.stopFollowing = stopFollowing;
         window.createUserStar = createUserStar;
         window.focusOnStarByName = focusOnStarByName;
+        window.focusOnBlackHole = focusOnBlackHole;
     </script>
 </body>
 </html>
