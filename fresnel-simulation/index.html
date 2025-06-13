@@ -69,7 +69,7 @@
             z-index: 1000;
         }
 
-        .source-btn {
+        .source-btn, .demo-btn {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
             backdrop-filter: blur(20px);
             color: white;
@@ -87,7 +87,13 @@
             font-size: 14px;
         }
 
-        .back-button:hover, .source-btn:hover {
+        .demo-btn.active {
+            background: linear-gradient(135deg, rgba(0, 255, 100, 0.2) 0%, rgba(0, 200, 80, 0.1) 100%);
+            border-color: rgba(0, 255, 100, 0.4);
+            box-shadow: 0 0 20px rgba(0, 255, 100, 0.3);
+        }
+
+        .back-button:hover, .source-btn:hover, .demo-btn:hover {
             transform: translateY(-3px) scale(1.02);
             background: linear-gradient(135deg, 
                 rgba(255, 255, 255, 0.35) 0%, 
@@ -144,7 +150,7 @@
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-radius: 20px;
             padding: 20px;
-            max-width: 300px;
+            max-width: 320px;
             box-shadow: 
                 0 8px 32px rgba(0, 0, 0, 0.2),
                 0 1px 0 rgba(255, 255, 255, 0.8) inset,
@@ -243,6 +249,30 @@
                 rgba(255, 255, 255, 0.15) 100%);
             transform: scale(1.05);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .visual-controls {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #00ff66;
+        }
+
+        .checkbox-container label {
+            margin: 0;
+            font-size: 0.85rem;
         }
 
         .info-panel {
@@ -405,13 +435,14 @@
     <a href="../" class="back-button">← Back to Portfolio</a>
 
     <div class="source-buttons">
+        <button class="demo-btn" onclick="toggleDemo()">🎬 Demo Mode</button>
         <button class="source-btn" onclick="showHTMLCode()">🌐 Source Code</button>
     </div>
 
     <div class="title-overlay">
         <h1>Advanced Fresnel Simulator</h1>
-        <p>Real-time 3D visualization of Fresnel effects with environmental reflections</p>
-        <p><em>Interactive optical physics simulation with GLSL shaders</em></p>
+        <p>Real-time 3D visualization of Fresnel effects with chromatic dispersion</p>
+        <p><em>Interactive optical physics simulation with ray tracing</em></p>
     </div>
 
     <div class="controls-panel">
@@ -463,6 +494,28 @@
                 <span class="slider-value" id="envValue">100%</span>
             </div>
         </div>
+
+        <div class="visual-controls">
+            <h3>🎨 Visual Effects</h3>
+            
+            <div class="checkbox-container">
+                <input type="checkbox" id="chromaticToggle" checked>
+                <label for="chromaticToggle">Chromatic Dispersion</label>
+            </div>
+            
+            <div class="checkbox-container">
+                <input type="checkbox" id="rayToggle">
+                <label for="rayToggle">Show Light Rays</label>
+            </div>
+            
+            <div class="control-group">
+                <label>Dispersion Strength</label>
+                <div class="slider-container">
+                    <input type="range" id="dispersionSlider" min="0" max="50" value="20">
+                    <span class="slider-value" id="dispersionValue">0.02</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="info-panel">
@@ -491,6 +544,11 @@
         <div class="info-row">
             <span>Camera Distance:</span>
             <span id="cameraDistance">5.0</span>
+        </div>
+        
+        <div class="info-row">
+            <span>Mode:</span>
+            <span id="demoStatus">Manual</span>
         </div>
         
         <div class="info-row">
@@ -541,6 +599,9 @@
                 this.cubeRenderTarget = null;
                 this.frameCount = 0;
                 this.lastTime = 0;
+                this.demoMode = false;
+                this.demoTime = 0;
+                this.rayLines = [];
                 
                 this.init();
                 this.setupControls();
@@ -573,6 +634,9 @@
                 // Create Fresnel spheres
                 this.createFresnelSpheres();
 
+                // Create ray visualization
+                this.createRayVisualization();
+
                 // Add lights
                 this.addLights();
 
@@ -584,7 +648,26 @@
             }
 
             createEnvironment() {
-                // Create animated background spheres
+                // Create a more sophisticated starfield background
+                const starsGeometry = new THREE.BufferGeometry();
+                const starsMaterial = new THREE.PointsMaterial({
+                    color: 0xffffff,
+                    size: 1,
+                    sizeAttenuation: true
+                });
+
+                const starsVertices = [];
+                for (let i = 0; i < 1000; i++) {
+                    const x = (Math.random() - 0.5) * 200;
+                    const y = (Math.random() - 0.5) * 200;
+                    const z = (Math.random() - 0.5) * 200;
+                    starsVertices.push(x, y, z);
+                }
+                starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starsVertices, 3));
+                const starField = new THREE.Points(starsGeometry, starsMaterial);
+                this.scene.add(starField);
+
+                // Create animated background spheres with better materials
                 const bgGeometry = new THREE.SphereGeometry(1.5, 32, 32);
                 
                 // Background sphere materials with animated shaders
@@ -669,7 +752,7 @@
             }
 
             createFresnelSpheres() {
-                // Create Fresnel shader material
+                // Enhanced Fresnel shader material with chromatic dispersion
                 const fresnelMaterial = new THREE.ShaderMaterial({
                     uniforms: {
                         mRefractionRatio: { value: 1.0 / this.materials[this.currentMaterial].index },
@@ -677,16 +760,21 @@
                         mFresnelScale: { value: this.materials[this.currentMaterial].scale },
                         mFresnelPower: { value: this.materials[this.currentMaterial].power },
                         tCube: { value: null },
-                        uEnvironmentIntensity: { value: 1.0 }
+                        uEnvironmentIntensity: { value: 1.0 },
+                        uChromaticDispersion: { value: 0.02 },
+                        uEnableChromatic: { value: true }
                     },
                     vertexShader: `
                         uniform float mRefractionRatio;
                         uniform float mFresnelBias;
                         uniform float mFresnelScale;
                         uniform float mFresnelPower;
+                        uniform float uChromaticDispersion;
                         
                         varying vec3 vReflect;
-                        varying vec3 vRefract[3];
+                        varying vec3 vRefractR;
+                        varying vec3 vRefractG;
+                        varying vec3 vRefractB;
                         varying float vReflectionFactor;
                         
                         void main() {
@@ -697,9 +785,15 @@
                             vec3 I = worldPosition.xyz - cameraPosition;
                             
                             vReflect = reflect(I, worldNormal);
-                            vRefract[0] = refract(normalize(I), worldNormal, mRefractionRatio);
-                            vRefract[1] = refract(normalize(I), worldNormal, mRefractionRatio * 0.99);
-                            vRefract[2] = refract(normalize(I), worldNormal, mRefractionRatio * 0.98);
+                            
+                            // Chromatic dispersion - different refractive indices for RGB
+                            float etaR = mRefractionRatio * (1.0 - uChromaticDispersion);
+                            float etaG = mRefractionRatio;
+                            float etaB = mRefractionRatio * (1.0 + uChromaticDispersion);
+                            
+                            vRefractR = refract(normalize(I), worldNormal, etaR);
+                            vRefractG = refract(normalize(I), worldNormal, etaG);
+                            vRefractB = refract(normalize(I), worldNormal, etaB);
                             
                             vReflectionFactor = mFresnelBias + mFresnelScale * pow(1.0 + dot(normalize(I), worldNormal), mFresnelPower);
                             
@@ -709,18 +803,27 @@
                     fragmentShader: `
                         uniform samplerCube tCube;
                         uniform float uEnvironmentIntensity;
+                        uniform bool uEnableChromatic;
                         
                         varying vec3 vReflect;
-                        varying vec3 vRefract[3];
+                        varying vec3 vRefractR;
+                        varying vec3 vRefractG;
+                        varying vec3 vRefractB;
                         varying float vReflectionFactor;
                         
                         void main() {
                             vec4 reflectedColor = textureCube(tCube, vec3(-vReflect.x, vReflect.yz)) * uEnvironmentIntensity;
                             vec4 refractedColor = vec4(1.0);
                             
-                            refractedColor.r = textureCube(tCube, vec3(-vRefract[0].x, vRefract[0].yz)).r;
-                            refractedColor.g = textureCube(tCube, vec3(-vRefract[1].x, vRefract[1].yz)).g;
-                            refractedColor.b = textureCube(tCube, vec3(-vRefract[2].x, vRefract[2].yz)).b;
+                            if (uEnableChromatic) {
+                                // Chromatic dispersion
+                                refractedColor.r = textureCube(tCube, vec3(-vRefractR.x, vRefractR.yz)).r;
+                                refractedColor.g = textureCube(tCube, vec3(-vRefractG.x, vRefractG.yz)).g;
+                                refractedColor.b = textureCube(tCube, vec3(-vRefractB.x, vRefractB.yz)).b;
+                            } else {
+                                // Standard refraction
+                                refractedColor = textureCube(tCube, vec3(-vRefractG.x, vRefractG.yz));
+                            }
                             
                             gl_FragColor = mix(refractedColor, reflectedColor, clamp(vReflectionFactor, 0.0, 1.0));
                         }
@@ -750,6 +853,67 @@
 
                 this.mainSphere = fresnelSphere;
                 this.spheres.push(fresnelSphere);
+            }
+
+            createRayVisualization() {
+                // Create ray visualization lines
+                const rayGroup = new THREE.Group();
+                this.scene.add(rayGroup);
+                this.rayGroup = rayGroup;
+
+                // Create incident ray
+                const incidentGeometry = new THREE.BufferGeometry().setFromPoints([
+                    new THREE.Vector3(-3, 1, 2),
+                    new THREE.Vector3(0, 0, 0)
+                ]);
+                const incidentMaterial = new THREE.LineBasicMaterial({ 
+                    color: 0xffffff, 
+                    linewidth: 3,
+                    opacity: 0.8,
+                    transparent: true
+                });
+                const incidentRay = new THREE.Line(incidentGeometry, incidentMaterial);
+                rayGroup.add(incidentRay);
+
+                // Create reflected ray
+                const reflectedGeometry = new THREE.BufferGeometry().setFromPoints([
+                    new THREE.Vector3(0, 0, 0),
+                    new THREE.Vector3(3, 1, 2)
+                ]);
+                const reflectedMaterial = new THREE.LineBasicMaterial({ 
+                    color: 0x00ff00, 
+                    linewidth: 3,
+                    opacity: 0.8,
+                    transparent: true
+                });
+                const reflectedRay = new THREE.Line(reflectedGeometry, reflectedMaterial);
+                rayGroup.add(reflectedRay);
+
+                // Create refracted rays (RGB for dispersion)
+                const refractedPositions = [
+                    new THREE.Vector3(0, 0, 0),
+                    new THREE.Vector3(1, -2, -1)
+                ];
+                
+                ['r', 'g', 'b'].forEach((channel, index) => {
+                    const offset = (index - 1) * 0.2;
+                    const refractedGeometry = new THREE.BufferGeometry().setFromPoints([
+                        new THREE.Vector3(0, 0, 0),
+                        new THREE.Vector3(1 + offset, -2, -1)
+                    ]);
+                    const color = channel === 'r' ? 0xff0000 : channel === 'g' ? 0x00ff00 : 0x0000ff;
+                    const refractedMaterial = new THREE.LineBasicMaterial({ 
+                        color: color, 
+                        linewidth: 2,
+                        opacity: 0.6,
+                        transparent: true
+                    });
+                    const refractedRay = new THREE.Line(refractedGeometry, refractedMaterial);
+                    rayGroup.add(refractedRay);
+                });
+
+                // Initially hide rays
+                rayGroup.visible = false;
             }
 
             addLights() {
@@ -793,10 +957,12 @@
                 // Material buttons
                 document.querySelectorAll('.material-btn').forEach(btn => {
                     btn.addEventListener('click', () => {
-                        document.querySelectorAll('.material-btn').forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        this.currentMaterial = btn.dataset.material;
-                        this.updateMaterial();
+                        if (!this.demoMode) {
+                            document.querySelectorAll('.material-btn').forEach(b => b.classList.remove('active'));
+                            btn.classList.add('active');
+                            this.currentMaterial = btn.dataset.material;
+                            this.updateMaterial();
+                        }
                     });
                 });
 
@@ -836,6 +1002,25 @@
                     });
                     return value + '%';
                 });
+
+                this.setupSlider('dispersionSlider', 'dispersionValue', (value) => {
+                    const dispersion = value / 1000;
+                    this.spheres.forEach(sphere => {
+                        sphere.material.uniforms.uChromaticDispersion.value = dispersion;
+                    });
+                    return dispersion.toFixed(3);
+                });
+
+                // Checkboxes
+                document.getElementById('chromaticToggle').addEventListener('change', (e) => {
+                    this.spheres.forEach(sphere => {
+                        sphere.material.uniforms.uEnableChromatic.value = e.target.checked;
+                    });
+                });
+
+                document.getElementById('rayToggle').addEventListener('change', (e) => {
+                    this.rayGroup.visible = e.target.checked;
+                });
             }
 
             setupSlider(sliderId, valueId, callback) {
@@ -843,9 +1028,66 @@
                 const valueDisplay = document.getElementById(valueId);
 
                 slider.addEventListener('input', (e) => {
-                    const displayValue = callback(parseFloat(e.target.value));
-                    valueDisplay.textContent = displayValue;
+                    if (!this.demoMode || sliderId === 'envSlider' || sliderId === 'dispersionSlider') {
+                        const displayValue = callback(parseFloat(e.target.value));
+                        valueDisplay.textContent = displayValue;
+                    }
                 });
+            }
+
+            toggleDemo() {
+                this.demoMode = !this.demoMode;
+                const btn = document.querySelector('.demo-btn');
+                const status = document.getElementById('demoStatus');
+                
+                if (this.demoMode) {
+                    btn.classList.add('active');
+                    btn.textContent = '⏸️ Stop Demo';
+                    status.textContent = 'Demo';
+                    this.demoTime = 0;
+                } else {
+                    btn.classList.remove('active');
+                    btn.textContent = '🎬 Demo Mode';
+                    status.textContent = 'Manual';
+                }
+            }
+
+            updateDemo() {
+                if (!this.demoMode) return;
+
+                this.demoTime += 0.016; // ~60fps
+                const cycle = this.demoTime % 16; // 16 second cycle
+
+                const materials = Object.keys(this.materials);
+                const materialIndex = Math.floor(cycle / 4);
+                const newMaterial = materials[materialIndex] || 'glass';
+
+                if (newMaterial !== this.currentMaterial) {
+                    this.currentMaterial = newMaterial;
+                    this.updateMaterial();
+                    
+                    // Update active button
+                    document.querySelectorAll('.material-btn').forEach(btn => {
+                        btn.classList.toggle('active', btn.dataset.material === newMaterial);
+                    });
+                }
+
+                // Animate parameters
+                const t = (cycle % 4) / 4;
+                const material = this.materials[this.currentMaterial];
+                
+                // Smoothly interpolate properties
+                const baseIndex = material.index;
+                const indexVariation = Math.sin(t * Math.PI * 2) * 0.2;
+                const newIndex = Math.max(1.0, baseIndex + indexVariation);
+                
+                this.spheres.forEach(sphere => {
+                    sphere.material.uniforms.mRefractionRatio.value = 1.0 / newIndex;
+                });
+
+                // Update display
+                document.getElementById('refractionSlider').value = newIndex * 100;
+                document.getElementById('refractionValue').textContent = newIndex.toFixed(2);
             }
 
             updateMaterial() {
@@ -869,15 +1111,17 @@
                 document.getElementById('criticalAngle').textContent = criticalAngle.toFixed(1) + '°';
                 document.getElementById('brewsterAngle').textContent = brewsterAngle.toFixed(1) + '°';
 
-                // Update sliders to reflect current material
-                document.getElementById('refractionSlider').value = material.index * 100;
-                document.getElementById('refractionValue').textContent = material.index.toFixed(2);
-                document.getElementById('biasSlider').value = material.bias * 100;
-                document.getElementById('biasValue').textContent = material.bias.toFixed(2);
-                document.getElementById('scaleSlider').value = material.scale * 100;
-                document.getElementById('scaleValue').textContent = material.scale.toFixed(2);
-                document.getElementById('powerSlider').value = material.power * 100;
-                document.getElementById('powerValue').textContent = material.power.toFixed(2);
+                // Update sliders to reflect current material (only if not in demo mode)
+                if (!this.demoMode) {
+                    document.getElementById('refractionSlider').value = material.index * 100;
+                    document.getElementById('refractionValue').textContent = material.index.toFixed(2);
+                    document.getElementById('biasSlider').value = material.bias * 100;
+                    document.getElementById('biasValue').textContent = material.bias.toFixed(2);
+                    document.getElementById('scaleSlider').value = material.scale * 100;
+                    document.getElementById('scaleValue').textContent = material.scale.toFixed(2);
+                    document.getElementById('powerSlider').value = material.power * 100;
+                    document.getElementById('powerValue').textContent = material.power.toFixed(2);
+                }
             }
 
             animate() {
@@ -885,6 +1129,9 @@
 
                 const time = this.clock.getElapsedTime();
                 
+                // Update demo mode
+                this.updateDemo();
+
                 // Update background animations
                 this.backgroundMaterials.forEach(material => {
                     material.uniforms.uTime.value = time;
@@ -936,7 +1183,9 @@
             }
         }
 
-        // Source code modal functions
+        // Global functions
+        let simulator;
+
         async function showHTMLCode() {
             const codeContent = document.getElementById('htmlCodeContent');
             codeContent.textContent = 'Loading source code...';
@@ -951,6 +1200,12 @@
             document.getElementById(modalId).style.display = 'none';
         }
 
+        function toggleDemo() {
+            if (simulator) {
+                simulator.toggleDemo();
+            }
+        }
+
         // Close modal when clicking outside
         window.onclick = function(event) {
             const htmlModal = document.getElementById('htmlModal');
@@ -962,10 +1217,11 @@
         // Make functions global
         window.showHTMLCode = showHTMLCode;
         window.closeModal = closeModal;
+        window.toggleDemo = toggleDemo;
 
         // Initialize the simulator
         document.addEventListener('DOMContentLoaded', () => {
-            new AdvancedFresnelSimulator();
+            simulator = new AdvancedFresnelSimulator();
         });
 
         // Background WebGL lava lamp (same as before)
