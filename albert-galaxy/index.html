@@ -353,14 +353,6 @@
         ::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.5);
         }
-
-        /* REAL Bloom Effect for Stars */
-        .star-with-bloom {
-            filter: drop-shadow(0 0 10px currentColor) 
-                    drop-shadow(0 0 20px currentColor) 
-                    drop-shadow(0 0 40px currentColor) 
-                    drop-shadow(0 0 80px currentColor);
-        }
     </style>
 </head>
 <body>
@@ -429,7 +421,7 @@
             <p>• Scroll: Zoom in/out</p>
             <p>• Click stars to focus</p>
             <p>• Space: Reset to center</p>
-            <p><br><em>Welcome to the galaxy! Your star will be saved forever.</em></p>
+            <p><br><em>Welcome to the galaxy! Your star will be saved forever and connected to nearby stars in clusters.</em></p>
         </div>
 
         <div id="search-container" class="liquid-crystal-panel">
@@ -441,13 +433,14 @@
             <h3>⭐ Galaxy Stats</h3>
             <p>Status: <span id="connection-status">🔄 Connecting...</span></p>
             <p>Total Stars: <span id="star-count">0</span></p>
+            <p>Star Clusters: <span id="cluster-count">0</span></p>
             <p>Unique Visitors: <span id="visitor-count">0</span></p>
         </div>
 
         <div id="star-details" class="liquid-crystal-panel">
             <h3>🌟 Star Details</h3>
             <div id="star-info-content">
-                <p><em>Click on a star to see its details</em></p>
+                <p><em>Click on a star to see its details and cluster connections</em></p>
             </div>
         </div>
     </div>
@@ -472,7 +465,7 @@
 
     <script>
         // ============== BLACK HOLE SHADER CONFIGURATION ==============
-        var bgUrl = 'background.jpg'; // REVERTED TO ORIGINAL
+        var bgUrl = 'background.jpg';
         var blackholeMass = 1500;
         var curblackholeMass = 0;
         var blackholeCanvas, blackholeGl;
@@ -519,6 +512,8 @@
         let galaxyData = { stars: [], visitCount: 0 };
         let scene, camera, renderer, composer;
         let starMeshes = [];
+        let starClusters = [];
+        let clusterLines = [];
         let selectedStar = null;
         let isDragging = false;
         let previousMousePosition = { x: 0, y: 0 };
@@ -804,6 +799,128 @@
             return null;
         }
 
+        // ============== STAR CLUSTER FUNCTIONS ==============
+        function calculateDistance(pos1, pos2) {
+            const dx = pos1.x - pos2.x;
+            const dy = pos1.y - pos2.y;
+            const dz = pos1.z - pos2.z;
+            return Math.sqrt(dx * dx + dy * dy + dz * dz);
+        }
+
+        function findStarClusters() {
+            const MAX_CLUSTER_DISTANCE = 25; // Maximum distance for stars to be in same cluster
+            const MIN_CLUSTER_SIZE = 3;
+            const MAX_CLUSTER_SIZE = 6;
+            const clusters = [];
+            const usedStars = new Set();
+
+            // Find clusters of nearby stars
+            for (let i = 0; i < starMeshes.length; i++) {
+                if (usedStars.has(i)) continue;
+
+                const currentStar = starMeshes[i];
+                const cluster = [i];
+                usedStars.add(i);
+
+                // Find nearby stars
+                for (let j = 0; j < starMeshes.length; j++) {
+                    if (i === j || usedStars.has(j) || cluster.length >= MAX_CLUSTER_SIZE) continue;
+
+                    const distance = calculateDistance(
+                        currentStar.data.position,
+                        starMeshes[j].data.position
+                    );
+
+                    if (distance <= MAX_CLUSTER_DISTANCE) {
+                        cluster.push(j);
+                        usedStars.add(j);
+                    }
+                }
+
+                // Only create cluster if it has minimum required stars
+                if (cluster.length >= MIN_CLUSTER_SIZE) {
+                    clusters.push(cluster);
+                }
+            }
+
+            return clusters;
+        }
+
+        function createClusterLines() {
+            // Clear existing cluster lines
+            clusterLines.forEach(line => scene.remove(line));
+            clusterLines = [];
+
+            starClusters = findStarClusters();
+            console.log(`🌌 Created ${starClusters.length} star clusters`);
+
+            starClusters.forEach((cluster, clusterIndex) => {
+                // Create lines between stars in cluster (not all-to-all, but a nice pattern)
+                for (let i = 0; i < cluster.length; i++) {
+                    const currentStarIndex = cluster[i];
+                    const currentStar = starMeshes[currentStarIndex];
+                    
+                    // Connect to next 1-2 stars in cluster to avoid too many lines
+                    const connectionsToMake = Math.min(2, cluster.length - i - 1);
+                    
+                    for (let j = 1; j <= connectionsToMake; j++) {
+                        const nextStarIndex = cluster[(i + j) % cluster.length];
+                        const nextStar = starMeshes[nextStarIndex];
+                        
+                        const lineGeometry = new THREE.BufferGeometry();
+                        const positions = new Float32Array([
+                            currentStar.data.position.x, currentStar.data.position.y, currentStar.data.position.z,
+                            nextStar.data.position.x, nextStar.data.position.y, nextStar.data.position.z
+                        ]);
+                        lineGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                        
+                        // Create line with subtle color - blend of the two connected stars
+                        const color1 = new THREE.Color(currentStar.data.color);
+                        const color2 = new THREE.Color(nextStar.data.color);
+                        const blendedColor = color1.clone().lerp(color2, 0.5);
+                        
+                        const lineMaterial = new THREE.LineBasicMaterial({
+                            color: blendedColor,
+                            transparent: true,
+                            opacity: 0.3,
+                            linewidth: 1
+                        });
+                        
+                        const line = new THREE.Line(lineGeometry, lineMaterial);
+                        line.userData = {
+                            clusterIndex: clusterIndex,
+                            star1: currentStarIndex,
+                            star2: nextStarIndex
+                        };
+                        
+                        scene.add(line);
+                        clusterLines.push(line);
+                    }
+                }
+            });
+
+            // Update cluster count in UI
+            document.getElementById('cluster-count').textContent = starClusters.length;
+        }
+
+        function getStarClusterInfo(starData) {
+            // Find which cluster this star belongs to
+            for (let i = 0; i < starClusters.length; i++) {
+                const cluster = starClusters[i];
+                const starIndex = starMeshes.findIndex(star => star.data.name === starData.name);
+                
+                if (cluster.includes(starIndex)) {
+                    const clusterStars = cluster.map(index => starMeshes[index].data.name);
+                    return {
+                        clusterIndex: i + 1,
+                        clusterSize: cluster.length,
+                        clusterStars: clusterStars.filter(name => name !== starData.name)
+                    };
+                }
+            }
+            return null;
+        }
+
         // ============== INITIALIZATION ==============
         async function init() {
             document.getElementById('loading').style.display = 'block';
@@ -823,6 +940,10 @@
             
             initThreeJS();
             stars.forEach(star => createStarWithBloom(star));
+            
+            // Create star clusters after all stars are loaded
+            createClusterLines();
+            
             updateCounters();
             setupEventListeners();
             animate();
@@ -876,12 +997,9 @@
             scene.add(bgStars);
         }
 
-        // ============== REAL BLOOM STAR CREATION ==============
         function createStarWithBloom(starData) {
-            // Create main star core
             const coreGeometry = new THREE.SphereGeometry(0.5, 16, 16);
             
-            // Emissive material for bloom effect
             const coreMaterial = new THREE.MeshBasicMaterial({ 
                 color: new THREE.Color(starData.color),
                 transparent: false
@@ -889,7 +1007,6 @@
             
             const core = new THREE.Mesh(coreGeometry, coreMaterial);
             
-            // Create glow layers for bloom effect
             const glowLayers = [];
             const glowSizes = [1.2, 2.0, 3.5, 5.0];
             const glowOpacities = [0.8, 0.6, 0.3, 0.1];
@@ -907,7 +1024,6 @@
                 glowLayers.push(glow);
             });
 
-            // Group everything together
             const starGroup = new THREE.Group();
             starGroup.add(core);
             glowLayers.forEach(glow => starGroup.add(glow));
@@ -957,6 +1073,10 @@
             galaxyData.visitCount++;
 
             createStarWithBloom(savedStar);
+            
+            // Recreate clusters to include the new star
+            createClusterLines();
+            
             updateCounters();
             
             document.getElementById('welcome-modal').classList.add('hidden');
@@ -1109,11 +1229,25 @@
             const starInfoContent = document.getElementById('star-info-content');
             const createdDate = starData.timestamp ? new Date(starData.timestamp).toLocaleDateString() : 'Unknown';
             
+            // Get cluster information
+            const clusterInfo = getStarClusterInfo(starData);
+            
+            let clusterText = '';
+            if (clusterInfo) {
+                clusterText = `
+                    <p>🌌 Cluster: System ${clusterInfo.clusterIndex} (${clusterInfo.clusterSize} stars)</p>
+                    <p>🔗 Connected to: ${clusterInfo.clusterStars.slice(0, 3).join(', ')}${clusterInfo.clusterStars.length > 3 ? '...' : ''}</p>
+                `;
+            } else {
+                clusterText = '<p>🌌 Solitary star (no nearby connections)</p>';
+            }
+            
             starInfoContent.innerHTML = `
                 <p class="star-name">⭐ ${starData.name}</p>
                 <p><span class="star-color-badge" style="background-color: ${starData.color};"></span>Color: ${starData.color}</p>
                 <p>📅 Created: ${createdDate}</p>
                 <p>📍 Position: (${Math.round(starData.position.x)}, ${Math.round(starData.position.y)}, ${Math.round(starData.position.z)})</p>
+                ${clusterText}
             `;
         }
 
@@ -1149,6 +1283,7 @@
         function updateCounters() {
             document.getElementById('star-count').textContent = galaxyData.stars.length;
             document.getElementById('visitor-count').textContent = galaxyData.visitCount;
+            document.getElementById('cluster-count').textContent = starClusters.length;
         }
 
         function onWindowResize() {
@@ -1169,21 +1304,26 @@
             const time = Date.now() * 0.001;
             
             starMeshes.forEach((starObj, index) => {
-                // Animate core
                 starObj.core.rotation.y += 0.01;
                 starObj.core.rotation.x += 0.005;
                 
-                // Animate glow layers with proper bloom effect
                 starObj.glowLayers.forEach((glow, layerIndex) => {
                     const baseOpacity = [0.8, 0.6, 0.3, 0.1][layerIndex] || 0.05;
                     glow.material.opacity = baseOpacity + Math.sin(time * 2 + index + layerIndex) * 0.2;
                     glow.rotation.y += 0.003 * (layerIndex + 1);
                     glow.rotation.x += 0.002 * (layerIndex + 1);
                     
-                    // Scale pulsing for bloom
                     const scale = 1 + Math.sin(time * 3 + index + layerIndex) * 0.1;
                     glow.scale.setScalar(scale);
                 });
+            });
+
+            // Animate cluster lines with subtle pulsing
+            clusterLines.forEach((line, index) => {
+                if (line.material) {
+                    const baseOpacity = 0.3;
+                    line.material.opacity = baseOpacity + Math.sin(time * 0.5 + index * 0.1) * 0.15;
+                }
             });
 
             renderer.render(scene, camera);
