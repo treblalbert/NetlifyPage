@@ -123,6 +123,11 @@
         .section.features { border-left-color: #48dbfb; }
         .section.art-style { border-left-color: #ff9ff3; }
         .section.content-scope { border-left-color: #54a0ff; }
+        .section.development { border-left-color: #9b59b6; }
+        .section.platforms { border-left-color: #e74c3c; }
+        .section.publisher { border-left-color: #00b894; }
+        .section.festivals { border-left-color: #d63031; }
+        .section.post-launch { border-left-color: #e67e22; }
         
         .section-title {
             font-family: 'Fredoka One', cursive;
@@ -146,6 +151,11 @@
         .features .section-title::before { background: linear-gradient(45deg, #48dbfb, #7ed6df); }
         .art-style .section-title::before { background: linear-gradient(45deg, #ff9ff3, #fca3ff); }
         .content-scope .section-title::before { background: linear-gradient(45deg, #54a0ff, #74b9ff); }
+        .development .section-title::before { background: linear-gradient(45deg, #9b59b6, #a29bfe); }
+        .platforms .section-title::before { background: linear-gradient(45deg, #e74c3c, #ff7675); }
+        .publisher .section-title::before { background: linear-gradient(45deg, #00b894, #00cec9); }
+        .festivals .section-title::before { background: linear-gradient(45deg, #d63031, #fd79a8); }
+        .post-launch .section-title::before { background: linear-gradient(45deg, #e67e22, #fdcb6e); }
         
         .highlight-box {
             background: linear-gradient(135deg, #667eea15, #764ba215);
@@ -272,6 +282,13 @@
             color: #ff6b6b;
             font-weight: bold;
         }
+
+        .platform-card:hover {
+            transform: translateY(-5px) scale(1.05);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.12));
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
         
         .footer {
             background: linear-gradient(135deg, #2c3e50, #34495e);
@@ -322,6 +339,7 @@
         </header>
         
         <div class="content">
+            <!-- 1. CORE GAMEPLAY -->
             <section class="section gameplay">
                 <h2 class="section-title">Core Gameplay</h2>
                 <p>WRECKY KART combines the thrill of kart racing with the strategic chaos of trap placement. Each race consists of <strong>3 laps</strong> with a maximum of <strong>3 rounds</strong>, but here's the twist: before each round begins, every player strategically places <strong>3 traps</strong> around the track.</p>
@@ -398,191 +416,9 @@
                         <p>Damage and slow down vehicles</p>
                     </div>
                 </div>
-
-                <!-- POST-LAUNCH ROADMAP -->
-                <div style="margin: 3rem 0;">
-                    <h3 style="color: #8e44ad; font-size: 1.8rem; font-weight: 700; margin-bottom: 2rem; text-align: center;">
-                        🚀 Post-Launch Roadmap (Year 2+)
-                    </h3>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-                        <!-- Platform Expansion -->
-                        <div style="background: linear-gradient(135deg, rgba(155, 89, 182, 0.4), rgba(155, 89, 182, 0.15)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(155, 89, 182, 0.3);">
-                            <h4 style="color: #e8d5f0; font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
-                                🎮 Platform Expansion
-                            </h4>
-                            <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 1rem; line-height: 1.6;">
-                                Leverage PC success to secure console publishing deals and expand to Nintendo Switch 2, PlayStation 5, and Xbox Series X/S.
-                            </p>
-                            <ul style="color: rgba(255, 255, 255, 0.8); font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0;">
-                                <li style="margin-bottom: 0.4rem;">• Publisher negotiations & platform certification</li>
-                                <li style="margin-bottom: 0.4rem;">• Console-specific optimizations</li>
-                                <li style="margin-bottom: 0.4rem;">• Controller adaptation & UI scaling</li>
-                                <li style="margin-bottom: 0.4rem;">• Cross-platform marketing campaigns</li>
-                            </ul>
-                        </div>
-
-                        <!-- Success-Based Expansion -->
-                        <div style="background: linear-gradient(135deg, rgba(230, 126, 34, 0.4), rgba(230, 126, 34, 0.15)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(230, 126, 34, 0.3);">
-                            <h4 style="color: #fab1a0; font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
-                                📈 Success-Driven Features
-                            </h4>
-                            <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 1rem; line-height: 1.6;">
-                                Upon achieving sales milestones, invest in advanced features and team expansion to elevate WRECKY KART to the next level.
-                            </p>
-                            <ul style="color: rgba(255, 255, 255, 0.8); font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0;">
-                                <li style="margin-bottom: 0.4rem;">• <strong>Full Online Multiplayer:</strong> Hire networking specialists</li>
-                                <li style="margin-bottom: 0.4rem;">• <strong>Ranked Competitive Mode:</strong> Global leaderboards</li>
-                                <li style="margin-bottom: 0.4rem;">• <strong>Tournament System:</strong> Esports potential</li>
-                                <li style="margin-bottom: 0.4rem;">• <strong>Streaming Integration:</strong> Twitch/YouTube features</li>
-                            </ul>
-                        </div>
-
-                        <!-- Content Expansion -->
-                        <div style="background: linear-gradient(135deg, rgba(26, 188, 156, 0.4), rgba(26, 188, 156, 0.15)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(26, 188, 156, 0.3);">
-                            <h4 style="color: #81ecec; font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
-                                🎨 DLC & Content Pipeline
-                            </h4>
-                            <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 1rem; line-height: 1.6;">
-                                Build a dedicated content team to create regular DLC releases and maintain long-term player engagement.
-                            </p>
-                            <ul style="color: rgba(255, 255, 255, 0.8); font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0;">
-                                <li style="margin-bottom: 0.4rem;">• <strong>Track Packs:</strong> 5 new tracks every 3 months</li>
-                                <li style="margin-bottom: 0.4rem;">• <strong>Character Collections:</strong> New animal racers</li>
-                                <li style="margin-bottom: 0.4rem;">• <strong>Trap Varieties:</strong> Seasonal & themed obstacles</li>
-                                <li style="margin-bottom: 0.4rem;">• <strong>Game Modes:</strong> Battle royale, survival races</li>
-                            </ul>
-                        </div>
-
-                        <!-- Future Projects -->
-                        <div style="background: linear-gradient(135deg, rgba(52, 73, 94, 0.4), rgba(52, 73, 94, 0.15)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(52, 73, 94, 0.3);">
-                            <h4 style="color: #b2bec3; font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
-                                🌟 Franchise Expansion
-                            </h4>
-                            <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 1rem; line-height: 1.6;">
-                                Leverage WRECKY KART's success to establish The Wrench as a recognized indie studio with multiple projects.
-                            </p>
-                            <ul style="color: rgba(255, 255, 255, 0.8); font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0;">
-                                <li style="margin-bottom: 0.4rem;">• <strong>WRECKY KART 2:</strong> Enhanced sequel with new mechanics</li>
-                                <li style="margin-bottom: 0.4rem;">• <strong>Spin-off Games:</strong> Different genres, same universe</li>
-                                <li style="margin-bottom: 0.4rem;">• <strong>Mobile Adaptations:</strong> Simplified versions for phones</li>
-                                <li style="margin-bottom: 0.4rem;">• <strong>The Wrench Portfolio:</strong> Original IP development</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="highlight-box" style="margin-top: 2rem;">
-                        <strong>Growth Strategy:</strong> WRECKY KART serves as The Wrench's flagship title to establish market presence. Post-launch success will fund team expansion, advanced technology implementation, and the development of a sustainable game development pipeline. Each milestone reached opens new opportunities for innovation and market expansion.
-                    </div>
-                </div>
-
-                <!-- GAMING FESTIVALS & EVENTS STRATEGY -->
-                <div style="margin: 3rem 0;">
-                    <h3 style="color: #d63031; font-size: 1.8rem; font-weight: 700; margin-bottom: 2rem; text-align: center;">
-                        🎪 Gaming Festivals & Events Strategy
-                    </h3>
-                    <p style="text-align: center; margin-bottom: 2rem; color: rgba(255, 255, 255, 0.9); font-size: 1.1rem;">
-                        Strategic festival participation to maximize exposure, gather feedback, and build industry relationships throughout development and beyond.
-                    </p>
-
-                    <!-- DEVELOPMENT & ALPHA PHASE -->
-                    <div style="margin-bottom: 2.5rem;">
-                        <h4 style="color: #fd79a8; font-size: 1.4rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center;">
-                            🔨 Development & Alpha Phase (July-August 2025)
-                        </h4>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
-                            <div style="background: linear-gradient(135deg, rgba(253, 121, 168, 0.3), rgba(253, 121, 168, 0.1)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(253, 121, 168, 0.4);">
-                                <h5 style="color: #fd79a8; font-weight: 700; margin-bottom: 0.8rem;">🏛️ Gamesforum Barcelona</h5>
-                                <p style="color: rgba(255, 255, 255, 0.9); font-size: 0.95rem; line-height: 1.6;">
-                                    <strong>Timeline:</strong> Summer 2025<br>
-                                    <strong>Focus:</strong> Major local industry event with expo presence - ideal for showcasing playable alpha demo to Spanish and European developers and press.
-                                </p>
-                            </div>
-                            <div style="background: linear-gradient(135deg, rgba(253, 121, 168, 0.3), rgba(253, 121, 168, 0.1)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(253, 121, 168, 0.4);">
-                                <h5 style="color: #fd79a8; font-weight: 700; margin-bottom: 0.8rem;">🎮 Summer Game Fest + Indie Showcases</h5>
-                                <p style="color: rgba(255, 255, 255, 0.9); font-size: 0.95rem; line-height: 1.6;">
-                                    <strong>Timeline:</strong> June 2025<br>
-                                    <strong>Focus:</strong> Remote participation in digital showcases like Day of the Devs or Wholesome Direct for global indie visibility.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- PRE-RELEASE BUILD-UP -->
-                    <div style="margin-bottom: 2.5rem;">
-                        <h4 style="color: #00b894; font-size: 1.4rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center;">
-                            🎯 Pre-Release Build-Up (2026)
-                        </h4>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-                            <div style="background: linear-gradient(135deg, rgba(0, 184, 148, 0.3), rgba(0, 184, 148, 0.1)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(0, 184, 148, 0.4);">
-                                <h5 style="color: #00cec9; font-weight: 700; margin-bottom: 0.8rem;">🎨 A MAZE. (Berlin)</h5>
-                                <p style="color: rgba(255, 255, 255, 0.9); font-size: 0.9rem; line-height: 1.5;">
-                                    <strong>May 2026</strong> - Perfect for experimental games and gathering niche international press attention.
-                                </p>
-                            </div>
-                            <div style="background: linear-gradient(135deg, rgba(0, 184, 148, 0.3), rgba(0, 184, 148, 0.1)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(0, 184, 148, 0.4);">
-                                <h5 style="color: #00cec9; font-weight: 700; margin-bottom: 0.8rem;">🇬🇧 Develop: Brighton</h5>
-                                <p style="color: rgba(255, 255, 255, 0.9); font-size: 0.9rem; line-height: 1.5;">
-                                    <strong>July 2026</strong> - UK industry networking with Indie Showcase for feedback and publisher interest.
-                                </p>
-                            </div>
-                            <div style="background: linear-gradient(135deg, rgba(0, 184, 148, 0.3), rgba(0, 184, 148, 0.1)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(0, 184, 148, 0.4);">
-                                <h5 style="color: #00cec9; font-weight: 700; margin-bottom: 0.8rem;">🎪 EGX Rezzed</h5>
-                                <p style="color: rgba(255, 255, 255, 0.9); font-size: 0.9rem; line-height: 1.5;">
-                                    <strong>July 2026</strong> - Demo polished beta builds to enthusiastic UK indie audience.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- LAUNCH COORDINATION -->
-                    <div style="margin-bottom: 2.5rem;">
-                        <h4 style="color: #0984e3; font-size: 1.4rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center;">
-                            🚀 Launch Coordination (August 2026)
-                        </h4>
-                        <div style="background: linear-gradient(135deg, rgba(9, 132, 227, 0.4), rgba(9, 132, 227, 0.15)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(9, 132, 227, 0.3); text-align: center;">
-                            <h5 style="color: #74b9ff; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
-                                🎮 Gamescom Opening Night Live
-                            </h5>
-                            <p style="color: rgba(255, 255, 255, 0.9); font-size: 1.1rem; line-height: 1.6;">
-                                Coordinate August 2026 release timing with Gamescom for maximum press coverage and post-show demo opportunities. This timing leverages Europe's largest gaming event for our launch momentum.
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- POST-LAUNCH SUPPORT -->
-                    <div style="margin-bottom: 2rem;">
-                        <h4 style="color: #6c5ce7; font-size: 1.4rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center;">
-                            🥳 Post-Launch Community Building (Aug 2026 - Aug 2027)
-                        </h4>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
-                            <div style="background: linear-gradient(135deg, rgba(108, 92, 231, 0.3), rgba(108, 92, 231, 0.1)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(108, 92, 231, 0.4);">
-                                <h5 style="color: #a29bfe; font-weight: 700; margin-bottom: 0.8rem;">🎌 INDIE Live Expo (Japan)</h5>
-                                <p style="color: rgba(255, 255, 255, 0.9); font-size: 0.9rem; line-height: 1.5;">
-                                    <strong>Late 2026</strong> - Free indie showcase to reach Asia-wide players and expand global presence.
-                                </p>
-                            </div>
-                            <div style="background: linear-gradient(135deg, rgba(108, 92, 231, 0.3), rgba(108, 92, 231, 0.1)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(108, 92, 231, 0.4);">
-                                <h5 style="color: #a29bfe; font-weight: 700; margin-bottom: 0.8rem;">🏢 GDC (San Francisco)</h5>
-                                <p style="color: rgba(255, 255, 255, 0.9); font-size: 0.9rem; line-height: 1.5;">
-                                    <strong>March 2027</strong> - Post-mortems, GDC Vault talks, and showcasing new content/DLC previews.
-                                </p>
-                            </div>
-                            <div style="background: linear-gradient(135deg, rgba(108, 92, 231, 0.3), rgba(108, 92, 231, 0.1)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(108, 92, 231, 0.4);">
-                                <h5 style="color: #a29bfe; font-weight: 700; margin-bottom: 0.8rem;">⚡ Speedrunning Events</h5>
-                                <p style="color: rgba(255, 255, 255, 0.9); font-size: 0.9rem; line-height: 1.5;">
-                                    <strong>Mid-2027</strong> - Engage speedrun communities with unique racing modes and time trials.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="highlight-box">
-                        <strong>Strategic Festival Approach:</strong> This carefully planned festival schedule maximizes exposure at each development stage while building industry relationships and community engagement. Starting with local Barcelona events, expanding to major European showcases, timing our launch with Gamescom, and maintaining momentum through post-launch events ensures sustained visibility and growth. Our producers will coordinate submissions, booth logistics, and press meetings to maximize each opportunity.
-                    </div>
-                </div>
             </section>
             
+            <!-- 2. SCORING SYSTEM -->
             <section class="section scoring">
                 <h2 class="section-title">Scoring System</h2>
                 <p>Victory requires <strong>30 points</strong> - achievable in just 3 rounds with skillful racing and strategic trap usage!</p>
@@ -623,14 +459,15 @@
                 </div>
             </section>
             
+            <!-- 3. KEY FEATURES -->
             <section class="section features">
                 <h2 class="section-title">Key Features</h2>
                 
                 <div class="feature-grid">
                     <div class="feature-card">
                         <span class="feature-emoji">🏁</span>
-                        <div class="feature-title">Infinite Rounds</div>
-                        <p>Each race is fresh with new trap configurations</p>
+                        <div class="feature-title">Limited Rounds</div>
+                        <p>Maximum 3 rounds with meteor finale</p>
                     </div>
                     <div class="feature-card">
                         <span class="feature-emoji">🎯</span>
@@ -660,6 +497,7 @@
                 </div>
             </section>
             
+            <!-- 4. ART DIRECTION -->
             <section class="section art-style">
                 <h2 class="section-title">Art Direction</h2>
                 <p>WRECKY KART features <strong>adorable 3D animal characters</strong> in a unique visual style heavily inspired by <em>Party Animals</em>, blending charming, rounded character designs with realistic elements like detailed fur textures and metallic surfaces.</p>
@@ -670,12 +508,13 @@
 
                 <div style="text-align: center; margin: 2rem 0;">
                     <img src="animals.jpg" alt="Party Animals - Visual Inspiration" style="max-width: 100%; height: auto; border-radius: 15px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); border: 2px solid rgba(255, 255, 255, 0.1);">
-                    <p style="margin-top: 1rem; font-style: italic; color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">Party Animals - Main visual inspiration for character design</p>
+                    <p style="margin-top: 1rem; font-style: italic; color: rgba(0, 0, 0, 0.6); font-size: 0.9rem;">Party Animals - Main visual inspiration for character design</p>
                 </div>
                 
                 <p>The contrast between stylized character design and realistic material properties creates a distinctive look that stands out in the crowded kart racing market while maintaining broad appeal across age groups.</p>
             </section>
             
+            <!-- 5. CONTENT & EXPANSION -->
             <section class="section content-scope">
                 <h2 class="section-title">Content & Expansion</h2>
                 <p>Launch with <strong>15 meticulously designed tracks</strong>, each offering unique layout challenges and trap placement opportunities. Every track tells a story and provides different strategic considerations for trap placement.</p>
@@ -687,20 +526,21 @@
                 <p>Future content may include seasonal events, community-created tracks, new trap mechanics, and expanded character rosters - all designed to keep the WRECKY KART community engaged and growing.</p>
             </section>
 
-            <section class="section" style="border-left-color: #9b59b6;">
+            <!-- 6. DEVELOPMENT & RELEASE -->
+            <section class="section development">
                 <h2 class="section-title">Development & Release</h2>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin: 2rem 0;">
-                    <div style="text-align: center; background: linear-gradient(135deg, rgba(155, 89, 182, 0.4), rgba(155, 89, 182, 0.15)); border-radius: 15px; padding: 2rem; border: 1px solid rgba(155, 89, 182, 0.3);">
+                    <div style="text-align: center; background: linear-gradient(135deg, rgba(155, 89, 182, 0.6), rgba(155, 89, 182, 0.3)); border-radius: 15px; padding: 2rem; border: 1px solid rgba(155, 89, 182, 0.5);">
                         <div style="font-size: 3rem; margin-bottom: 1rem;">📅</div>
-                        <h3 style="color: #e8d5f0; margin-bottom: 1rem; font-size: 1.5rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">Development Timeline</h3>
+                        <h3 style="color: white; margin-bottom: 1rem; font-size: 1.5rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);">Development Timeline</h3>
                         <div style="font-size: 2rem; font-weight: 700; color: white; margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);">1 Year</div>
-                        <p style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);">From concept to full release</p>
+                        <p style="color: white; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);">From concept to full release</p>
                     </div>
-                    <div style="text-align: center; background: linear-gradient(135deg, rgba(46, 204, 113, 0.4), rgba(46, 204, 113, 0.15)); border-radius: 15px; padding: 2rem; border: 1px solid rgba(46, 204, 113, 0.3);">
+                    <div style="text-align: center; background: linear-gradient(135deg, rgba(46, 204, 113, 0.6), rgba(46, 204, 113, 0.3)); border-radius: 15px; padding: 2rem; border: 1px solid rgba(46, 204, 113, 0.5);">
                         <div style="font-size: 3rem; margin-bottom: 1rem;">💰</div>
-                        <h3 style="color: #d5f0e2; margin-bottom: 1rem; font-size: 1.5rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);">Target Price</h3>
+                        <h3 style="color: white; margin-bottom: 1rem; font-size: 1.5rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);">Target Price</h3>
                         <div style="font-size: 2rem; font-weight: 700; color: white; margin-bottom: 0.5rem; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);">$15</div>
-                        <p style="color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);">Premium indie experience</p>
+                        <p style="color: white; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);">Premium indie experience</p>
                     </div>
                 </div>
                 
@@ -716,11 +556,11 @@
                     
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
                         <!-- Avoid These Dates -->
-                        <div style="background: linear-gradient(135deg, rgba(231, 76, 60, 0.4), rgba(231, 76, 60, 0.15)); border-radius: 15px; padding: 1.5rem; border: 2px solid rgba(231, 76, 60, 0.4);">
-                            <h4 style="color: #ff7675; font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                        <div style="background: linear-gradient(135deg, rgba(231, 76, 60, 0.6), rgba(231, 76, 60, 0.3)); border-radius: 15px; padding: 1.5rem; border: 2px solid rgba(231, 76, 60, 0.4);">
+                            <h4 style="color: white; font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
                                 🚫 Competition Hazards
                             </h4>
-                            <ul style="color: rgba(255, 255, 255, 0.9); font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0;">
+                            <ul style="color: white; font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                                 <li style="margin-bottom: 0.5rem;"><strong>May 26, 2026:</strong> GTA VI global launch</li>
                                 <li style="margin-bottom: 0.5rem;"><strong>June-July 2026:</strong> FIFA World Cup frenzy</li>
                                 <li style="margin-bottom: 0.5rem;"><strong>Impact:</strong> Massive media attention diverted</li>
@@ -728,11 +568,11 @@
                         </div>
 
                         <!-- Optimal Launch Windows -->
-                        <div style="background: linear-gradient(135deg, rgba(46, 204, 113, 0.4), rgba(46, 204, 113, 0.15)); border-radius: 15px; padding: 1.5rem; border: 2px solid rgba(46, 204, 113, 0.4);">
-                            <h4 style="color: #55efc4; font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                        <div style="background: linear-gradient(135deg, rgba(46, 204, 113, 0.6), rgba(46, 204, 113, 0.3)); border-radius: 15px; padding: 1.5rem; border: 2px solid rgba(46, 204, 113, 0.4);">
+                            <h4 style="color: white; font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
                                 ✅ Optimal Launch Windows
                             </h4>
-                            <ul style="color: rgba(255, 255, 255, 0.9); font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0;">
+                            <ul style="color: white; font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                                 <li style="margin-bottom: 0.5rem;"><strong>Early June (2-9):</strong> Post-GTA, pre-World Cup</li>
                                 <li style="margin-bottom: 0.5rem;"><strong>Mid-August (11-18):</strong> Clean launch window</li>
                                 <li style="margin-bottom: 0.5rem;"><strong>Advantage:</strong> Maximum media spotlight</li>
@@ -775,9 +615,9 @@
                     <!-- Phase Descriptions -->
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
                         <!-- Phase 1 -->
-                        <div style="background: linear-gradient(135deg, rgba(231, 76, 60, 0.4), rgba(231, 76, 60, 0.15)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(231, 76, 60, 0.3);">
-                            <h4 style="color: #ff7675; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.8rem; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">📋 Concept & Pre-production</h4>
-                            <ul style="color: rgba(255, 255, 255, 0.9); font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0;">
+                        <div style="background: linear-gradient(135deg, rgba(231, 76, 60, 0.6), rgba(231, 76, 60, 0.3)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(231, 76, 60, 0.4);">
+                            <h4 style="color: white; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">📋 Concept & Pre-production</h4>
+                            <ul style="color: white; font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                                 <li style="margin-bottom: 0.3rem;">• Game design document refinement</li>
                                 <li style="margin-bottom: 0.3rem;">• Art style exploration & character concepts</li>
                                 <li style="margin-bottom: 0.3rem;">• Technical architecture planning</li>
@@ -786,9 +626,9 @@
                         </div>
 
                         <!-- Phase 2 -->
-                        <div style="background: linear-gradient(135deg, rgba(243, 156, 18, 0.4), rgba(243, 156, 18, 0.15)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(243, 156, 18, 0.3);">
-                            <h4 style="color: #fdcb6e; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.8rem; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">⚙️ Core Development</h4>
-                            <ul style="color: rgba(255, 255, 255, 0.9); font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0;">
+                        <div style="background: linear-gradient(135deg, rgba(243, 156, 18, 0.6), rgba(243, 156, 18, 0.3)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(243, 156, 18, 0.4);">
+                            <h4 style="color: white; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">⚙️ Core Development</h4>
+                            <ul style="color: white; font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                                 <li style="margin-bottom: 0.3rem;">• Racing mechanics & physics implementation</li>
                                 <li style="margin-bottom: 0.3rem;">• Trap system development & placement tools</li>
                                 <li style="margin-bottom: 0.3rem;">• 3D character models & animations</li>
@@ -798,9 +638,9 @@
                         </div>
 
                         <!-- Phase 3 -->
-                        <div style="background: linear-gradient(135deg, rgba(52, 152, 219, 0.4), rgba(52, 152, 219, 0.15)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(52, 152, 219, 0.3);">
-                            <h4 style="color: #74b9ff; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.8rem; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">🧪 Alpha & Beta Testing</h4>
-                            <ul style="color: rgba(255, 255, 255, 0.9); font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0;">
+                        <div style="background: linear-gradient(135deg, rgba(52, 152, 219, 0.6), rgba(52, 152, 219, 0.3)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(52, 152, 219, 0.4);">
+                            <h4 style="color: white; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">🧪 Alpha & Beta Testing</h4>
+                            <ul style="color: white; font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                                 <li style="margin-bottom: 0.3rem;">• All 15 tracks completed & balanced</li>
                                 <li style="margin-bottom: 0.3rem;">• Multiplayer networking & stability</li>
                                 <li style="margin-bottom: 0.3rem;">• Closed beta with community feedback</li>
@@ -810,9 +650,9 @@
                         </div>
 
                         <!-- Phase 4 -->
-                        <div style="background: linear-gradient(135deg, rgba(46, 204, 113, 0.4), rgba(46, 204, 113, 0.15)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(46, 204, 113, 0.3);">
-                            <h4 style="color: #55efc4; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.8rem; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">🚀 Polish & Release</h4>
-                            <ul style="color: rgba(255, 255, 255, 0.9); font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0;">
+                        <div style="background: linear-gradient(135deg, rgba(46, 204, 113, 0.6), rgba(46, 204, 113, 0.3)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(46, 204, 113, 0.4);">
+                            <h4 style="color: white; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">🚀 Polish & Release</h4>
+                            <ul style="color: white; font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
                                 <li style="margin-bottom: 0.3rem;">• Final polish & visual effects</li>
                                 <li style="margin-bottom: 0.3rem;">• Steam store page & marketing materials</li>
                                 <li style="margin-bottom: 0.3rem;">• Platform certification & publishing</li>
@@ -824,9 +664,10 @@
                 </div>
             </section>
 
-            <section class="section" style="border-left-color: #e74c3c;">
+            <!-- 7. TARGET PLATFORMS -->
+            <section class="section platforms">
                 <h2 class="section-title">Target Platforms</h2>
-                <p style="text-align: center; margin-bottom: 2rem; font-size: 1.1rem; color: rgba(255, 255, 255, 0.9);">
+                <p style="text-align: center; margin-bottom: 2rem; font-size: 1.1rem; color: rgba(0, 0, 0, 0.7);">
                     WRECKY KART's platform strategy prioritizes PC launch with potential expansion to consoles based on market response and partnership opportunities.
                 </p>
                 
@@ -836,11 +677,11 @@
                         ✅ 100% Confirmed Launch Platforms
                     </h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
-                        <div style="text-align: center; background: linear-gradient(135deg, rgba(46, 204, 113, 0.5), rgba(46, 204, 113, 0.25)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(46, 204, 113, 0.4);" class="platform-card">
+                        <div style="text-align: center; background: linear-gradient(135deg, rgba(46, 204, 113, 0.6), rgba(46, 204, 113, 0.3)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(46, 204, 113, 0.4);" class="platform-card">
                             <img src="steam.png" alt="Steam" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 1rem; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));">
                             <h4 style="color: white; font-size: 1.2rem; font-weight: 600; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);">Steam PC</h4>
                         </div>
-                        <div style="text-align: center; background: linear-gradient(135deg, rgba(46, 204, 113, 0.5), rgba(46, 204, 113, 0.25)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(46, 204, 113, 0.4);" class="platform-card">
+                        <div style="text-align: center; background: linear-gradient(135deg, rgba(46, 204, 113, 0.6), rgba(46, 204, 113, 0.3)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(46, 204, 113, 0.4);" class="platform-card">
                             <img src="itch.png" alt="Itch.io" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 1rem; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));">
                             <h4 style="color: white; font-size: 1.2rem; font-weight: 600; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);">Itch.IO PC</h4>
                         </div>
@@ -853,15 +694,15 @@
                         🎯 Target Console Platforms
                     </h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
-                        <div style="text-align: center; background: linear-gradient(135deg, rgba(243, 156, 18, 0.5), rgba(243, 156, 18, 0.25)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(243, 156, 18, 0.3);" class="platform-card">
+                        <div style="text-align: center; background: linear-gradient(135deg, rgba(243, 156, 18, 0.6), rgba(243, 156, 18, 0.3)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(243, 156, 18, 0.4);" class="platform-card">
                             <img src="nintendo.png" alt="Nintendo" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 1rem; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));">
                             <h4 style="color: white; font-size: 1.2rem; font-weight: 600; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);">Nintendo Switch 2</h4>
                         </div>
-                        <div style="text-align: center; background: linear-gradient(135deg, rgba(243, 156, 18, 0.5), rgba(243, 156, 18, 0.25)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(243, 156, 18, 0.3);" class="platform-card">
+                        <div style="text-align: center; background: linear-gradient(135deg, rgba(243, 156, 18, 0.6), rgba(243, 156, 18, 0.3)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(243, 156, 18, 0.4);" class="platform-card">
                             <img src="ps.png" alt="PlayStation" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 1rem; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));">
                             <h4 style="color: white; font-size: 1.2rem; font-weight: 600; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);">PlayStation 5</h4>
                         </div>
-                        <div style="text-align: center; background: linear-gradient(135deg, rgba(243, 156, 18, 0.5), rgba(243, 156, 18, 0.25)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(243, 156, 18, 0.3);" class="platform-card">
+                        <div style="text-align: center; background: linear-gradient(135deg, rgba(243, 156, 18, 0.6), rgba(243, 156, 18, 0.3)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(243, 156, 18, 0.4);" class="platform-card">
                             <img src="xbox.png" alt="Xbox" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 1rem; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));">
                             <h4 style="color: white; font-size: 1.2rem; font-weight: 600; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);">Xbox Series X/S</h4>
                         </div>
@@ -874,16 +715,16 @@
                         🤔 Potential Additional Platforms
                     </h3>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
-                        <div style="text-align: center; background: linear-gradient(135deg, rgba(149, 165, 166, 0.4), rgba(149, 165, 166, 0.2)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(149, 165, 166, 0.3);">
+                        <div style="text-align: center; background: linear-gradient(135deg, rgba(149, 165, 166, 0.6), rgba(149, 165, 166, 0.3)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(149, 165, 166, 0.4);">
                             <h5 style="color: white; font-size: 1rem; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);">Nintendo Switch 1</h5>
                         </div>
-                        <div style="text-align: center; background: linear-gradient(135deg, rgba(149, 165, 166, 0.4), rgba(149, 165, 166, 0.2)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(149, 165, 166, 0.3);">
+                        <div style="text-align: center; background: linear-gradient(135deg, rgba(149, 165, 166, 0.6), rgba(149, 165, 166, 0.3)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(149, 165, 166, 0.4);">
                             <h5 style="color: white; font-size: 1rem; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);">PlayStation 4</h5>
                         </div>
-                        <div style="text-align: center; background: linear-gradient(135deg, rgba(149, 165, 166, 0.4), rgba(149, 165, 166, 0.2)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(149, 165, 166, 0.3);">
+                        <div style="text-align: center; background: linear-gradient(135deg, rgba(149, 165, 166, 0.6), rgba(149, 165, 166, 0.3)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(149, 165, 166, 0.4);">
                             <h5 style="color: white; font-size: 1rem; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);">Xbox One</h5>
                         </div>
-                        <div style="text-align: center; background: linear-gradient(135deg, rgba(149, 165, 166, 0.4), rgba(149, 165, 166, 0.2)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(149, 165, 166, 0.3);">
+                        <div style="text-align: center; background: linear-gradient(135deg, rgba(149, 165, 166, 0.6), rgba(149, 165, 166, 0.3)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(149, 165, 166, 0.4);">
                             <h5 style="color: white; font-size: 1rem; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);">Linux/MacOS</h5>
                         </div>
                     </div>
@@ -897,8 +738,270 @@
                     <strong>Platform Expansion Plan:</strong> Starting with PC allows for rapid iteration, community feedback, and revenue generation. Console releases will depend on PC success, available resources, and publisher partnerships. This phased approach minimizes risk while maximizing potential reach across the gaming ecosystem.
                 </div>
             </section>
+
+            <!-- 8. PUBLISHER PARTNERSHIP STRATEGY -->
+            <section class="section publisher">
+                <h2 class="section-title">Publisher Partnership Strategy</h2>
+                <p style="text-align: center; margin-bottom: 2rem; color: rgba(0, 0, 0, 0.7); font-size: 1.1rem;">
+                    Optional but highly beneficial - securing a publisher partnership during alpha phase for enhanced visibility, funding, and marketing reach.
+                </p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                    <!-- Benefits of Publisher Partnership -->
+                    <div style="background: linear-gradient(135deg, rgba(0, 184, 148, 0.6), rgba(0, 184, 148, 0.3)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(0, 184, 148, 0.4);">
+                        <h4 style="color: white; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                            💰 Partnership Benefits
+                        </h4>
+                        <ul style="color: white; font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                            <li style="margin-bottom: 0.5rem;">• <strong>Additional Funding:</strong> Development budget security</li>
+                            <li style="margin-bottom: 0.5rem;">• <strong>Marketing Expertise:</strong> Professional campaigns & PR</li>
+                            <li style="margin-bottom: 0.5rem;">• <strong>Platform Relations:</strong> Console certification assistance</li>
+                            <li style="margin-bottom: 0.5rem;">• <strong>Global Distribution:</strong> Worldwide reach & localization</li>
+                            <li style="margin-bottom: 0.5rem;">• <strong>Industry Connections:</strong> Press & influencer networks</li>
+                        </ul>
+                    </div>
+
+                    <!-- Timing Strategy -->
+                    <div style="background: linear-gradient(135deg, rgba(0, 184, 148, 0.6), rgba(0, 184, 148, 0.3)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(0, 184, 148, 0.4);">
+                        <h4 style="color: white; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                            🎯 Optimal Timing
+                        </h4>
+                        <ul style="color: white; font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                            <li style="margin-bottom: 0.5rem;">• <strong>Alpha Ready (July 2025):</strong> Polished prototype showcase</li>
+                            <li style="margin-bottom: 0.5rem;">• <strong>Core Mechanics Proven:</strong> Racing + trap placement working</li>
+                            <li style="margin-bottom: 0.5rem;">• <strong>Art Style Established:</strong> Visual identity clear</li>
+                            <li style="margin-bottom: 0.5rem;">• <strong>Multiplayer Functional:</strong> Party game potential demonstrated</li>
+                            <li style="margin-bottom: 0.5rem;">• <strong>Festival Buzz:</strong> Industry attention from showcases</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Target Publishers -->
+                <div style="margin-bottom: 2rem;">
+                    <h4 style="color: #00cec9; font-size: 1.5rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center;">
+                        🎮 Target Indie Publishers
+                    </h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                        <!-- Top Tier -->
+                        <div style="background: linear-gradient(135deg, rgba(255, 235, 59, 0.5), rgba(255, 235, 59, 0.25)); border-radius: 15px; padding: 1.5rem; border: 2px solid rgba(255, 235, 59, 0.4);">
+                            <h5 style="color: white; font-weight: 700; margin-bottom: 0.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">⭐ Top Tier Targets</h5>
+                            <ul style="color: white; font-size: 0.9rem; line-height: 1.5; list-style: none; padding-left: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                                <li style="margin-bottom: 0.3rem;">• <strong>Team17:</strong> Overcooked!, Moving Out</li>
+                                <li style="margin-bottom: 0.3rem;">• <strong>Devolver Digital:</strong> Fall Guys, Cult of the Lamb</li>
+                                <li style="margin-bottom: 0.3rem;">• <strong>Coffee Stain Publishing:</strong> Goat Simulator, Deep Rock Galactic</li>
+                            </ul>
+                        </div>
+
+                        <!-- Strong Fits -->
+                        <div style="background: linear-gradient(135deg, rgba(116, 185, 255, 0.5), rgba(116, 185, 255, 0.25)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(116, 185, 255, 0.4);">
+                            <h5 style="color: white; font-weight: 700; margin-bottom: 0.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">🎯 Strong Fits</h5>
+                            <ul style="color: white; font-size: 0.9rem; line-height: 1.5; list-style: none; padding-left: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                                <li style="margin-bottom: 0.3rem;">• <strong>Curve Digital:</strong> Human Fall Flat, Gang Beasts</li>
+                                <li style="margin-bottom: 0.3rem;">• <strong>Humble Games:</strong> Temtem, Forager</li>
+                                <li style="margin-bottom: 0.3rem;">• <strong>Raw Fury:</strong> Kingdom series, Atomicrops</li>
+                            </ul>
+                        </div>
+
+                        <!-- Emerging Opportunities -->
+                        <div style="background: linear-gradient(135deg, rgba(162, 155, 254, 0.5), rgba(162, 155, 254, 0.25)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(162, 155, 254, 0.4);">
+                            <h5 style="color: white; font-weight: 700; margin-bottom: 0.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">🌟 Emerging Options</h5>
+                            <ul style="color: white; font-size: 0.9rem; line-height: 1.5; list-style: none; padding-left: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                                <li style="margin-bottom: 0.3rem;">• <strong>Versus Evil:</strong> Pillars of Eternity, Faeria</li>
+                                <li style="margin-bottom: 0.3rem;">• <strong>Chucklefish:</strong> Stardew Valley, Risk of Rain</li>
+                                <li style="margin-bottom: 0.3rem;">• <strong>Annapurna Interactive:</strong> What Remains of Edith Finch</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <strong>Publisher Strategy:</strong> While WRECKY KART can succeed as a self-published title, the right publisher partnership could accelerate growth significantly. The ideal publisher brings experience with party games, strong relationships with streamers/content creators, and proven success in the competitive racing/party game market. Our producers will prepare a compelling alpha build and pitch deck specifically targeting publishers with portfolios matching our game's energy and potential for viral success.
+                </div>
+            </section>
+
+            <!-- 9. GAMING FESTIVALS & EVENTS STRATEGY -->
+            <section class="section festivals">
+                <h2 class="section-title">Gaming Festivals & Events Strategy</h2>
+                <p style="text-align: center; margin-bottom: 2rem; color: rgba(0, 0, 0, 0.7); font-size: 1.1rem;">
+                    Strategic festival participation to maximize exposure, gather feedback, and build industry relationships throughout development and beyond.
+                </p>
+
+                <!-- DEVELOPMENT & ALPHA PHASE -->
+                <div style="margin-bottom: 2.5rem;">
+                    <h4 style="color: #fd79a8; font-size: 1.4rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center;">
+                        🔨 Development & Alpha Phase (July-August 2025)
+                    </h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+                        <div style="background: linear-gradient(135deg, rgba(253, 121, 168, 0.5), rgba(253, 121, 168, 0.25)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(253, 121, 168, 0.4);">
+                            <h5 style="color: white; font-weight: 700; margin-bottom: 0.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">🏛️ Gamesforum Barcelona</h5>
+                            <p style="color: white; font-size: 0.95rem; line-height: 1.6; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                                <strong>Timeline:</strong> Summer 2025<br>
+                                <strong>Focus:</strong> Major local industry event with expo presence - ideal for showcasing playable alpha demo to Spanish and European developers and press.
+                            </p>
+                        </div>
+                        <div style="background: linear-gradient(135deg, rgba(253, 121, 168, 0.5), rgba(253, 121, 168, 0.25)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(253, 121, 168, 0.4);">
+                            <h5 style="color: white; font-weight: 700; margin-bottom: 0.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">🎮 Summer Game Fest + Indie Showcases</h5>
+                            <p style="color: white; font-size: 0.95rem; line-height: 1.6; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                                <strong>Timeline:</strong> June 2025<br>
+                                <strong>Focus:</strong> Remote participation in digital showcases like Day of the Devs or Wholesome Direct for global indie visibility.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRE-RELEASE BUILD-UP -->
+                <div style="margin-bottom: 2.5rem;">
+                    <h4 style="color: #00b894; font-size: 1.4rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center;">
+                        🎯 Pre-Release Build-Up (2026)
+                    </h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                        <div style="background: linear-gradient(135deg, rgba(0, 184, 148, 0.5), rgba(0, 184, 148, 0.25)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(0, 184, 148, 0.4);">
+                            <h5 style="color: white; font-weight: 700; margin-bottom: 0.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">🎨 A MAZE. (Berlin)</h5>
+                            <p style="color: white; font-size: 0.9rem; line-height: 1.5; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                                <strong>May 2026</strong> - Perfect for experimental games and gathering niche international press attention.
+                            </p>
+                        </div>
+                        <div style="background: linear-gradient(135deg, rgba(0, 184, 148, 0.5), rgba(0, 184, 148, 0.25)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(0, 184, 148, 0.4);">
+                            <h5 style="color: white; font-weight: 700; margin-bottom: 0.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">🇬🇧 Develop: Brighton</h5>
+                            <p style="color: white; font-size: 0.9rem; line-height: 1.5; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                                <strong>July 2026</strong> - UK industry networking with Indie Showcase for feedback and publisher interest.
+                            </p>
+                        </div>
+                        <div style="background: linear-gradient(135deg, rgba(0, 184, 148, 0.5), rgba(0, 184, 148, 0.25)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(0, 184, 148, 0.4);">
+                            <h5 style="color: white; font-weight: 700; margin-bottom: 0.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">🎪 EGX Rezzed</h5>
+                            <p style="color: white; font-size: 0.9rem; line-height: 1.5; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                                <strong>July 2026</strong> - Demo polished beta builds to enthusiastic UK indie audience.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAUNCH COORDINATION -->
+                <div style="margin-bottom: 2.5rem;">
+                    <h4 style="color: #0984e3; font-size: 1.4rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center;">
+                        🚀 Launch Coordination (August 2026)
+                    </h4>
+                    <div style="background: linear-gradient(135deg, rgba(9, 132, 227, 0.6), rgba(9, 132, 227, 0.3)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(9, 132, 227, 0.4); text-align: center;">
+                        <h5 style="color: white; font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                            🎮 Gamescom Opening Night Live
+                        </h5>
+                        <p style="color: white; font-size: 1.1rem; line-height: 1.6; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                            Coordinate August 2026 release timing with Gamescom for maximum press coverage and post-show demo opportunities. This timing leverages Europe's largest gaming event for our launch momentum.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- POST-LAUNCH SUPPORT -->
+                <div style="margin-bottom: 2rem;">
+                    <h4 style="color: #6c5ce7; font-size: 1.4rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center;">
+                        🥳 Post-Launch Community Building (Aug 2026 - Aug 2027)
+                    </h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+                        <div style="background: linear-gradient(135deg, rgba(108, 92, 231, 0.5), rgba(108, 92, 231, 0.25)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(108, 92, 231, 0.4);">
+                            <h5 style="color: white; font-weight: 700; margin-bottom: 0.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">🎌 INDIE Live Expo (Japan)</h5>
+                            <p style="color: white; font-size: 0.9rem; line-height: 1.5; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                                <strong>Late 2026</strong> - Free indie showcase to reach Asia-wide players and expand global presence.
+                            </p>
+                        </div>
+                        <div style="background: linear-gradient(135deg, rgba(108, 92, 231, 0.5), rgba(108, 92, 231, 0.25)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(108, 92, 231, 0.4);">
+                            <h5 style="color: white; font-weight: 700; margin-bottom: 0.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">🏢 GDC (San Francisco)</h5>
+                            <p style="color: white; font-size: 0.9rem; line-height: 1.5; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                                <strong>March 2027</strong> - Post-mortems, GDC Vault talks, and showcasing new content/DLC previews.
+                            </p>
+                        </div>
+                        <div style="background: linear-gradient(135deg, rgba(108, 92, 231, 0.5), rgba(108, 92, 231, 0.25)); border-radius: 15px; padding: 1.5rem; border: 1px solid rgba(108, 92, 231, 0.4);">
+                            <h5 style="color: white; font-weight: 700; margin-bottom: 0.8rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">⚡ Speedrunning Events</h5>
+                            <p style="color: white; font-size: 0.9rem; line-height: 1.5; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                                <strong>Mid-2027</strong> - Engage speedrun communities with unique racing modes and time trials.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <strong>Strategic Festival Approach:</strong> This carefully planned festival schedule maximizes exposure at each development stage while building industry relationships and community engagement. Starting with local Barcelona events, expanding to major European showcases, timing our launch with Gamescom, and maintaining momentum through post-launch events ensures sustained visibility and growth. Our producers will coordinate submissions, booth logistics, and press meetings to maximize each opportunity.
+                </div>
+            </section>
+
+            <!-- 10. POST-LAUNCH ROADMAP -->
+            <section class="section post-launch">
+                <h2 class="section-title">Post-Launch Roadmap</h2>
+                <p style="text-align: center; margin-bottom: 2rem; color: rgba(0, 0, 0, 0.7); font-size: 1.1rem;">
+                    WRECKY KART's platform strategy prioritizes PC launch with potential expansion to consoles based on market response and partnership opportunities.
+                </p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                    <!-- Platform Expansion -->
+                    <div style="background: linear-gradient(135deg, rgba(155, 89, 182, 0.6), rgba(155, 89, 182, 0.3)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(155, 89, 182, 0.4);">
+                        <h4 style="color: white; font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                            🎮 Platform Expansion
+                        </h4>
+                        <p style="color: white; margin-bottom: 1rem; line-height: 1.6; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                            Leverage PC success to secure console publishing deals and expand to Nintendo Switch 2, PlayStation 5, and Xbox Series X/S.
+                        </p>
+                        <ul style="color: white; font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                            <li style="margin-bottom: 0.4rem;">• Publisher negotiations & platform certification</li>
+                            <li style="margin-bottom: 0.4rem;">• Console-specific optimizations</li>
+                            <li style="margin-bottom: 0.4rem;">• Controller adaptation & UI scaling</li>
+                            <li style="margin-bottom: 0.4rem;">• Cross-platform marketing campaigns</li>
+                        </ul>
+                    </div>
+
+                    <!-- Success-Based Expansion -->
+                    <div style="background: linear-gradient(135deg, rgba(230, 126, 34, 0.6), rgba(230, 126, 34, 0.3)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(230, 126, 34, 0.4);">
+                        <h4 style="color: white; font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                            📈 Success-Driven Features
+                        </h4>
+                        <p style="color: white; margin-bottom: 1rem; line-height: 1.6; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                            Upon achieving sales milestones, invest in advanced features and team expansion to elevate WRECKY KART to the next level.
+                        </p>
+                        <ul style="color: white; font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                            <li style="margin-bottom: 0.4rem;">• <strong>Full Online Multiplayer:</strong> Hire networking specialists</li>
+                            <li style="margin-bottom: 0.4rem;">• <strong>Ranked Competitive Mode:</strong> Global leaderboards</li>
+                            <li style="margin-bottom: 0.4rem;">• <strong>Tournament System:</strong> Esports potential</li>
+                            <li style="margin-bottom: 0.4rem;">• <strong>Streaming Integration:</strong> Twitch/YouTube features</li>
+                        </ul>
+                    </div>
+
+                    <!-- Content Expansion -->
+                    <div style="background: linear-gradient(135deg, rgba(26, 188, 156, 0.6), rgba(26, 188, 156, 0.3)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(26, 188, 156, 0.4);">
+                        <h4 style="color: white; font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                            🎨 DLC & Content Pipeline
+                        </h4>
+                        <p style="color: white; margin-bottom: 1rem; line-height: 1.6; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                            Build a dedicated content team to create regular DLC releases and maintain long-term player engagement.
+                        </p>
+                        <ul style="color: white; font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                            <li style="margin-bottom: 0.4rem;">• <strong>Track Packs:</strong> 5 new tracks every 3 months</li>
+                            <li style="margin-bottom: 0.4rem;">• <strong>Character Collections:</strong> New animal racers</li>
+                            <li style="margin-bottom: 0.4rem;">• <strong>Trap Varieties:</strong> Seasonal & themed obstacles</li>
+                            <li style="margin-bottom: 0.4rem;">• <strong>Game Modes:</strong> Battle royale, survival races</li>
+                        </ul>
+                    </div>
+
+                    <!-- Future Projects -->
+                    <div style="background: linear-gradient(135deg, rgba(52, 73, 94, 0.6), rgba(52, 73, 94, 0.3)); border-radius: 20px; padding: 2rem; border: 2px solid rgba(52, 73, 94, 0.4);">
+                        <h4 style="color: white; font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">
+                            🌟 Franchise Expansion
+                        </h4>
+                        <p style="color: white; margin-bottom: 1rem; line-height: 1.6; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                            Leverage WRECKY KART's success to establish The Wrench as a recognized indie studio with multiple projects.
+                        </p>
+                        <ul style="color: white; font-size: 0.95rem; line-height: 1.6; list-style: none; padding-left: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.3);">
+                            <li style="margin-bottom: 0.4rem;">• <strong>WRECKY KART 2:</strong> Enhanced sequel with new mechanics</li>
+                            <li style="margin-bottom: 0.4rem;">• <strong>Spin-off Games:</strong> Different genres, same universe</li>
+                            <li style="margin-bottom: 0.4rem;">• <strong>Mobile Adaptations:</strong> Simplified versions for phones</li>
+                            <li style="margin-bottom: 0.4rem;">• <strong>The Wrench Portfolio:</strong> Original IP development</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight-box" style="margin-top: 2rem;">
+                    <strong>Growth Strategy:</strong> WRECKY KART serves as The Wrench's flagship title to establish market presence. Post-launch success will fund team expansion, advanced technology implementation, and the development of a sustainable game development pipeline. Each milestone reached opens new opportunities for innovation and market expansion.
+                </div>
+            </section>
         </div>
-        
+
         <footer class="footer">
             <div class="footer-title">Developed by THE WRENCH</div>
             <p>Where creativity meets controlled chaos • Built for gamers, by gamers</p>
