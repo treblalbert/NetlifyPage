@@ -86,17 +86,39 @@
             position: absolute;
             top: 20px;
             right: 20px;
-            background: rgba(120, 70, 70, 0.9);
-            color: #f4e4c1;
-            padding: 10px 20px;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .company-logo {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+        
+        .notes-button {
+            background: rgba(255, 255, 255, 0.9);
+            color: #667eea;
+            padding: 10px 25px;
             border-radius: 25px;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 1rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            border: 2px solid #8b5a3c;
+            border: 2px solid #667eea;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 3;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .notes-button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
         }
         
         .content {
@@ -311,8 +333,8 @@
             
             .company-badge {
                 position: static;
-                display: inline-block;
                 margin-top: 1rem;
+                justify-content: center;
             }
             
             .content {
@@ -333,7 +355,10 @@
 <body>
     <div class="container">
         <header class="header">
-            <div class="company-badge">THE WRENCH</div>
+            <div class="company-badge">
+                <img src="thewrench.png" alt="The Wrench" class="company-logo">
+                <a href="Notes/index.html" class="notes-button">Notes</a>
+            </div>
             <h1 class="title">
             <img src="wk.png" alt="WRECKY KART" />
             </h1>
@@ -1083,107 +1108,6 @@
             <div class="footer-title">Developed by THE WRENCH</div>
             <p>Where creativity meets controlled chaos • Built for gamers, by gamers</p>
         </footer>
-
-        <!-- PRESENTATION WHITEBOARD PANEL -->
-        <section style="
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.98) 0%, 
-                rgba(255, 255, 255, 0.95) 25%,
-                rgba(255, 255, 255, 0.98) 50%,
-                rgba(255, 255, 255, 0.95) 75%,
-                rgba(255, 255, 255, 0.98) 100%);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-radius: 30px 30px 0 0;
-            padding: 4rem 3rem;
-            margin-top: 3rem;
-            min-height: 600px;
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 
-                0 -10px 40px rgba(0, 0, 0, 0.1),
-                0 1px 0 rgba(255, 255, 255, 1) inset,
-                0 -1px 0 rgba(0, 0, 0, 0.05) inset,
-                0 0 0 1px rgba(255, 255, 255, 0.9);
-            position: relative;
-            overflow: hidden;
-        ">
-            <!-- Subtle grid pattern for writing guidance -->
-            <div style="
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background-image: 
-                    linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
-                background-size: 50px 50px;
-                pointer-events: none;
-                opacity: 0.3;
-            "></div>
-            
-            <!-- Elegant header -->
-            <div style="
-                text-align: center;
-                margin-bottom: 3rem;
-                position: relative;
-                z-index: 2;
-            ">
-                <h2 style="
-                    font-family: 'Fredoka One', cursive;
-                    font-size: 2.5rem;
-                    color: #667eea;
-                    text-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-                    margin-bottom: 1rem;
-                ">Notes & Feedback</h2>
-                <div style="
-                    width: 150px;
-                    height: 3px;
-                    background: linear-gradient(90deg, #667eea, #764ba2);
-                    margin: 0 auto;
-                    border-radius: 2px;
-                    box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
-                "></div>
-            </div>
-
-            <!-- Clean writing area -->
-            <div style="
-                background: rgba(255, 255, 255, 0.8);
-                border-radius: 20px;
-                min-height: 450px;
-                border: 1px solid rgba(102, 126, 234, 0.2);
-                box-shadow: 
-                    0 4px 20px rgba(0, 0, 0, 0.05),
-                    0 1px 0 rgba(255, 255, 255, 1) inset;
-                position: relative;
-                z-index: 2;
-            ">
-            </div>
-
-            <!-- Decorative corner elements -->
-            <div style="
-                position: absolute;
-                top: 20px;
-                right: 20px;
-                width: 60px;
-                height: 60px;
-                background: linear-gradient(135deg, #667eea, #764ba2);
-                border-radius: 50%;
-                opacity: 0.1;
-                z-index: 1;
-            "></div>
-            <div style="
-                position: absolute;
-                bottom: 20px;
-                left: 20px;
-                width: 40px;
-                height: 40px;
-                background: linear-gradient(135deg, #ff6b6b, #feca57);
-                border-radius: 50%;
-                opacity: 0.1;
-                z-index: 1;
-            "></div>
-        </section>
     </div>
 </body>
 </html>
