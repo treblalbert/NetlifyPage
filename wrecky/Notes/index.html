@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WRECKY KART - Project Notes</title>
+    <title>WRECKY KART - Notes del Projecte</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Nunito:wght@400;600;700;800&display=swap');
         
@@ -46,7 +46,7 @@
             left: 20px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
         }
         
         .company-logo {
@@ -244,11 +244,11 @@
         
         @keyframes slideIn {
             from {
-                transform: translateY(-30px);
+                transform: scale(0.9);
                 opacity: 0;
             }
             to {
-                transform: translateY(0);
+                transform: scale(1);
                 opacity: 1;
             }
         }
@@ -262,7 +262,7 @@
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
             position: relative;
             z-index: 10000;
-            max-height: 90vh;
+            max-height: 85vh;
             overflow-y: auto;
             animation: slideIn 0.3s ease;
         }
@@ -462,6 +462,7 @@
             .modal-content {
                 width: 95%;
                 padding: 1.5rem;
+                max-height: 90vh;
             }
         }
     </style>
@@ -473,90 +474,90 @@
                 <img src="../thewrench.png" alt="The Wrench" class="company-logo">
                 <a href="../index.html" class="back-button">Back</a>
                 <button onclick="openMakingOfModal()" class="back-button making-of-button">
-                    🛠️ Making Of
+                    🛠️ Com es va fer
                 </button>
             </div>
     
     <!-- Making Of Modal -->
     <div id="makingOfModal" class="modal">
-        <div class="modal-content" style="max-width: 800px; max-height: 85vh; overflow-y: auto;">
+        <div class="modal-content" style="max-width: 800px;">
             <button class="close-btn" onclick="closeMakingOfModal()">✕</button>
             <div class="modal-header">
-                <h2 class="modal-title">🛠️ How This Site Was Made</h2>
+                <h2 class="modal-title">🛠️ Com es va fer aquest lloc web</h2>
             </div>
             <div style="color: #333; line-height: 1.8;">
                 <div style="text-align: center; margin-bottom: 2rem;">
-                    <p style="font-size: 1.1rem; color: #666;">A simple guide to how we built and maintain this project site</p>
+                    <p style="font-size: 1.1rem; color: #666;">Una guia senzilla de com hem creat i mantenim aquest lloc del projecte</p>
                 </div>
                 
                 <div style="display: grid; gap: 2rem;">
                     <!-- GitHub Section -->
                     <div style="background: linear-gradient(135deg, #24292e15, #24292e05); border-radius: 15px; padding: 1.5rem; border-left: 4px solid #24292e;">
                         <h3 style="color: #24292e; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <span style="font-size: 1.5rem;">📁</span> GitHub - The Code Storage
+                            <span style="font-size: 1.5rem;">📁</span> GitHub - L'emmagatzematge del codi
                         </h3>
-                        <p style="margin-bottom: 0.8rem;">Think of GitHub as a <strong>cloud storage for code</strong>. Just like Google Drive stores your documents, GitHub stores all the website files (HTML, images, etc.).</p>
-                        <p style="color: #666; font-size: 0.95rem;">• All our code lives in a GitHub repository<br>
-                        • It keeps track of every change we make<br>
-                        • Multiple people can work on it together</p>
+                        <p style="margin-bottom: 0.8rem;">Pensa en GitHub com un <strong>núvol per emmagatzemar codi</strong>. Igual que Google Drive guarda els teus documents, GitHub guarda tots els arxius del lloc web (HTML, imatges, etc.).</p>
+                        <p style="color: #666; font-size: 0.95rem;">• Tot el nostre codi viu en un repositori de GitHub<br>
+                        • Fa un seguiment de cada canvi que fem<br>
+                        • Diverses persones poden treballar-hi juntes</p>
                     </div>
                     
                     <!-- Netlify Section -->
                     <div style="background: linear-gradient(135deg, #00AD9F15, #00AD9F05); border-radius: 15px; padding: 1.5rem; border-left: 4px solid #00AD9F;">
                         <h3 style="color: #00AD9F; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <span style="font-size: 1.5rem;">🌐</span> Netlify - The Website Host
+                            <span style="font-size: 1.5rem;">🌐</span> Netlify - L'allotjament web
                         </h3>
-                        <p style="margin-bottom: 0.8rem;">Netlify is like a <strong>TV broadcaster for websites</strong>. It takes our code from GitHub and broadcasts it to the internet so everyone can see it.</p>
-                        <p style="color: #666; font-size: 0.95rem;">• Automatically publishes our site when we update code<br>
-                        • Makes it available at our web address<br>
-                        • Free for small projects like ours!</p>
+                        <p style="margin-bottom: 0.8rem;">Netlify és com una <strong>emissora de TV per a llocs web</strong>. Agafa el nostre codi de GitHub i l'emet a Internet perquè tothom el pugui veure.</p>
+                        <p style="color: #666; font-size: 0.95rem;">• Publica automàticament el nostre lloc quan actualitzem el codi<br>
+                        • El fa disponible a la nostra adreça web<br>
+                        • Gratuït per a projectes petits com el nostre!</p>
                     </div>
                     
                     <!-- Git Oneliner Section -->
                     <div style="background: linear-gradient(135deg, #667eea15, #667eea05); border-radius: 15px; padding: 1.5rem; border-left: 4px solid #667eea;">
                         <h3 style="color: #667eea; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <span style="font-size: 1.5rem;">⚡</span> The Magic One-Liner
+                            <span style="font-size: 1.5rem;">⚡</span> La línia màgica
                         </h3>
-                        <p style="margin-bottom: 1rem;">We use a simple command that does three things at once:</p>
+                        <p style="margin-bottom: 1rem;">Utilitzem una comanda simple que fa tres coses alhora:</p>
                         <div style="background: #f5f5f5; padding: 1rem; border-radius: 8px; font-family: monospace; margin-bottom: 1rem;">
                             git add . && git commit -m "Auto commit" && git push
                         </div>
-                        <p style="color: #666; font-size: 0.95rem;"><strong>What it does:</strong><br>
-                        1. <code style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px;">git add .</code> - Grabs all changed files<br>
-                        2. <code style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px;">git commit</code> - Packages them with a note<br>
-                        3. <code style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px;">git push</code> - Sends them to GitHub</p>
+                        <p style="color: #666; font-size: 0.95rem;"><strong>Què fa:</strong><br>
+                        1. <code style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px;">git add .</code> - Agafa tots els arxius canviats<br>
+                        2. <code style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px;">git commit</code> - Els empaqueta amb una nota<br>
+                        3. <code style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px;">git push</code> - Els envia a GitHub</p>
                     </div>
                     
                     <!-- How It Works Together -->
                     <div style="background: linear-gradient(135deg, #ff6b6b15, #ff6b6b05); border-radius: 15px; padding: 1.5rem; border-left: 4px solid #ff6b6b;">
                         <h3 style="color: #ff6b6b; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <span style="font-size: 1.5rem;">🔄</span> The Automatic Workflow
+                            <span style="font-size: 1.5rem;">🔄</span> El flux de treball automàtic
                         </h3>
                         <ol style="color: #666; line-height: 2;">
-                            <li>We edit files on our computer</li>
-                            <li>Run the magic one-liner command</li>
-                            <li>Files get uploaded to GitHub</li>
-                            <li>Netlify sees the change and updates the live site</li>
-                            <li>Changes appear online in ~30 seconds!</li>
+                            <li>Editem arxius al nostre ordinador</li>
+                            <li>Executem la comanda màgica</li>
+                            <li>Els arxius es pugen a GitHub</li>
+                            <li>Netlify veu el canvi i actualitza el lloc en viu</li>
+                            <li>Els canvis apareixen en línia en ~30 segons!</li>
                         </ol>
                     </div>
                     
                     <!-- Notes System -->
                     <div style="background: linear-gradient(135deg, #feca5715, #feca5705); border-radius: 15px; padding: 1.5rem; border-left: 4px solid #feca57;">
                         <h3 style="color: #f39c12; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <span style="font-size: 1.5rem;">📝</span> The Notes System
+                            <span style="font-size: 1.5rem;">📝</span> El sistema de notes
                         </h3>
-                        <p style="margin-bottom: 0.8rem;">This notes feature uses <strong>Supabase</strong> - think of it as a Google Sheets that websites can talk to.</p>
-                        <p style="color: #666; font-size: 0.95rem;">• Notes are stored in the cloud<br>
-                        • Anyone on the team can add/edit notes<br>
-                        • Changes sync instantly for everyone<br>
-                        • No need to update code for new notes!</p>
+                        <p style="margin-bottom: 0.8rem;">Aquesta funció de notes utilitza <strong>Supabase</strong> - pensa-hi com un Google Sheets amb el qual els llocs web poden parlar.</p>
+                        <p style="color: #666; font-size: 0.95rem;">• Les notes es guarden al núvol<br>
+                        • Qualsevol de l'equip pot afegir/editar notes<br>
+                        • Els canvis es sincronitzen instantàniament per a tothom<br>
+                        • No cal actualitzar el codi per a notes noves!</p>
                     </div>
                 </div>
                 
                 <div style="text-align: center; margin-top: 2.5rem; padding: 1.5rem; background: linear-gradient(135deg, #667eea10, #764ba210); border-radius: 15px;">
-                    <p style="font-size: 1.1rem; color: #667eea; font-weight: 600; margin-bottom: 0.5rem;">✨ The Beauty of Automation</p>
-                    <p style="color: #666;">With this setup, updating the website is as easy as saving a Word document. No complex server management, no FTP uploads, just save and push!</p>
+                    <p style="font-size: 1.1rem; color: #667eea; font-weight: 600; margin-bottom: 0.5rem;">✨ La bellesa de l'automatització</p>
+                    <p style="color: #666;">Amb aquesta configuració, actualitzar el lloc web és tan fàcil com guardar un document de Word. Sense gestió de servidors complexa, sense càrregues FTP, només guardar i enviar!</p>
                 </div>
             </div>
         </div>
@@ -568,12 +569,12 @@
         <div id="messageContainer"></div>
         
         <div id="notesContainer" class="notes-grid">
-            <div class="loading">Loading notes...</div>
+            <div class="loading">Carregant notes...</div>
         </div>
         
         <div id="emptyState" class="empty-state" style="display: none;">
             <div class="empty-state-icon">📝</div>
-            <div class="empty-state-text">No notes yet. Click the + button to create your first note!</div>
+            <div class="empty-state-text">Encara no hi ha notes. Fes clic al botó + per crear la primera nota!</div>
         </div>
     </div>
     
@@ -582,32 +583,32 @@
     <div id="noteModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title" id="modalTitle">Create New Note</h2>
+                <h2 class="modal-title" id="modalTitle">Crear Nova Nota</h2>
                 <button class="close-btn" onclick="closeModal()">✕</button>
             </div>
             <form id="noteForm" onsubmit="saveNote(event)">
                 <div class="form-group">
-                    <label class="form-label" for="noteTitle">Title</label>
+                    <label class="form-label" for="noteTitle">Títol</label>
                     <input 
                         type="text" 
                         id="noteTitle" 
                         class="form-input" 
-                        placeholder="Enter note title..." 
+                        placeholder="Escriu el títol de la nota..." 
                         required
                     >
                 </div>
                 <div class="form-group">
-                    <label class="form-label" for="noteContent">Content</label>
+                    <label class="form-label" for="noteContent">Contingut</label>
                     <textarea 
                         id="noteContent" 
                         class="form-textarea" 
-                        placeholder="Write your note here..." 
+                        placeholder="Escriu la teva nota aquí..." 
                         required
                     ></textarea>
                 </div>
                 <div class="form-actions">
-                    <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="btn-primary">Save Note</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Cancel·lar</button>
+                    <button type="submit" class="btn-primary">Guardar Nota</button>
                 </div>
             </form>
         </div>
@@ -641,7 +642,7 @@
                 displayNotes(data || []);
             } catch (error) {
                 console.error('Error loading notes:', error);
-                showMessage('error', 'Failed to load notes. Please check your connection.');
+                showMessage('error', 'No s\'ha pogut carregar les notes. Comprova la teva connexió.');
             }
         }
         
@@ -667,8 +668,8 @@
                     </div>
                     <div class="note-content">${escapeHtml(note.content)}</div>
                     <div class="note-actions">
-                        <button class="btn btn-edit" onclick="editNote(${note.id})">Edit</button>
-                        <button class="btn btn-delete" onclick="deleteNote(${note.id})">Delete</button>
+                        <button class="btn btn-edit" onclick="editNote(${note.id})">Editar</button>
+                        <button class="btn btn-delete" onclick="deleteNote(${note.id})">Eliminar</button>
                     </div>
                 </div>
             `).join('');
@@ -694,7 +695,7 @@
                         .eq('id', currentEditingId);
                     
                     if (error) throw error;
-                    showMessage('success', 'Note updated successfully!');
+                    showMessage('success', 'Nota actualitzada correctament!');
                 } else {
                     // Create new note
                     const { error } = await supabase
@@ -702,14 +703,14 @@
                         .insert([{ title, content }]);
                     
                     if (error) throw error;
-                    showMessage('success', 'Note created successfully!');
+                    showMessage('success', 'Nota creada correctament!');
                 }
                 
                 closeModal();
                 loadNotes();
             } catch (error) {
                 console.error('Error saving note:', error);
-                showMessage('error', 'Failed to save note. Please try again.');
+                showMessage('error', 'No s\'ha pogut guardar la nota. Torna-ho a provar.');
             }
         }
         
@@ -725,19 +726,19 @@
                 if (error) throw error;
                 
                 currentEditingId = id;
-                document.getElementById('modalTitle').textContent = 'Edit Note';
+                document.getElementById('modalTitle').textContent = 'Editar Nota';
                 document.getElementById('noteTitle').value = data.title;
                 document.getElementById('noteContent').value = data.content;
                 openModal();
             } catch (error) {
                 console.error('Error loading note:', error);
-                showMessage('error', 'Failed to load note for editing.');
+                showMessage('error', 'No s\'ha pogut carregar la nota per editar.');
             }
         }
         
         // Delete note
         async function deleteNote(id) {
-            if (!confirm('Are you sure you want to delete this note?')) return;
+            if (!confirm('Estàs segur que vols eliminar aquesta nota?')) return;
             
             try {
                 const { error } = await supabase
@@ -747,11 +748,11 @@
                 
                 if (error) throw error;
                 
-                showMessage('success', 'Note deleted successfully!');
+                showMessage('success', 'Nota eliminada correctament!');
                 loadNotes();
             } catch (error) {
                 console.error('Error deleting note:', error);
-                showMessage('error', 'Failed to delete note. Please try again.');
+                showMessage('error', 'No s\'ha pogut eliminar la nota. Torna-ho a provar.');
             }
         }
         
@@ -764,7 +765,7 @@
         function closeModal() {
             document.getElementById('noteModal').classList.remove('active');
             document.getElementById('noteForm').reset();
-            document.getElementById('modalTitle').textContent = 'Create New Note';
+            document.getElementById('modalTitle').textContent = 'Crear Nova Nota';
             currentEditingId = null;
             document.body.style.overflow = 'auto';
         }
@@ -790,8 +791,11 @@
         
         function formatDate(dateString) {
             const date = new Date(dateString);
-            const options = { month: 'short', day: 'numeric', year: 'numeric' };
-            return date.toLocaleDateString('en-US', options);
+            const monthNames = ['gen.', 'feb.', 'març', 'abr.', 'maig', 'juny', 'jul.', 'ag.', 'set.', 'oct.', 'nov.', 'des.'];
+            const day = date.getDate();
+            const month = monthNames[date.getMonth()];
+            const year = date.getFullYear();
+            return `${day} de ${month} ${year}`;
         }
         
         // Making Of Modal functions
