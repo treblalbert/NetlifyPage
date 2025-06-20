@@ -394,7 +394,93 @@
             <div class="logo-container">
                 <img src="../thewrench.png" alt="The Wrench" class="company-logo">
                 <a href="../index.html" class="back-button">Back</a>
+                <button onclick="openMakingOfModal()" class="back-button" style="background: #48dbfb; border-color: #48dbfb;">Making Of</button>
             </div>
+    
+    <!-- Making Of Modal -->
+    <div id="makingOfModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2 class="modal-title">🛠️ How This Site Was Made</h2>
+                <button class="close-btn" onclick="closeMakingOfModal()">✕</button>
+            </div>
+            <div style="color: #333; line-height: 1.8;">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <p style="font-size: 1.1rem; color: #666;">A simple guide to how we built and maintain this project site</p>
+                </div>
+                
+                <div style="display: grid; gap: 2rem;">
+                    <!-- GitHub Section -->
+                    <div style="background: linear-gradient(135deg, #24292e15, #24292e05); border-radius: 15px; padding: 1.5rem; border-left: 4px solid #24292e;">
+                        <h3 style="color: #24292e; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="font-size: 1.5rem;">📁</span> GitHub - The Code Storage
+                        </h3>
+                        <p style="margin-bottom: 0.8rem;">Think of GitHub as a <strong>cloud storage for code</strong>. Just like Google Drive stores your documents, GitHub stores all the website files (HTML, images, etc.).</p>
+                        <p style="color: #666; font-size: 0.95rem;">• All our code lives in a GitHub repository<br>
+                        • It keeps track of every change we make<br>
+                        • Multiple people can work on it together</p>
+                    </div>
+                    
+                    <!-- Netlify Section -->
+                    <div style="background: linear-gradient(135deg, #00AD9F15, #00AD9F05); border-radius: 15px; padding: 1.5rem; border-left: 4px solid #00AD9F;">
+                        <h3 style="color: #00AD9F; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="font-size: 1.5rem;">🌐</span> Netlify - The Website Host
+                        </h3>
+                        <p style="margin-bottom: 0.8rem;">Netlify is like a <strong>TV broadcaster for websites</strong>. It takes our code from GitHub and broadcasts it to the internet so everyone can see it.</p>
+                        <p style="color: #666; font-size: 0.95rem;">• Automatically publishes our site when we update code<br>
+                        • Makes it available at our web address<br>
+                        • Free for small projects like ours!</p>
+                    </div>
+                    
+                    <!-- Git Oneliner Section -->
+                    <div style="background: linear-gradient(135deg, #667eea15, #667eea05); border-radius: 15px; padding: 1.5rem; border-left: 4px solid #667eea;">
+                        <h3 style="color: #667eea; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="font-size: 1.5rem;">⚡</span> The Magic One-Liner
+                        </h3>
+                        <p style="margin-bottom: 1rem;">We use a simple command that does three things at once:</p>
+                        <div style="background: #f5f5f5; padding: 1rem; border-radius: 8px; font-family: monospace; margin-bottom: 1rem;">
+                            git add . && git commit -m "Auto commit" && git push
+                        </div>
+                        <p style="color: #666; font-size: 0.95rem;"><strong>What it does:</strong><br>
+                        1. <code style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px;">git add .</code> - Grabs all changed files<br>
+                        2. <code style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px;">git commit</code> - Packages them with a note<br>
+                        3. <code style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px;">git push</code> - Sends them to GitHub</p>
+                    </div>
+                    
+                    <!-- How It Works Together -->
+                    <div style="background: linear-gradient(135deg, #ff6b6b15, #ff6b6b05); border-radius: 15px; padding: 1.5rem; border-left: 4px solid #ff6b6b;">
+                        <h3 style="color: #ff6b6b; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="font-size: 1.5rem;">🔄</span> The Automatic Workflow
+                        </h3>
+                        <ol style="color: #666; line-height: 2;">
+                            <li>We edit files on our computer</li>
+                            <li>Run the magic one-liner command</li>
+                            <li>Files get uploaded to GitHub</li>
+                            <li>Netlify sees the change and updates the live site</li>
+                            <li>Changes appear online in ~30 seconds!</li>
+                        </ol>
+                    </div>
+                    
+                    <!-- Notes System -->
+                    <div style="background: linear-gradient(135deg, #feca5715, #feca5705); border-radius: 15px; padding: 1.5rem; border-left: 4px solid #feca57;">
+                        <h3 style="color: #f39c12; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="font-size: 1.5rem;">📝</span> The Notes System
+                        </h3>
+                        <p style="margin-bottom: 0.8rem;">This notes feature uses <strong>Supabase</strong> - think of it as a Google Sheets that websites can talk to.</p>
+                        <p style="color: #666; font-size: 0.95rem;">• Notes are stored in the cloud<br>
+                        • Anyone on the team can add/edit notes<br>
+                        • Changes sync instantly for everyone<br>
+                        • No need to update code for new notes!</p>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 2.5rem; padding: 1.5rem; background: linear-gradient(135deg, #667eea10, #764ba210); border-radius: 15px;">
+                    <p style="font-size: 1.1rem; color: #667eea; font-weight: 600; margin-bottom: 0.5rem;">✨ The Beauty of Automation</p>
+                    <p style="color: #666;">With this setup, updating the website is as easy as saving a Word document. No complex server management, no FTP uploads, just save and push!</p>
+                </div>
+            </div>
+        </div>
+    </div>
             <h1 class="page-title">Project Notes</h1>
             <p class="page-subtitle">Keep track of ideas, feedback, and development notes</p>
         </div>
@@ -626,10 +712,25 @@
             return date.toLocaleDateString('en-US', options);
         }
         
+        // Making Of Modal functions
+        function openMakingOfModal() {
+            document.getElementById('makingOfModal').classList.add('active');
+        }
+        
+        function closeMakingOfModal() {
+            document.getElementById('makingOfModal').classList.remove('active');
+        }
+        
         // Close modal when clicking outside
         document.getElementById('noteModal').addEventListener('click', function(event) {
             if (event.target === this) {
                 closeModal();
+            }
+        });
+        
+        document.getElementById('makingOfModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeMakingOfModal();
             }
         });
     </script>
