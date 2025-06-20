@@ -37,6 +37,7 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
             text-align: center;
             position: relative;
+            z-index: 10;
         }
         
         .logo-container {
@@ -45,7 +46,7 @@
             left: 20px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
         
         .company-logo {
@@ -77,6 +78,18 @@
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
         }
         
+        .making-of-button {
+            background: #48dbfb;
+            color: white;
+            border-color: #48dbfb;
+        }
+        
+        .making-of-button:hover {
+            background: white;
+            color: #48dbfb;
+            border-color: #48dbfb;
+        }
+        
         .page-title {
             font-family: 'Fredoka One', cursive;
             font-size: 3rem;
@@ -105,6 +118,7 @@
             transition: all 0.3s ease;
             position: relative;
             border: 2px solid transparent;
+            z-index: 1;
         }
         
         .note-card:hover {
@@ -192,7 +206,7 @@
             cursor: pointer;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
-            z-index: 100;
+            z-index: 1000;
         }
         
         .add-note-btn:hover {
@@ -206,15 +220,37 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.7);
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
         }
         
         .modal.active {
             display: flex;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
         
         .modal-content {
@@ -225,6 +261,10 @@
             max-width: 600px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
             position: relative;
+            z-index: 10000;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideIn 0.3s ease;
         }
         
         .modal-header {
@@ -232,6 +272,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2rem;
+            padding-right: 40px;
         }
         
         .modal-title {
@@ -241,16 +282,27 @@
         }
         
         .close-btn {
-            background: none;
+            background: #f0f0f0;
             border: none;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             cursor: pointer;
-            color: #999;
-            transition: color 0.3s ease;
+            color: #666;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            right: 20px;
+            top: 20px;
         }
         
         .close-btn:hover {
-            color: #333;
+            background: #ff6b6b;
+            color: white;
+            transform: rotate(90deg);
         }
         
         .form-group {
@@ -366,6 +418,32 @@
             text-align: center;
         }
         
+        /* Custom scrollbar for modal */
+        .modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .modal-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .modal-content::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+        
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: #5a67d8;
+        }
+        
+        code {
+            background: #e0e0e0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        
         @media (max-width: 768px) {
             .page-title {
                 font-size: 2rem;
@@ -394,15 +472,17 @@
             <div class="logo-container">
                 <img src="../thewrench.png" alt="The Wrench" class="company-logo">
                 <a href="../index.html" class="back-button">Back</a>
-                <button onclick="openMakingOfModal()" class="back-button" style="background: #48dbfb; border-color: #48dbfb;">Making Of</button>
+                <button onclick="openMakingOfModal()" class="back-button making-of-button">
+                    🛠️ Making Of
+                </button>
             </div>
     
     <!-- Making Of Modal -->
     <div id="makingOfModal" class="modal">
-        <div class="modal-content" style="max-width: 800px;">
+        <div class="modal-content" style="max-width: 800px; max-height: 85vh; overflow-y: auto;">
+            <button class="close-btn" onclick="closeMakingOfModal()">✕</button>
             <div class="modal-header">
                 <h2 class="modal-title">🛠️ How This Site Was Made</h2>
-                <button class="close-btn" onclick="closeMakingOfModal()">✕</button>
             </div>
             <div style="color: #333; line-height: 1.8;">
                 <div style="text-align: center; margin-bottom: 2rem;">
@@ -678,6 +758,7 @@
         // Modal functions
         function openModal() {
             document.getElementById('noteModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
         
         function closeModal() {
@@ -685,6 +766,7 @@
             document.getElementById('noteForm').reset();
             document.getElementById('modalTitle').textContent = 'Create New Note';
             currentEditingId = null;
+            document.body.style.overflow = 'auto';
         }
         
         // Show message
@@ -715,10 +797,12 @@
         // Making Of Modal functions
         function openMakingOfModal() {
             document.getElementById('makingOfModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
         
         function closeMakingOfModal() {
             document.getElementById('makingOfModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
         }
         
         // Close modal when clicking outside
