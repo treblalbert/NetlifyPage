@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ca">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -76,18 +76,6 @@
             color: #667eea;
             transform: translateY(-2px);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        }
-        
-        .making-of-button {
-            background: #48dbfb;
-            color: white;
-            border-color: #48dbfb;
-        }
-        
-        .making-of-button:hover {
-            background: white;
-            color: #48dbfb;
-            border-color: #48dbfb;
         }
         
         .page-title {
@@ -472,98 +460,10 @@
         <div class="header">
             <div class="logo-container">
                 <img src="../thewrench.png" alt="The Wrench" class="company-logo">
-                <a href="../index.html" class="back-button">Back</a>
-                <button onclick="openMakingOfModal()" class="back-button making-of-button">
-                    🛠️ Com es va fer
-                </button>
+                <a href="../index.html" class="back-button">Enrere</a>
             </div>
-    
-    <!-- Making Of Modal -->
-    <div id="makingOfModal" class="modal">
-        <div class="modal-content" style="max-width: 800px;">
-            <button class="close-btn" onclick="closeMakingOfModal()">✕</button>
-            <div class="modal-header">
-                <h2 class="modal-title">🛠️ Com es va fer aquest lloc web</h2>
-            </div>
-            <div style="color: #333; line-height: 1.8;">
-                <div style="text-align: center; margin-bottom: 2rem;">
-                    <p style="font-size: 1.1rem; color: #666;">Una guia senzilla de com hem creat i mantenim aquest lloc del projecte</p>
-                </div>
-                
-                <div style="display: grid; gap: 2rem;">
-                    <!-- GitHub Section -->
-                    <div style="background: linear-gradient(135deg, #24292e15, #24292e05); border-radius: 15px; padding: 1.5rem; border-left: 4px solid #24292e;">
-                        <h3 style="color: #24292e; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <span style="font-size: 1.5rem;">📁</span> GitHub - L'emmagatzematge del codi
-                        </h3>
-                        <p style="margin-bottom: 0.8rem;">Pensa en GitHub com un <strong>núvol per emmagatzemar codi</strong>. Igual que Google Drive guarda els teus documents, GitHub guarda tots els arxius del lloc web (HTML, imatges, etc.).</p>
-                        <p style="color: #666; font-size: 0.95rem;">• Tot el nostre codi viu en un repositori de GitHub<br>
-                        • Fa un seguiment de cada canvi que fem<br>
-                        • Diverses persones poden treballar-hi juntes</p>
-                    </div>
-                    
-                    <!-- Netlify Section -->
-                    <div style="background: linear-gradient(135deg, #00AD9F15, #00AD9F05); border-radius: 15px; padding: 1.5rem; border-left: 4px solid #00AD9F;">
-                        <h3 style="color: #00AD9F; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <span style="font-size: 1.5rem;">🌐</span> Netlify - L'allotjament web
-                        </h3>
-                        <p style="margin-bottom: 0.8rem;">Netlify és com una <strong>emissora de TV per a llocs web</strong>. Agafa el nostre codi de GitHub i l'emet a Internet perquè tothom el pugui veure.</p>
-                        <p style="color: #666; font-size: 0.95rem;">• Publica automàticament el nostre lloc quan actualitzem el codi<br>
-                        • El fa disponible a la nostra adreça web<br>
-                        • Gratuït per a projectes petits com el nostre!</p>
-                    </div>
-                    
-                    <!-- Git Oneliner Section -->
-                    <div style="background: linear-gradient(135deg, #667eea15, #667eea05); border-radius: 15px; padding: 1.5rem; border-left: 4px solid #667eea;">
-                        <h3 style="color: #667eea; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <span style="font-size: 1.5rem;">⚡</span> La línia màgica
-                        </h3>
-                        <p style="margin-bottom: 1rem;">Utilitzem una comanda simple que fa tres coses alhora:</p>
-                        <div style="background: #f5f5f5; padding: 1rem; border-radius: 8px; font-family: monospace; margin-bottom: 1rem;">
-                            git add . && git commit -m "Auto commit" && git push
-                        </div>
-                        <p style="color: #666; font-size: 0.95rem;"><strong>Què fa:</strong><br>
-                        1. <code style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px;">git add .</code> - Agafa tots els arxius canviats<br>
-                        2. <code style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px;">git commit</code> - Els empaqueta amb una nota<br>
-                        3. <code style="background: #e0e0e0; padding: 2px 6px; border-radius: 3px;">git push</code> - Els envia a GitHub</p>
-                    </div>
-                    
-                    <!-- How It Works Together -->
-                    <div style="background: linear-gradient(135deg, #ff6b6b15, #ff6b6b05); border-radius: 15px; padding: 1.5rem; border-left: 4px solid #ff6b6b;">
-                        <h3 style="color: #ff6b6b; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <span style="font-size: 1.5rem;">🔄</span> El flux de treball automàtic
-                        </h3>
-                        <ol style="color: #666; line-height: 2;">
-                            <li>Editem arxius al nostre ordinador</li>
-                            <li>Executem la comanda màgica</li>
-                            <li>Els arxius es pugen a GitHub</li>
-                            <li>Netlify veu el canvi i actualitza el lloc en viu</li>
-                            <li>Els canvis apareixen en línia en ~30 segons!</li>
-                        </ol>
-                    </div>
-                    
-                    <!-- Notes System -->
-                    <div style="background: linear-gradient(135deg, #feca5715, #feca5705); border-radius: 15px; padding: 1.5rem; border-left: 4px solid #feca57;">
-                        <h3 style="color: #f39c12; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                            <span style="font-size: 1.5rem;">📝</span> El sistema de notes
-                        </h3>
-                        <p style="margin-bottom: 0.8rem;">Aquesta funció de notes utilitza <strong>Supabase</strong> - pensa-hi com un Google Sheets amb el qual els llocs web poden parlar.</p>
-                        <p style="color: #666; font-size: 0.95rem;">• Les notes es guarden al núvol<br>
-                        • Qualsevol de l'equip pot afegir/editar notes<br>
-                        • Els canvis es sincronitzen instantàniament per a tothom<br>
-                        • No cal actualitzar el codi per a notes noves!</p>
-                    </div>
-                </div>
-                
-                <div style="text-align: center; margin-top: 2.5rem; padding: 1.5rem; background: linear-gradient(135deg, #667eea10, #764ba210); border-radius: 15px;">
-                    <p style="font-size: 1.1rem; color: #667eea; font-weight: 600; margin-bottom: 0.5rem;">✨ La bellesa de l'automatització</p>
-                    <p style="color: #666;">Amb aquesta configuració, actualitzar el lloc web és tan fàcil com guardar un document de Word. Sense gestió de servidors complexa, sense càrregues FTP, només guardar i enviar!</p>
-                </div>
-            </div>
-        </div>
-    </div>
-            <h1 class="page-title">Project Notes</h1>
-            <p class="page-subtitle">Keep track of ideas, feedback, and development notes</p>
+            <h1 class="page-title">Notes del Projecte</h1>
+            <p class="page-subtitle">Fes un seguiment d'idees, comentaris i notes de desenvolupament</p>
         </div>
         
         <div id="messageContainer"></div>
@@ -798,27 +698,10 @@
             return `${day} de ${month} ${year}`;
         }
         
-        // Making Of Modal functions
-        function openMakingOfModal() {
-            document.getElementById('makingOfModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-        
-        function closeMakingOfModal() {
-            document.getElementById('makingOfModal').classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-        
         // Close modal when clicking outside
         document.getElementById('noteModal').addEventListener('click', function(event) {
             if (event.target === this) {
                 closeModal();
-            }
-        });
-        
-        document.getElementById('makingOfModal').addEventListener('click', function(event) {
-            if (event.target === this) {
-                closeMakingOfModal();
             }
         });
     </script>
