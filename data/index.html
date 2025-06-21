@@ -147,6 +147,61 @@
       display: block;
     }
 
+    /* Topic Navigation */
+    .topic-nav {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+      backdrop-filter: blur(20px);
+      border-radius: 25px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .topic-nav-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.95);
+      text-align: center;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+
+    .topic-nav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .topic-nav-btn {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+      backdrop-filter: blur(15px);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 1rem;
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .topic-nav-btn:hover {
+      background: linear-gradient(135deg, rgba(100, 200, 255, 0.25) 0%, rgba(100, 200, 255, 0.1) 100%);
+      border-color: rgba(100, 200, 255, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .topic-nav-icon {
+      font-size: 1.2rem;
+    }
+
     .category-section {
       margin-bottom: 3rem;
     }
@@ -441,7 +496,18 @@
 
     <!-- Study Mode Content -->
     <div class="study-content active" id="studyContent">
-      <!-- Content will be dynamically generated -->
+      <!-- Topic Navigation will be dynamically generated -->
+      <div class="topic-nav" id="topicNav">
+        <h2 class="topic-nav-title">📚 Quick Navigation</h2>
+        <div class="topic-nav-grid" id="topicNavGrid">
+          <!-- Navigation buttons will be dynamically generated -->
+        </div>
+      </div>
+      
+      <!-- Question content will be dynamically generated -->
+      <div id="studyQuestions">
+        <!-- Content will be dynamically generated -->
+      </div>
     </div>
 
     <!-- Test Selector -->
@@ -1612,17 +1678,52 @@ df['is_weekend'] = df.index.weekday >= 5`,
 
     // Initialize the page
     function init() {
+      generateTopicNavigation();
       generateStudyContent();
       generateTestOptions();
     }
 
-    // Generate study content
-    function generateStudyContent() {
-      const studyContent = document.getElementById('studyContent');
+    // Generate topic navigation
+    function generateTopicNavigation() {
+      const topicNavGrid = document.getElementById('topicNavGrid');
       let html = '';
 
       for (const [category, questions] of Object.entries(questionData)) {
-        html += `<div class="category-section">
+        const categoryId = category.replace(/\s+/g, '-').toLowerCase();
+        html += `
+          <button class="topic-nav-btn" onclick="scrollToTopic('${categoryId}')">
+            <span class="topic-nav-icon">${categoryIcons[category]}</span>
+            <span>${category}</span>
+          </button>
+        `;
+      }
+
+      topicNavGrid.innerHTML = html;
+    }
+
+    // Scroll to topic
+    function scrollToTopic(categoryId) {
+      const element = document.getElementById(categoryId);
+      if (element) {
+        const offset = 80; // Offset for fixed header
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }
+
+    // Generate study content
+    function generateStudyContent() {
+      const studyQuestions = document.getElementById('studyQuestions');
+      let html = '';
+
+      for (const [category, questions] of Object.entries(questionData)) {
+        const categoryId = category.replace(/\s+/g, '-').toLowerCase();
+        html += `<div class="category-section" id="${categoryId}">
           <h2 class="category-title">${categoryIcons[category]} ${category}</h2>`;
         
         questions.forEach((q, index) => {
@@ -1638,7 +1739,7 @@ df['is_weekend'] = df.index.weekday >= 5`,
         html += '</div>';
       }
 
-      studyContent.innerHTML = html;
+      studyQuestions.innerHTML = html;
     }
 
     // Generate test options
