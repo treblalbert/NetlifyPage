@@ -456,7 +456,7 @@
     <div class="test-content" id="testContent">
       <div class="test-header">
         <h2 class="test-title" id="testTitle">All Topics Test</h2>
-        <p class="test-subtitle" id="testSubtitle">15 questions from all categories</p>
+        <p class="test-subtitle" id="testSubtitle">20 questions from all categories</p>
       </div>
       
       <div class="test-progress">
@@ -536,6 +536,53 @@ my_function(1, 2, 3, name="John", age=30)
             "*args is for keyword arguments, **kwargs is for positional arguments.",
             "Both *args and **kwargs are used for the same purpose - passing lists to functions.",
             "*args can only accept strings, **kwargs can only accept numbers."
+          ]
+        },
+        {
+          question: "What's the difference between shallow copy and deep copy?",
+          answer: "Shallow copy creates a new object but references to nested objects remain the same. Deep copy creates completely independent copies of all nested objects.",
+          code: `import copy
+
+# Original list with nested list
+original = [[1, 2], [3, 4]]
+
+# Shallow copy
+shallow = original.copy()
+shallow[0][0] = 999  # Modifies original too!
+
+# Deep copy
+deep = copy.deepcopy(original)
+deep[0][0] = 999  # Original remains unchanged`,
+          wrongAnswers: [
+            "Shallow copy and deep copy are the same operation with different names.",
+            "Deep copy only copies the first level, shallow copy copies all levels.",
+            "Shallow copy is always faster and should be used in all cases."
+          ]
+        },
+        {
+          question: "Explain Python's Global Interpreter Lock (GIL) and its impact on multi-threading",
+          answer: "The GIL is a mutex that allows only one thread to execute Python bytecode at a time. This makes multi-threading ineffective for CPU-bound tasks but still useful for I/O-bound tasks.",
+          code: `# CPU-bound task - GIL limits performance
+import threading
+import time
+
+def cpu_bound():
+    count = 0
+    for i in range(100_000_000):
+        count += 1
+
+# Multi-threading won't speed this up due to GIL
+# Use multiprocessing for CPU-bound tasks instead
+
+# I/O-bound task - threading still helps
+def io_bound():
+    time.sleep(1)  # Simulates I/O operation
+    
+# Threading is effective here because GIL is released during I/O`,
+          wrongAnswers: [
+            "The GIL makes Python completely single-threaded and prevents any parallel execution.",
+            "The GIL improves performance by preventing race conditions in all cases.",
+            "The GIL only affects multiprocessing, not multithreading."
           ]
         }
       ],
@@ -618,6 +665,57 @@ pd.concat([df1, df2], axis=1)  # Horizontally`,
             "merge() and join() are the same function with different names.",
             "concat() can only be used to join DataFrames vertically, not horizontally."
           ]
+        },
+        {
+          question: "How would you handle duplicate rows in a DataFrame?",
+          answer: "Use duplicated() to identify duplicates and drop_duplicates() to remove them. You can specify subset of columns and keep first/last occurrence.",
+          code: `# Create sample data with duplicates
+df = pd.DataFrame({
+    'A': [1, 1, 2, 2, 3],
+    'B': ['x', 'x', 'y', 'y', 'z'],
+    'C': [10, 10, 20, 30, 40]
+})
+
+# Check for duplicates
+df.duplicated()  # Returns boolean Series
+df.duplicated(subset=['A', 'B'])  # Check specific columns
+
+# Remove duplicates
+df.drop_duplicates()  # Remove all duplicates
+df.drop_duplicates(subset=['A', 'B'])  # Based on specific columns
+df.drop_duplicates(keep='last')  # Keep last occurrence
+df.drop_duplicates(keep=False)  # Remove all occurrences`,
+          wrongAnswers: [
+            "Pandas cannot detect duplicate rows, you must manually check each row.",
+            "drop_duplicates() permanently modifies the original DataFrame without option to create a copy.",
+            "Duplicates can only be removed based on all columns, not a subset."
+          ]
+        },
+        {
+          question: "Explain the difference between loc and iloc in pandas",
+          answer: "loc is label-based indexing (uses index/column names), iloc is integer position-based indexing (uses integer positions).",
+          code: `df = pd.DataFrame({
+    'A': [1, 2, 3, 4],
+    'B': [5, 6, 7, 8],
+    'C': [9, 10, 11, 12]
+}, index=['row1', 'row2', 'row3', 'row4'])
+
+# loc - label based
+df.loc['row1']  # Select by index label
+df.loc['row1', 'A']  # Specific cell
+df.loc['row1':'row3', 'A':'B']  # Slice (inclusive)
+df.loc[df['A'] > 2]  # Boolean indexing
+
+# iloc - integer position based
+df.iloc[0]  # First row
+df.iloc[0, 0]  # First cell
+df.iloc[0:3, 0:2]  # Slice (exclusive end)
+df.iloc[[0, 2], [0, 2]]  # Specific positions`,
+          wrongAnswers: [
+            "loc and iloc are identical and can be used interchangeably.",
+            "iloc uses column names while loc uses integer positions.",
+            "loc can only select rows, iloc can only select columns."
+          ]
         }
       ],
       "NumPy Questions": [
@@ -658,6 +756,85 @@ matrix + vector  # Adds vector to each row`,
             "Broadcasting only works with arrays of exactly the same shape.",
             "Broadcasting requires explicit reshaping of arrays before operations.",
             "Broadcasting is a feature that slows down NumPy operations."
+          ]
+        },
+        {
+          question: "How do you efficiently compute statistics along specific axes in NumPy?",
+          answer: "Use axis parameter in NumPy functions. axis=0 operates along columns (down), axis=1 operates along rows (across).",
+          code: `arr = np.array([[1, 2, 3],
+                [4, 5, 6],
+                [7, 8, 9]])
+
+# Along columns (axis=0)
+np.mean(arr, axis=0)  # [4., 5., 6.]
+np.sum(arr, axis=0)   # [12, 15, 18]
+
+# Along rows (axis=1)
+np.mean(arr, axis=1)  # [2., 5., 8.]
+np.sum(arr, axis=1)   # [6, 15, 24]
+
+# Multiple statistics at once
+np.min(arr, axis=0), np.max(arr, axis=0)
+np.std(arr, axis=1), np.var(arr, axis=1)`,
+          wrongAnswers: [
+            "NumPy can only compute statistics on entire arrays, not along specific axes.",
+            "axis=0 operates along rows, axis=1 operates along columns.",
+            "You must use loops to compute statistics along specific dimensions."
+          ]
+        },
+        {
+          question: "What's the difference between np.dot(), np.matmul(), and the @ operator?",
+          answer: "np.dot() handles both dot products and matrix multiplication with specific rules for higher dimensions. np.matmul() and @ are strict matrix multiplication operators that broadcast differently.",
+          code: `a = np.array([[1, 2], [3, 4]])
+b = np.array([[5, 6], [7, 8]])
+
+# All three are equivalent for 2D arrays
+np.dot(a, b)
+np.matmul(a, b)
+a @ b
+
+# Differences appear with higher dimensions
+c = np.random.rand(3, 4, 5)
+d = np.random.rand(5, 6)
+
+# matmul/@ broadcast over batch dimensions
+np.matmul(c, d).shape  # (3, 4, 6)
+(c @ d).shape          # (3, 4, 6)
+
+# dot behaves differently
+# np.dot(c, d) would sum over last axis of c and second-to-last of d`,
+          wrongAnswers: [
+            "All three operators are identical and interchangeable in all cases.",
+            "@ operator can only be used for element-wise multiplication.",
+            "np.dot() is deprecated and should never be used."
+          ]
+        },
+        {
+          question: "How do you handle memory efficiency with large NumPy arrays?",
+          answer: "Use appropriate data types, views instead of copies, memory mapping for huge files, and in-place operations when possible.",
+          code: `# 1. Choose appropriate data types
+arr_float64 = np.array([1, 2, 3])  # Default: 8 bytes per element
+arr_float32 = np.array([1, 2, 3], dtype=np.float32)  # 4 bytes
+arr_int8 = np.array([1, 2, 3], dtype=np.int8)  # 1 byte
+
+# 2. Use views instead of copies
+arr = np.arange(1000000)
+view = arr[::2]  # View, no copy
+copy = arr[::2].copy()  # Explicit copy
+
+# 3. Memory mapping for large files
+mmap_arr = np.memmap('large_file.dat', dtype='float32', mode='r', shape=(1000000,))
+
+# 4. In-place operations
+arr += 10  # Modifies in place
+arr = arr + 10  # Creates new array
+
+# 5. Check memory usage
+arr.nbytes  # Total bytes used`,
+          wrongAnswers: [
+            "NumPy automatically optimizes memory usage, no manual intervention needed.",
+            "Using smaller data types always makes computations faster.",
+            "Memory mapping is slower than loading entire arrays into RAM."
           ]
         }
       ],
@@ -709,6 +886,113 @@ HAVING COUNT(*) > 5;`,
             "HAVING can only be used with the COUNT function.",
             "WHERE is used for strings, HAVING is used for numbers."
           ]
+        },
+        {
+          question: "What are window functions and how do you use them for running totals and rankings?",
+          answer: "Window functions perform calculations across a set of rows related to the current row. They're used with OVER clause for analytics like running totals, rankings, and moving averages.",
+          code: `-- Running total
+SELECT date, 
+       amount,
+       SUM(amount) OVER (ORDER BY date) as running_total
+FROM sales;
+
+-- Ranking
+SELECT name,
+       sales,
+       RANK() OVER (ORDER BY sales DESC) as rank,
+       DENSE_RANK() OVER (ORDER BY sales DESC) as dense_rank,
+       ROW_NUMBER() OVER (ORDER BY sales DESC) as row_num
+FROM salespeople;
+
+-- Partitioned ranking (rank within each department)
+SELECT department,
+       name,
+       salary,
+       RANK() OVER (PARTITION BY department ORDER BY salary DESC) as dept_rank
+FROM employees;
+
+-- Moving average
+SELECT date,
+       sales,
+       AVG(sales) OVER (ORDER BY date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW) as moving_avg_7day
+FROM daily_sales;`,
+          wrongAnswers: [
+            "Window functions can only be used with GROUP BY clauses.",
+            "RANK() and ROW_NUMBER() always return the same results.",
+            "Window functions cannot be used with PARTITION BY."
+          ]
+        },
+        {
+          question: "How do you handle NULL values in SQL comparisons and aggregations?",
+          answer: "NULL requires special handling: use IS NULL/IS NOT NULL for comparisons, COALESCE/ISNULL for replacements. Most aggregates ignore NULL except COUNT(*).",
+          code: `-- NULL comparisons
+SELECT * FROM employees WHERE manager_id IS NULL;  -- Correct
+-- WHERE manager_id = NULL  -- Wrong! Always returns no rows
+
+-- COALESCE/ISNULL
+SELECT name, COALESCE(phone, email, 'No contact') as contact
+FROM customers;
+
+-- Aggregations with NULL
+-- COUNT(*) counts all rows including NULL
+-- COUNT(column) ignores NULL values
+SELECT COUNT(*) as total_rows,
+       COUNT(bonus) as employees_with_bonus,
+       AVG(bonus) as avg_bonus,  -- Ignores NULL
+       AVG(COALESCE(bonus, 0)) as avg_bonus_treating_null_as_zero
+FROM employees;
+
+-- NULL in CASE statements
+SELECT name,
+       CASE 
+           WHEN bonus IS NULL THEN 'No bonus'
+           WHEN bonus > 10000 THEN 'High bonus'
+           ELSE 'Standard bonus'
+       END as bonus_category
+FROM employees;`,
+          wrongAnswers: [
+            "NULL = NULL returns TRUE in SQL.",
+            "COUNT(*) and COUNT(column) always return the same result.",
+            "AVG() treats NULL values as zero."
+          ]
+        },
+        {
+          question: "Explain different types of JOINs with examples of when to use each",
+          answer: "INNER JOIN returns matching rows, LEFT JOIN includes all from left table, RIGHT JOIN all from right, FULL OUTER all from both, CROSS JOIN cartesian product.",
+          code: `-- INNER JOIN: Only matching records
+SELECT e.name, d.dept_name
+FROM employees e
+INNER JOIN departments d ON e.dept_id = d.id;
+
+-- LEFT JOIN: All employees, even without department
+SELECT e.name, d.dept_name
+FROM employees e
+LEFT JOIN departments d ON e.dept_id = d.id;
+
+-- RIGHT JOIN: All departments, even without employees
+SELECT e.name, d.dept_name
+FROM employees e
+RIGHT JOIN departments d ON e.dept_id = d.id;
+
+-- FULL OUTER JOIN: All employees and all departments
+SELECT e.name, d.dept_name
+FROM employees e
+FULL OUTER JOIN departments d ON e.dept_id = d.id;
+
+-- CROSS JOIN: Cartesian product (rarely used)
+SELECT e.name, p.project_name
+FROM employees e
+CROSS JOIN projects p;
+
+-- Self JOIN: Compare within same table
+SELECT e1.name as employee, e2.name as manager
+FROM employees e1
+LEFT JOIN employees e2 ON e1.manager_id = e2.id;`,
+          wrongAnswers: [
+            "LEFT JOIN and RIGHT JOIN always return the same results.",
+            "INNER JOIN includes NULL values from both tables.",
+            "CROSS JOIN is the most commonly used join type."
+          ]
         }
       ],
       "Statistics & Probability": [
@@ -742,6 +1026,83 @@ for _ in range(1000):
             "Correlation always implies causation if the correlation is strong enough.",
             "Causation is just another word for negative correlation.",
             "There is no difference; these terms are interchangeable in statistics."
+          ]
+        },
+        {
+          question: "Explain Type I and Type II errors in hypothesis testing",
+          answer: "Type I error (false positive): Rejecting a true null hypothesis. Type II error (false negative): Failing to reject a false null hypothesis. α controls Type I, β controls Type II.",
+          code: `# Type I Error (α): False Positive
+# H0: Drug has no effect (true)
+# Result: We conclude drug works (reject H0)
+# Consequence: Ineffective drug goes to market
+
+# Type II Error (β): False Negative  
+# H0: Drug has no effect (false - drug actually works)
+# Result: We conclude drug doesn't work (fail to reject H0)
+# Consequence: Effective drug is discarded
+
+# Power = 1 - β (probability of detecting true effect)
+# Sample size calculation example:
+from statsmodels.stats.power import TTestPower
+analysis = TTestPower()
+sample_size = analysis.solve_power(effect_size=0.5, power=0.8, alpha=0.05)`,
+          wrongAnswers: [
+            "Type I error is failing to reject a false null hypothesis.",
+            "Type II error is more serious than Type I error in all cases.",
+            "Increasing sample size increases both Type I and Type II errors."
+          ]
+        },
+        {
+          question: "What's the difference between standard deviation and standard error?",
+          answer: "Standard deviation measures spread of data points around the mean. Standard error measures precision of sample mean as estimate of population mean. SE = SD/√n.",
+          code: `import numpy as np
+
+# Population
+population = np.random.normal(100, 15, 10000)  # μ=100, σ=15
+
+# Single sample
+sample = np.random.choice(population, 100)
+sd = np.std(sample, ddof=1)  # Standard deviation of sample
+se = sd / np.sqrt(len(sample))  # Standard error
+
+print(f"Sample SD: {sd:.2f}")  # Measures spread in sample
+print(f"Sample SE: {se:.2f}")  # Measures uncertainty of mean
+
+# Multiple samples to demonstrate
+sample_means = [np.mean(np.random.choice(population, 100)) for _ in range(1000)]
+print(f"SD of sample means: {np.std(sample_means):.2f}")  # Should ≈ SE`,
+          wrongAnswers: [
+            "Standard error is just another name for standard deviation.",
+            "Standard error increases as sample size increases.",
+            "Standard deviation of the sampling distribution equals population standard deviation."
+          ]
+        },
+        {
+          question: "Explain p-value and its interpretation in hypothesis testing",
+          answer: "P-value is the probability of observing test results at least as extreme as actual results, assuming null hypothesis is true. Small p-value suggests data is inconsistent with H0.",
+          code: `from scipy import stats
+
+# Example: Testing if mean differs from expected
+sample = [98, 102, 97, 105, 103, 99, 101, 100, 98, 104]
+expected_mean = 100
+
+# One-sample t-test
+t_stat, p_value = stats.ttest_1samp(sample, expected_mean)
+
+print(f"p-value: {p_value:.4f}")
+
+# Interpretation:
+# If p < 0.05: "Statistically significant" - reject H0
+# If p ≥ 0.05: "Not statistically significant" - fail to reject H0
+
+# IMPORTANT: p-value is NOT:
+# - Probability that H0 is true
+# - Probability that results occurred by chance
+# - Measure of effect size or practical importance`,
+          wrongAnswers: [
+            "P-value is the probability that the null hypothesis is true.",
+            "A p-value of 0.05 means there's a 5% chance the results are due to chance.",
+            "Lower p-values always indicate more important or meaningful results."
           ]
         }
       ],
@@ -796,6 +1157,110 @@ df_encoded = pd.get_dummies(df, columns=['color'])
             "All categorical variables should be converted to the string 'category'.",
             "Categorical variables can be used directly in all machine learning models."
           ]
+        },
+        {
+          question: "Explain different methods for handling imbalanced datasets",
+          answer: "Use resampling techniques (oversampling minority/undersampling majority), SMOTE, class weights, or ensemble methods. Choose based on data size and problem context.",
+          code: `from imblearn.over_sampling import SMOTE
+from imblearn.under_sampling import RandomUnderSampler
+from sklearn.utils import resample
+
+# Original imbalanced data
+df_majority = df[df.target==0]  # 900 samples
+df_minority = df[df.target==1]  # 100 samples
+
+# 1. Oversampling (duplicate minority)
+df_minority_upsampled = resample(df_minority, 
+                                replace=True,
+                                n_samples=900)
+df_balanced = pd.concat([df_majority, df_minority_upsampled])
+
+# 2. Undersampling (reduce majority)
+df_majority_downsampled = resample(df_majority,
+                                  replace=False,
+                                  n_samples=100)
+
+# 3. SMOTE (synthetic examples)
+smote = SMOTE(random_state=42)
+X_balanced, y_balanced = smote.fit_resample(X, y)
+
+# 4. Class weights (no resampling)
+from sklearn.ensemble import RandomForestClassifier
+clf = RandomForestClassifier(class_weight='balanced')`,
+          wrongAnswers: [
+            "Imbalanced datasets don't affect model performance.",
+            "The only solution is to collect more data for the minority class.",
+            "Always use oversampling as it's the most effective method."
+          ]
+        },
+        {
+          question: "What is feature scaling and when should you use normalization vs standardization?",
+          answer: "Feature scaling ensures features have similar ranges. Use normalization (Min-Max) for bounded data and known range. Use standardization (Z-score) for normally distributed data or unknown bounds.",
+          code: `from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler
+
+# Normalization (Min-Max Scaling) - scales to [0,1]
+# Use when: bounded data, know min/max won't change
+scaler = MinMaxScaler()
+X_normalized = scaler.fit_transform(X)
+
+# Standardization (Z-score) - mean=0, std=1
+# Use when: Gaussian distribution, unbounded, outliers under control
+scaler = StandardScaler()
+X_standardized = scaler.fit_transform(X)
+
+# Robust Scaling - uses median and IQR
+# Use when: outliers present
+scaler = RobustScaler()
+X_robust = scaler.fit_transform(X)
+
+# When NOT to scale:
+# - Tree-based models (Random Forest, XGBoost)
+# - Already meaningful scales (age, money)
+# When TO scale:
+# - Distance-based algorithms (KNN, K-means, SVM)
+# - Neural networks
+# - PCA`,
+          wrongAnswers: [
+            "Feature scaling is only needed for neural networks.",
+            "Normalization and standardization produce identical results.",
+            "Tree-based models require feature scaling to work properly."
+          ]
+        },
+        {
+          question: "How do you handle data leakage and why is it dangerous?",
+          answer: "Data leakage occurs when training data contains information about the target that won't be available during prediction. Prevent by careful feature engineering, proper train/test splitting, and temporal awareness.",
+          code: `# Common data leakage examples and solutions:
+
+# 1. Target leakage - feature contains target information
+# BAD: Using "loan_approved" to predict "will_default"
+# GOOD: Only use features available at prediction time
+
+# 2. Train-test contamination
+# BAD: Scaling before splitting
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)  # Don't do this!
+X_train, X_test = train_test_split(X_scaled)
+
+# GOOD: Scale after splitting
+X_train, X_test = train_test_split(X)
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)  # Only transform!
+
+# 3. Temporal leakage
+# BAD: Random split on time series
+# GOOD: Time-based split
+train_data = df[df['date'] < '2023-01-01']
+test_data = df[df['date'] >= '2023-01-01']
+
+# 4. Duplicate data
+# Remove duplicates that might be in both train/test
+df = df.drop_duplicates()`,
+          wrongAnswers: [
+            "Data leakage improves model performance and should be encouraged.",
+            "Data leakage only occurs when you accidentally include the target variable as a feature.",
+            "Scaling data before train-test split doesn't cause leakage."
+          ]
         }
       ],
       "Machine Learning Basics": [
@@ -835,6 +1300,116 @@ lasso = Lasso(alpha=1.0)  # L1 regularization
             "Bias and variance are the same thing with different names.",
             "High bias always leads to better model performance.",
             "The goal is to maximize both bias and variance."
+          ]
+        },
+        {
+          question: "Explain different validation strategies and when to use each",
+          answer: "Train-test split for large datasets, k-fold cross-validation for medium datasets, stratified k-fold for imbalanced data, time series split for temporal data, and leave-one-out for very small datasets.",
+          code: `from sklearn.model_selection import (train_test_split, KFold, 
+                                     StratifiedKFold, TimeSeriesSplit, LeaveOneOut)
+
+# 1. Simple train-test split (fast, large datasets)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# 2. K-Fold Cross-Validation (better estimate, medium datasets)
+kfold = KFold(n_splits=5, shuffle=True, random_state=42)
+scores = cross_val_score(model, X, y, cv=kfold)
+
+# 3. Stratified K-Fold (imbalanced datasets)
+skfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+scores = cross_val_score(model, X, y, cv=skfold)
+
+# 4. Time Series Split (temporal data)
+tscv = TimeSeriesSplit(n_splits=5)
+for train_idx, test_idx in tscv.split(X):
+    X_train, X_test = X[train_idx], X[test_idx]
+    # Train and evaluate
+
+# 5. Leave-One-Out (very small datasets <100 samples)
+loo = LeaveOneOut()
+scores = cross_val_score(model, X, y, cv=loo)`,
+          wrongAnswers: [
+            "Always use train-test split regardless of dataset size or type.",
+            "K-fold cross-validation should be used for time series data.",
+            "Stratified k-fold is only for regression problems."
+          ]
+        },
+        {
+          question: "What evaluation metrics would you use for classification vs regression problems?",
+          answer: "Classification: accuracy, precision, recall, F1-score, ROC-AUC. Regression: MAE, MSE, RMSE, R². Choose based on business context and data characteristics.",
+          code: `# Classification metrics
+from sklearn.metrics import (accuracy_score, precision_score, recall_score, 
+                           f1_score, roc_auc_score, confusion_matrix)
+
+# When to use each:
+# - Accuracy: Only when classes are balanced
+# - Precision: When false positives are costly (spam detection)
+# - Recall: When false negatives are costly (disease detection)
+# - F1: Balance between precision and recall
+# - ROC-AUC: Overall performance across thresholds
+
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
+
+# For probability predictions
+y_pred_proba = model.predict_proba(X_test)[:, 1]
+auc = roc_auc_score(y_test, y_pred_proba)
+
+# Regression metrics
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+
+# When to use each:
+# - MAE: Robust to outliers, easy to interpret
+# - MSE/RMSE: Penalizes large errors more
+# - R²: Percentage of variance explained
+
+mae = mean_absolute_error(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+rmse = np.sqrt(mse)
+r2 = r2_score(y_test, y_pred)`,
+          wrongAnswers: [
+            "Accuracy is always the best metric for classification problems.",
+            "MSE and MAE always give the same model rankings.",
+            "R² can be used for classification problems."
+          ]
+        },
+        {
+          question: "Explain the difference between parametric and non-parametric models with examples",
+          answer: "Parametric models assume fixed form with finite parameters (linear regression, logistic regression). Non-parametric models don't assume functional form and can grow with data (KNN, decision trees, SVM).",
+          code: `# Parametric Models - fixed number of parameters
+# Linear Regression: y = β₀ + β₁x₁ + β₂x₂ + ... + ε
+from sklearn.linear_model import LinearRegression
+lr = LinearRegression()  # Always has n_features + 1 parameters
+
+# Logistic Regression
+from sklearn.linear_model import LogisticRegression
+log_reg = LogisticRegression()
+
+# Advantages: Fast, less data needed, interpretable
+# Disadvantages: Limited flexibility, strong assumptions
+
+# Non-parametric Models - parameters grow with data
+# K-Nearest Neighbors
+from sklearn.neighbors import KNeighborsClassifier
+knn = KNeighborsClassifier(n_neighbors=5)  # Stores all training data
+
+# Decision Trees
+from sklearn.tree import DecisionTreeClassifier
+tree = DecisionTreeClassifier()  # Tree size depends on data
+
+# Random Forest
+from sklearn.ensemble import RandomForestClassifier
+rf = RandomForestClassifier()  # Multiple trees, complexity varies
+
+# Advantages: Flexible, few assumptions, can model complex patterns
+# Disadvantages: Need more data, prone to overfitting, less interpretable`,
+          wrongAnswers: [
+            "Non-parametric models have no parameters at all.",
+            "Decision trees are parametric because they have hyperparameters.",
+            "Parametric models always perform worse than non-parametric models."
           ]
         }
       ],
@@ -887,6 +1462,130 @@ df.applymap(lambda x: x**2)`,
             "All three methods do the same thing and are interchangeable.",
             "map() works on DataFrames, applymap() works on Series.",
             "apply() can only be used with built-in functions, not lambda functions."
+          ]
+        },
+        {
+          question: "How do you profile and optimize Python code performance?",
+          answer: "Use profiling tools (cProfile, line_profiler), identify bottlenecks, then optimize using vectorization, caching, better algorithms, or Cython/Numba for critical sections.",
+          code: `# 1. Basic timing
+import time
+start = time.time()
+# Your code here
+print(f"Execution time: {time.time() - start:.4f} seconds")
+
+# 2. Using cProfile
+import cProfile
+cProfile.run('your_function()')
+
+# 3. Line profiler (install: pip install line_profiler)
+# @profile decorator on function, then run: kernprof -lv script.py
+
+# 4. Memory profiling
+import sys
+sys.getsizeof(object)  # Memory usage of object
+
+# 5. Optimization techniques:
+# a) Use NumPy for numerical operations
+list_sum = sum([i**2 for i in range(1000000)])  # Slow
+array_sum = np.sum(np.arange(1000000)**2)  # Fast
+
+# b) Cache expensive computations
+from functools import lru_cache
+@lru_cache(maxsize=128)
+def expensive_function(n):
+    return n ** 2
+
+# c) Use Numba for JIT compilation
+from numba import jit
+@jit
+def fast_function(arr):
+    return np.sum(arr ** 2)`,
+          wrongAnswers: [
+            "Python code cannot be optimized; you must rewrite in C++ for performance.",
+            "Adding more print statements makes code run faster.",
+            "List comprehensions are always slower than for loops."
+          ]
+        },
+        {
+          question: "Explain chunking strategy for processing large datasets that don't fit in memory",
+          answer: "Process data in smaller chunks using pandas chunksize parameter, Dask for parallel processing, or generators for streaming. Aggregate results incrementally.",
+          code: `# 1. Pandas chunking
+chunk_size = 10000
+running_sum = 0
+running_count = 0
+
+for chunk in pd.read_csv('large_file.csv', chunksize=chunk_size):
+    # Process each chunk
+    chunk_sum = chunk['value'].sum()
+    running_sum += chunk_sum
+    running_count += len(chunk)
+
+average = running_sum / running_count
+
+# 2. Using Dask for parallel processing
+import dask.dataframe as dd
+ddf = dd.read_csv('large_file.csv')
+result = ddf.groupby('category').value.mean().compute()
+
+# 3. Generator for memory-efficient processing
+def read_large_file(file_path):
+    with open(file_path, 'r') as file:
+        for line in file:
+            yield process_line(line)
+
+# 4. SQL-like operations on chunks
+def process_in_chunks(filename, agg_func):
+    result = {}
+    for chunk in pd.read_csv(filename, chunksize=10000):
+        grouped = chunk.groupby('key').agg(agg_func)
+        for key, value in grouped.iterrows():
+            if key not in result:
+                result[key] = []
+            result[key].append(value)
+    
+    # Final aggregation
+    return {k: agg_func(v) for k, v in result.items()}`,
+          wrongAnswers: [
+            "Always load entire datasets into memory for best performance.",
+            "Chunking makes processing slower and should be avoided.",
+            "You can only process files that fit in available RAM."
+          ]
+        },
+        {
+          question: "What are best practices for handling time series data efficiently?",
+          answer: "Use proper datetime indexing, resample for aggregations, rolling windows for moving statistics, and shift/diff for lag features. Store in appropriate formats like Parquet for better performance.",
+          code: `# 1. Proper datetime indexing
+df['date'] = pd.to_datetime(df['date'])
+df = df.set_index('date')
+df = df.sort_index()  # Ensure chronological order
+
+# 2. Resampling for different frequencies
+daily_data = df.resample('D').sum()  # Daily aggregation
+monthly_avg = df.resample('M').mean()  # Monthly average
+
+# 3. Rolling window operations
+df['ma_7'] = df['value'].rolling(window=7).mean()
+df['rolling_std'] = df['value'].rolling(window=30).std()
+
+# 4. Lag features and differences
+df['lag_1'] = df['value'].shift(1)
+df['lag_7'] = df['value'].shift(7)
+df['diff_1'] = df['value'].diff(1)  # First difference
+df['pct_change'] = df['value'].pct_change()
+
+# 5. Efficient storage
+# Parquet format for time series
+df.to_parquet('timeseries.parquet', engine='pyarrow')
+df_loaded = pd.read_parquet('timeseries.parquet')
+
+# 6. Vectorized date operations
+df['day_of_week'] = df.index.dayofweek
+df['month'] = df.index.month
+df['is_weekend'] = df.index.weekday >= 5`,
+          wrongAnswers: [
+            "Store timestamps as strings for better performance.",
+            "Always use loops to calculate rolling statistics.",
+            "CSV is the most efficient format for time series data."
           ]
         }
       ]
@@ -952,7 +1651,7 @@ df.applymap(lambda x: x**2)`,
         <div class="test-option-card" onclick="startTest('all')">
           <div class="test-option-icon">🎯</div>
           <div class="test-option-title">All Topics</div>
-          <div class="test-option-count">15 questions from all categories</div>
+          <div class="test-option-count">20 questions from all categories</div>
         </div>
       `;
 
@@ -1010,10 +1709,10 @@ df.applymap(lambda x: x**2)`,
         for (const questions of Object.values(questionData)) {
           testQuestions.push(...questions);
         }
-        // Shuffle and take only 15 questions
-        testQuestions = shuffleArray(testQuestions).slice(0, 15);
+        // Shuffle and take 20 questions for comprehensive test
+        testQuestions = shuffleArray(testQuestions).slice(0, 20);
         document.getElementById('testTitle').textContent = 'All Topics Test';
-        document.getElementById('testSubtitle').textContent = '15 questions from all categories';
+        document.getElementById('testSubtitle').textContent = '20 questions from all categories';
       } else {
         testQuestions = [...questionData[testType]];
         testQuestions = shuffleArray(testQuestions);
