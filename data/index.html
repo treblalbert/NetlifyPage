@@ -82,6 +82,62 @@
       box-shadow: 0 0 20px rgba(100, 200, 255, 0.3);
     }
 
+    /* Test Selector */
+    .test-selector {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    .test-selector-title {
+      font-size: 1.5rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 1.5rem;
+    }
+
+    .test-options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .test-option-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .test-option-card:hover {
+      transform: translateY(-5px);
+      background: linear-gradient(135deg, rgba(100, 200, 255, 0.25) 0%, rgba(100, 200, 255, 0.1) 100%);
+      border-color: rgba(100, 200, 255, 0.4);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .test-option-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .test-option-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+
+    .test-option-count {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
     /* Study Mode Styles */
     .study-content {
       display: none;
@@ -158,6 +214,22 @@
 
     .test-content.active {
       display: block;
+    }
+
+    .test-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .test-title {
+      font-size: 1.8rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 0.5rem;
+    }
+
+    .test-subtitle {
+      font-size: 1rem;
+      color: rgba(255, 255, 255, 0.7);
     }
 
     .test-progress {
@@ -310,6 +382,7 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
+      margin: 0.5rem;
     }
 
     .restart-btn:hover {
@@ -371,8 +444,21 @@
       <!-- Content will be dynamically generated -->
     </div>
 
+    <!-- Test Selector -->
+    <div class="test-selector" id="testSelector" style="display: none;">
+      <h2 class="test-selector-title">Choose Your Test</h2>
+      <div class="test-options-grid" id="testOptionsGrid">
+        <!-- Test options will be dynamically generated -->
+      </div>
+    </div>
+
     <!-- Test Mode Content -->
     <div class="test-content" id="testContent">
+      <div class="test-header">
+        <h2 class="test-title" id="testTitle">All Topics Test</h2>
+        <p class="test-subtitle" id="testSubtitle">15 questions from all categories</p>
+      </div>
+      
       <div class="test-progress">
         <div class="test-progress-bar" id="progressBar"></div>
       </div>
@@ -392,7 +478,8 @@
       <h2 class="results-title">Test Complete!</h2>
       <div class="results-score" id="resultsScore"></div>
       <p class="results-message" id="resultsMessage"></p>
-      <button class="restart-btn" onclick="startTest()">Take Test Again</button>
+      <button class="restart-btn" onclick="retakeCurrentTest()">Retake This Test</button>
+      <button class="restart-btn" onclick="switchMode('test')">Choose Another Test</button>
     </div>
   </div>
 
@@ -810,10 +897,24 @@ df.applymap(lambda x: x**2)`,
     let currentQuestionIndex = 0;
     let userAnswers = [];
     let correctAnswers = 0;
+    let currentTestType = 'all';
+
+    // Icons for each category
+    const categoryIcons = {
+      "Python Fundamentals": "🐍",
+      "Pandas Questions": "🐼",
+      "NumPy Questions": "🔢",
+      "SQL Questions": "💾",
+      "Statistics & Probability": "📊",
+      "Data Cleaning & Preprocessing": "🧹",
+      "Machine Learning Basics": "🤖",
+      "Performance & Optimization": "⚡"
+    };
 
     // Initialize the page
     function init() {
       generateStudyContent();
+      generateTestOptions();
     }
 
     // Generate study content
@@ -823,7 +924,7 @@ df.applymap(lambda x: x**2)`,
 
       for (const [category, questions] of Object.entries(questionData)) {
         html += `<div class="category-section">
-          <h2 class="category-title">${category}</h2>`;
+          <h2 class="category-title">${categoryIcons[category]} ${category}</h2>`;
         
         questions.forEach((q, index) => {
           html += `
@@ -841,9 +942,38 @@ df.applymap(lambda x: x**2)`,
       studyContent.innerHTML = html;
     }
 
+    // Generate test options
+    function generateTestOptions() {
+      const testOptionsGrid = document.getElementById('testOptionsGrid');
+      let html = '';
+
+      // All topics option
+      html += `
+        <div class="test-option-card" onclick="startTest('all')">
+          <div class="test-option-icon">🎯</div>
+          <div class="test-option-title">All Topics</div>
+          <div class="test-option-count">15 questions from all categories</div>
+        </div>
+      `;
+
+      // Individual category options
+      for (const [category, questions] of Object.entries(questionData)) {
+        html += `
+          <div class="test-option-card" onclick="startTest('${category}')">
+            <div class="test-option-icon">${categoryIcons[category]}</div>
+            <div class="test-option-title">${category}</div>
+            <div class="test-option-count">${questions.length} questions</div>
+          </div>
+        `;
+      }
+
+      testOptionsGrid.innerHTML = html;
+    }
+
     // Switch between study and test modes
     function switchMode(mode) {
       const studyContent = document.getElementById('studyContent');
+      const testSelector = document.getElementById('testSelector');
       const testContent = document.getElementById('testContent');
       const testResults = document.getElementById('testResults');
       const modeBtns = document.querySelectorAll('.mode-btn');
@@ -852,38 +982,47 @@ df.applymap(lambda x: x**2)`,
 
       if (mode === 'study') {
         studyContent.classList.add('active');
+        testSelector.style.display = 'none';
         testContent.classList.remove('active');
         testResults.classList.remove('active');
         modeBtns[0].classList.add('active');
       } else {
         studyContent.classList.remove('active');
-        testContent.classList.add('active');
+        testSelector.style.display = 'block';
+        testContent.classList.remove('active');
         testResults.classList.remove('active');
         modeBtns[1].classList.add('active');
-        startTest();
       }
     }
 
     // Start test
-    function startTest() {
+    function startTest(testType) {
+      currentTestType = testType;
+      
       // Reset test variables
       testQuestions = [];
       currentQuestionIndex = 0;
       userAnswers = [];
       correctAnswers = 0;
 
-      // Collect all questions
-      for (const questions of Object.values(questionData)) {
-        testQuestions.push(...questions);
+      // Collect questions based on test type
+      if (testType === 'all') {
+        for (const questions of Object.values(questionData)) {
+          testQuestions.push(...questions);
+        }
+        // Shuffle and take only 15 questions
+        testQuestions = shuffleArray(testQuestions).slice(0, 15);
+        document.getElementById('testTitle').textContent = 'All Topics Test';
+        document.getElementById('testSubtitle').textContent = '15 questions from all categories';
+      } else {
+        testQuestions = [...questionData[testType]];
+        testQuestions = shuffleArray(testQuestions);
+        document.getElementById('testTitle').textContent = `${testType} Test`;
+        document.getElementById('testSubtitle').textContent = `${testQuestions.length} questions`;
       }
 
-      // Shuffle questions
-      testQuestions = shuffleArray(testQuestions);
-
-      // Take only 15 questions for the test
-      testQuestions = testQuestions.slice(0, 15);
-
-      // Reset UI
+      // Hide test selector and show test content
+      document.getElementById('testSelector').style.display = 'none';
       document.getElementById('testResults').classList.remove('active');
       document.getElementById('testContent').classList.add('active');
       
@@ -1009,6 +1148,11 @@ df.applymap(lambda x: x**2)`,
       }
       
       document.getElementById('resultsMessage').textContent = message;
+    }
+
+    // Retake current test
+    function retakeCurrentTest() {
+      startTest(currentTestType);
     }
 
     // Utility functions
