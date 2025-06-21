@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Data Analyst Interview Prep</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      line-height: 1.6;
+      color: #fff;
+      background: linear-gradient(135deg, #1a0033 0%, #220044 50%, #1a0033 100%);
+      min-height: 100vh;
+      position: relative;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #fff 0%, #e1e5f2 50%, #fff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+      margin-bottom: 1rem;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 2rem;
+    }
+
+    .mode-switcher {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .mode-btn {
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
+      backdrop-filter: blur(15px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50px;
+      color: white;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .mode-btn:hover {
+      transform: translateY(-2px);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.15) 100%);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .mode-btn.active {
+      background: linear-gradient(135deg, rgba(100, 200, 255, 0.4) 0%, rgba(100, 200, 255, 0.2) 100%);
+      border-color: rgba(100, 200, 255, 0.6);
+      box-shadow: 0 0 20px rgba(100, 200, 255, 0.3);
+    }
+
+    /* Study Mode Styles */
+    .study-content {
+      display: none;
+    }
+
+    .study-content.active {
+      display: block;
+    }
+
+    .category-section {
+      margin-bottom: 3rem;
+    }
+
+    .category-title {
+      font-size: 2rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.95);
+      margin-bottom: 2rem;
+      text-align: center;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+
+    .question-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .question-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .question {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.95);
+      margin-bottom: 1rem;
+    }
+
+    .answer {
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 1rem;
+      line-height: 1.8;
+    }
+
+    .code-block {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 1rem;
+      margin: 1rem 0;
+      overflow-x: auto;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 0.9rem;
+      color: #e8e8e8;
+    }
+
+    .code-block pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    /* Test Mode Styles */
+    .test-content {
+      display: none;
+    }
+
+    .test-content.active {
+      display: block;
+    }
+
+    .test-progress {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      height: 10px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+
+    .test-progress-bar {
+      background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%);
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .test-question-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 100%);
+      backdrop-filter: blur(20px);
+      border-radius: 25px;
+      padding: 3rem;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .test-question {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .test-options {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .test-option {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+
+    .test-option:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .test-option.correct {
+      background: linear-gradient(135deg, rgba(76, 175, 80, 0.3) 0%, rgba(76, 175, 80, 0.1) 100%);
+      border-color: rgba(76, 175, 80, 0.6);
+    }
+
+    .test-option.incorrect {
+      background: linear-gradient(135deg, rgba(244, 67, 54, 0.3) 0%, rgba(244, 67, 54, 0.1) 100%);
+      border-color: rgba(244, 67, 54, 0.6);
+    }
+
+    .test-option.disabled {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .test-navigation {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .nav-btn {
+      padding: 0.8rem 2rem;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 30px;
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .nav-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.15) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .test-results {
+      display: none;
+      text-align: center;
+      padding: 3rem;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 100%);
+      backdrop-filter: blur(20px);
+      border-radius: 25px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .test-results.active {
+      display: block;
+    }
+
+    .results-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 1rem;
+    }
+
+    .results-score {
+      font-size: 4rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 2rem;
+    }
+
+    .results-message {
+      font-size: 1.3rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 2rem;
+    }
+
+    .restart-btn {
+      padding: 1rem 3rem;
+      background: linear-gradient(135deg, rgba(100, 200, 255, 0.4) 0%, rgba(100, 200, 255, 0.2) 100%);
+      border: 2px solid rgba(100, 200, 255, 0.6);
+      border-radius: 50px;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .restart-btn:hover {
+      background: linear-gradient(135deg, rgba(100, 200, 255, 0.5) 0%, rgba(100, 200, 255, 0.3) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(100, 200, 255, 0.3);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 2rem;
+      left: 2rem;
+      padding: 0.8rem 1.5rem;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
+      backdrop-filter: blur(15px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 30px;
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+
+    .back-btn:hover {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.15) 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <a href="../" class="back-btn">← Back to Portfolio</a>
+
+  <div class="container">
+    <header class="header">
+      <h1>Python Data Analyst Interview Prep</h1>
+      <p class="subtitle">Master key concepts with interactive study and test modes</p>
+    </header>
+
+    <div class="mode-switcher">
+      <button class="mode-btn active" onclick="switchMode('study')">📚 Study Mode</button>
+      <button class="mode-btn" onclick="switchMode('test')">🎯 Test Mode</button>
+    </div>
+
+    <!-- Study Mode Content -->
+    <div class="study-content active" id="studyContent">
+      <!-- Content will be dynamically generated -->
+    </div>
+
+    <!-- Test Mode Content -->
+    <div class="test-content" id="testContent">
+      <div class="test-progress">
+        <div class="test-progress-bar" id="progressBar"></div>
+      </div>
+      
+      <div class="test-question-card" id="testQuestionCard">
+        <!-- Question will be dynamically generated -->
+      </div>
+
+      <div class="test-navigation">
+        <button class="nav-btn" id="prevBtn" onclick="previousQuestion()" disabled>Previous</button>
+        <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">Next</button>
+      </div>
+    </div>
+
+    <!-- Test Results -->
+    <div class="test-results" id="testResults">
+      <h2 class="results-title">Test Complete!</h2>
+      <div class="results-score" id="resultsScore"></div>
+      <p class="results-message" id="resultsMessage"></p>
+      <button class="restart-btn" onclick="startTest()">Take Test Again</button>
+    </div>
+  </div>
+
+  <script>
+    // Question data structure
+    const questionData = {
+      "Python Fundamentals": [
+        {
+          question: "What's the difference between a list and a tuple?",
+          answer: "Lists are mutable (can be changed), tuples are immutable. Lists use square brackets [], tuples use parentheses (). Lists have methods like append(), while tuples don't.",
+          code: `# List - mutable
+my_list = [1, 2, 3]
+my_list.append(4)  # Works
+
+# Tuple - immutable
+my_tuple = (1, 2, 3)
+# my_tuple.append(4)  # Would raise AttributeError`,
+          wrongAnswers: [
+            "Lists are immutable, tuples are mutable. Lists use parentheses, tuples use square brackets.",
+            "There is no difference, they are interchangeable data structures.",
+            "Lists can only store strings, tuples can store any data type."
+          ]
+        },
+        {
+          question: "Explain list comprehensions vs regular loops",
+          answer: "List comprehensions are more concise and often faster. They create lists in a single line.",
+          code: `# Regular loop
+squares = []
+for i in range(10):
+    squares.append(i**2)
+
+# List comprehension
+squares = [i**2 for i in range(10)]
+
+# With condition
+even_squares = [i**2 for i in range(10) if i % 2 == 0]`,
+          wrongAnswers: [
+            "List comprehensions are slower but more readable than regular loops.",
+            "Regular loops create lists in a single line, list comprehensions require multiple lines.",
+            "List comprehensions can only be used with strings, not numbers."
+          ]
+        },
+        {
+          question: "What are *args and **kwargs?",
+          answer: "*args passes variable number of positional arguments, **kwargs passes variable number of keyword arguments.",
+          code: `def my_function(*args, **kwargs):
+    print("Args:", args)
+    print("Kwargs:", kwargs)
+
+my_function(1, 2, 3, name="John", age=30)
+# Args: (1, 2, 3)
+# Kwargs: {'name': 'John', 'age': 30}`,
+          wrongAnswers: [
+            "*args is for keyword arguments, **kwargs is for positional arguments.",
+            "Both *args and **kwargs are used for the same purpose - passing lists to functions.",
+            "*args can only accept strings, **kwargs can only accept numbers."
+          ]
+        }
+      ],
+      "Pandas Questions": [
+        {
+          question: "How do you handle missing values in pandas?",
+          answer: "Multiple approaches: Check with isnull()/info(), drop with dropna(), or fill with fillna() using various strategies.",
+          code: `import pandas as pd
+import numpy as np
+
+df = pd.DataFrame({'A': [1, 2, np.nan], 'B': [4, np.nan, 6]})
+
+# Check for missing values
+df.isnull().sum()
+df.info()
+
+# Drop missing values
+df.dropna()  # Drop rows with any NaN
+df.dropna(axis=1)  # Drop columns with any NaN
+df.dropna(thresh=2)  # Keep rows with at least 2 non-null values
+
+# Fill missing values
+df.fillna(0)  # Fill with 0
+df.fillna(df.mean())  # Fill with mean
+df.fillna(method='ffill')  # Forward fill
+df.fillna(method='bfill')  # Backward fill`,
+          wrongAnswers: [
+            "Pandas automatically handles missing values, no action needed.",
+            "The only way to handle missing values is to delete the entire dataset.",
+            "Missing values can only be filled with the value -999."
+          ]
+        },
+        {
+          question: "Explain groupby operations",
+          answer: "GroupBy splits data into groups based on criteria, applies functions, and combines results.",
+          code: `df = pd.DataFrame({
+    'Category': ['A', 'B', 'A', 'B', 'A'],
+    'Values': [10, 20, 30, 40, 50],
+    'Count': [1, 2, 3, 4, 5]
+})
+
+# Basic groupby
+df.groupby('Category').sum()
+df.groupby('Category')['Values'].mean()
+
+# Multiple aggregations
+df.groupby('Category').agg({
+    'Values': ['sum', 'mean'],
+    'Count': 'max'
+})
+
+# Custom aggregation
+df.groupby('Category').apply(lambda x: x['Values'].max() - x['Values'].min())`,
+          wrongAnswers: [
+            "GroupBy only works with numerical data, not categorical data.",
+            "GroupBy permanently modifies the original DataFrame structure.",
+            "GroupBy can only perform one operation at a time on the data."
+          ]
+        },
+        {
+          question: "How do you merge/join DataFrames?",
+          answer: "Use merge(), join(), or concat() depending on the situation.",
+          code: `df1 = pd.DataFrame({'key': ['A', 'B', 'C'], 'value1': [1, 2, 3]})
+df2 = pd.DataFrame({'key': ['A', 'B', 'D'], 'value2': [4, 5, 6]})
+
+# Inner join (default)
+pd.merge(df1, df2, on='key')
+
+# Left join
+pd.merge(df1, df2, on='key', how='left')
+
+# Outer join
+pd.merge(df1, df2, on='key', how='outer')
+
+# Concatenate
+pd.concat([df1, df2], axis=0)  # Vertically
+pd.concat([df1, df2], axis=1)  # Horizontally`,
+          wrongAnswers: [
+            "DataFrames can only be merged if they have exactly the same columns.",
+            "merge() and join() are the same function with different names.",
+            "concat() can only be used to join DataFrames vertically, not horizontally."
+          ]
+        }
+      ],
+      "NumPy Questions": [
+        {
+          question: "What's the difference between np.array and Python lists for numerical operations?",
+          answer: "NumPy arrays are faster, use less memory, and support vectorized operations.",
+          code: `import numpy as np
+
+# Python lists
+list1 = [1, 2, 3, 4, 5]
+list2 = [6, 7, 8, 9, 10]
+# list1 + list2  # Concatenates, doesn't add elementwise
+
+# NumPy arrays
+arr1 = np.array([1, 2, 3, 4, 5])
+arr2 = np.array([6, 7, 8, 9, 10])
+arr1 + arr2  # Element-wise addition
+arr1 * 2     # Scalar multiplication
+np.sqrt(arr1)  # Element-wise square root`,
+          wrongAnswers: [
+            "Python lists are faster than NumPy arrays for numerical operations.",
+            "NumPy arrays and Python lists behave exactly the same for mathematical operations.",
+            "NumPy arrays can only store integers, while lists can store any type."
+          ]
+        },
+        {
+          question: "Explain broadcasting in NumPy",
+          answer: "Broadcasting allows operations between arrays of different shapes.",
+          code: `# 1D array + scalar
+arr = np.array([1, 2, 3])
+arr + 10  # [11, 12, 13]
+
+# 2D array + 1D array
+matrix = np.array([[1, 2, 3], [4, 5, 6]])
+vector = np.array([10, 20, 30])
+matrix + vector  # Adds vector to each row`,
+          wrongAnswers: [
+            "Broadcasting only works with arrays of exactly the same shape.",
+            "Broadcasting requires explicit reshaping of arrays before operations.",
+            "Broadcasting is a feature that slows down NumPy operations."
+          ]
+        }
+      ],
+      "SQL Questions": [
+        {
+          question: "Write a query to find the second highest salary",
+          answer: "Multiple methods: Using LIMIT with OFFSET, subquery with MAX, or window functions like DENSE_RANK().",
+          code: `-- Method 1: Using LIMIT and OFFSET
+SELECT DISTINCT salary
+FROM employees
+ORDER BY salary DESC
+LIMIT 1 OFFSET 1;
+
+-- Method 2: Using subquery
+SELECT MAX(salary)
+FROM employees
+WHERE salary < (SELECT MAX(salary) FROM employees);
+
+-- Method 3: Using window functions
+SELECT DISTINCT salary
+FROM (
+    SELECT salary,
+           DENSE_RANK() OVER (ORDER BY salary DESC) as rank
+    FROM employees
+) ranked
+WHERE rank = 2;`,
+          wrongAnswers: [
+            "SELECT salary FROM employees ORDER BY salary LIMIT 2",
+            "SELECT TOP 2 salary FROM employees",
+            "SELECT SECOND(salary) FROM employees"
+          ]
+        },
+        {
+          question: "Explain the difference between WHERE and HAVING",
+          answer: "WHERE filters rows before grouping, HAVING filters groups after grouping.",
+          code: `-- WHERE: filters individual rows
+SELECT department, COUNT(*)
+FROM employees
+WHERE salary > 50000
+GROUP BY department;
+
+-- HAVING: filters groups
+SELECT department, COUNT(*)
+FROM employees
+GROUP BY department
+HAVING COUNT(*) > 5;`,
+          wrongAnswers: [
+            "WHERE and HAVING are interchangeable and can be used in any order.",
+            "HAVING can only be used with the COUNT function.",
+            "WHERE is used for strings, HAVING is used for numbers."
+          ]
+        }
+      ],
+      "Statistics & Probability": [
+        {
+          question: "Explain the Central Limit Theorem",
+          answer: "The CLT states that the sampling distribution of sample means approaches a normal distribution as sample size increases, regardless of the population's distribution.",
+          code: `import numpy as np
+import matplotlib.pyplot as plt
+
+# Simulate CLT
+population = np.random.exponential(2, 10000)  # Non-normal population
+sample_means = []
+
+for _ in range(1000):
+    sample = np.random.choice(population, 30)
+    sample_means.append(np.mean(sample))
+
+# sample_means will be approximately normal`,
+          wrongAnswers: [
+            "The CLT states that all data becomes normally distributed with large samples.",
+            "The CLT only applies to populations that are already normally distributed.",
+            "The CLT requires a minimum sample size of 1000 to be valid."
+          ]
+        },
+        {
+          question: "What's the difference between correlation and causation?",
+          answer: "Correlation measures statistical relationship between variables. Causation means one variable directly influences another. Correlation doesn't imply causation.",
+          code: `# Example: Ice cream sales and drowning deaths are correlated
+# But ice cream doesn't cause drowning - temperature is the confounding variable`,
+          wrongAnswers: [
+            "Correlation always implies causation if the correlation is strong enough.",
+            "Causation is just another word for negative correlation.",
+            "There is no difference; these terms are interchangeable in statistics."
+          ]
+        }
+      ],
+      "Data Cleaning & Preprocessing": [
+        {
+          question: "How do you detect and handle outliers?",
+          answer: "Multiple methods: IQR method, Z-score method, or visualization with box plots.",
+          code: `import pandas as pd
+import numpy as np
+
+data = pd.Series([1, 2, 3, 4, 5, 100])  # 100 is an outlier
+
+# Method 1: IQR method
+Q1 = data.quantile(0.25)
+Q3 = data.quantile(0.75)
+IQR = Q3 - Q1
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+outliers = data[(data < lower_bound) | (data > upper_bound)]
+
+# Method 2: Z-score method
+z_scores = np.abs((data - data.mean()) / data.std())
+outliers = data[z_scores > 3]
+
+# Method 3: Visualization
+data.boxplot()  # Box plots show outliers`,
+          wrongAnswers: [
+            "Outliers should always be removed from the dataset without investigation.",
+            "The only way to detect outliers is by manually inspecting each data point.",
+            "Outliers are defined as any value above the mean."
+          ]
+        },
+        {
+          question: "How do you handle categorical variables?",
+          answer: "Multiple encoding techniques: Label Encoding for ordinal data, One-Hot Encoding for nominal data, or Target encoding for supervised learning.",
+          code: `import pandas as pd
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+
+df = pd.DataFrame({'color': ['red', 'blue', 'green', 'red']})
+
+# Method 1: Label Encoding (ordinal)
+le = LabelEncoder()
+df['color_encoded'] = le.fit_transform(df['color'])
+
+# Method 2: One-Hot Encoding (nominal)
+df_encoded = pd.get_dummies(df, columns=['color'])
+
+# Method 3: Target encoding (for supervised learning)
+# Encode based on target variable relationship`,
+          wrongAnswers: [
+            "Categorical variables must be removed before analysis.",
+            "All categorical variables should be converted to the string 'category'.",
+            "Categorical variables can be used directly in all machine learning models."
+          ]
+        }
+      ],
+      "Machine Learning Basics": [
+        {
+          question: "Explain overfitting and how to prevent it",
+          answer: "Overfitting occurs when a model learns training data too specifically and fails to generalize. Prevention: train/validation/test split, cross-validation, regularization, early stopping, dropout, reduce model complexity, or get more data.",
+          code: `from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.ensemble import RandomForestRegressor
+
+# 1. Train/validation/test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+# 2. Cross-validation
+scores = cross_val_score(model, X_train, y_train, cv=5)
+
+# 3. Regularization (for linear models)
+from sklearn.linear_model import Ridge, Lasso
+ridge = Ridge(alpha=1.0)  # L2 regularization
+lasso = Lasso(alpha=1.0)  # L1 regularization
+
+# 4. Early stopping, dropout (for neural networks)
+# 5. Reduce model complexity
+# 6. Get more training data`,
+          wrongAnswers: [
+            "Overfitting means the model is too simple and needs more parameters.",
+            "Overfitting can be prevented by training the model for more epochs.",
+            "Overfitting only occurs in linear models, not in tree-based models."
+          ]
+        },
+        {
+          question: "What's the bias-variance tradeoff?",
+          answer: "Bias is error from oversimplifying assumptions. Variance is error from sensitivity to small fluctuations. High bias = underfitting, high variance = overfitting. Goal is to minimize total error = bias² + variance + noise.",
+          code: `# High bias model: Linear regression on non-linear data
+# High variance model: Deep decision tree on small dataset
+# Balanced model: Random forest with proper hyperparameters`,
+          wrongAnswers: [
+            "Bias and variance are the same thing with different names.",
+            "High bias always leads to better model performance.",
+            "The goal is to maximize both bias and variance."
+          ]
+        }
+      ],
+      "Performance & Optimization": [
+        {
+          question: "How do you optimize pandas operations?",
+          answer: "Use vectorized operations instead of loops, .loc for label-based indexing, categorical data types, .query() for complex filtering, .eval() for arithmetic operations, and read only needed columns.",
+          code: `import pandas as pd
+import numpy as np
+
+# 1. Use vectorized operations instead of loops
+df['new_col'] = df['col1'] * df['col2']  # Good
+# Don't: df['new_col'] = df.apply(lambda x: x['col1'] * x['col2'], axis=1)
+
+# 2. Use .loc for label-based indexing
+df.loc[df['column'] > 5, 'new_col'] = 'high'
+
+# 3. Use categorical data types
+df['category'] = df['category'].astype('category')
+
+# 4. Use .query() for complex filtering
+df.query('column1 > 5 and column2 < 10')
+
+# 5. Use .eval() for arithmetic operations
+df.eval('new_col = col1 + col2 * col3')
+
+# 6. Read only needed columns
+df = pd.read_csv('file.csv', usecols=['col1', 'col2'])`,
+          wrongAnswers: [
+            "Always use apply() for better performance with pandas operations.",
+            "Converting to lists and using Python loops is faster than pandas operations.",
+            "Reading all columns and then dropping is more efficient than selecting columns."
+          ]
+        },
+        {
+          question: "When would you use apply() vs map() vs applymap()?",
+          answer: "apply(): Apply function along axis (rows/columns). map(): Element-wise transformation for Series only. applymap(): Element-wise transformation for entire DataFrame.",
+          code: `df = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+
+# apply() - along axis
+df.apply(sum)  # Sum each column
+df.apply(lambda x: x.max() - x.min(), axis=1)  # Range of each row
+
+# map() - Series only
+df['A'].map(lambda x: x**2)
+
+# applymap() - element-wise on DataFrame
+df.applymap(lambda x: x**2)`,
+          wrongAnswers: [
+            "All three methods do the same thing and are interchangeable.",
+            "map() works on DataFrames, applymap() works on Series.",
+            "apply() can only be used with built-in functions, not lambda functions."
+          ]
+        }
+      ]
+    };
+
+    // Test mode variables
+    let testQuestions = [];
+    let currentQuestionIndex = 0;
+    let userAnswers = [];
+    let correctAnswers = 0;
+
+    // Initialize the page
+    function init() {
+      generateStudyContent();
+    }
+
+    // Generate study content
+    function generateStudyContent() {
+      const studyContent = document.getElementById('studyContent');
+      let html = '';
+
+      for (const [category, questions] of Object.entries(questionData)) {
+        html += `<div class="category-section">
+          <h2 class="category-title">${category}</h2>`;
+        
+        questions.forEach((q, index) => {
+          html += `
+            <div class="question-card">
+              <h3 class="question">Q${index + 1}: ${q.question}</h3>
+              <p class="answer">${q.answer}</p>
+              ${q.code ? `<div class="code-block"><pre>${escapeHtml(q.code)}</pre></div>` : ''}
+            </div>
+          `;
+        });
+        
+        html += '</div>';
+      }
+
+      studyContent.innerHTML = html;
+    }
+
+    // Switch between study and test modes
+    function switchMode(mode) {
+      const studyContent = document.getElementById('studyContent');
+      const testContent = document.getElementById('testContent');
+      const testResults = document.getElementById('testResults');
+      const modeBtns = document.querySelectorAll('.mode-btn');
+
+      modeBtns.forEach(btn => btn.classList.remove('active'));
+
+      if (mode === 'study') {
+        studyContent.classList.add('active');
+        testContent.classList.remove('active');
+        testResults.classList.remove('active');
+        modeBtns[0].classList.add('active');
+      } else {
+        studyContent.classList.remove('active');
+        testContent.classList.add('active');
+        testResults.classList.remove('active');
+        modeBtns[1].classList.add('active');
+        startTest();
+      }
+    }
+
+    // Start test
+    function startTest() {
+      // Reset test variables
+      testQuestions = [];
+      currentQuestionIndex = 0;
+      userAnswers = [];
+      correctAnswers = 0;
+
+      // Collect all questions
+      for (const questions of Object.values(questionData)) {
+        testQuestions.push(...questions);
+      }
+
+      // Shuffle questions
+      testQuestions = shuffleArray(testQuestions);
+
+      // Take only 15 questions for the test
+      testQuestions = testQuestions.slice(0, 15);
+
+      // Reset UI
+      document.getElementById('testResults').classList.remove('active');
+      document.getElementById('testContent').classList.add('active');
+      
+      // Display first question
+      displayQuestion();
+    }
+
+    // Display current question
+    function displayQuestion() {
+      const question = testQuestions[currentQuestionIndex];
+      const testQuestionCard = document.getElementById('testQuestionCard');
+      
+      // Create options (1 correct + 3 wrong)
+      const options = [
+        { text: question.answer, isCorrect: true },
+        ...question.wrongAnswers.map(answer => ({ text: answer, isCorrect: false }))
+      ];
+      
+      // Shuffle options
+      const shuffledOptions = shuffleArray(options);
+
+      let html = `
+        <h2 class="test-question">${question.question}</h2>
+        <div class="test-options">
+      `;
+
+      shuffledOptions.forEach((option, index) => {
+        html += `
+          <div class="test-option" onclick="selectAnswer(${index}, ${option.isCorrect})" data-index="${index}">
+            ${option.text}
+          </div>
+        `;
+      });
+
+      html += '</div>';
+      testQuestionCard.innerHTML = html;
+
+      // Update progress
+      updateProgress();
+
+      // Update navigation buttons
+      document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+      document.getElementById('nextBtn').textContent = 
+        currentQuestionIndex === testQuestions.length - 1 ? 'Finish' : 'Next';
+    }
+
+    // Handle answer selection
+    function selectAnswer(optionIndex, isCorrect) {
+      // Disable all options
+      const options = document.querySelectorAll('.test-option');
+      options.forEach(option => {
+        option.classList.add('disabled');
+      });
+
+      // Mark selected option
+      const selectedOption = document.querySelector(`[data-index="${optionIndex}"]`);
+      if (isCorrect) {
+        selectedOption.classList.add('correct');
+        if (!userAnswers[currentQuestionIndex]) {
+          correctAnswers++;
+        }
+      } else {
+        selectedOption.classList.add('incorrect');
+        // Show correct answer
+        options.forEach(option => {
+          if (option.textContent.trim() === testQuestions[currentQuestionIndex].answer) {
+            option.classList.add('correct');
+          }
+        });
+      }
+
+      // Record answer
+      userAnswers[currentQuestionIndex] = isCorrect;
+    }
+
+    // Navigate to next question
+    function nextQuestion() {
+      if (currentQuestionIndex < testQuestions.length - 1) {
+        currentQuestionIndex++;
+        displayQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    // Navigate to previous question
+    function previousQuestion() {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        displayQuestion();
+      }
+    }
+
+    // Update progress bar
+    function updateProgress() {
+      const progress = ((currentQuestionIndex + 1) / testQuestions.length) * 100;
+      document.getElementById('progressBar').style.width = `${progress}%`;
+    }
+
+    // Show test results
+    function showResults() {
+      const testContent = document.getElementById('testContent');
+      const testResults = document.getElementById('testResults');
+      
+      testContent.classList.remove('active');
+      testResults.classList.add('active');
+
+      const percentage = Math.round((correctAnswers / testQuestions.length) * 100);
+      
+      document.getElementById('resultsScore').textContent = `${correctAnswers}/${testQuestions.length}`;
+      
+      let message;
+      if (percentage >= 90) {
+        message = "Outstanding! You're ready for any data analyst interview! 🌟";
+      } else if (percentage >= 80) {
+        message = "Great job! You have a strong grasp of the concepts! 🎯";
+      } else if (percentage >= 70) {
+        message = "Good work! Review a few more topics and you'll be interview-ready! 📚";
+      } else if (percentage >= 60) {
+        message = "Not bad! Keep studying and you'll improve quickly! 💪";
+      } else {
+        message = "Keep practicing! Every expert was once a beginner! 🚀";
+      }
+      
+      document.getElementById('resultsMessage').textContent = message;
+    }
+
+    // Utility functions
+    function shuffleArray(array) {
+      const newArray = [...array];
+      for (let i = newArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+      }
+      return newArray;
+    }
+
+    function escapeHtml(text) {
+      const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+      };
+      return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    // Initialize on load
+    init();
+  </script>
+</body>
+</html>
