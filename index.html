@@ -753,6 +753,24 @@
         </div>
       </section>
 
+      <!-- COURSES SECTION -->
+      <section class="projects-section">
+        <h2 class="section-title glow">Learning & Development</h2>
+        <div class="projects-grid">
+          <div class="project-card">
+            <h3 class="project-title">Data Analytics Interview Prep</h3>
+            <p class="project-description">Comprehensive preparation materials and practice problems for landing your dream data analytics role. Covers SQL, Python, statistics, and real interview scenarios.</p>
+            <div class="project-tech">
+              <span class="tech-tag">SQL</span>
+              <span class="tech-tag">Python</span>
+              <span class="tech-tag">Statistics</span>
+              <span class="tech-tag">Interview Practice</span>
+            </div>
+            <a href="./data/" class="project-link">Start Learning <span class="arrow">→</span></a>
+          </div>
+        </div>
+      </section>
+
       <!-- SECRET SECTION -->
       <section class="secret-section">
         <h3 class="secret-title">🔐 Secret Area</h3>
@@ -778,7 +796,6 @@
 
   <script>
 // Secret password functionality
-// Secret password functionality
 function checkSecretPassword() {
   const input = document.getElementById('secretInput');
   const feedback = document.getElementById('secretFeedback');
@@ -792,15 +809,6 @@ function checkSecretPassword() {
     // Redirect after a short delay
     setTimeout(() => {
       window.location.href = './wrecky/';
-    }, 1500);
-  } else if (password === 'data') {
-    feedback.textContent = '📊 Access granted! Redirecting to data analyst prep...';
-    feedback.className = 'secret-feedback success';
-    feedback.style.display = 'block';
-    
-    // Redirect after a short delay
-    setTimeout(() => {
-      window.location.href = './data/';
     }, 1500);
   } else if (password === '') {
     feedback.style.display = 'none';
