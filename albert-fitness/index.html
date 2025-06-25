@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Albert's Daily Fitness Plan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
+            backdrop-filter: blur(15px);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.15) 100%);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            background: linear-gradient(45deg, #ff9a9e, #fecfef);
+            padding: 15px 25px;
+            border-radius: 15px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .day-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .day-section:hover {
+            transform: translateY(-5px);
+        }
+
+        .day-title {
+            font-size: 2rem;
+            margin-bottom: 25px;
+            color: #764ba2;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .sessions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .session-card {
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .morning-card {
+            background: linear-gradient(135deg, #ffd93d 0%, #ff9a9e 100%);
+        }
+
+        .midday-card {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        }
+
+        .evening-card {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%);
+        }
+
+        .rest-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #333;
+        }
+
+        .session-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .session-duration {
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .exercise-list {
+            list-style: none;
+        }
+
+        .exercise-list li {
+            background: rgba(255, 255, 255, 0.2);
+            margin: 6px 0;
+            padding: 10px 12px;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+            font-size: 0.95rem;
+        }
+
+        .exercise-list li strong {
+            color: #fff;
+        }
+
+        .rest-card .exercise-list li {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .rest-card .exercise-list li strong {
+            color: #333;
+        }
+
+        .tips-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .tips-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #764ba2;
+            text-align: center;
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .tip-card {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tip-card h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .daily-habits {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .daily-habits h3 {
+            color: #8b4513;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .habit-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+
+        .habit-list li {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #ff6b6b;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats {
+                gap: 15px;
+            }
+            
+            .sessions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .day-title {
+                font-size: 1.5rem;
+            }
+
+            .back-button {
+                position: relative;
+                top: auto;
+                left: auto;
+                margin-bottom: 20px;
+            }
+        }
+
+        .current-day {
+            border: 3px solid #ffd93d;
+            box-shadow: 0 8px 32px rgba(255, 217, 61, 0.3);
+        }
+
+        .rounds-info {
+            text-align: center;
+            font-style: italic;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <a href="../" class="back-button">← Back to Portfolio</a>
+    
+    <div class="container">
+        <div class="header">
+            <h1>💪 Albert's Daily Fitness Plan</h1>
+            <p><strong>Goal:</strong> Build functional strength, muscle mass, and mobility with minimal equipment</p>
+            <div class="stats">
+                <div class="stat-item">📏 Height: 1.77m</div>
+                <div class="stat-item">⚖️ Weight: 60kg</div>
+                <div class="stat-item">🎯 Focus: Progressive Overload</div>
+            </div>
+        </div>
+
+        <!-- MONDAY -->
+        <div class="day-section">
+            <div class="day-title">📅 MONDAY</div>
+            <div class="sessions-grid">
+                <div class="session-card morning-card">
+                    <div class="session-title">☀️ Morning - Full-Body Mobility</div>
+                    <div class="session-duration">10-15 minutes</div>
+                    <div class="rounds-info">2-3 rounds of:</div>
+                    <ul class="exercise-list">
+                        <li><strong>Cat-Cow Stretch:</strong> 10 reps</li>
+                        <li><strong>World's Greatest Stretch:</strong> 5 per side</li>
+                        <li><strong>Shoulder Dislocates (towel):</strong> 10 reps</li>
+                        <li><strong>90/90 Hip Transitions:</strong> 10 reps</li>
+                        <li><strong>Wrist Circles/Stretch:</strong> 30s per side</li>
+                        <li><strong>Scapular Pull-ups:</strong> 5-8 reps</li>
+                    </ul>
+                </div>
+                <div class="session-card midday-card">
+                    <div class="session-title">🌞 Midday - Push (Chest/Shoulders)</div>
+                    <div class="session-duration">15-20 minutes</div>
+                    <ul class="exercise-list">
+                        <li><strong>Push-ups:</strong> 3 sets to failure</li>
+                        <li><strong>Dumbbell Shoulder Press (5kg):</strong> 3 x 12-15</li>
+                        <li><strong>Doorway/Triceps Dips:</strong> 3 x 10-12</li>
+                        <li><strong>Pike Push-ups:</strong> 3 x 6-10</li>
+                        <li><strong>Wall Push-up Holds:</strong> 3 x 20s</li>
+                    </ul>
+                </div>
+                <div class="session-card evening-card">
+                    <div class="session-title">🌙 Evening - Core + Spine/Neck</div>
+                    <div class="session-duration">10-15 minutes</div>
+                    <div class="rounds-info">Core (3 rounds) + Stretches:</div>
+                    <ul class="exercise-list">
+                        <li><strong>Plank:</strong> 30-60s</li>
+                        <li><strong>Leg Raises:</strong> 10-15</li>
+                        <li><strong>Dead Bugs:</strong> 10 per side</li>
+                        <li><strong>Side Plank:</strong> 30s per side</li>
+                        <li><strong>Child's Pose:</strong> 1 min</li>
+                        <li><strong>Neck Rolls:</strong> 30s each direction</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- TUESDAY -->
+        <div class="day-section">
+            <div class="day-title">📅 TUESDAY</div>
+            <div class="sessions-grid">
+                <div class="session-card morning-card">
+                    <div class="session-title">☀️ Morning - Hip/Spine Mobility</div>
+                    <div class="session-duration">10-15 minutes</div>
+                    <div class="rounds-info">2-3 rounds of:</div>
+                    <ul class="exercise-list">
+                        <li><strong>Cat-Cow Stretch:</strong> 10 reps</li>
+                        <li><strong>World's Greatest Stretch:</strong> 8 per side</li>
+                        <li><strong>90/90 Hip Transitions:</strong> 12 reps</li>
+                        <li><strong>Hip Circles:</strong> 10 each direction</li>
+                        <li><strong>Spinal Twists:</strong> 8 per side</li>
+                        <li><strong>Wrist Stretch:</strong> 30s per side</li>
+                    </ul>
+                </div>
+                <div class="session-card midday-card">
+                    <div class="session-title">🌞 Midday - Pull (Back/Biceps)</div>
+                    <div class="session-duration">15-20 minutes</div>
+                    <ul class="exercise-list">
+                        <li><strong>Pull-ups/Chin-ups:</strong> 3-5 sets to failure</li>
+                        <li><strong>Dumbbell Rows (5kg):</strong> 3 x 15 per side</li>
+                        <li><strong>Isometric Door Row:</strong> 3 x 30s holds</li>
+                        <li><strong>Negative Pull-ups:</strong> 3 x slow descents</li>
+                    </ul>
+                </div>
+                <div class="session-card evening-card">
+                    <div class="session-title">🌙 Evening - Hamstrings + Glutes</div>
+                    <div class="session-duration">10-15 minutes</div>
+                    <ul class="exercise-list">
+                        <li><strong>Seated Forward Fold:</strong> 1 min</li>
+                        <li><strong>Standing Hamstring Stretch:</strong> 45s per leg</li>
+                        <li><strong>Pigeon Stretch:</strong> 45s per leg</li>
+                        <li><strong>Figure-4 Stretch:</strong> 45s per leg</li>
+                        <li><strong>Glute Bridge Hold:</strong> 30s x 3</li>
+                        <li><strong>Child's Pose:</strong> 1 min</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- WEDNESDAY -->
+        <div class="day-section">
+            <div class="day-title">📅 WEDNESDAY</div>
+            <div class="sessions-grid">
+                <div class="session-card morning-card">
+                    <div class="session-title">☀️ Morning - Shoulder Mobility</div>
+                    <div class="session-duration">10-15 minutes</div>
+                    <div class="rounds-info">2-3 rounds of:</div>
+                    <ul class="exercise-list">
+                        <li><strong>Shoulder Dislocates (towel):</strong> 12 reps</li>
+                        <li><strong>Arm Circles:</strong> 10 each direction</li>
+                        <li><strong>Wall Slides:</strong> 10 reps</li>
+                        <li><strong>Cross-body Shoulder Stretch:</strong> 30s per side</li>
+                        <li><strong>Overhead Reach:</strong> 30s hold</li>
+                        <li><strong>Cat-Cow Stretch:</strong> 8 reps</li>
+                    </ul>
+                </div>
+                <div class="session-card midday-card">
+                    <div class="session-title">🌞 Midday - Legs (Quads/Glutes)</div>
+                    <div class="session-duration">15-20 minutes</div>
+                    <ul class="exercise-list">
+                        <li><strong>Bodyweight Squats:</strong> 3 x 20</li>
+                        <li><strong>Bulgarian Split Squats:</strong> 3 x 8-10 per leg</li>
+                        <li><strong>Dumbbell Goblet Squats (5kg):</strong> 3 x 10-15</li>
+                        <li><strong>Hip Thrusts:</strong> 3 x 12</li>
+                        <li><strong>Wall Sit:</strong> 3 x 30-60s</li>
+                    </ul>
+                </div>
+                <div class="session-card evening-card">
+                    <div class="session-title">🌙 Evening - Core + Hip Flexors</div>
+                    <div class="session-duration">10-15 minutes</div>
+                    <div class="rounds-info">Core (3 rounds) + Stretches:</div>
+                    <ul class="exercise-list">
+                        <li><strong>Plank:</strong> 30-60s</li>
+                        <li><strong>Leg Raises:</strong> 10-15</li>
+                        <li><strong>Bird Dogs:</strong> 10 per side</li>
+                        <li><strong>Hollow Body Hold:</strong> 15-30s</li>
+                        <li><strong>Kneeling Hip Flexor Stretch:</strong> 45s per side</li>
+                        <li><strong>Standing Quad Stretch:</strong> 45s per side</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- THURSDAY -->
+        <div class="day-section">
+            <div class="day-title">📅 THURSDAY</div>
+            <div class="sessions-grid">
+                <div class="session-card morning-card">
+                    <div class="session-title">☀️ Morning - Full-Body Mobility</div>
+                    <div class="session-duration">10-15 minutes</div>
+                    <div class="rounds-info">2-3 rounds of:</div>
+                    <ul class="exercise-list">
+                        <li><strong>Cat-Cow Stretch:</strong> 10 reps</li>
+                        <li><strong>World's Greatest Stretch:</strong> 5 per side</li>
+                        <li><strong>Shoulder Dislocates (towel):</strong> 10 reps</li>
+                        <li><strong>90/90 Hip Transitions:</strong> 10 reps</li>
+                        <li><strong>Wrist Circles/Stretch:</strong> 30s per side</li>
+                        <li><strong>Scapular Pull-ups:</strong> 5-8 reps</li>
+                    </ul>
+                </div>
+                <div class="session-card midday-card">
+                    <div class="session-title">🌞 Midday - Push (Chest/Shoulders)</div>
+                    <div class="session-duration">15-20 minutes</div>
+                    <ul class="exercise-list">
+                        <li><strong>Push-ups:</strong> 3 sets to failure</li>
+                        <li><strong>Dumbbell Shoulder Press (5kg):</strong> 3 x 12-15</li>
+                        <li><strong>Doorway/Triceps Dips:</strong> 3 x 10-12</li>
+                        <li><strong>Pike Push-ups:</strong> 3 x 6-10</li>
+                        <li><strong>Wall Push-up Holds:</strong> 3 x 20s</li>
+                    </ul>
+                </div>
+                <div class="session-card evening-card">
+                    <div class="session-title">🌙 Evening - Spine + Lats</div>
+                    <div class="session-duration">10-15 minutes</div>
+                    <ul class="exercise-list">
+                        <li><strong>Downward Dog:</strong> 1 min</li>
+                        <li><strong>Wall Chest Stretch:</strong> 45s per side</li>
+                        <li><strong>Lat Stretch (doorway):</strong> 45s per side</li>
+                        <li><strong>Spinal Twist:</strong> 45s per side</li>
+                        <li><strong>Cat-Cow Stretch:</strong> 10 reps</li>
+                        <li><strong>Child's Pose:</strong> 1 min</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- FRIDAY -->
+        <div class="day-section">
+            <div class="day-title">📅 FRIDAY</div>
+            <div class="sessions-grid">
+                <div class="session-card morning-card">
+                    <div class="session-title">☀️ Morning - Hip/Spine Mobility</div>
+                    <div class="session-duration">10-15 minutes</div>
+                    <div class="rounds-info">2-3 rounds of:</div>
+                    <ul class="exercise-list">
+                        <li><strong>Cat-Cow Stretch:</strong> 10 reps</li>
+                        <li><strong>World's Greatest Stretch:</strong> 8 per side</li>
+                        <li><strong>90/90 Hip Transitions:</strong> 12 reps</li>
+                        <li><strong>Hip Circles:</strong> 10 each direction</li>
+                        <li><strong>Spinal Twists:</strong> 8 per side</li>
+                        <li><strong>Wrist Stretch:</strong> 30s per side</li>
+                    </ul>
+                </div>
+                <div class="session-card midday-card">
+                    <div class="session-title">🌞 Midday - Pull (Back/Biceps)</div>
+                    <div class="session-duration">15-20 minutes</div>
+                    <ul class="exercise-list">
+                        <li><strong>Pull-ups/Chin-ups:</strong> 3-5 sets to failure</li>
+                        <li><strong>Dumbbell Rows (5kg):</strong> 3 x 15 per side</li>
+                        <li><strong>Isometric Door Row:</strong> 3 x 30s holds</li>
+                        <li><strong>Negative Pull-ups:</strong> 3 x slow descents</li>
+                    </ul>
+                </div>
+                <div class="session-card evening-card">
+                    <div class="session-title">🌙 Evening - Core + Neck</div>
+                    <div class="session-duration">10-15 minutes</div>
+                    <div class="rounds-info">Core (3 rounds) + Stretches:</div>
+                    <ul class="exercise-list">
+                        <li><strong>Plank:</strong> 30-60s</li>
+                        <li><strong>Side Plank:</strong> 30s per side</li>
+                        <li><strong>Dead Bugs:</strong> 10 per side</li>
+                        <li><strong>Hollow Body Hold:</strong> 15-30s</li>
+                        <li><strong>Neck Rolls:</strong> 30s each direction</li>
+                        <li><strong>Upper Trap Stretch:</strong> 30s per side</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SATURDAY -->
+        <div class="day-section">
+            <div class="day-title">📅 SATURDAY</div>
+            <div class="sessions-grid">
+                <div class="session-card rest-card">
+                    <div class="session-title">☀️ Morning - Active Rest (Light)</div>
+                    <div class="session-duration">5-10 minutes</div>
+                    <ul class="exercise-list">
+                        <li><strong>Gentle Stretching:</strong> As needed</li>
+                        <li><strong>Light Walk:</strong> 5-10 minutes</li>
+                        <li><strong>Deep Breathing:</strong> 2-3 minutes</li>
+                        <li><strong>Joint Mobility:</strong> Gentle movements</li>
+                    </ul>
+                </div>
+                <div class="session-card rest-card">
+                    <div class="session-title">🌞 Midday - Optional Full-Body</div>
+                    <div class="session-duration">10-15 minutes (optional)</div>
+                    <ul class="exercise-list">
+                        <li><strong>Light Push-ups:</strong> 1-2 sets</li>
+                        <li><strong>Bodyweight Squats:</strong> 1-2 sets</li>
+                        <li><strong>Plank Hold:</strong> 30s</li>
+                        <li><strong>Light Stretching:</strong> 5 minutes</li>
+                    </ul>
+                </div>
+                <div class="session-card evening-card">
+                    <div class="session-title">🌙 Evening - Full-Body Stretch</div>
+                    <div class="session-duration">15-20 minutes</div>
+                    <ul class="exercise-list">
+                        <li><strong>Child's Pose:</strong> 2 min</li>
+                        <li><strong>Downward Dog:</strong> 1 min</li>
+                        <li><strong>Pigeon Stretch:</strong> 1 min per leg</li>
+                        <li><strong>Seated Forward Fold:</strong> 1 min</li>
+                        <li><strong>Spinal Twist:</strong> 1 min per side</li>
+                        <li><strong>Hip Flexor Stretch:</strong> 1 min per side</li>
+                        <li><strong>Neck/Shoulder Release:</strong> 2 min</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUNDAY -->
+        <div class="day-section">
+            <div class="day-title">📅 SUNDAY - REST DAY</div>
+            <div class="sessions-grid">
+                <div class="session-card rest-card">
+                    <div class="session-title">🧘 Optional - Rest or Yoga</div>
+                    <div class="session-duration">20-30 minutes (optional)</div>
+                    <ul class="exercise-list">
+                        <li><strong>Gentle Yoga Flow:</strong> 15-20 minutes</li>
+                        <li><strong>Meditation:</strong> 5-10 minutes</li>
+                        <li><strong>Light Walking:</strong> 10-15 minutes</li>
+                        <li><strong>Complete Rest:</strong> Your choice!</li>
+                        <li><strong>Meal Prep:</strong> Plan for the week</li>
+                        <li><strong>Recovery Focus:</strong> Sleep & hydration</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="tips-section">
+            <div class="tips-title">💡 Key Tips & Notes</div>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <h4>📈 Progression</h4>
+                    <p>Track your reps. When you hit 15-20 reps easily, make it harder: slower tempo, elevated feet, add weight.</p>
+                </div>
+                <div class="tip-card">
+                    <h4>🍎 Fuel & Rest</h4>
+                    <p>Increase calorie/protein intake to support muscle growth. Sleep is crucial for recovery.</p>
+                </div>
+                <div class="tip-card">
+                    <h4>🔄 Consistency</h4>
+                    <p>Small daily sessions beat intense sporadic workouts. Focus on building the habit.</p>
+                </div>
+                <div class="tip-card">
+                    <h4>⏰ Work Breaks</h4>
+                    <p>Every 45-60 minutes, stand up, stretch, or walk around for 1-2 minutes.</p>
+                </div>
+            </div>
+
+            <div class="daily-habits">
+                <h3>🧠 Bonus: Quick Daily Habits</h3>
+                <ul class="habit-list">
+                    <li>5-10 pull-ups every time you pass the bar</li>
+                    <li>20 squats while waiting for code to compile</li>
+                    <li>Shoulder rolls/wrist stretches during work</li>
+                    <li>Wall stretch or cat-cow before bed</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Highlight current day
+        const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+        const today = new Date().getDay();
+        const dayElements = document.querySelectorAll('.day-section');
+        
+        if (dayElements[today]) {
+            dayElements[today].classList.add('current-day');
+        }
+    </script>
+</body>
+</html>
