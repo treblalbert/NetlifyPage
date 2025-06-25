@@ -835,6 +835,15 @@ function checkSecretPassword() {
     setTimeout(() => {
       window.location.href = './albert-fitness/';
     }, 1500);
+  } else if (password === 'fitness') {
+    feedback.textContent = '🤖 Access granted! Redirecting to AI Fitness Trainer...';
+    feedback.className = 'secret-feedback success';
+    feedback.style.display = 'block';
+    
+    // Redirect after a short delay
+    setTimeout(() => {
+      window.location.href = './fitness/';
+    }, 1500);
   } else if (password === '') {
     feedback.style.display = 'none';
   } else {
