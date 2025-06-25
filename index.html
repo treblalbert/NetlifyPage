@@ -811,6 +811,7 @@
 
   <script>
 // Secret password functionality
+// Secret password functionality
 function checkSecretPassword() {
   const input = document.getElementById('secretInput');
   const feedback = document.getElementById('secretFeedback');
@@ -824,6 +825,15 @@ function checkSecretPassword() {
     // Redirect after a short delay
     setTimeout(() => {
       window.location.href = './wrecky/';
+    }, 1500);
+  } else if (password === 'albert_fitness') {
+    feedback.textContent = '💪 Access granted! Redirecting to fitness plan...';
+    feedback.className = 'secret-feedback success';
+    feedback.style.display = 'block';
+    
+    // Redirect after a short delay
+    setTimeout(() => {
+      window.location.href = './albert-fitness/';
     }, 1500);
   } else if (password === '') {
     feedback.style.display = 'none';
