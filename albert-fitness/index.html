@@ -634,6 +634,31 @@
         if (dayElements[today]) {
             dayElements[today].classList.add('current-day');
         }
+
+        // Add click functionality to exercises
+        document.addEventListener('DOMContentLoaded', function() {
+            const exerciseItems = document.querySelectorAll('.exercise-list li');
+            
+            exerciseItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // Extract exercise name from the text content
+                    const fullText = this.textContent;
+                    const strongElement = this.querySelector('strong');
+                    
+                    if (strongElement) {
+                        // Get the exercise name (remove the colon)
+                        let exerciseName = strongElement.textContent.replace(':', '').trim();
+                        
+                        // Create YouTube search query
+                        const searchQuery = encodeURIComponent(exerciseName + ' exercise tutorial how to');
+                        const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${searchQuery}`;
+                        
+                        // Open YouTube search in new tab
+                        window.open(youtubeSearchUrl, '_blank');
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
