@@ -355,7 +355,7 @@
         <!-- Login/Register Section -->
         <div class="app-section active" id="auth-section">
             <h2>Welcome to Fitness AI</h2>
-            <p>Sign in or create your account to get started</p>
+            <p>Enter your email to get started</p>
             
             <div id="login-form">
                 <div class="form-group">
@@ -363,18 +363,7 @@
                     <input type="email" id="email" placeholder="Enter your email">
                 </div>
                 
-                <div class="form-group">
-                    <label for="pin">4-Digit PIN</label>
-                    <div class="pin-container">
-                        <input type="password" class="pin-input" maxlength="1" id="pin1">
-                        <input type="password" class="pin-input" maxlength="1" id="pin2">
-                        <input type="password" class="pin-input" maxlength="1" id="pin3">
-                        <input type="password" class="pin-input" maxlength="1" id="pin4">
-                    </div>
-                </div>
-                
-                <button class="btn" onclick="login()">Sign In</button>
-                <button class="btn btn-secondary" onclick="register()">Create Account</button>
+                <button class="btn" onclick="loginWithEmail()">Continue</button>
             </div>
             
             <div id="message-area"></div>
@@ -619,85 +608,32 @@
             });
         }
 
-        // Authentication functions
-        async function register() {
-            const email = document.getElementById('email').value;
-            const pin = getPinValue();
+        // Authentication functions - Simplified Email Only
+        async function loginWithEmail() {
+            const email = document.getElementById('email').value.trim();
             
-            if (!email || pin.length !== 4) {
-                showMessage('Please enter a valid email and 4-digit PIN', 'error');
-                return;
-            }
-
-            // Validate email format
-            if (!email.includes('@')) {
+            if (!email || !email.includes('@')) {
                 showMessage('Please enter a valid email address', 'error');
                 return;
             }
 
             try {
-                // Create a stronger password that meets Supabase requirements
-                const password = `FitnessAI${pin}${email.split('@')[0]}2024!`;
-                
-                const { data, error } = await supabase.auth.signUp({
+                // Create a mock user object for email-only authentication
+                currentUser = {
+                    id: btoa(email).replace(/[^a-zA-Z0-9]/g, ''), // Simple ID from email
                     email: email,
-                    password: password,
-                    options: {
-                        data: {
-                            pin: pin,
-                            app_name: 'fitness_ai'
-                        },
-                        emailRedirectTo: 'https://albertfreeman.org/fitness-test/'
-                    }
-                });
-
-                if (error) {
-                    console.error('Registration error:', error);
-                    throw error;
-                }
+                    created_at: new Date().toISOString()
+                };
                 
-                // Check if email confirmation is required
-                if (data.user && !data.user.email_confirmed_at) {
-                    showMessage('Please check your email and click the confirmation link to complete registration.', 'success');
-                } else {
-                    showMessage('Account created successfully! Please sign in with the same email and PIN.', 'success');
-                }
-            } catch (error) {
-                console.error('Registration failed:', error);
-                showMessage(`Registration failed: ${error.message}`, 'error');
-            }
-        }
-
-        async function login() {
-            const email = document.getElementById('email').value;
-            const pin = getPinValue();
-            
-            if (!email || pin.length !== 4) {
-                showMessage('Please enter a valid email and 4-digit PIN', 'error');
-                return;
-            }
-
-            try {
-                // Use the same password generation logic as registration
-                const password = `FitnessAI${pin}${email.split('@')[0]}2024!`;
+                // Store in localStorage for session persistence
+                localStorage.setItem('fitness_ai_user', JSON.stringify(currentUser));
                 
-                const { data, error } = await supabase.auth.signInWithPassword({
-                    email: email,
-                    password: password
-                });
-
-                if (error) {
-                    console.error('Login error:', error);
-                    throw error;
-                }
+                showMessage('Welcome! Loading your profile...', 'success');
                 
-                if (data.user) {
-                    currentUser = data.user;
-                    await loadUserData();
-                    showApp();
-                } else {
-                    throw new Error('Login failed - no user data returned');
-                }
+                // Load user data and show app
+                await loadUserData();
+                showApp();
+                
             } catch (error) {
                 console.error('Login failed:', error);
                 showMessage(`Login failed: ${error.message}`, 'error');
@@ -705,27 +641,33 @@
         }
 
         async function logout() {
-            await supabase.auth.signOut();
+            // Clear localStorage and reset state
+            localStorage.removeItem('fitness_ai_user');
             currentUser = null;
             userProfile = null;
             userPreferences = null;
+            currentWorkoutPlan = null;
+            
+            // Reset form
+            document.getElementById('email').value = '';
+            
+            // Show auth section
             showSection('auth-section');
             document.getElementById('navigation').style.display = 'none';
         }
 
-        function getPinValue() {
-            return document.getElementById('pin1').value +
-                   document.getElementById('pin2').value +
-                   document.getElementById('pin3').value +
-                   document.getElementById('pin4').value;
-        }
-
         async function checkAuthState() {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-                currentUser = user;
-                await loadUserData();
-                showApp();
+            // Check if user is stored in localStorage
+            const storedUser = localStorage.getItem('fitness_ai_user');
+            if (storedUser) {
+                try {
+                    currentUser = JSON.parse(storedUser);
+                    await loadUserData();
+                    showApp();
+                } catch (error) {
+                    console.error('Error loading stored user:', error);
+                    localStorage.removeItem('fitness_ai_user');
+                }
             }
         }
 
@@ -734,11 +676,11 @@
             if (!currentUser) return;
 
             try {
-                // Load user profile
+                // Load user profile using email as identifier
                 const { data: profile } = await supabase
                     .from('user_profiles')
                     .select('*')
-                    .eq('user_id', currentUser.id)
+                    .eq('email', currentUser.email)
                     .single();
                 
                 if (profile) {
@@ -750,7 +692,7 @@
                 const { data: preferences } = await supabase
                     .from('user_preferences')
                     .select('*')
-                    .eq('user_id', currentUser.id)
+                    .eq('email', currentUser.email)
                     .single();
                 
                 if (preferences) {
@@ -762,7 +704,7 @@
                 const { data: workoutPlan } = await supabase
                     .from('workout_plans')
                     .select('*')
-                    .eq('user_id', currentUser.id)
+                    .eq('email', currentUser.email)
                     .order('created_at', { ascending: false })
                     .limit(1)
                     .single();
@@ -773,6 +715,7 @@
                 }
             } catch (error) {
                 console.error('Error loading user data:', error);
+                // This is normal for new users - no existing data yet
             }
         }
 
@@ -780,18 +723,19 @@
             if (!currentUser) return;
 
             const profileData = {
-                user_id: currentUser.id,
+                email: currentUser.email,
                 name: document.getElementById('userName').value,
                 job_type: document.getElementById('userJob').value,
                 height: parseInt(document.getElementById('userHeight').value),
                 weight: parseInt(document.getElementById('userWeight').value),
-                physical_condition: document.getElementById('userCondition').value
+                physical_condition: document.getElementById('userCondition').value,
+                updated_at: new Date().toISOString()
             };
 
             try {
                 const { error } = await supabase
                     .from('user_profiles')
-                    .upsert(profileData);
+                    .upsert(profileData, { onConflict: 'email' });
 
                 if (error) throw error;
                 
@@ -816,17 +760,18 @@
             });
 
             const preferencesData = {
-                user_id: currentUser.id,
+                email: currentUser.email,
                 fitness_goal: document.getElementById('fitnessGoal').value,
                 training_days: trainingDays,
                 session_time: parseInt(document.getElementById('sessionTime').value),
-                available_equipment: selectedEquipment
+                available_equipment: selectedEquipment,
+                updated_at: new Date().toISOString()
             };
 
             try {
                 const { error } = await supabase
                     .from('user_preferences')
-                    .upsert(preferencesData);
+                    .upsert(preferencesData, { onConflict: 'email' });
 
                 if (error) throw error;
                 
