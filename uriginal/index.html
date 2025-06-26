@@ -326,10 +326,6 @@
                     <label for="email">Email</label>
                     <input type="email" id="email" required placeholder="your@email.com">
                 </div>
-                <div id="usernameGroup" class="form-group hidden">
-                    <label for="username">Choose a Username</label>
-                    <input type="text" id="username" name="username" placeholder="creative_photographer">
-                </div>
                 <button type="submit" class="btn-primary" id="authBtn">Continue</button>
                 <div id="authError" class="error-msg"></div>
                 <div id="authSuccess" class="success-msg"></div>
@@ -381,16 +377,22 @@
 
         // Auth state management
         function checkAuth() {
-    const stored = localStorage.getItem('uriginal_user');
-    if (stored) {
-        const user = JSON.parse(stored);
-        currentUser = user;
-        showApp(user);
-    } else {
-        document.getElementById('authSection').classList.remove('hidden');
-        document.getElementById('appSection').classList.add('hidden');
-    }
-}
+            const stored = localStorage.getItem('uriginal_user');
+            if (stored) {
+                const user = JSON.parse(stored);
+                currentUser = user;
+                showApp(user);
+            } else {
+                document.getElementById('authSection').classList.remove('hidden');
+                document.getElementById('appSection').classList.add('hidden');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('uriginal_user');
+            location.reload();
+        }
+
 
 
         // Show app
@@ -405,50 +407,48 @@
 
         // Auth form handler - Simplified
         document.getElementById('authForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('email').value.trim().toLowerCase();
-    const username = document.getElementById('username').value.trim();
-    const errorDiv = document.getElementById('authError');
-    const authBtn = document.getElementById('authBtn');
+        e.preventDefault();
+        const email = document.getElementById('email').value.trim().toLowerCase();
+        const errorDiv = document.getElementById('authError');
+        const authBtn = document.getElementById('authBtn');
 
-    errorDiv.textContent = '';
-    authBtn.disabled = true;
-    authBtn.textContent = 'Working...';
+        errorDiv.textContent = '';
+        authBtn.disabled = true;
+        authBtn.textContent = 'Working...';
 
-    try {
-        // 1. Check if user already exists
-        const { data: user, error } = await supabaseClient
-            .from('uriginal_users')
-            .select('*')
-            .eq('email', email)
-            .single();
-
-        if (user) {
-            // User exists: "log them in"
-            localStorage.setItem('uriginal_user', JSON.stringify(user));
-            showApp(user);
-        } else {
-            // No user found: create new one
-            if (!username) throw new Error("Please choose a username");
-
-            const { data: newUser, error: insertError } = await supabaseClient
+        try {
+            // Check if user exists
+            const { data: user, error } = await supabaseClient
                 .from('uriginal_users')
-                .insert({ email, username })
-                .select()
+                .select('*')
+                .eq('email', email)
                 .single();
 
-            if (insertError) throw insertError;
+            if (user) {
+                // User exists — log them in
+                localStorage.setItem('uriginal_user', JSON.stringify(user));
+                showApp(user);
+            } else {
+                // Create new user with email as username
+                const { data: newUser, error: insertError } = await supabaseClient
+                    .from('uriginal_users')
+                    .insert({ email: email, username: email })
+                    .select()
+                    .single();
 
-            localStorage.setItem('uriginal_user', JSON.stringify(newUser));
-            showApp(newUser);
+                if (insertError) throw insertError;
+
+                localStorage.setItem('uriginal_user', JSON.stringify(newUser));
+                showApp(newUser);
+            }
+        } catch (error) {
+            errorDiv.textContent = error.message;
+        } finally {
+            authBtn.disabled = false;
+            authBtn.textContent = 'Continue';
         }
-    } catch (error) {
-        errorDiv.textContent = error.message;
-    } finally {
-        authBtn.disabled = false;
-        authBtn.textContent = 'Continue';
-    }
-});
+    });
+
 
 
 
@@ -678,13 +678,6 @@
                 console.error('Error toggling like:', error);
             }
         }
-
-        // Logout
-        function logout() {
-            localStorage.removeItem('uriginal_user');
-            location.reload();
-        }
-
 
         // Initialize on load
         window.addEventListener('load', () => {
