@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fitness AI - Your Personal Trainer</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/supabase-js/2.39.3/umd/supabase.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -546,14 +546,42 @@
         function initSupabase() {
             const supabaseUrl = 'https://yiqbppgelferacpuqfpx.supabase.co';
             const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpcWJwcGdlbGZlcmFjcHVxZnB4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA0MzY4MjgsImV4cCI6MjA2NjAxMjgyOH0.2ll0GZcQCNf_cXqcTqx--CardTx61BUqu-rUzPClbKc';
-            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+            
+            // Check if Supabase is loaded
+            if (typeof window.supabase === 'undefined') {
+                console.error('Supabase library not loaded. Check your internet connection and CDN.');
+                showMessage('Failed to load required libraries. Please refresh the page.', 'error');
+                return false;
+            }
+            
+            try {
+                supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+                return true;
+            } catch (error) {
+                console.error('Failed to initialize Supabase:', error);
+                showMessage('Failed to connect to database. Please check your configuration.', 'error');
+                return false;
+            }
         }
 
-        // Initialize app
+        // Initialize app with proper loading sequence
+        function initializeApp() {
+            if (initSupabase()) {
+                setupEventListeners();
+                checkAuthState();
+            } else {
+                // Retry after a short delay
+                setTimeout(() => {
+                    console.log('Retrying Supabase initialization...');
+                    initializeApp();
+                }, 1000);
+            }
+        }
+
+        // Wait for both DOM and scripts to load
         document.addEventListener('DOMContentLoaded', function() {
-            initSupabase();
-            setupEventListeners();
-            checkAuthState();
+            // Give scripts time to load
+            setTimeout(initializeApp, 500);
         });
 
         function setupEventListeners() {
