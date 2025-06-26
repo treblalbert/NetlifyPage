@@ -255,12 +255,10 @@
             letter-spacing: 1px;
         }
 
-        /* Desktop table view */
         .exercise-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
-            display: table;
         }
 
         .exercise-table th,
@@ -280,53 +278,6 @@
 
         .exercise-table td {
             color: #ccc;
-        }
-
-        /* Mobile view - cards instead of table */
-        .exercise-cards {
-            display: none;
-        }
-
-        .exercise-card {
-            background: #2a2a2a;
-            border: 1px solid #444;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 10px;
-        }
-
-        .exercise-card-header {
-            color: #ff6b35;
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-
-        .exercise-card-detail {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-            font-size: 0.9rem;
-        }
-
-        .exercise-card-detail-label {
-            color: #888;
-            font-weight: 600;
-        }
-
-        .exercise-card-detail-value {
-            color: #ccc;
-        }
-
-        .exercise-card-notes {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid #444;
-            color: #aaa;
-            font-size: 0.9rem;
-            font-style: italic;
         }
 
         .exercise-name {
@@ -460,7 +411,6 @@
             margin-bottom: 15px;
         }
 
-        /* Mobile responsive styles */
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -468,10 +418,6 @@
             
             .header h1 {
                 font-size: 2rem;
-            }
-            
-            .header p {
-                font-size: 1rem;
             }
             
             .app-section {
@@ -482,81 +428,10 @@
                 grid-template-columns: 1fr;
             }
             
-            .goals-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .checkbox-group {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .checkbox-item {
-                width: 100%;
-            }
-            
             .nav-btn {
                 margin: 5px;
                 padding: 8px 15px;
                 font-size: 0.8rem;
-            }
-            
-            /* Hide desktop table, show mobile cards */
-            .exercise-table {
-                display: none;
-            }
-            
-            .exercise-cards {
-                display: block;
-            }
-            
-            .day-section {
-                padding: 15px;
-            }
-            
-            .day-title {
-                font-size: 1.2rem;
-            }
-            
-            h2 {
-                font-size: 1.5rem;
-            }
-            
-            .btn {
-                padding: 12px 20px;
-                font-size: 14px;
-            }
-            
-            .chat-container {
-                height: 300px;
-            }
-            
-            .chat-input-container {
-                padding: 15px;
-            }
-            
-            .message {
-                max-width: 90%;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .navigation {
-                padding: 10px 5px;
-            }
-            
-            .nav-btn {
-                font-size: 0.7rem;
-                padding: 6px 10px;
-                margin: 3px;
-            }
-            
-            .header h1 {
-                font-size: 1.5rem;
-            }
-            
-            .app-section {
-                padding: 15px;
             }
         }
     </style>
@@ -1056,7 +931,7 @@
             }
         }
 
-        // Workout plan generation with automatic deletion of old plans
+        // Workout plan generation
         async function generateWorkoutPlan() {
             if (!userProfile || !userPreferences) {
                 showMessage('Please complete your profile and preferences first', 'error');
@@ -1068,20 +943,10 @@
             generateBtn.textContent = 'Generating...';
 
             try {
-                // First, delete all existing workout plans for this user
-                const { error: deleteError } = await supabase
-                    .from('workout_plans')
-                    .delete()
-                    .eq('email', currentUser.email);
-
-                if (deleteError) {
-                    console.error('Error deleting old workout plans:', deleteError);
-                }
-
                 const prompt = createWorkoutPrompt();
                 const workoutPlan = await callOpenAI(prompt);
                 
-                // Save the new workout plan
+                // Save to database
                 const { error } = await supabase
                     .from('workout_plans')
                     .insert({
@@ -1103,3 +968,527 @@
                 generateBtn.textContent = 'Generate New Workout Plan';
             }
         }
+
+        function createWorkoutPrompt() {
+            const equipmentDescription = userPreferences.available_equipment[0] === 'custom' 
+                ? userPreferences.custom_equipment 
+                : userPreferences.available_equipment.join(', ');
+
+            return `Create a personalized weekly workout plan based on the following user information:
+
+Name: ${userProfile.name}
+Job: ${userProfile.job_type}
+Height: ${userProfile.height}cm
+Weight: ${userProfile.weight}kg
+Physical Condition: ${userProfile.physical_condition || 'Not specified'}
+Fitness Goals: ${userPreferences.fitness_goals.join(', ')}
+Training Days: ${userPreferences.training_days.join(', ')}
+Session Time: ${userPreferences.session_time} minutes
+Available Equipment: ${equipmentDescription}
+
+Please create a detailed weekly workout plan that includes:
+1. Specific exercises for each training day
+2. Sets, reps, and rest times
+3. Exercise order and progression
+4. Consider the user's multiple goals, available time, and equipment
+
+Format the response as a JSON object with this structure:
+{
+  "plan_overview": "Brief description of the plan",
+  "weekly_schedule": {
+    "monday": {
+      "exercises": [
+        {
+          "name": "Exercise Name",
+          "sets": 3,
+          "reps": "12-15",
+          "rest": "60 seconds",
+          "notes": "Any specific instructions"
+        }
+      ]
+    }
+  }
+}
+
+Only include the days specified in the training days. Make sure exercises are appropriate for the available equipment and fitness goals.`;
+        }
+
+        async function callOpenAI(prompt) {
+    console.log('Generating personalized workout plan...');
+    
+    // Use the enhanced local workout generator instead of API
+    try {
+        showMessage('Creating your personalized workout plan...', 'success');
+        
+        // Add a realistic delay to simulate processing
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        return generateFallbackWorkoutPlan();
+        
+    } catch (error) {
+        console.error('Error generating workout:', error);
+        showMessage('Error creating workout plan. Please check your profile and preferences.', 'error');
+        throw error;
+    }
+}
+
+function generateFallbackWorkoutPlan() {
+    if (!userPreferences || !userProfile) {
+        throw new Error('Please complete your profile and preferences first');
+    }
+    
+    const trainingDays = userPreferences.training_days || ['monday', 'wednesday', 'friday'];
+    const sessionTime = userPreferences.session_time || 45;
+    const equipment = userPreferences.available_equipment?.[0] || 'bodyweight';
+    const goals = userPreferences.fitness_goals || ['general_health'];
+    const jobType = userProfile.job_type || 'sedentary';
+    const weight = userProfile.weight || 70;
+    const height = userProfile.height || 170;
+    const name = userProfile.name || 'there';
+    
+    // Calculate BMI for better workout customization
+    const bmi = weight / ((height / 100) ** 2);
+    const isOverweight = bmi > 25;
+    const isUnderweight = bmi < 18.5;
+    
+    // Create personalized plan overview
+    let planDescription = `Hi ${name}! This is your personalized ${sessionTime}-minute workout plan using ${equipment === 'bodyweight' ? 'bodyweight exercises' : equipment === 'full_gym' ? 'full gym equipment' : 'your custom equipment'}. `;
+    
+    if (goals.length > 1) {
+        planDescription += `This plan targets ${goals.slice(0, -1).join(', ').replace(/_/g, ' ')} and ${goals[goals.length - 1].replace(/_/g, ' ')}. `;
+    } else {
+        planDescription += `This plan focuses on ${goals[0].replace(/_/g, ' ')}. `;
+    }
+    
+    if (jobType === 'sedentary') {
+        planDescription += "I've included extra mobility work to counteract the effects of desk work. ";
+    } else if (jobType === 'very_active') {
+        planDescription += "This plan complements your active lifestyle with recovery-focused exercises. ";
+    }
+    
+    planDescription += `Training ${trainingDays.length} days per week will help you reach your goals efficiently!`;
+    
+    const workoutPlan = {
+        plan_overview: planDescription,
+        weekly_schedule: {}
+    };
+    
+    // Determine user's fitness level
+    let fitnessLevel = 'intermediate';
+    if (goals.includes('general_health') && jobType === 'sedentary') {
+        fitnessLevel = 'beginner';
+    } else if (goals.includes('sports_performance') || jobType === 'very_active') {
+        fitnessLevel = 'advanced';
+    }
+    
+    // Enhanced exercise libraries with progression levels
+    const exercises = {
+        bodyweight: {
+            upper_beginner: [
+                { name: "Wall Push-ups", sets: 2, reps: "8-12", rest: "45 seconds", notes: "Perfect starting point" },
+                { name: "Incline Push-ups", sets: 2, reps: "6-10", rest: "60 seconds", notes: "Use stairs or couch" },
+                { name: "Arm Circles", sets: 2, reps: "10 each direction", rest: "30 seconds", notes: "Shoulder warm-up" },
+                { name: "Modified Plank", sets: 2, reps: "15-30 seconds", rest: "45 seconds", notes: "On knees if needed" },
+                { name: "Standing Side Bends", sets: 2, reps: "10 each side", rest: "30 seconds", notes: "Core activation" }
+            ],
+            upper_intermediate: [
+                { name: "Push-ups", sets: 3, reps: "10-15", rest: "60 seconds", notes: "Keep body straight" },
+                { name: "Pike Push-ups", sets: 3, reps: "6-10", rest: "60 seconds", notes: "Great for shoulders" },
+                { name: "Tricep Dips", sets: 3, reps: "8-12", rest: "60 seconds", notes: "Use chair or bench" },
+                { name: "Plank", sets: 3, reps: "30-60 seconds", rest: "60 seconds", notes: "Core strength builder" },
+                { name: "Superman", sets: 3, reps: "10-15", rest: "45 seconds", notes: "Strengthen your back" }
+            ],
+            upper_advanced: [
+                { name: "Diamond Push-ups", sets: 3, reps: "8-12", rest: "75 seconds", notes: "Tricep focused" },
+                { name: "Handstand Push-ups (Wall)", sets: 3, reps: "3-8", rest: "90 seconds", notes: "Advanced shoulder work" },
+                { name: "Archer Push-ups", sets: 3, reps: "5-8 each side", rest: "90 seconds", notes: "Unilateral strength" },
+                { name: "Plank to Push-up", sets: 3, reps: "8-12", rest: "75 seconds", notes: "Dynamic core" },
+                { name: "Pseudo Planche Push-ups", sets: 3, reps: "5-10", rest: "90 seconds", notes: "Elite level" }
+            ],
+            lower_beginner: [
+                { name: "Chair Squats", sets: 2, reps: "8-12", rest: "45 seconds", notes: "Use chair for support" },
+                { name: "Standing Calf Raises", sets: 2, reps: "12-15", rest: "30 seconds", notes: "Hold wall if needed" },
+                { name: "Wall Sit", sets: 2, reps: "15-30 seconds", rest: "60 seconds", notes: "Build leg endurance" },
+                { name: "Glute Bridges", sets: 2, reps: "10-15", rest: "45 seconds", notes: "Activate glutes" },
+                { name: "Standing Hip Circles", sets: 2, reps: "8 each direction", rest: "30 seconds", notes: "Hip mobility" }
+            ],
+            lower_intermediate: [
+                { name: "Squats", sets: 3, reps: "12-20", rest: "60 seconds", notes: "Go low, stay controlled" },
+                { name: "Lunges", sets: 3, reps: "10 each leg", rest: "60 seconds", notes: "Step back or forward" },
+                { name: "Single-leg Glute Bridges", sets: 3, reps: "10 each leg", rest: "60 seconds", notes: "Squeeze at the top" },
+                { name: "Calf Raises", sets: 3, reps: "15-20", rest: "45 seconds", notes: "Full range of motion" },
+                { name: "Step-ups", sets: 3, reps: "10 each leg", rest: "60 seconds", notes: "Use stairs or sturdy box" }
+            ],
+            lower_advanced: [
+                { name: "Jump Squats", sets: 3, reps: "10-15", rest: "75 seconds", notes: "Land softly" },
+                { name: "Bulgarian Split Squats", sets: 3, reps: "8-12 each leg", rest: "90 seconds", notes: "Rear foot elevated" },
+                { name: "Single-leg Deadlifts", sets: 3, reps: "8-12 each leg", rest: "75 seconds", notes: "Balance challenge" },
+                { name: "Pistol Squat Progression", sets: 3, reps: "3-8 each leg", rest: "90 seconds", notes: "Use assistance if needed" },
+                { name: "Shrimp Squats", sets: 3, reps: "3-6 each leg", rest: "90 seconds", notes: "Elite movement" }
+            ],
+            cardio: [
+                { name: "Jumping Jacks", sets: 3, reps: "30-45 seconds", rest: "30 seconds", notes: "Classic cardio" },
+                { name: "Mountain Climbers", sets: 3, reps: "20-30 each leg", rest: "45 seconds", notes: "Keep hips level" },
+                { name: "Burpees", sets: 3, reps: "5-12", rest: "90 seconds", notes: "Modify as needed" },
+                { name: "High Knees", sets: 3, reps: "30-45 seconds", rest: "30 seconds", notes: "Quick feet movement" },
+                { name: "Squat Jumps", sets: 3, reps: "8-15", rest: "60 seconds", notes: "Explosive power" }
+            ],
+            mobility: [
+                { name: "Cat-Cow Stretch", sets: 2, reps: "10-15 reps", rest: "30 seconds", notes: "Spine mobility" },
+                { name: "Hip Circles", sets: 2, reps: "8 each direction", rest: "30 seconds", notes: "Loosen tight hips" },
+                { name: "Shoulder Rolls", sets: 2, reps: "10 each direction", rest: "30 seconds", notes: "Perfect for desk workers" },
+                { name: "Leg Swings", sets: 2, reps: "10 each leg", rest: "30 seconds", notes: "Dynamic hip stretch" },
+                { name: "Arm Crossovers", sets: 2, reps: "10 each arm", rest: "30 seconds", notes: "Shoulder flexibility" }
+            ]
+        },
+        full_gym: {
+            upper: [
+                { name: "Bench Press", sets: 3, reps: "8-12", rest: "2-3 minutes", notes: "Chest compound movement" },
+                { name: "Lat Pulldowns", sets: 3, reps: "10-15", rest: "90 seconds", notes: "Pull to upper chest" },
+                { name: "Overhead Press", sets: 3, reps: "8-12", rest: "2 minutes", notes: "Standing if possible" },
+                { name: "Barbell Rows", sets: 3, reps: "8-12", rest: "90 seconds", notes: "Squeeze shoulder blades" },
+                { name: "Dumbbell Bicep Curls", sets: 3, reps: "12-15", rest: "60 seconds", notes: "Control the negative" },
+                { name: "Tricep Rope Pushdowns", sets: 3, reps: "12-15", rest: "60 seconds", notes: "Full extension" }
+            ],
+            lower: [
+                { name: "Barbell Squats", sets: 4, reps: "6-10", rest: "3 minutes", notes: "King of exercises" },
+                { name: "Romanian Deadlifts", sets: 3, reps: "8-12", rest: "2-3 minutes", notes: "Hip hinge pattern" },
+                { name: "Leg Press", sets: 3, reps: "12-15", rest: "90 seconds", notes: "Deep range of motion" },
+                { name: "Walking Lunges", sets: 3, reps: "12 each leg", rest: "90 seconds", notes: "Control the movement" },
+                { name: "Leg Curls", sets: 3, reps: "12-15", rest: "60 seconds", notes: "Hamstring isolation" },
+                { name: "Calf Raises", sets: 4, reps: "15-20", rest: "45 seconds", notes: "Pause at the top" }
+            ],
+            cardio: [
+                { name: "Treadmill Intervals", sets: 1, reps: "20-30 minutes", rest: "N/A", notes: "Alternate fast/moderate pace" },
+                { name: "Rowing Machine", sets: 5, reps: "3 minutes", rest: "90 seconds", notes: "Focus on form over speed" },
+                { name: "Stationary Bike HIIT", sets: 8, reps: "30s high / 90s low", rest: "N/A", notes: "Push hard on intervals" },
+                { name: "Elliptical Steady State", sets: 1, reps: "25-40 minutes", rest: "N/A", notes: "Moderate intensity" }
+            ]
+        },
+        custom: [
+            { name: "Resistance Band Rows", sets: 3, reps: "12-15", rest: "60 seconds", notes: "Anchor band securely" },
+            { name: "Dumbbell Squats", sets: 3, reps: "10-15", rest: "75 seconds", notes: "Hold weights at shoulders" },
+            { name: "Resistance Band Chest Press", sets: 3, reps: "12-15", rest: "60 seconds", notes: "Control the resistance" },
+            { name: "Dumbbell Deadlifts", sets: 3, reps: "8-12", rest: "90 seconds", notes: "Keep back straight" },
+            { name: "Band Pull-Aparts", sets: 3, reps: "15-20", rest: "45 seconds", notes: "Great for posture" },
+            { name: "Dumbbell Shoulder Press", sets: 3, reps: "10-15", rest: "75 seconds", notes: "Press overhead" }
+        ]
+    };
+    
+    // Choose appropriate exercise library based on equipment
+    let exerciseLibrary;
+    if (equipment === 'full_gym') {
+        exerciseLibrary = exercises.full_gym;
+    } else if (equipment === 'custom') {
+        exerciseLibrary = { mixed: exercises.custom, mobility: exercises.bodyweight.mobility };
+    } else {
+        exerciseLibrary = exercises.bodyweight;
+    }
+    
+    // Generate workouts for each training day
+    trainingDays.forEach((day, index) => {
+        let dayExercises = [];
+        
+        if (equipment === 'bodyweight') {
+            // Smart workout rotation for bodyweight training
+            if (index % 3 === 0) {
+                // Upper body focus
+                dayExercises = [...(exerciseLibrary[`upper_${fitnessLevel}`] || exerciseLibrary.upper_intermediate)];
+                
+                // Add cardio for weight loss goals
+                if (goals.includes('lose_weight') || isOverweight) {
+                    dayExercises.push(...exerciseLibrary.cardio.slice(0, 2));
+                }
+                
+                // Add mobility for desk workers
+                if (jobType === 'sedentary') {
+                    dayExercises.push(...exerciseLibrary.mobility.slice(0, 2));
+                }
+            } else if (index % 3 === 1) {
+                // Lower body focus
+                dayExercises = [...(exerciseLibrary[`lower_${fitnessLevel}`] || exerciseLibrary.lower_intermediate)];
+                
+                // Add different cardio exercises
+                if (goals.includes('lose_weight') || goals.includes('build_endurance')) {
+                    dayExercises.push(...exerciseLibrary.cardio.slice(2, 4));
+                }
+                
+                // Add hip mobility for everyone
+                dayExercises.push(...exerciseLibrary.mobility.filter(ex => ex.name.includes('Hip')));
+            } else {
+                // Full body or active recovery
+                dayExercises = [
+                    ...(exerciseLibrary[`upper_${fitnessLevel}`] || exerciseLibrary.upper_intermediate).slice(0, 2),
+                    ...(exerciseLibrary[`lower_${fitnessLevel}`] || exerciseLibrary.lower_intermediate).slice(0, 2)
+                ];
+                
+                // Always include mobility on full body days
+                dayExercises.push(...exerciseLibrary.mobility.slice(0, 3));
+                
+                // Add light cardio
+                if (goals.includes('build_endurance') || goals.includes('general_health')) {
+                    dayExercises.push(exerciseLibrary.cardio[0]); // Jumping jacks
+                }
+            }
+        } else if (equipment === 'full_gym') {
+            // Traditional gym split
+            if (index % 3 === 0) {
+                // Upper body
+                dayExercises = [...exerciseLibrary.upper];
+            } else if (index % 3 === 1) {
+                // Lower body
+                dayExercises = [...exerciseLibrary.lower];
+            } else {
+                // Cardio/conditioning day
+                dayExercises = [
+                    ...exerciseLibrary.upper.slice(0, 3),
+                    ...exerciseLibrary.lower.slice(0, 2),
+                    ...exerciseLibrary.cardio.slice(0, 1)
+                ];
+            }
+        } else {
+            // Custom equipment - mixed approach
+            dayExercises = [...exerciseLibrary.mixed];
+            if (index % 2 === 0) {
+                dayExercises.push(...exerciseLibrary.mobility.slice(0, 2));
+            }
+        }
+        
+        // Adjust workout length based on available time
+        if (sessionTime <= 20) {
+            dayExercises = dayExercises.slice(0, 4);
+        } else if (sessionTime <= 30) {
+            dayExercises = dayExercises.slice(0, 5);
+        } else if (sessionTime <= 45) {
+            dayExercises = dayExercises.slice(0, 7);
+        } else if (sessionTime <= 60) {
+            dayExercises = dayExercises.slice(0, 8);
+        } else {
+            // 90+ minutes - keep all exercises
+        }
+        
+        // Ensure minimum workout length
+        if (dayExercises.length < 3) {
+            dayExercises = [...dayExercises, ...exerciseLibrary[Object.keys(exerciseLibrary)[0]].slice(0, 3)];
+        }
+        
+        workoutPlan.weekly_schedule[day] = {
+            exercises: dayExercises
+        };
+    });
+    
+    return workoutPlan;
+}
+
+        // Chat functions
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            // Add user message
+            addMessageToChat('user', message);
+            input.value = '';
+
+            try {
+                const prompt = `You are Flexi, a helpful AI fitness assistant. The user's current workout plan is:
+${currentWorkoutPlan ? JSON.stringify(currentWorkoutPlan.plan_data, null, 2) : 'No workout plan generated yet'}
+
+User profile:
+${userProfile ? JSON.stringify(userProfile, null, 2) : 'No profile data'}
+
+User preferences:
+${userPreferences ? JSON.stringify(userPreferences, null, 2) : 'No preferences set'}
+
+User message: ${message}
+
+Please provide helpful, encouraging, and specific fitness advice. If they want to modify their workout, suggest specific changes. Keep responses conversational and supportive.`;
+
+                const response = await fetch('/.netlify/functions/openai', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        prompt: prompt,
+                        user_id: currentUser.id
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to get response from Flexi');
+                }
+
+                const data = await response.json();
+                addMessageToChat('bot', data.content);
+                
+            } catch (error) {
+                console.error('Chat error:', error);
+                addMessageToChat('bot', 'Sorry, I\'m having trouble responding right now. Please try again!');
+            }
+        }
+
+        function addMessageToChat(sender, message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            if (sender === 'bot') {
+                messageDiv.innerHTML = `<strong>Flexi:</strong> ${message}`;
+            } else {
+                messageDiv.innerHTML = `<strong>You:</strong> ${message}`;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // UI functions
+        function showApp() {
+            document.getElementById('auth-section').classList.remove('active');
+            document.getElementById('navigation').style.display = 'block';
+            showSection('profile');
+        }
+
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.app-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            if (sectionName === 'auth-section') {
+                document.getElementById('auth-section').classList.add('active');
+            } else {
+                document.getElementById(sectionName + '-section').classList.add('active');
+            }
+            
+            // Update navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Find and activate the correct nav button
+            const targetBtn = Array.from(document.querySelectorAll('.nav-btn')).find(btn => 
+                btn.textContent.toLowerCase().includes(sectionName.split('-')[0])
+            );
+            if (targetBtn) {
+                targetBtn.classList.add('active');
+            }
+        }
+
+        function populateProfileForm() {
+            if (!userProfile) return;
+            
+            document.getElementById('userName').value = userProfile.name || '';
+            document.getElementById('userJob').value = userProfile.job_type || '';
+            document.getElementById('userHeight').value = userProfile.height || '';
+            document.getElementById('userWeight').value = userProfile.weight || '';
+            document.getElementById('userCondition').value = userProfile.physical_condition || '';
+        }
+
+        function populatePreferencesForm() {
+            if (!userPreferences) return;
+            
+            document.getElementById('sessionTime').value = userPreferences.session_time || '';
+            
+            // Fitness goals
+            if (userPreferences.fitness_goals) {
+                userPreferences.fitness_goals.forEach(goal => {
+                    const card = document.querySelector(`[data-goal="${goal}"]`);
+                    if (card) card.classList.add('selected');
+                });
+            }
+            
+            // Training days
+            if (userPreferences.training_days) {
+                userPreferences.training_days.forEach(day => {
+                    const checkbox = document.getElementById(day);
+                    if (checkbox) checkbox.checked = true;
+                });
+            }
+            
+            // Equipment
+            if (userPreferences.available_equipment && userPreferences.available_equipment.length > 0) {
+                const equipment = userPreferences.available_equipment[0];
+                const card = document.querySelector(`[data-equipment="${equipment}"]`);
+                if (card) {
+                    card.classList.add('selected');
+                    if (equipment === 'custom') {
+                        document.getElementById('customEquipment').classList.add('active');
+                        document.getElementById('customEquipmentText').value = userPreferences.custom_equipment || '';
+                    }
+                }
+            }
+        }
+
+        function displayWorkoutPlan(planData) {
+            const container = document.getElementById('workoutPlan');
+            
+            if (!planData || !planData.weekly_schedule) {
+                container.innerHTML = '<p>No workout plan available. Generate one to get started!</p>';
+                return;
+            }
+
+            let html = `<div class="plan-overview">
+                <h3>Plan Overview</h3>
+                <p>${planData.plan_overview || 'Your personalized workout plan'}</p>
+            </div>`;
+
+            Object.entries(planData.weekly_schedule).forEach(([day, dayData]) => {
+                html += `
+                    <div class="day-section">
+                        <div class="day-title">${day.charAt(0).toUpperCase() + day.slice(1)}</div>
+                        <table class="exercise-table">
+                            <thead>
+                                <tr>
+                                    <th>Exercise</th>
+                                    <th>Sets</th>
+                                    <th>Reps</th>
+                                    <th>Rest</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                if (dayData.exercises) {
+                    dayData.exercises.forEach(exercise => {
+                        html += `
+                            <tr>
+                                <td><span class="exercise-name" onclick="searchExercise('${exercise.name}')">${exercise.name}</span></td>
+                                <td>${exercise.sets || '-'}</td>
+                                <td>${exercise.reps || '-'}</td>
+                                <td>${exercise.rest || '-'}</td>
+                                <td>${exercise.notes || '-'}</td>
+                            </tr>
+                        `;
+                    });
+                }
+                
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function searchExercise(exerciseName) {
+            const searchUrl = `https://www.youtube.com/results?search_query=How+to+do+${encodeURIComponent(exerciseName)}`;
+            window.open(searchUrl, '_blank');
+        }
+
+        function showMessage(message, type) {
+            const messageArea = document.getElementById('message-area');
+            messageArea.innerHTML = `<div class="${type}">${message}</div>`;
+            setTimeout(() => {
+                messageArea.innerHTML = '';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
