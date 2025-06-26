@@ -377,16 +377,16 @@
 
         // Auth state management
         function checkAuth() {
-            const stored = localStorage.getItem('uriginal_user');
-            if (stored) {
-                const user = JSON.parse(stored);
-                currentUser = user;
-                showApp(user);
-            } else {
-                document.getElementById('authSection').classList.remove('hidden');
-                document.getElementById('appSection').classList.add('hidden');
-            }
+        const stored = localStorage.getItem('uriginal_user');
+        if (stored) {
+            const user = JSON.parse(stored);
+            currentUser = user; // Make sure this line exists
+            showApp(user);
+        } else {
+            document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('appSection').classList.add('hidden');
         }
+    }
 
         function logout() {
             localStorage.removeItem('uriginal_user');
@@ -427,6 +427,7 @@
             if (user) {
                 // User exists — log them in
                 localStorage.setItem('uriginal_user', JSON.stringify(user));
+                currentUser = user; // Add this line
                 showApp(user);
             } else {
                 // Create new user with email as username
@@ -439,6 +440,7 @@
                 if (insertError) throw insertError;
 
                 localStorage.setItem('uriginal_user', JSON.stringify(newUser));
+                currentUser = newUser; // Add this line
                 showApp(newUser);
             }
         } catch (error) {
@@ -448,9 +450,6 @@
             authBtn.textContent = 'Continue';
         }
     });
-
-
-
 
         // Load today's prompt
         async function loadTodayPrompt() {
@@ -506,12 +505,17 @@
 
         // Photo upload
         document.getElementById('photoInput').addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file || !currentPrompt) return;
-            
-            const statusDiv = document.getElementById('uploadStatus');
-            statusDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Uploading...</p></div>';
-            
+        const file = e.target.files[0];
+        if (!file || !currentPrompt) return;
+        
+        // Add this check
+        if (!currentUser || !currentUser.id) {
+            document.getElementById('uploadStatus').innerHTML = '<div class="error-msg">Please login first</div>';
+            return;
+        }
+        
+        const statusDiv = document.getElementById('uploadStatus');
+        statusDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Uploading...</p></div>';
             try {
                 // Check if user already posted today
                 const { data: existingPost } = await supabaseClient
