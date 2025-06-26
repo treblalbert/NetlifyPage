@@ -76,9 +76,6 @@ exports.handler = async (event, context) => {
 
         console.log('OpenAI API call successful');
 
-        // TODO: Log usage to Supabase for tracking
-        // You can add usage tracking here later
-
         return {
             statusCode: 200,
             headers: {

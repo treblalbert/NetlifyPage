@@ -1016,34 +1016,161 @@ Only include the days specified in the training days. Make sure exercises are ap
         async function callOpenAI(prompt) {
             console.log('Calling OpenAI function...');
             
-            const response = await fetch('/.netlify/functions/openai', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
+            // Since you're on a subdirectory, the function paths are different
+            const possiblePaths = [
+                '/.netlify/functions/openai',  // Standard Netlify path
+                '/api/openai',                 // Redirect path
+                '/.netlify/functions/fitness-openai'  // Custom name if needed
+            ];
+            
+            let lastError;
+            
+            for (const path of possiblePaths) {
+                try {
+                    console.log(`Trying path: ${path}`);
+                    
+                    const response = await fetch(path, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            prompt: prompt,
+                            user_id: currentUser.id
+                        })
+                    });
+
+                    console.log(`Response status for ${path}:`, response.status);
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('OpenAI response:', data);
+                        
+                        try {
+                            return JSON.parse(data.content);
+                        } catch (parseError) {
+                            console.error('Failed to parse JSON response:', data.content);
+                            return generateFallbackWorkoutPlan();
+                        }
+                    }
+                    
+                    const errorText = await response.text();
+                    console.error(`Error from ${path}:`, errorText);
+                    lastError = errorText;
+                    
+                } catch (error) {
+                    console.error(`Network error with path ${path}:`, error);
+                    lastError = error.message;
+                }
+            }
+            
+            // If all API calls fail, use fallback
+            console.log('All API paths failed, using fallback workout plan');
+            showMessage('Using offline workout generator (API unavailable)', 'success');
+            return generateFallbackWorkoutPlan();
+        }
+
+        // Add this fallback function to generate a basic workout plan when API fails
+        function generateFallbackWorkoutPlan() {
+            if (!userPreferences || !userProfile) {
+                throw new Error('User data required for workout plan generation');
+            }
+            
+            const trainingDays = userPreferences.training_days || ['monday', 'wednesday', 'friday'];
+            const sessionTime = userPreferences.session_time || 45;
+            const equipment = userPreferences.available_equipment?.[0] || 'bodyweight';
+            const goals = userPreferences.fitness_goals || ['general_health'];
+            
+            const workoutPlan = {
+                plan_overview: `A ${sessionTime}-minute ${equipment} workout plan focused on ${goals.join(', ')}. This is a balanced routine designed for your fitness level and available equipment.`,
+                weekly_schedule: {}
+            };
+            
+            // Define exercise libraries based on equipment
+            const exercises = {
+                bodyweight: {
+                    upper: [
+                        { name: "Push-ups", sets: 3, reps: "8-15", rest: "60 seconds", notes: "Modify on knees if needed" },
+                        { name: "Pike Push-ups", sets: 3, reps: "5-10", rest: "60 seconds", notes: "Targets shoulders" },
+                        { name: "Tricep Dips", sets: 3, reps: "8-12", rest: "60 seconds", notes: "Use chair or bench" },
+                        { name: "Plank", sets: 3, reps: "30-60 seconds", rest: "60 seconds", notes: "Keep core tight" }
+                    ],
+                    lower: [
+                        { name: "Squats", sets: 3, reps: "12-20", rest: "60 seconds", notes: "Focus on form" },
+                        { name: "Lunges", sets: 3, reps: "10 each leg", rest: "60 seconds", notes: "Alternate legs" },
+                        { name: "Single-leg Glute Bridges", sets: 3, reps: "10 each leg", rest: "60 seconds", notes: "Squeeze glutes" },
+                        { name: "Calf Raises", sets: 3, reps: "15-20", rest: "45 seconds", notes: "Slow and controlled" }
+                    ],
+                    cardio: [
+                        { name: "Jumping Jacks", sets: 3, reps: "30 seconds", rest: "30 seconds", notes: "High intensity" },
+                        { name: "Mountain Climbers", sets: 3, reps: "20 each leg", rest: "45 seconds", notes: "Keep hips level" },
+                        { name: "Burpees", sets: 3, reps: "5-10", rest: "90 seconds", notes: "Modify as needed" },
+                        { name: "High Knees", sets: 3, reps: "30 seconds", rest: "30 seconds", notes: "Quick feet" }
+                    ]
                 },
-                body: JSON.stringify({
-                    prompt: prompt,
-                    user_id: currentUser.id
-                })
+                full_gym: {
+                    upper: [
+                        { name: "Bench Press", sets: 3, reps: "8-12", rest: "90 seconds", notes: "Control the weight" },
+                        { name: "Lat Pulldowns", sets: 3, reps: "10-15", rest: "60 seconds", notes: "Pull to chest" },
+                        { name: "Shoulder Press", sets: 3, reps: "8-12", rest: "90 seconds", notes: "Full range of motion" },
+                        { name: "Bicep Curls", sets: 3, reps: "12-15", rest: "60 seconds", notes: "Slow negatives" }
+                    ],
+                    lower: [
+                        { name: "Squats", sets: 4, reps: "8-12", rest: "2 minutes", notes: "Go deep, stay tight" },
+                        { name: "Deadlifts", sets: 3, reps: "6-10", rest: "2 minutes", notes: "Keep back straight" },
+                        { name: "Leg Press", sets: 3, reps: "12-15", rest: "90 seconds", notes: "Full range of motion" },
+                        { name: "Leg Curls", sets: 3, reps: "12-15", rest: "60 seconds", notes: "Control the weight" }
+                    ],
+                    cardio: [
+                        { name: "Treadmill Run", sets: 1, reps: "20-30 minutes", rest: "N/A", notes: "Moderate pace" },
+                        { name: "Rowing Machine", sets: 4, reps: "5 minutes", rest: "2 minutes", notes: "Focus on form" },
+                        { name: "Bike Intervals", sets: 6, reps: "1 minute high, 2 minutes low", rest: "N/A", notes: "Push hard on intervals" }
+                    ]
+                }
+            };
+            
+            // Use bodyweight exercises as default fallback
+            const exerciseLibrary = exercises[equipment] || exercises.bodyweight;
+            
+            // Generate workouts for each training day
+            trainingDays.forEach((day, index) => {
+                let dayExercises = [];
+                
+                // Rotate workout types
+                if (index % 3 === 0) {
+                    // Upper body day
+                    dayExercises = [...exerciseLibrary.upper];
+                    if (goals.includes('lose_weight') || goals.includes('build_endurance')) {
+                        dayExercises.push(...exerciseLibrary.cardio.slice(0, 2));
+                    }
+                } else if (index % 3 === 1) {
+                    // Lower body day
+                    dayExercises = [...exerciseLibrary.lower];
+                    if (goals.includes('lose_weight') || goals.includes('build_endurance')) {
+                        dayExercises.push(...exerciseLibrary.cardio.slice(0, 2));
+                    }
+                } else {
+                    // Full body or cardio day
+                    dayExercises = [
+                        ...exerciseLibrary.upper.slice(0, 2),
+                        ...exerciseLibrary.lower.slice(0, 2),
+                        ...exerciseLibrary.cardio.slice(0, 2)
+                    ];
+                }
+                
+                // Adjust for session time
+                if (sessionTime <= 30) {
+                    dayExercises = dayExercises.slice(0, 4);
+                } else if (sessionTime <= 45) {
+                    dayExercises = dayExercises.slice(0, 6);
+                }
+                
+                workoutPlan.weekly_schedule[day] = {
+                    exercises: dayExercises
+                };
             });
-
-            console.log('Response status:', response.status);
             
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('OpenAI function error:', errorText);
-                throw new Error(`Failed to generate workout plan: ${response.status} - ${errorText}`);
-            }
-
-            const data = await response.json();
-            console.log('OpenAI response:', data);
-            
-            try {
-                return JSON.parse(data.content);
-            } catch (parseError) {
-                console.error('Failed to parse JSON response:', data.content);
-                throw new Error('Invalid response format from AI');
-            }
+            return workoutPlan;
         }
 
         // Chat functions
