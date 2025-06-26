@@ -505,71 +505,78 @@
 
         // Photo upload
         document.getElementById('photoInput').addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (!file || !currentPrompt) return;
+    const file = e.target.files[0];
+    if (!file || !currentPrompt) return;
+    
+    const statusDiv = document.getElementById('uploadStatus');
+    statusDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Uploading...</p></div>';
+    
+    try {
+        // Check if user already posted today
+        const { data: existingPost } = await supabaseClient
+            .from('uriginal_posts')
+            .select('*')
+            .eq('user_id', currentUser.id)
+            .eq('prompt_id', currentPrompt.id)
+            .single();
         
-        // Add this check
-        if (!currentUser || !currentUser.id) {
-            document.getElementById('uploadStatus').innerHTML = '<div class="error-msg">Please login first</div>';
+        if (existingPost) {
+            statusDiv.innerHTML = '<div class="error-msg">You already posted for today\'s theme!</div>';
             return;
         }
         
-        const statusDiv = document.getElementById('uploadStatus');
-        statusDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Uploading...</p></div>';
-            try {
-                // Check if user already posted today
-                const { data: existingPost } = await supabaseClient
-                    .from('uriginal_posts')
-                    .select('*')
-                    .eq('user_id', currentUser.id)
-                    .eq('prompt_id', currentPrompt.id)
-                    .single();
-                
-                if (existingPost) {
-                    statusDiv.innerHTML = '<div class="error-msg">You already posted for today\'s theme!</div>';
-                    return;
-                }
-                
-                // Upload to Supabase Storage
-                const fileName = `${currentUser.id}-${Date.now()}.${file.name.split('.').pop()}`;
-                const { data: uploadData, error: uploadError } = await supabaseClient.storage
-                    .from('uriginal-photos')
-                    .upload(fileName, file);
-                
-                if (uploadError) {
-                    if (uploadError.message.includes('bucket')) {
-                        statusDiv.innerHTML = '<div class="error-msg">Storage bucket not configured. Please create a "uriginal-photos" bucket in Supabase.</div>';
-                        return;
-                    }
-                    throw uploadError;
-                }
-                
-                // Get public URL
-                const { data: { publicUrl } } = supabaseClient.storage
-                    .from('uriginal-photos')
-                    .getPublicUrl(fileName);
-                
-                // Save post to database
-                const { error: postError } = await supabaseClient
-                    .from('uriginal_posts')
-                    .insert({
-                        user_id: currentUser.id,
-                        prompt_id: currentPrompt.id,
-                        image_url: publicUrl
-                    });
-                
-                if (postError) throw postError;
-                
-                statusDiv.innerHTML = '<div class="success-msg">Photo uploaded successfully!</div>';
-                setTimeout(() => {
-                    statusDiv.innerHTML = '';
-                    loadPosts();
-                }, 2000);
-                
-            } catch (error) {
-                statusDiv.innerHTML = `<div class="error-msg">Error: ${error.message}</div>`;
-            }
-        });
+        // First check if bucket exists
+        const { data: buckets, error: bucketError } = await supabaseClient.storage
+            .listBuckets();
+        
+        if (bucketError || !buckets.some(b => b.name === 'uriginal-photos')) {
+            statusDiv.innerHTML = `
+                <div class="error-msg">
+                    Storage bucket not configured. Please create a "uriginal-photos" bucket in Supabase Storage.
+                    <br><br>
+                    <a href="https://app.supabase.com/project/_/storage/buckets" target="_blank" style="color: white; text-decoration: underline;">
+                        Go to Storage Settings
+                    </a>
+                </div>
+            `;
+            return;
+        }
+        
+        // Upload to Supabase Storage
+        const fileName = `${currentUser.id}-${Date.now()}.${file.name.split('.').pop()}`;
+        const { data: uploadData, error: uploadError } = await supabaseClient.storage
+            .from('uriginal-photos')
+            .upload(fileName, file);
+        
+        if (uploadError) throw uploadError;
+        
+        // Get public URL
+        const { data: { publicUrl } } = supabaseClient.storage
+            .from('uriginal-photos')
+            .getPublicUrl(fileName);
+        
+        // Save post to database
+        const { error: postError } = await supabaseClient
+            .from('uriginal_posts')
+            .insert({
+                user_id: currentUser.id,
+                prompt_id: currentPrompt.id,
+                image_url: publicUrl
+            });
+        
+        if (postError) throw postError;
+        
+        statusDiv.innerHTML = '<div class="success-msg">Photo uploaded successfully!</div>';
+        setTimeout(() => {
+            statusDiv.innerHTML = '';
+            loadPosts();
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Upload error:', error);
+        statusDiv.innerHTML = `<div class="error-msg">Error: ${error.message}</div>`;
+    }
+});
 
         // Load posts
         async function loadPosts() {
