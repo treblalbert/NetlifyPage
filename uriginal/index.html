@@ -380,39 +380,18 @@
         let needsUsername = false;
 
         // Auth state management
-        async function checkAuth() {
-            try {
-                const { data: { user } } = await supabaseClient.auth.getUser();
-                if (user) {
-                    currentUser = user;
-                    const { data: profile } = await supabaseClient
-                        .from('uriginal_users')
-                        .select('*')
-                        .eq('id', user.id)
-                        .single();
-                    
-                    if (profile) {
-                        showApp(profile);
-                    } else {
-                        // Need to complete profile
-                        needsUsername = true;
-                        document.getElementById('authSection').classList.remove('hidden');
-                        document.getElementById('appSection').classList.add('hidden');
-                        document.getElementById('usernameGroup').classList.remove('hidden');
-                        document.getElementById('username').setAttribute('required', 'true'); // ← Add this line
-                        document.getElementById('authTitle').textContent = 'Choose a username to complete setup';
-                        document.getElementById('authBtn').textContent = 'Complete Setup';
-                        document.getElementById('email').value = user.email;
-                        document.getElementById('email').disabled = true;
-                    }
-                } else {
-                    document.getElementById('authSection').classList.remove('hidden');
-                    document.getElementById('appSection').classList.add('hidden');
-                }
-            } catch (error) {
-                console.error('Auth check error:', error);
-            }
-        }
+        function checkAuth() {
+    const stored = localStorage.getItem('uriginal_user');
+    if (stored) {
+        const user = JSON.parse(stored);
+        currentUser = user;
+        showApp(user);
+    } else {
+        document.getElementById('authSection').classList.remove('hidden');
+        document.getElementById('appSection').classList.add('hidden');
+    }
+}
+
 
         // Show app
         function showApp(profile) {
@@ -426,48 +405,51 @@
 
         // Auth form handler - Simplified
         document.getElementById('authForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('email').value;
-        const username = document.getElementById('username').value;
-        const errorDiv = document.getElementById('authError');
-        const authBtn = document.getElementById('authBtn');
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim().toLowerCase();
+    const username = document.getElementById('username').value.trim();
+    const errorDiv = document.getElementById('authError');
+    const authBtn = document.getElementById('authBtn');
 
-        errorDiv.textContent = '';
-        authBtn.disabled = true;
-        authBtn.textContent = 'Working...';
+    errorDiv.textContent = '';
+    authBtn.disabled = true;
+    authBtn.textContent = 'Working...';
 
-        const TEST_PASSWORD = '123456';
+    try {
+        // 1. Check if user already exists
+        const { data: user, error } = await supabaseClient
+            .from('uriginal_users')
+            .select('*')
+            .eq('email', email)
+            .single();
 
-        try {
-            // Try to sign in with password
-            const { data, error } = await supabaseClient.auth.signInWithPassword({
-                email,
-                password: TEST_PASSWORD,
-            });
+        if (user) {
+            // User exists: "log them in"
+            localStorage.setItem('uriginal_user', JSON.stringify(user));
+            showApp(user);
+        } else {
+            // No user found: create new one
+            if (!username) throw new Error("Please choose a username");
 
-            if (error && error.message.includes("Invalid login credentials")) {
-                // Try to sign up if user doesn't exist
-                const { data: signUpData, error: signUpError } = await supabaseClient.auth.signUp({
-                    email,
-                    password: TEST_PASSWORD,
-                });
+            const { data: newUser, error: insertError } = await supabaseClient
+                .from('uriginal_users')
+                .insert({ email, username })
+                .select()
+                .single();
 
-                if (signUpError) throw signUpError;
-                // Continue as normal, you might want to wait a moment for auth session to be valid
-                setTimeout(checkAuth, 1000);
-            } else if (error) {
-                throw error;
-            } else {
-                // Login successful
-                checkAuth();
-            }
-        } catch (error) {
-            errorDiv.textContent = error.message;
-        } finally {
-            authBtn.disabled = false;
-            authBtn.textContent = 'Continue';
+            if (insertError) throw insertError;
+
+            localStorage.setItem('uriginal_user', JSON.stringify(newUser));
+            showApp(newUser);
         }
-    });
+    } catch (error) {
+        errorDiv.textContent = error.message;
+    } finally {
+        authBtn.disabled = false;
+        authBtn.textContent = 'Continue';
+    }
+});
+
 
 
         // Load today's prompt
@@ -698,10 +680,11 @@
         }
 
         // Logout
-        async function logout() {
-            await supabaseClient.auth.signOut();
+        function logout() {
+            localStorage.removeItem('uriginal_user');
             location.reload();
         }
+
 
         // Initialize on load
         window.addEventListener('load', () => {
