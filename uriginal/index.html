@@ -67,6 +67,14 @@
             border: 2px solid #333;
         }
 
+        .prompt-category {
+            font-size: 1em;
+            opacity: 0.7;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #AAAAAA;
+        }
+
         .prompt-word {
             font-size: 2.5em;
             font-weight: 900;
@@ -161,7 +169,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         .username {
@@ -170,34 +178,93 @@
             font-size: 1.1em;
         }
 
-        .like-section {
+        /* Rating Slider Styles */
+        .rating-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+            min-width: 120px;
+        }
+
+        .rating-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .average-rating {
+            font-size: 1.3em;
+            font-weight: 800;
+            color: #0F0F0F;
+        }
+
+        .rating-count {
+            font-size: 0.85em;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .rating-slider-container {
             display: flex;
             align-items: center;
             gap: 10px;
+            margin-top: 5px;
         }
 
-        .like-btn {
-            background: none;
-            border: none;
+        .rating-slider {
+            width: 100px;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #E0E0E0;
+            border-radius: 3px;
+            outline: none;
             cursor: pointer;
-            font-size: 1.5em;
             transition: all 0.3s ease;
-            padding: 5px;
+        }
+
+        .rating-slider:hover {
+            background: #D0D0D0;
+        }
+
+        .rating-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #0F0F0F;
+            cursor: pointer;
             border-radius: 50%;
+            transition: all 0.3s ease;
         }
 
-        .like-btn:hover {
+        .rating-slider::-webkit-slider-thumb:hover {
             transform: scale(1.2);
-            background: rgba(0,0,0,0.05);
+            background: #2A2A2A;
         }
 
-        .like-btn.liked {
-            color: #FF3B30;
+        .rating-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: #0F0F0F;
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+            transition: all 0.3s ease;
         }
 
-        .like-count {
-            font-weight: 700;
+        .rating-slider::-moz-range-thumb:hover {
+            transform: scale(1.2);
+            background: #2A2A2A;
+        }
+
+        .user-rating-value {
+            font-size: 0.9em;
+            font-weight: 600;
             color: #0F0F0F;
+            min-width: 20px;
+            text-align: center;
         }
 
         .form-group {
@@ -404,6 +471,7 @@
         <div id="appSection" class="app-section hidden">
             <div class="prompt-card">
                 <p>Today's Theme:</p>
+                <div class="prompt-category" id="promptCategory"></div>
                 <div class="prompt-word" id="promptWord">Loading...</div>
                 <div class="time-remaining" id="timeRemaining"></div>
             </div>
@@ -441,6 +509,130 @@
 
         let currentUser = null;
         let currentPrompt = null;
+
+        // Themes data
+        const themes = [
+            // Everyday Life Themes
+            { category: "🔍 Everyday Life", prompt: "Morning routine" },
+            { category: "🔍 Everyday Life", prompt: "What's in your bag" },
+            { category: "🔍 Everyday Life", prompt: "Your shoes" },
+            { category: "🔍 Everyday Life", prompt: "Favorite mug" },
+            { category: "🔍 Everyday Life", prompt: "Messy desk" },
+            { category: "🔍 Everyday Life", prompt: "Bedhead" },
+            { category: "🔍 Everyday Life", prompt: "Lunchtime" },
+            { category: "🔍 Everyday Life", prompt: "Commute" },
+            { category: "🔍 Everyday Life", prompt: "Your street" },
+            { category: "🔍 Everyday Life", prompt: "View from your window" },
+            // Environment-Based
+            { category: "🌍 Environment", prompt: "Something green" },
+            { category: "🌍 Environment", prompt: "Weather right now" },
+            { category: "🌍 Environment", prompt: "Nature near you" },
+            { category: "🌍 Environment", prompt: "Urban jungle" },
+            { category: "🌍 Environment", prompt: "A sign you see daily" },
+            { category: "🌍 Environment", prompt: "Somewhere peaceful" },
+            { category: "🌍 Environment", prompt: "A nearby tree" },
+            { category: "🌍 Environment", prompt: "Water source" },
+            { category: "🌍 Environment", prompt: "Local architecture" },
+            { category: "🌍 Environment", prompt: "Reflection" },
+            // Interpretative Concepts
+            { category: "🧠 Concepts", prompt: "Joy" },
+            { category: "🧠 Concepts", prompt: "Chaos" },
+            { category: "🧠 Concepts", prompt: "Routine" },
+            { category: "🧠 Concepts", prompt: "Growth" },
+            { category: "🧠 Concepts", prompt: "Contrast" },
+            { category: "🧠 Concepts", prompt: "Time" },
+            { category: "🧠 Concepts", prompt: "Balance" },
+            { category: "🧠 Concepts", prompt: "Space" },
+            { category: "🧠 Concepts", prompt: "Connection" },
+            { category: "🧠 Concepts", prompt: "Freedom" },
+            // Creative Prompts
+            { category: "🎨 Creative", prompt: "Black and white only" },
+            { category: "🎨 Creative", prompt: "Mirror selfie" },
+            { category: "🎨 Creative", prompt: "Shadow play" },
+            { category: "🎨 Creative", prompt: "Color of the day" },
+            { category: "🎨 Creative", prompt: "Symmetry" },
+            { category: "🎨 Creative", prompt: "Opposites" },
+            { category: "🎨 Creative", prompt: "Minimalism" },
+            { category: "🎨 Creative", prompt: "Texture close-up" },
+            { category: "🎨 Creative", prompt: "Hidden face" },
+            { category: "🎨 Creative", prompt: "Double exposure" },
+            // Food & Drink
+            { category: "🍕 Food & Drink", prompt: "Your snack" },
+            { category: "🍕 Food & Drink", prompt: "Breakfast" },
+            { category: "🍕 Food & Drink", prompt: "Favorite drink" },
+            { category: "🍕 Food & Drink", prompt: "Kitchen vibes" },
+            { category: "🍕 Food & Drink", prompt: "Restaurant moment" },
+            { category: "🍕 Food & Drink", prompt: "Grocery cart" },
+            { category: "🍕 Food & Drink", prompt: "Food prep" },
+            { category: "🍕 Food & Drink", prompt: "Street food" },
+            { category: "🍕 Food & Drink", prompt: "Something sweet" },
+            { category: "🍕 Food & Drink", prompt: "Weird food combo" },
+            // Emotions & Mood
+            { category: "🎭 Emotions", prompt: "What makes you laugh" },
+            { category: "🎭 Emotions", prompt: "A calming moment" },
+            { category: "🎭 Emotions", prompt: "Something frustrating" },
+            { category: "🎭 Emotions", prompt: "Surprise!" },
+            { category: "🎭 Emotions", prompt: "Self-care time" },
+            { category: "🎭 Emotions", prompt: "Feeling grateful" },
+            { category: "🎭 Emotions", prompt: "Mood in a color" },
+            { category: "🎭 Emotions", prompt: "Caught in the rain" },
+            { category: "🎭 Emotions", prompt: "Alone time" },
+            { category: "🎭 Emotions", prompt: "Mid-chaos" },
+            // People & Social
+            { category: "🧍 People", prompt: "Stranger moment" },
+            { category: "🧍 People", prompt: "Hug" },
+            { category: "🧍 People", prompt: "Family" },
+            { category: "🧍 People", prompt: "Group photo" },
+            { category: "🧍 People", prompt: "Someone smiling" },
+            { category: "🧍 People", prompt: "Silhouette" },
+            { category: "🧍 People", prompt: "Reflection with someone" },
+            { category: "🧍 People", prompt: "Childhood photo recreation" },
+            { category: "🧍 People", prompt: "Hand gestures" },
+            { category: "🧍 People", prompt: "Matching outfits" },
+            // Tech & Media
+            { category: "💻 Tech", prompt: "Your screen" },
+            { category: "💻 Tech", prompt: "Digital clutter" },
+            { category: "💻 Tech", prompt: "Cables everywhere" },
+            { category: "💻 Tech", prompt: "Keyboard view" },
+            { category: "💻 Tech", prompt: "What you're watching" },
+            { category: "💻 Tech", prompt: "App you use most" },
+            { category: "💻 Tech", prompt: "Your wallpaper" },
+            { category: "💻 Tech", prompt: "Old tech" },
+            { category: "💻 Tech", prompt: "Photo within a photo" },
+            { category: "💻 Tech", prompt: "Screenshot of the day" }
+        ];
+
+        // Function to get a random theme avoiding recent ones
+        async function getRandomTheme() {
+            const today = new Date();
+            const weekAgo = new Date(today);
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            
+            try {
+                // Get prompts from last 7 days
+                const { data: recentPrompts, error } = await supabaseClient
+                    .from('uriginal_prompts')
+                    .select('word')
+                    .gte('prompt_date', weekAgo.toISOString().split('T')[0]);
+                
+                if (error) throw error;
+                
+                // Filter out recent prompts
+                const recentWords = recentPrompts ? recentPrompts.map(p => p.word) : [];
+                const availableThemes = themes.filter(theme => !recentWords.includes(theme.prompt));
+                
+                // If all themes were used in the last week, use all themes
+                const themePool = availableThemes.length > 0 ? availableThemes : themes;
+                
+                // Select random theme
+                const randomTheme = themePool[Math.floor(Math.random() * themePool.length)];
+                return randomTheme;
+            } catch (error) {
+                console.error('Error getting random theme:', error);
+                // Fallback to random theme
+                return themes[Math.floor(Math.random() * themes.length)];
+            }
+        }
 
         // Auth state management
         function checkAuth() {
@@ -548,9 +740,25 @@
                 if (prompt) {
                     currentPrompt = prompt;
                     document.getElementById('promptWord').textContent = prompt.word;
+                    // Find and display category
+                    const theme = themes.find(t => t.prompt === prompt.word);
+                    if (theme) {
+                        document.getElementById('promptCategory').textContent = theme.category;
+                    }
                 } else {
-                    document.getElementById('promptWord').textContent = 'No prompt today';
-                    console.log('No prompt found for today:', today);
+                    // Create today's prompt
+                    const newTheme = await getRandomTheme();
+                    const { data: newPrompt, error: createError } = await supabaseClient
+                        .from('uriginal_prompts')
+                        .insert({ word: newTheme.prompt, prompt_date: today })
+                        .select()
+                        .single();
+                    
+                    if (createError) throw createError;
+                    
+                    currentPrompt = newPrompt;
+                    document.getElementById('promptWord').textContent = newTheme.prompt;
+                    document.getElementById('promptCategory').textContent = newTheme.category;
                 }
                 loadPosts();
             } catch (error) {
@@ -679,22 +887,22 @@
             }
         }
 
-        // Load posts
+        // Load posts with ratings
         async function loadPosts() {
             if (!currentPrompt) return;
             
             const grid = document.getElementById('postsGrid');
             
             try {
-                // Try the RPC function first
+                // Get posts with ratings
                 const { data: posts, error } = await supabaseClient
-                    .rpc('get_posts_with_likes', { 
+                    .rpc('get_posts_with_ratings', { 
                         prompt_uuid: currentPrompt.id, 
                         user_uuid: currentUser ? currentUser.id : null 
                     });
                 
                 if (error) {
-                    console.error('RPC error, falling back to regular query:', error);
+                    console.error('RPC error:', error);
                     // Fallback to regular query
                     const { data: fallbackPosts, error: fallbackError } = await supabaseClient
                         .from('uriginal_posts')
@@ -711,17 +919,24 @@
                         return;
                     }
                     
-                    // Transform fallback data to match expected format
+                    // Transform fallback data
                     const transformedPosts = fallbackPosts.map(post => ({
                         ...post,
                         username: post.uriginal_users.username,
-                        like_count: 0,
-                        user_liked: false
+                        average_rating: 0,
+                        rating_count: 0,
+                        user_rating: null
                     }));
                     
                     displayPosts(transformedPosts);
                 } else {
-                    displayPosts(posts);
+                    // Sort by average rating (highest first)
+                    const sortedPosts = posts.sort((a, b) => {
+                        const ratingA = a.average_rating || 0;
+                        const ratingB = b.average_rating || 0;
+                        return ratingB - ratingA;
+                    });
+                    displayPosts(sortedPosts);
                 }
             } catch (error) {
                 console.error('Error loading posts:', error);
@@ -737,7 +952,11 @@
                 return;
             }
             
-            grid.innerHTML = posts.map(post => `
+            grid.innerHTML = posts.map(post => {
+                const avgRating = post.average_rating ? parseFloat(post.average_rating).toFixed(1) : '0.0';
+                const userRating = post.user_rating || 0;
+                
+                return `
                 <div class="post-card">
                     <img src="${post.image_url}" alt="Post by ${post.username}" class="post-image" 
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -747,13 +966,25 @@
                     <div class="post-info">
                         <div class="post-header">
                             <span class="username">@${post.username}</span>
-                            <div class="like-section">
-                                <button class="like-btn ${post.user_liked ? 'liked' : ''}" 
-                                        onclick="toggleLike('${post.id}')" 
-                                        id="like-btn-${post.id}">
-                                    ${post.user_liked ? '❤️' : '🤍'}
-                                </button>
-                                <span class="like-count" id="like-count-${post.id}">${post.like_count || 0}</span>
+                            <div class="rating-section">
+                                <div class="rating-display">
+                                    <span class="average-rating">${avgRating}</span>
+                                    <span class="rating-count">(${post.rating_count || 0})</span>
+                                </div>
+                                ${currentUser ? `
+                                <div class="rating-slider-container">
+                                    <input type="range" 
+                                           class="rating-slider" 
+                                           min="0" 
+                                           max="10" 
+                                           step="1" 
+                                           value="${userRating}"
+                                           onchange="updateRating('${post.id}', this.value)"
+                                           oninput="updateRatingDisplay('${post.id}', this.value)"
+                                           id="rating-${post.id}">
+                                    <span class="user-rating-value" id="rating-value-${post.id}">${userRating}</span>
+                                </div>
+                                ` : ''}
                             </div>
                         </div>
                         <p style="color: #666; font-size: 0.9em;">
@@ -761,65 +992,49 @@
                         </p>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
-        // Toggle like
-        async function toggleLike(postId) {
+        // Update rating display in real-time
+        function updateRatingDisplay(postId, value) {
+            document.getElementById(`rating-value-${postId}`).textContent = value;
+        }
+
+        // Update rating in database
+        async function updateRating(postId, rating) {
             if (!currentUser) {
-                alert('Please login to like posts!');
+                alert('Please login to rate posts!');
                 return;
             }
             
-            const btn = document.getElementById(`like-btn-${postId}`);
-            const countSpan = document.getElementById(`like-count-${postId}`);
-            const isLiked = btn.classList.contains('liked');
-            
-            // Optimistic UI update
-            const originalCount = parseInt(countSpan.textContent);
+            const ratingValue = parseInt(rating);
             
             try {
-                if (isLiked) {
-                    // Unlike
-                    btn.classList.remove('liked');
-                    btn.textContent = '🤍';
-                    countSpan.textContent = Math.max(0, originalCount - 1);
-                    
-                    const { error } = await supabaseClient
-                        .from('uriginal_likes')
+                if (ratingValue === 0) {
+                    // Delete rating if 0
+                    await supabaseClient
+                        .from('uriginal_ratings')
                         .delete()
                         .eq('post_id', postId)
                         .eq('user_id', currentUser.id);
-                        
-                    if (error) throw error;
                 } else {
-                    // Like
-                    btn.classList.add('liked');
-                    btn.textContent = '❤️';
-                    countSpan.textContent = originalCount + 1;
-                    
-                    const { error } = await supabaseClient
-                        .from('uriginal_likes')
-                        .insert({
+                    // Upsert rating
+                    await supabaseClient
+                        .from('uriginal_ratings')
+                        .upsert({
                             post_id: postId,
-                            user_id: currentUser.id
+                            user_id: currentUser.id,
+                            rating: ratingValue
+                        }, {
+                            onConflict: 'post_id,user_id'
                         });
-                        
-                    if (error) throw error;
                 }
+                
+                // Reload posts to update averages
+                setTimeout(() => loadPosts(), 500);
             } catch (error) {
-                console.error('Error toggling like:', error);
-                // Revert UI changes on error
-                if (isLiked) {
-                    btn.classList.add('liked');
-                    btn.textContent = '❤️';
-                    countSpan.textContent = originalCount;
-                } else {
-                    btn.classList.remove('liked');
-                    btn.textContent = '🤍';
-                    countSpan.textContent = originalCount;
-                }
-                alert('Failed to update like. Please try again.');
+                console.error('Error updating rating:', error);
+                alert('Failed to update rating. Please try again.');
             }
         }
 
