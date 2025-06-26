@@ -222,6 +222,12 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
+        .btn-primary:disabled {
+            background: #ccc;
+            transform: none;
+            cursor: not-allowed;
+        }
+
         .error-msg {
             color: #e74c3c;
             margin-top: 10px;
@@ -314,7 +320,7 @@
 
         <!-- Auth Section -->
         <div id="authSection" class="auth-section">
-            <h2 id="authTitle">Welcome Back!</h2>
+            <h2 id="authTitle">Enter your email to continue</h2>
             <form id="authForm">
                 <div class="form-group">
                     <label for="email">Email</label>
@@ -322,12 +328,9 @@
                 </div>
                 <div id="usernameGroup" class="form-group hidden">
                     <label for="username">Choose a Username</label>
-                    <input type="text" id="username" placeholder="creative_photographer">
+                    <input type="text" id="username" placeholder="creative_photographer" required>
                 </div>
-                <button type="submit" class="btn-primary" id="authBtn">Login</button>
-                <p style="text-align: center; margin-top: 15px;">
-                    <a href="#" id="authToggle" style="color: #667eea;">New here? Sign up!</a>
-                </p>
+                <button type="submit" class="btn-primary" id="authBtn">Continue</button>
                 <div id="authError" class="error-msg"></div>
                 <div id="authSuccess" class="success-msg"></div>
             </form>
@@ -364,39 +367,49 @@
     </div>
 
     <script>
-        // Initialize Supabase
+        // Initialize Supabase - Fixed the initialization
         const supabaseUrl = 'https://yiqbppgelferacpuqfpx.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlpcWJwcGdlbGZlcmFjcHVxZnB4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA0MzY4MjgsImV4cCI6MjA2NjAxMjgyOH0.2ll0GZcQCNf_cXqcTqx--CardTx61BUqu-rUzPClbKc';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        
+        // Use the global supabase object
+        const { createClient } = supabase;
+        const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
         let currentUser = null;
         let currentPrompt = null;
-        let isSignUp = false;
+        let needsUsername = false;
 
         // Auth state management
         async function checkAuth() {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-                currentUser = user;
-                const { data: profile } = await supabase
-                    .from('uriginal_users')
-                    .select('*')
-                    .eq('id', user.id)
-                    .single();
-                
-                if (profile) {
-                    showApp(profile);
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (user) {
+                    currentUser = user;
+                    const { data: profile } = await supabaseClient
+                        .from('uriginal_users')
+                        .select('*')
+                        .eq('id', user.id)
+                        .single();
+                    
+                    if (profile) {
+                        showApp(profile);
+                    } else {
+                        // Need to complete profile
+                        needsUsername = true;
+                        document.getElementById('authSection').classList.remove('hidden');
+                        document.getElementById('appSection').classList.add('hidden');
+                        document.getElementById('usernameGroup').classList.remove('hidden');
+                        document.getElementById('authTitle').textContent = 'Choose a username to complete setup';
+                        document.getElementById('authBtn').textContent = 'Complete Setup';
+                        document.getElementById('email').value = user.email;
+                        document.getElementById('email').disabled = true;
+                    }
                 } else {
-                    // Need to complete profile
                     document.getElementById('authSection').classList.remove('hidden');
                     document.getElementById('appSection').classList.add('hidden');
-                    document.getElementById('usernameGroup').classList.remove('hidden');
-                    document.getElementById('authTitle').textContent = 'Complete Your Profile';
-                    document.getElementById('authBtn').textContent = 'Save Username';
                 }
-            } else {
-                document.getElementById('authSection').classList.remove('hidden');
-                document.getElementById('appSection').classList.add('hidden');
+            } catch (error) {
+                console.error('Auth check error:', error);
             }
         }
 
@@ -410,21 +423,24 @@
             startTimeUpdater();
         }
 
-        // Auth form handler
+        // Auth form handler - Simplified
         document.getElementById('authForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
             const username = document.getElementById('username').value;
             const errorDiv = document.getElementById('authError');
             const successDiv = document.getElementById('authSuccess');
+            const authBtn = document.getElementById('authBtn');
             
             errorDiv.textContent = '';
             successDiv.textContent = '';
+            authBtn.disabled = true;
+            authBtn.textContent = 'Working...';
 
             try {
-                if (currentUser && username) {
-                    // Complete profile
-                    const { error } = await supabase
+                if (needsUsername && currentUser) {
+                    // Complete profile with username
+                    const { error } = await supabaseClient
                         .from('uriginal_users')
                         .insert({
                             id: currentUser.id,
@@ -432,66 +448,62 @@
                             username: username
                         });
                     
-                    if (error) throw error;
+                    if (error) {
+                        if (error.code === '23505') { // Unique constraint violation
+                            throw new Error('Username already taken. Please choose another.');
+                        }
+                        throw error;
+                    }
                     
-                    const { data: profile } = await supabase
+                    const { data: profile } = await supabaseClient
                         .from('uriginal_users')
                         .select('*')
                         .eq('id', currentUser.id)
                         .single();
                     
                     showApp(profile);
-                } else if (isSignUp) {
-                    // Sign up
-                    const { data, error } = await supabase.auth.signUp({
-                        email: email,
-                        password: Math.random().toString(36).slice(-8) // Random password
-                    });
-                    
-                    if (error) throw error;
-                    
-                    successDiv.textContent = 'Check your email to confirm your account!';
                 } else {
-                    // Sign in with magic link
-                    const { error } = await supabase.auth.signInWithOtp({
-                        email: email
+                    // Send magic link (works for both new and existing users)
+                    const { error } = await supabaseClient.auth.signInWithOtp({
+                        email: email,
+                        options: {
+                            emailRedirectTo: window.location.origin
+                        }
                     });
                     
                     if (error) throw error;
                     
                     successDiv.textContent = 'Check your email for the login link!';
+                    authBtn.textContent = 'Email Sent!';
                 }
             } catch (error) {
                 errorDiv.textContent = error.message;
+                authBtn.disabled = false;
+                authBtn.textContent = needsUsername ? 'Complete Setup' : 'Continue';
             }
-        });
-
-        // Toggle between login and signup
-        document.getElementById('authToggle').addEventListener('click', (e) => {
-            e.preventDefault();
-            isSignUp = !isSignUp;
-            document.getElementById('authTitle').textContent = isSignUp ? 'Create Account' : 'Welcome Back!';
-            document.getElementById('authBtn').textContent = isSignUp ? 'Sign Up' : 'Login';
-            document.getElementById('authToggle').textContent = isSignUp ? 'Already have an account? Login!' : 'New here? Sign up!';
-            document.getElementById('usernameGroup').classList.add('hidden');
         });
 
         // Load today's prompt
         async function loadTodayPrompt() {
             const today = new Date().toISOString().split('T')[0];
             
-            const { data: prompt, error } = await supabase
-                .from('uriginal_prompts')
-                .select('*')
-                .eq('prompt_date', today)
-                .single();
-            
-            if (prompt) {
-                currentPrompt = prompt;
-                document.getElementById('promptWord').textContent = prompt.word;
+            try {
+                const { data: prompt, error } = await supabaseClient
+                    .from('uriginal_prompts')
+                    .select('*')
+                    .eq('prompt_date', today)
+                    .single();
+                
+                if (prompt) {
+                    currentPrompt = prompt;
+                    document.getElementById('promptWord').textContent = prompt.word;
+                } else {
+                    document.getElementById('promptWord').textContent = 'No prompt today';
+                }
                 loadPosts();
-            } else {
-                document.getElementById('promptWord').textContent = 'No prompt today';
+            } catch (error) {
+                console.error('Error loading prompt:', error);
+                document.getElementById('promptWord').textContent = 'Error loading prompt';
             }
         }
 
@@ -533,7 +545,7 @@
             
             try {
                 // Check if user already posted today
-                const { data: existingPost } = await supabase
+                const { data: existingPost } = await supabaseClient
                     .from('uriginal_posts')
                     .select('*')
                     .eq('user_id', currentUser.id)
@@ -547,12 +559,11 @@
                 
                 // Upload to Supabase Storage
                 const fileName = `${currentUser.id}-${Date.now()}.${file.name.split('.').pop()}`;
-                const { data: uploadData, error: uploadError } = await supabase.storage
+                const { data: uploadData, error: uploadError } = await supabaseClient.storage
                     .from('uriginal-photos')
                     .upload(fileName, file);
                 
                 if (uploadError) {
-                    // Create bucket if it doesn't exist
                     if (uploadError.message.includes('bucket')) {
                         statusDiv.innerHTML = '<div class="error-msg">Storage bucket not configured. Please create a "uriginal-photos" bucket in Supabase.</div>';
                         return;
@@ -561,12 +572,12 @@
                 }
                 
                 // Get public URL
-                const { data: { publicUrl } } = supabase.storage
+                const { data: { publicUrl } } = supabaseClient.storage
                     .from('uriginal-photos')
                     .getPublicUrl(fileName);
                 
                 // Save post to database
-                const { error: postError } = await supabase
+                const { error: postError } = await supabaseClient
                     .from('uriginal_posts')
                     .insert({
                         user_id: currentUser.id,
@@ -591,14 +602,43 @@
         async function loadPosts() {
             if (!currentPrompt) return;
             
-            const { data: posts, error } = await supabase
-                .rpc('get_posts_with_likes', { prompt_uuid: currentPrompt.id });
-            
-            if (error) {
+            try {
+                // First try the RPC function
+                const { data: posts, error } = await supabaseClient
+                    .rpc('get_posts_with_likes', { prompt_uuid: currentPrompt.id });
+                
+                if (error) {
+                    console.error('RPC error, falling back to regular query:', error);
+                    // Fallback to regular query
+                    const { data: fallbackPosts, error: fallbackError } = await supabaseClient
+                        .from('uriginal_posts')
+                        .select(`
+                            *,
+                            uriginal_users!inner(username)
+                        `)
+                        .eq('prompt_id', currentPrompt.id)
+                        .order('created_at', { ascending: false });
+                    
+                    if (fallbackError) {
+                        console.error('Fallback query error:', fallbackError);
+                        return;
+                    }
+                    
+                    displayPosts(fallbackPosts.map(post => ({
+                        ...post,
+                        username: post.uriginal_users.username,
+                        like_count: 0,
+                        user_liked: false
+                    })));
+                } else {
+                    displayPosts(posts);
+                }
+            } catch (error) {
                 console.error('Error loading posts:', error);
-                return;
             }
-            
+        }
+
+        function displayPosts(posts) {
             const grid = document.getElementById('postsGrid');
             
             if (posts.length === 0) {
@@ -627,22 +667,6 @@
                     </div>
                 </div>
             `).join('');
-            
-            // Check which posts current user has liked
-            if (currentUser) {
-                const { data: userLikes } = await supabase
-                    .from('uriginal_likes')
-                    .select('post_id')
-                    .eq('user_id', currentUser.id);
-                
-                userLikes?.forEach(like => {
-                    const btn = document.getElementById(`like-btn-${like.post_id}`);
-                    if (btn) {
-                        btn.classList.add('liked');
-                        btn.textContent = '❤️';
-                    }
-                });
-            }
         }
 
         // Toggle like
@@ -659,7 +683,7 @@
             try {
                 if (isLiked) {
                     // Unlike
-                    await supabase
+                    await supabaseClient
                         .from('uriginal_likes')
                         .delete()
                         .eq('post_id', postId)
@@ -667,10 +691,10 @@
                     
                     btn.classList.remove('liked');
                     btn.textContent = '🤍';
-                    countSpan.textContent = parseInt(countSpan.textContent) - 1;
+                    countSpan.textContent = Math.max(0, parseInt(countSpan.textContent) - 1);
                 } else {
                     // Like
-                    await supabase
+                    await supabaseClient
                         .from('uriginal_likes')
                         .insert({
                             post_id: postId,
@@ -688,16 +712,18 @@
 
         // Logout
         async function logout() {
-            await supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
             location.reload();
         }
 
         // Initialize on load
-        checkAuth();
+        window.addEventListener('load', () => {
+            checkAuth();
+        });
 
         // Listen for auth changes
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_IN') {
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' && session) {
                 checkAuth();
             }
         });
