@@ -627,23 +627,36 @@
                 return;
             }
 
+            // Validate email format
+            if (!email.includes('@')) {
+                showMessage('Please enter a valid email address', 'error');
+                return;
+            }
+
             try {
-                // In a real app, you'd hash the PIN before storing
+                // Create a stronger password that meets Supabase requirements
+                const password = `FitnessAI${pin}${email.split('@')[0]}2024!`;
+                
                 const { data, error } = await supabase.auth.signUp({
                     email: email,
-                    password: pin + email, // Simple password combination
+                    password: password,
                     options: {
                         data: {
-                            pin: pin
+                            pin: pin,
+                            app_name: 'fitness_ai'
                         }
                     }
                 });
 
-                if (error) throw error;
+                if (error) {
+                    console.error('Registration error:', error);
+                    throw error;
+                }
                 
-                showMessage('Account created successfully! Please sign in.', 'success');
+                showMessage('Account created successfully! Please sign in with the same email and PIN.', 'success');
             } catch (error) {
-                showMessage(error.message, 'error');
+                console.error('Registration failed:', error);
+                showMessage(`Registration failed: ${error.message}`, 'error');
             }
         }
 
@@ -657,18 +670,29 @@
             }
 
             try {
+                // Use the same password generation logic as registration
+                const password = `FitnessAI${pin}${email.split('@')[0]}2024!`;
+                
                 const { data, error } = await supabase.auth.signInWithPassword({
                     email: email,
-                    password: pin + email
+                    password: password
                 });
 
-                if (error) throw error;
+                if (error) {
+                    console.error('Login error:', error);
+                    throw error;
+                }
                 
-                currentUser = data.user;
-                await loadUserData();
-                showApp();
+                if (data.user) {
+                    currentUser = data.user;
+                    await loadUserData();
+                    showApp();
+                } else {
+                    throw new Error('Login failed - no user data returned');
+                }
             } catch (error) {
-                showMessage('Invalid email or PIN', 'error');
+                console.error('Login failed:', error);
+                showMessage(`Login failed: ${error.message}`, 'error');
             }
         }
 
