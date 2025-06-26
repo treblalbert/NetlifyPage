@@ -14,9 +14,9 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             min-height: 100vh;
-            color: #333;
+            color: #fff;
         }
 
         .container {
@@ -27,27 +27,30 @@
 
         .header {
             text-align: center;
-            color: white;
+            color: #ff6b35;
             margin-bottom: 30px;
         }
 
         .header h1 {
             font-size: 3rem;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-weight: 900;
         }
 
         .header p {
             font-size: 1.2rem;
             opacity: 0.9;
+            color: #ccc;
         }
 
         .app-section {
-            background: white;
+            background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
             border-radius: 15px;
             padding: 30px;
             margin-bottom: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            border: 1px solid #444;
             display: none;
         }
 
@@ -62,8 +65,11 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
+            font-weight: 700;
+            color: #ff6b35;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
         }
 
         .form-group input,
@@ -71,34 +77,39 @@
         .form-group textarea {
             width: 100%;
             padding: 12px;
-            border: 2px solid #e1e5e9;
+            border: 2px solid #444;
             border-radius: 8px;
             font-size: 16px;
             transition: border-color 0.3s;
+            background: #333;
+            color: #fff;
         }
 
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #ff6b35;
+            box-shadow: 0 0 10px rgba(255, 107, 53, 0.3);
         }
 
         .btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
             color: white;
-            padding: 12px 30px;
+            padding: 15px 30px;
             border: none;
             border-radius: 8px;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
         }
 
         .btn:disabled {
@@ -108,7 +119,7 @@
         }
 
         .btn-secondary {
-            background: #6c757d;
+            background: linear-gradient(135deg, #666 0%, #444 100%);
             margin-left: 10px;
         }
 
@@ -122,36 +133,105 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            background: #333;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid #444;
+            transition: all 0.3s;
+        }
+
+        .checkbox-item:hover {
+            border-color: #ff6b35;
         }
 
         .checkbox-item input[type="checkbox"] {
             width: auto;
+            accent-color: #ff6b35;
+        }
+
+        .checkbox-item label {
+            color: #fff !important;
+            margin: 0 !important;
+            text-transform: none !important;
+            font-weight: 500 !important;
+            font-size: 1rem !important;
+            letter-spacing: normal !important;
         }
 
         .equipment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .equipment-card {
+            border: 2px solid #444;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: linear-gradient(145deg, #333, #2a2a2a);
+        }
+
+        .equipment-card:hover {
+            border-color: #ff6b35;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.2);
+        }
+
+        .equipment-card.selected {
+            border-color: #ff6b35;
+            background: linear-gradient(145deg, #ff6b35, #f7931e);
+            color: #fff;
+        }
+
+        .equipment-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #ff6b35;
+        }
+
+        .equipment-card.selected h4 {
+            color: #fff;
+        }
+
+        .custom-equipment {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .custom-equipment.active {
+            display: block;
+        }
+
+        .goals-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
             margin-top: 10px;
         }
 
-        .equipment-card {
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
+        .goal-card {
+            border: 2px solid #444;
+            border-radius: 12px;
             padding: 15px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s;
+            background: linear-gradient(145deg, #333, #2a2a2a);
         }
 
-        .equipment-card:hover {
-            border-color: #667eea;
-            transform: translateY(-2px);
+        .goal-card:hover {
+            border-color: #ff6b35;
+            transform: translateY(-3px);
         }
 
-        .equipment-card.selected {
-            border-color: #667eea;
-            background-color: #f8f9ff;
+        .goal-card.selected {
+            border-color: #ff6b35;
+            background: linear-gradient(145deg, #ff6b35, #f7931e);
+            color: #fff;
         }
 
         .workout-plan {
@@ -159,17 +239,20 @@
         }
 
         .day-section {
-            background: #f8f9fa;
-            border-radius: 8px;
+            background: linear-gradient(145deg, #333, #2a2a2a);
+            border-radius: 12px;
             padding: 20px;
             margin-bottom: 15px;
+            border: 1px solid #444;
         }
 
         .day-title {
             font-size: 1.4rem;
             font-weight: bold;
-            color: #667eea;
+            color: #ff6b35;
             margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .exercise-table {
@@ -182,39 +265,46 @@
         .exercise-table td {
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid #dee2e6;
+            border-bottom: 1px solid #444;
         }
 
         .exercise-table th {
-            background-color: #667eea;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
             color: white;
-            font-weight: 600;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .exercise-table td {
+            color: #ccc;
         }
 
         .exercise-name {
-            color: #667eea;
+            color: #ff6b35;
             cursor: pointer;
             text-decoration: underline;
             font-weight: 600;
         }
 
         .exercise-name:hover {
-            color: #764ba2;
+            color: #f7931e;
         }
 
         .chat-container {
-            border: 2px solid #e1e5e9;
+            border: 2px solid #444;
             border-radius: 12px;
             height: 400px;
             display: flex;
             flex-direction: column;
+            background: #1a1a1a;
         }
 
         .chat-messages {
             flex: 1;
             padding: 20px;
             overflow-y: auto;
-            background: #f8f9fa;
+            background: #1f1f1f;
         }
 
         .message {
@@ -225,91 +315,100 @@
         }
 
         .message.user {
-            background: #667eea;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
             color: white;
             margin-left: auto;
         }
 
         .message.bot {
-            background: white;
-            border: 1px solid #e1e5e9;
+            background: #333;
+            border: 1px solid #444;
+            color: #ccc;
         }
 
         .chat-input-container {
             padding: 20px;
-            border-top: 1px solid #e1e5e9;
+            border-top: 1px solid #444;
             display: flex;
             gap: 10px;
+            background: #1a1a1a;
         }
 
         .chat-input {
             flex: 1;
             padding: 12px;
-            border: 1px solid #e1e5e9;
+            border: 1px solid #444;
             border-radius: 8px;
             resize: none;
+            background: #333;
+            color: #fff;
         }
 
         .loading {
             text-align: center;
             padding: 20px;
-            color: #667eea;
+            color: #ff6b35;
         }
 
         .error {
-            background: #f8d7da;
-            color: #721c24;
+            background: #d32f2f;
+            color: #fff;
             padding: 12px;
             border-radius: 8px;
             margin-bottom: 15px;
         }
 
         .success {
-            background: #d4edda;
-            color: #155724;
+            background: #388e3c;
+            color: #fff;
             padding: 12px;
             border-radius: 8px;
             margin-bottom: 15px;
         }
 
         .navigation {
-            background: white;
+            background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
             border-radius: 12px;
             padding: 15px;
             margin-bottom: 20px;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid #444;
         }
 
         .nav-btn {
             background: transparent;
-            color: #667eea;
-            border: 2px solid #667eea;
-            padding: 8px 20px;
+            color: #ff6b35;
+            border: 2px solid #ff6b35;
+            padding: 10px 20px;
             margin: 0 10px;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .nav-btn:hover,
         .nav-btn.active {
-            background: #667eea;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
             color: white;
+            transform: translateY(-2px);
         }
 
-        .pin-input {
-            width: 50px !important;
-            text-align: center;
-            margin: 0 5px;
+        h2 {
+            color: #ff6b35;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
         }
 
-        .pin-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin: 20px 0;
+        h3 {
+            color: #ff6b35;
+            font-weight: 700;
+            margin-bottom: 15px;
         }
 
         @media (max-width: 768px) {
@@ -331,7 +430,8 @@
             
             .nav-btn {
                 margin: 5px;
-                padding: 6px 15px;
+                padding: 8px 15px;
+                font-size: 0.8rem;
             }
         }
     </style>
@@ -339,7 +439,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>💪 Fitness AI</h1>
+            <h1>💪 FITNESS AI</h1>
             <p>Your AI-powered personal trainer</p>
         </div>
 
@@ -411,15 +511,33 @@
             <h2>Fitness Goals & Preferences</h2>
             
             <div class="form-group">
-                <label>Fitness Goal</label>
-                <select id="fitnessGoal">
-                    <option value="">Select your primary goal</option>
-                    <option value="lose_weight">Lose Weight</option>
-                    <option value="gain_muscle">Gain Muscle</option>
-                    <option value="improve_agility">Improve Agility/Flexibility</option>
-                    <option value="build_endurance">Build Endurance</option>
-                    <option value="general_health">General Health</option>
-                </select>
+                <label>Fitness Goals (Select all that apply)</label>
+                <div class="goals-grid">
+                    <div class="goal-card" data-goal="lose_weight">
+                        <h4>🔥 Lose Weight</h4>
+                        <p>Burn fat and shed pounds</p>
+                    </div>
+                    <div class="goal-card" data-goal="gain_muscle">
+                        <h4>💪 Gain Muscle</h4>
+                        <p>Build strength and size</p>
+                    </div>
+                    <div class="goal-card" data-goal="improve_agility">
+                        <h4>🤸 Improve Agility</h4>
+                        <p>Enhance flexibility & mobility</p>
+                    </div>
+                    <div class="goal-card" data-goal="build_endurance">
+                        <h4>🏃 Build Endurance</h4>
+                        <p>Increase stamina & cardio</p>
+                    </div>
+                    <div class="goal-card" data-goal="general_health">
+                        <h4>❤️ General Health</h4>
+                        <p>Overall wellness & fitness</p>
+                    </div>
+                    <div class="goal-card" data-goal="sports_performance">
+                        <h4>⚽ Sports Performance</h4>
+                        <p>Athletic enhancement</p>
+                    </div>
+                </div>
             </div>
             
             <div class="form-group">
@@ -475,22 +593,23 @@
                         <h4>💪 Bodyweight Only</h4>
                         <p>No equipment needed</p>
                     </div>
-                    <div class="equipment-card" data-equipment="dumbbells">
-                        <h4>🏋️ Dumbbells</h4>
-                        <p>Adjustable weights</p>
-                    </div>
-                    <div class="equipment-card" data-equipment="resistance_bands">
-                        <h4>🎯 Resistance Bands</h4>
-                        <p>Portable resistance</p>
-                    </div>
                     <div class="equipment-card" data-equipment="full_gym">
                         <h4>🏟️ Full Gym Access</h4>
                         <p>Complete gym equipment</p>
                     </div>
+                    <div class="equipment-card" data-equipment="custom">
+                        <h4>🔧 Custom Equipment</h4>
+                        <p>I have specific equipment</p>
+                    </div>
+                </div>
+                
+                <div class="custom-equipment" id="customEquipment">
+                    <label for="customEquipmentText">Describe your available equipment</label>
+                    <textarea id="customEquipmentText" rows="3" placeholder="e.g., dumbbells up to 50kg, resistance bands, yoga mat, pull-up bar..."></textarea>
                 </div>
             </div>
             
-            <button class="btn" onclick="savePreferences()">Save Preferences</button>
+            <button class="btn" onclick="savePreferences()">Save Preferences & Continue</button>
         </div>
 
         <!-- Workout Plan Section -->
@@ -576,24 +695,25 @@
         });
 
         function setupEventListeners() {
-            // PIN input navigation
-            const pinInputs = document.querySelectorAll('.pin-input');
-            pinInputs.forEach((input, index) => {
-                input.addEventListener('input', (e) => {
-                    if (e.target.value.length === 1 && index < pinInputs.length - 1) {
-                        pinInputs[index + 1].focus();
-                    }
-                });
-                
-                input.addEventListener('keydown', (e) => {
-                    if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
-                        pinInputs[index - 1].focus();
+            // Equipment selection
+            document.querySelectorAll('.equipment-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    // Remove selection from other equipment cards
+                    document.querySelectorAll('.equipment-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    
+                    // Show/hide custom equipment textarea
+                    const customEquipment = document.getElementById('customEquipment');
+                    if (card.dataset.equipment === 'custom') {
+                        customEquipment.classList.add('active');
+                    } else {
+                        customEquipment.classList.remove('active');
                     }
                 });
             });
 
-            // Equipment selection
-            document.querySelectorAll('.equipment-card').forEach(card => {
+            // Goal selection (multiple selection allowed)
+            document.querySelectorAll('.goal-card').forEach(card => {
                 card.addEventListener('click', () => {
                     card.classList.toggle('selected');
                 });
@@ -604,6 +724,13 @@
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
                     sendMessage();
+                }
+            });
+
+            // Email input - allow Enter to submit
+            document.getElementById('email').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    loginWithEmail();
                 }
             });
         }
@@ -741,6 +868,11 @@
                 
                 userProfile = profileData;
                 showMessage('Profile saved successfully!', 'success');
+                
+                // Auto-advance to preferences
+                setTimeout(() => {
+                    showSection('preferences');
+                }, 1500);
             } catch (error) {
                 showMessage('Error saving profile: ' + error.message, 'error');
             }
@@ -754,17 +886,29 @@
                 trainingDays.push(cb.value);
             });
 
-            const selectedEquipment = [];
-            document.querySelectorAll('.equipment-card.selected').forEach(card => {
-                selectedEquipment.push(card.dataset.equipment);
+            const selectedGoals = [];
+            document.querySelectorAll('.goal-card.selected').forEach(card => {
+                selectedGoals.push(card.dataset.goal);
             });
+
+            const selectedEquipment = [];
+            const selectedEquipmentCard = document.querySelector('.equipment-card.selected');
+            if (selectedEquipmentCard) {
+                selectedEquipment.push(selectedEquipmentCard.dataset.equipment);
+            }
+
+            let customEquipmentText = '';
+            if (selectedEquipmentCard && selectedEquipmentCard.dataset.equipment === 'custom') {
+                customEquipmentText = document.getElementById('customEquipmentText').value;
+            }
 
             const preferencesData = {
                 email: currentUser.email,
-                fitness_goal: document.getElementById('fitnessGoal').value,
+                fitness_goals: selectedGoals,
                 training_days: trainingDays,
                 session_time: parseInt(document.getElementById('sessionTime').value),
                 available_equipment: selectedEquipment,
+                custom_equipment: customEquipmentText,
                 updated_at: new Date().toISOString()
             };
 
@@ -777,6 +921,11 @@
                 
                 userPreferences = preferencesData;
                 showMessage('Preferences saved successfully!', 'success');
+                
+                // Auto-advance to workout plan
+                setTimeout(() => {
+                    showSection('workout');
+                }, 1500);
             } catch (error) {
                 showMessage('Error saving preferences: ' + error.message, 'error');
             }
@@ -801,8 +950,9 @@
                 const { error } = await supabase
                     .from('workout_plans')
                     .insert({
-                        user_id: currentUser.id,
-                        plan_data: workoutPlan
+                        email: currentUser.email,
+                        plan_data: workoutPlan,
+                        created_at: new Date().toISOString()
                     });
 
                 if (error) throw error;
@@ -811,6 +961,7 @@
                 displayWorkoutPlan(workoutPlan);
                 
             } catch (error) {
+                console.error('Error generating workout plan:', error);
                 showMessage('Error generating workout plan: ' + error.message, 'error');
             } finally {
                 generateBtn.disabled = false;
@@ -819,6 +970,10 @@
         }
 
         function createWorkoutPrompt() {
+            const equipmentDescription = userPreferences.available_equipment[0] === 'custom' 
+                ? userPreferences.custom_equipment 
+                : userPreferences.available_equipment.join(', ');
+
             return `Create a personalized weekly workout plan based on the following user information:
 
 Name: ${userProfile.name}
@@ -826,16 +981,16 @@ Job: ${userProfile.job_type}
 Height: ${userProfile.height}cm
 Weight: ${userProfile.weight}kg
 Physical Condition: ${userProfile.physical_condition || 'Not specified'}
-Fitness Goal: ${userPreferences.fitness_goal}
+Fitness Goals: ${userPreferences.fitness_goals.join(', ')}
 Training Days: ${userPreferences.training_days.join(', ')}
 Session Time: ${userPreferences.session_time} minutes
-Available Equipment: ${userPreferences.available_equipment.join(', ')}
+Available Equipment: ${equipmentDescription}
 
 Please create a detailed weekly workout plan that includes:
 1. Specific exercises for each training day
 2. Sets, reps, and rest times
 3. Exercise order and progression
-4. Consider the user's goal, available time, and equipment
+4. Consider the user's multiple goals, available time, and equipment
 
 Format the response as a JSON object with this structure:
 {
@@ -855,10 +1010,12 @@ Format the response as a JSON object with this structure:
   }
 }
 
-Only include the days specified in the training days. Make sure exercises are appropriate for the available equipment and fitness goal.`;
+Only include the days specified in the training days. Make sure exercises are appropriate for the available equipment and fitness goals.`;
         }
 
         async function callOpenAI(prompt) {
+            console.log('Calling OpenAI function...');
+            
             const response = await fetch('/.netlify/functions/openai', {
                 method: 'POST',
                 headers: {
@@ -870,12 +1027,23 @@ Only include the days specified in the training days. Make sure exercises are ap
                 })
             });
 
+            console.log('Response status:', response.status);
+            
             if (!response.ok) {
-                throw new Error('Failed to generate workout plan');
+                const errorText = await response.text();
+                console.error('OpenAI function error:', errorText);
+                throw new Error(`Failed to generate workout plan: ${response.status} - ${errorText}`);
             }
 
             const data = await response.json();
-            return JSON.parse(data.content);
+            console.log('OpenAI response:', data);
+            
+            try {
+                return JSON.parse(data.content);
+            } catch (parseError) {
+                console.error('Failed to parse JSON response:', data.content);
+                throw new Error('Invalid response format from AI');
+            }
         }
 
         // Chat functions
@@ -922,6 +1090,7 @@ Please provide helpful, encouraging, and specific fitness advice. If they want t
                 addMessageToChat('bot', data.content);
                 
             } catch (error) {
+                console.error('Chat error:', error);
                 addMessageToChat('bot', 'Sorry, I\'m having trouble responding right now. Please try again!');
             }
         }
@@ -955,13 +1124,24 @@ Please provide helpful, encouraging, and specific fitness advice. If they want t
             });
             
             // Show selected section
-            document.getElementById(sectionName + '-section').classList.add('active');
+            if (sectionName === 'auth-section') {
+                document.getElementById('auth-section').classList.add('active');
+            } else {
+                document.getElementById(sectionName + '-section').classList.add('active');
+            }
             
             // Update navigation
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            event?.target.classList.add('active');
+            
+            // Find and activate the correct nav button
+            const targetBtn = Array.from(document.querySelectorAll('.nav-btn')).find(btn => 
+                btn.textContent.toLowerCase().includes(sectionName.split('-')[0])
+            );
+            if (targetBtn) {
+                targetBtn.classList.add('active');
+            }
         }
 
         function populateProfileForm() {
@@ -977,8 +1157,15 @@ Please provide helpful, encouraging, and specific fitness advice. If they want t
         function populatePreferencesForm() {
             if (!userPreferences) return;
             
-            document.getElementById('fitnessGoal').value = userPreferences.fitness_goal || '';
             document.getElementById('sessionTime').value = userPreferences.session_time || '';
+            
+            // Fitness goals
+            if (userPreferences.fitness_goals) {
+                userPreferences.fitness_goals.forEach(goal => {
+                    const card = document.querySelector(`[data-goal="${goal}"]`);
+                    if (card) card.classList.add('selected');
+                });
+            }
             
             // Training days
             if (userPreferences.training_days) {
@@ -989,11 +1176,16 @@ Please provide helpful, encouraging, and specific fitness advice. If they want t
             }
             
             // Equipment
-            if (userPreferences.available_equipment) {
-                userPreferences.available_equipment.forEach(equipment => {
-                    const card = document.querySelector(`[data-equipment="${equipment}"]`);
-                    if (card) card.classList.add('selected');
-                });
+            if (userPreferences.available_equipment && userPreferences.available_equipment.length > 0) {
+                const equipment = userPreferences.available_equipment[0];
+                const card = document.querySelector(`[data-equipment="${equipment}"]`);
+                if (card) {
+                    card.classList.add('selected');
+                    if (equipment === 'custom') {
+                        document.getElementById('customEquipment').classList.add('active');
+                        document.getElementById('customEquipmentText').value = userPreferences.custom_equipment || '';
+                    }
+                }
             }
         }
 
