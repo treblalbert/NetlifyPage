@@ -426,63 +426,49 @@
 
         // Auth form handler - Simplified
         document.getElementById('authForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const username = document.getElementById('username').value;
-            const errorDiv = document.getElementById('authError');
-            const successDiv = document.getElementById('authSuccess');
-            const authBtn = document.getElementById('authBtn');
-            
-            errorDiv.textContent = '';
-            successDiv.textContent = '';
-            authBtn.disabled = true;
-            authBtn.textContent = 'Working...';
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const username = document.getElementById('username').value;
+        const errorDiv = document.getElementById('authError');
+        const authBtn = document.getElementById('authBtn');
 
-            try {
-                if (needsUsername && currentUser) {
-                    // Complete profile with username
-                    const { error } = await supabaseClient
-                        .from('uriginal_users')
-                        .insert({
-                            id: currentUser.id,
-                            email: currentUser.email,
-                            username: username
-                        });
-                    
-                    if (error) {
-                        if (error.code === '23505') { // Unique constraint violation
-                            throw new Error('Username already taken. Please choose another.');
-                        }
-                        throw error;
-                    }
-                    
-                    const { data: profile } = await supabaseClient
-                        .from('uriginal_users')
-                        .select('*')
-                        .eq('id', currentUser.id)
-                        .single();
-                    
-                    showApp(profile);
-                } else {
-                    // Send magic link (works for both new and existing users)
-                    const { error } = await supabaseClient.auth.signInWithOtp({
-                        email: email,
-                        options: {
-                            emailRedirectTo: window.location.origin
-                        }
-                    });
-                    
-                    if (error) throw error;
-                    
-                    successDiv.textContent = 'Check your email for the login link!';
-                    authBtn.textContent = 'Email Sent!';
-                }
-            } catch (error) {
-                errorDiv.textContent = error.message;
-                authBtn.disabled = false;
-                authBtn.textContent = needsUsername ? 'Complete Setup' : 'Continue';
+        errorDiv.textContent = '';
+        authBtn.disabled = true;
+        authBtn.textContent = 'Working...';
+
+        const TEST_PASSWORD = '123456';
+
+        try {
+            // Try to sign in with password
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+                email,
+                password: TEST_PASSWORD,
+            });
+
+            if (error && error.message.includes("Invalid login credentials")) {
+                // Try to sign up if user doesn't exist
+                const { data: signUpData, error: signUpError } = await supabaseClient.auth.signUp({
+                    email,
+                    password: TEST_PASSWORD,
+                });
+
+                if (signUpError) throw signUpError;
+                // Continue as normal, you might want to wait a moment for auth session to be valid
+                setTimeout(checkAuth, 1000);
+            } else if (error) {
+                throw error;
+            } else {
+                // Login successful
+                checkAuth();
             }
-        });
+        } catch (error) {
+            errorDiv.textContent = error.message;
+        } finally {
+            authBtn.disabled = false;
+            authBtn.textContent = 'Continue';
+        }
+    });
+
 
         // Load today's prompt
         async function loadTodayPrompt() {
