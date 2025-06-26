@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness AI - Your Personal Trainer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/supabase-js/2.39.3/umd/supabase.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .app-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .app-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            margin-left: 10px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+        }
+
+        .equipment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .equipment-card {
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .equipment-card:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .equipment-card.selected {
+            border-color: #667eea;
+            background-color: #f8f9ff;
+        }
+
+        .workout-plan {
+            margin-top: 20px;
+        }
+
+        .day-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .day-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .exercise-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .exercise-table th,
+        .exercise-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .exercise-table th {
+            background-color: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        .exercise-name {
+            color: #667eea;
+            cursor: pointer;
+            text-decoration: underline;
+            font-weight: 600;
+        }
+
+        .exercise-name:hover {
+            color: #764ba2;
+        }
+
+        .chat-container {
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 12px;
+            max-width: 80%;
+        }
+
+        .message.user {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+        }
+
+        .message.bot {
+            background: white;
+            border: 1px solid #e1e5e9;
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            border-top: 1px solid #e1e5e9;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            resize: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #667eea;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .navigation {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .nav-btn {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 8px 20px;
+            margin: 0 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .pin-input {
+            width: 50px !important;
+            text-align: center;
+            margin: 0 5px;
+        }
+
+        .pin-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .app-section {
+                padding: 20px;
+            }
+            
+            .equipment-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-btn {
+                margin: 5px;
+                padding: 6px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💪 Fitness AI</h1>
+            <p>Your AI-powered personal trainer</p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation" id="navigation" style="display: none;">
+            <button class="nav-btn active" onclick="showSection('profile')">Profile</button>
+            <button class="nav-btn" onclick="showSection('preferences')">Preferences</button>
+            <button class="nav-btn" onclick="showSection('workout')">Workout Plan</button>
+            <button class="nav-btn" onclick="showSection('chat')">Chat with Flexi</button>
+            <button class="nav-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <!-- Login/Register Section -->
+        <div class="app-section active" id="auth-section">
+            <h2>Welcome to Fitness AI</h2>
+            <p>Sign in or create your account to get started</p>
+            
+            <div id="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Enter your email">
+                </div>
+                
+                <div class="form-group">
+                    <label for="pin">4-Digit PIN</label>
+                    <div class="pin-container">
+                        <input type="password" class="pin-input" maxlength="1" id="pin1">
+                        <input type="password" class="pin-input" maxlength="1" id="pin2">
+                        <input type="password" class="pin-input" maxlength="1" id="pin3">
+                        <input type="password" class="pin-input" maxlength="1" id="pin4">
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="login()">Sign In</button>
+                <button class="btn btn-secondary" onclick="register()">Create Account</button>
+            </div>
+            
+            <div id="message-area"></div>
+        </div>
+
+        <!-- Profile Section -->
+        <div class="app-section" id="profile-section">
+            <h2>Your Profile</h2>
+            <div class="form-group">
+                <label for="userName">Name</label>
+                <input type="text" id="userName" placeholder="Enter your name">
+            </div>
+            
+            <div class="form-group">
+                <label for="userJob">Job Type</label>
+                <select id="userJob">
+                    <option value="">Select your job type</option>
+                    <option value="sedentary">Sedentary (desk job)</option>
+                    <option value="standing">Standing (retail, teaching)</option>
+                    <option value="active">Physically Active (construction, delivery)</option>
+                    <option value="very_active">Very Active (fitness trainer, athlete)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="userHeight">Height (cm)</label>
+                <input type="number" id="userHeight" placeholder="170">
+            </div>
+            
+            <div class="form-group">
+                <label for="userWeight">Weight (kg)</label>
+                <input type="number" id="userWeight" placeholder="70">
+            </div>
+            
+            <div class="form-group">
+                <label for="userCondition">Current Physical Condition (optional)</label>
+                <textarea id="userCondition" rows="3" placeholder="Describe your current fitness level, any injuries, or limitations..."></textarea>
+            </div>
+            
+            <button class="btn" onclick="saveProfile()">Save Profile</button>
+        </div>
+
+        <!-- Preferences Section -->
+        <div class="app-section" id="preferences-section">
+            <h2>Fitness Goals & Preferences</h2>
+            
+            <div class="form-group">
+                <label>Fitness Goal</label>
+                <select id="fitnessGoal">
+                    <option value="">Select your primary goal</option>
+                    <option value="lose_weight">Lose Weight</option>
+                    <option value="gain_muscle">Gain Muscle</option>
+                    <option value="improve_agility">Improve Agility/Flexibility</option>
+                    <option value="build_endurance">Build Endurance</option>
+                    <option value="general_health">General Health</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Training Days</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="monday" value="monday">
+                        <label for="monday">Monday</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="tuesday" value="tuesday">
+                        <label for="tuesday">Tuesday</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="wednesday" value="wednesday">
+                        <label for="wednesday">Wednesday</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="thursday" value="thursday">
+                        <label for="thursday">Thursday</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="friday" value="friday">
+                        <label for="friday">Friday</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="saturday" value="saturday">
+                        <label for="saturday">Saturday</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="sunday" value="sunday">
+                        <label for="sunday">Sunday</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="sessionTime">Available Time per Session (minutes)</label>
+                <select id="sessionTime">
+                    <option value="">Select session duration</option>
+                    <option value="15">15 minutes</option>
+                    <option value="30">30 minutes</option>
+                    <option value="45">45 minutes</option>
+                    <option value="60">60 minutes</option>
+                    <option value="90">90 minutes</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Available Equipment</label>
+                <div class="equipment-grid">
+                    <div class="equipment-card" data-equipment="bodyweight">
+                        <h4>💪 Bodyweight Only</h4>
+                        <p>No equipment needed</p>
+                    </div>
+                    <div class="equipment-card" data-equipment="dumbbells">
+                        <h4>🏋️ Dumbbells</h4>
+                        <p>Adjustable weights</p>
+                    </div>
+                    <div class="equipment-card" data-equipment="resistance_bands">
+                        <h4>🎯 Resistance Bands</h4>
+                        <p>Portable resistance</p>
+                    </div>
+                    <div class="equipment-card" data-equipment="full_gym">
+                        <h4>🏟️ Full Gym Access</h4>
+                        <p>Complete gym equipment</p>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="savePreferences()">Save Preferences</button>
+        </div>
+
+        <!-- Workout Plan Section -->
+        <div class="app-section" id="workout-section">
+            <h2>Your AI-Generated Workout Plan</h2>
+            <p>Click on any exercise name to watch a tutorial on YouTube!</p>
+            
+            <button class="btn" onclick="generateWorkoutPlan()" id="generateBtn">Generate New Workout Plan</button>
+            
+            <div id="workoutPlan" class="workout-plan"></div>
+        </div>
+
+        <!-- Chat Section -->
+        <div class="app-section" id="chat-section">
+            <h2>Chat with Flexi 🤖</h2>
+            <p>Your AI fitness assistant is here to help adapt your workouts and answer questions!</p>
+            
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot">
+                        <strong>Flexi:</strong> Hello! I'm Flexi, your AI fitness assistant. How can I help you today? You can ask me to modify your workout, report missed sessions, or get advice about your fitness journey!
+                    </div>
+                </div>
+                
+                <div class="chat-input-container">
+                    <textarea class="chat-input" id="chatInput" placeholder="Type your message here..." rows="2"></textarea>
+                    <button class="btn" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let supabase;
+        let currentUser = null;
+        let userProfile = null;
+        let userPreferences = null;
+        let currentWorkoutPlan = null;
+
+        // Initialize Supabase
+        function initSupabase() {
+            const supabaseUrl = 'YOUR_SUPABASE_URL';
+            const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            initSupabase();
+            setupEventListeners();
+            checkAuthState();
+        });
+
+        function setupEventListeners() {
+            // PIN input navigation
+            const pinInputs = document.querySelectorAll('.pin-input');
+            pinInputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                    if (e.target.value.length === 1 && index < pinInputs.length - 1) {
+                        pinInputs[index + 1].focus();
+                    }
+                });
+                
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+                        pinInputs[index - 1].focus();
+                    }
+                });
+            });
+
+            // Equipment selection
+            document.querySelectorAll('.equipment-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    card.classList.toggle('selected');
+                });
+            });
+
+            // Chat input
+            document.getElementById('chatInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+        }
+
+        // Authentication functions
+        async function register() {
+            const email = document.getElementById('email').value;
+            const pin = getPinValue();
+            
+            if (!email || pin.length !== 4) {
+                showMessage('Please enter a valid email and 4-digit PIN', 'error');
+                return;
+            }
+
+            try {
+                // In a real app, you'd hash the PIN before storing
+                const { data, error } = await supabase.auth.signUp({
+                    email: email,
+                    password: pin + email, // Simple password combination
+                    options: {
+                        data: {
+                            pin: pin
+                        }
+                    }
+                });
+
+                if (error) throw error;
+                
+                showMessage('Account created successfully! Please sign in.', 'success');
+            } catch (error) {
+                showMessage(error.message, 'error');
+            }
+        }
+
+        async function login() {
+            const email = document.getElementById('email').value;
+            const pin = getPinValue();
+            
+            if (!email || pin.length !== 4) {
+                showMessage('Please enter a valid email and 4-digit PIN', 'error');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: pin + email
+                });
+
+                if (error) throw error;
+                
+                currentUser = data.user;
+                await loadUserData();
+                showApp();
+            } catch (error) {
+                showMessage('Invalid email or PIN', 'error');
+            }
+        }
+
+        async function logout() {
+            await supabase.auth.signOut();
+            currentUser = null;
+            userProfile = null;
+            userPreferences = null;
+            showSection('auth-section');
+            document.getElementById('navigation').style.display = 'none';
+        }
+
+        function getPinValue() {
+            return document.getElementById('pin1').value +
+                   document.getElementById('pin2').value +
+                   document.getElementById('pin3').value +
+                   document.getElementById('pin4').value;
+        }
+
+        async function checkAuthState() {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                currentUser = user;
+                await loadUserData();
+                showApp();
+            }
+        }
+
+        // Data management functions
+        async function loadUserData() {
+            if (!currentUser) return;
+
+            try {
+                // Load user profile
+                const { data: profile } = await supabase
+                    .from('user_profiles')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .single();
+                
+                if (profile) {
+                    userProfile = profile;
+                    populateProfileForm();
+                }
+
+                // Load user preferences
+                const { data: preferences } = await supabase
+                    .from('user_preferences')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .single();
+                
+                if (preferences) {
+                    userPreferences = preferences;
+                    populatePreferencesForm();
+                }
+
+                // Load workout plan
+                const { data: workoutPlan } = await supabase
+                    .from('workout_plans')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false })
+                    .limit(1)
+                    .single();
+                
+                if (workoutPlan) {
+                    currentWorkoutPlan = workoutPlan;
+                    displayWorkoutPlan(workoutPlan.plan_data);
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        async function saveProfile() {
+            if (!currentUser) return;
+
+            const profileData = {
+                user_id: currentUser.id,
+                name: document.getElementById('userName').value,
+                job_type: document.getElementById('userJob').value,
+                height: parseInt(document.getElementById('userHeight').value),
+                weight: parseInt(document.getElementById('userWeight').value),
+                physical_condition: document.getElementById('userCondition').value
+            };
+
+            try {
+                const { error } = await supabase
+                    .from('user_profiles')
+                    .upsert(profileData);
+
+                if (error) throw error;
+                
+                userProfile = profileData;
+                showMessage('Profile saved successfully!', 'success');
+            } catch (error) {
+                showMessage('Error saving profile: ' + error.message, 'error');
+            }
+        }
+
+        async function savePreferences() {
+            if (!currentUser) return;
+
+            const trainingDays = [];
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+                trainingDays.push(cb.value);
+            });
+
+            const selectedEquipment = [];
+            document.querySelectorAll('.equipment-card.selected').forEach(card => {
+                selectedEquipment.push(card.dataset.equipment);
+            });
+
+            const preferencesData = {
+                user_id: currentUser.id,
+                fitness_goal: document.getElementById('fitnessGoal').value,
+                training_days: trainingDays,
+                session_time: parseInt(document.getElementById('sessionTime').value),
+                available_equipment: selectedEquipment
+            };
+
+            try {
+                const { error } = await supabase
+                    .from('user_preferences')
+                    .upsert(preferencesData);
+
+                if (error) throw error;
+                
+                userPreferences = preferencesData;
+                showMessage('Preferences saved successfully!', 'success');
+            } catch (error) {
+                showMessage('Error saving preferences: ' + error.message, 'error');
+            }
+        }
+
+        // Workout plan generation
+        async function generateWorkoutPlan() {
+            if (!userProfile || !userPreferences) {
+                showMessage('Please complete your profile and preferences first', 'error');
+                return;
+            }
+
+            const generateBtn = document.getElementById('generateBtn');
+            generateBtn.disabled = true;
+            generateBtn.textContent = 'Generating...';
+
+            try {
+                const prompt = createWorkoutPrompt();
+                const workoutPlan = await callOpenAI(prompt);
+                
+                // Save to database
+                const { error } = await supabase
+                    .from('workout_plans')
+                    .insert({
+                        user_id: currentUser.id,
+                        plan_data: workoutPlan
+                    });
+
+                if (error) throw error;
+
+                currentWorkoutPlan = { plan_data: workoutPlan };
+                displayWorkoutPlan(workoutPlan);
+                
+            } catch (error) {
+                showMessage('Error generating workout plan: ' + error.message, 'error');
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.textContent = 'Generate New Workout Plan';
+            }
+        }
+
+        function createWorkoutPrompt() {
+            return `Create a personalized weekly workout plan based on the following user information:
+
+Name: ${userProfile.name}
+Job: ${userProfile.job_type}
+Height: ${userProfile.height}cm
+Weight: ${userProfile.weight}kg
+Physical Condition: ${userProfile.physical_condition || 'Not specified'}
+Fitness Goal: ${userPreferences.fitness_goal}
+Training Days: ${userPreferences.training_days.join(', ')}
+Session Time: ${userPreferences.session_time} minutes
+Available Equipment: ${userPreferences.available_equipment.join(', ')}
+
+Please create a detailed weekly workout plan that includes:
+1. Specific exercises for each training day
+2. Sets, reps, and rest times
+3. Exercise order and progression
+4. Consider the user's goal, available time, and equipment
+
+Format the response as a JSON object with this structure:
+{
+  "plan_overview": "Brief description of the plan",
+  "weekly_schedule": {
+    "monday": {
+      "exercises": [
+        {
+          "name": "Exercise Name",
+          "sets": 3,
+          "reps": "12-15",
+          "rest": "60 seconds",
+          "notes": "Any specific instructions"
+        }
+      ]
+    }
+  }
+}
+
+Only include the days specified in the training days. Make sure exercises are appropriate for the available equipment and fitness goal.`;
+        }
+
+        async function callOpenAI(prompt) {
+            const response = await fetch('/.netlify/functions/openai', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    prompt: prompt,
+                    user_id: currentUser.id
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to generate workout plan');
+            }
+
+            const data = await response.json();
+            return JSON.parse(data.content);
+        }
+
+        // Chat functions
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            // Add user message
+            addMessageToChat('user', message);
+            input.value = '';
+
+            try {
+                const prompt = `You are Flexi, a helpful AI fitness assistant. The user's current workout plan is:
+${currentWorkoutPlan ? JSON.stringify(currentWorkoutPlan.plan_data, null, 2) : 'No workout plan generated yet'}
+
+User profile:
+${userProfile ? JSON.stringify(userProfile, null, 2) : 'No profile data'}
+
+User preferences:
+${userPreferences ? JSON.stringify(userPreferences, null, 2) : 'No preferences set'}
+
+User message: ${message}
+
+Please provide helpful, encouraging, and specific fitness advice. If they want to modify their workout, suggest specific changes. Keep responses conversational and supportive.`;
+
+                const response = await fetch('/.netlify/functions/openai', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        prompt: prompt,
+                        user_id: currentUser.id
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to get response from Flexi');
+                }
+
+                const data = await response.json();
+                addMessageToChat('bot', data.content);
+                
+            } catch (error) {
+                addMessageToChat('bot', 'Sorry, I\'m having trouble responding right now. Please try again!');
+            }
+        }
+
+        function addMessageToChat(sender, message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            if (sender === 'bot') {
+                messageDiv.innerHTML = `<strong>Flexi:</strong> ${message}`;
+            } else {
+                messageDiv.innerHTML = `<strong>You:</strong> ${message}`;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // UI functions
+        function showApp() {
+            document.getElementById('auth-section').classList.remove('active');
+            document.getElementById('navigation').style.display = 'block';
+            showSection('profile');
+        }
+
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.app-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').classList.add('active');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event?.target.classList.add('active');
+        }
+
+        function populateProfileForm() {
+            if (!userProfile) return;
+            
+            document.getElementById('userName').value = userProfile.name || '';
+            document.getElementById('userJob').value = userProfile.job_type || '';
+            document.getElementById('userHeight').value = userProfile.height || '';
+            document.getElementById('userWeight').value = userProfile.weight || '';
+            document.getElementById('userCondition').value = userProfile.physical_condition || '';
+        }
+
+        function populatePreferencesForm() {
+            if (!userPreferences) return;
+            
+            document.getElementById('fitnessGoal').value = userPreferences.fitness_goal || '';
+            document.getElementById('sessionTime').value = userPreferences.session_time || '';
+            
+            // Training days
+            if (userPreferences.training_days) {
+                userPreferences.training_days.forEach(day => {
+                    const checkbox = document.getElementById(day);
+                    if (checkbox) checkbox.checked = true;
+                });
+            }
+            
+            // Equipment
+            if (userPreferences.available_equipment) {
+                userPreferences.available_equipment.forEach(equipment => {
+                    const card = document.querySelector(`[data-equipment="${equipment}"]`);
+                    if (card) card.classList.add('selected');
+                });
+            }
+        }
+
+        function displayWorkoutPlan(planData) {
+            const container = document.getElementById('workoutPlan');
+            
+            if (!planData || !planData.weekly_schedule) {
+                container.innerHTML = '<p>No workout plan available. Generate one to get started!</p>';
+                return;
+            }
+
+            let html = `<div class="plan-overview">
+                <h3>Plan Overview</h3>
+                <p>${planData.plan_overview || 'Your personalized workout plan'}</p>
+            </div>`;
+
+            Object.entries(planData.weekly_schedule).forEach(([day, dayData]) => {
+                html += `
+                    <div class="day-section">
+                        <div class="day-title">${day.charAt(0).toUpperCase() + day.slice(1)}</div>
+                        <table class="exercise-table">
+                            <thead>
+                                <tr>
+                                    <th>Exercise</th>
+                                    <th>Sets</th>
+                                    <th>Reps</th>
+                                    <th>Rest</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                if (dayData.exercises) {
+                    dayData.exercises.forEach(exercise => {
+                        html += `
+                            <tr>
+                                <td><span class="exercise-name" onclick="searchExercise('${exercise.name}')">${exercise.name}</span></td>
+                                <td>${exercise.sets || '-'}</td>
+                                <td>${exercise.reps || '-'}</td>
+                                <td>${exercise.rest || '-'}</td>
+                                <td>${exercise.notes || '-'}</td>
+                            </tr>
+                        `;
+                    });
+                }
+                
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function searchExercise(exerciseName) {
+            const searchUrl = `https://www.youtube.com/results?search_query=How+to+do+${encodeURIComponent(exerciseName)}`;
+            window.open(searchUrl, '_blank');
+        }
+
+        function showMessage(message, type) {
+            const messageArea = document.getElementById('message-area');
+            messageArea.innerHTML = `<div class="${type}">${message}</div>`;
+            setTimeout(() => {
+                messageArea.innerHTML = '';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
