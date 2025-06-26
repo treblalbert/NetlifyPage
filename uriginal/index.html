@@ -328,7 +328,7 @@
                 </div>
                 <div id="usernameGroup" class="form-group hidden">
                     <label for="username">Choose a Username</label>
-                    <input type="text" id="username" placeholder="creative_photographer" required>
+                    <input type="text" id="username" name="username" placeholder="creative_photographer">
                 </div>
                 <button type="submit" class="btn-primary" id="authBtn">Continue</button>
                 <div id="authError" class="error-msg"></div>
@@ -399,6 +399,7 @@
                         document.getElementById('authSection').classList.remove('hidden');
                         document.getElementById('appSection').classList.add('hidden');
                         document.getElementById('usernameGroup').classList.remove('hidden');
+                        document.getElementById('username').setAttribute('required', 'true'); // ← Add this line
                         document.getElementById('authTitle').textContent = 'Choose a username to complete setup';
                         document.getElementById('authBtn').textContent = 'Complete Setup';
                         document.getElementById('email').value = user.email;
