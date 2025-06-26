@@ -980,7 +980,7 @@
                 };
                 
                 // Store in localStorage for session persistence
-                localStorage.setItem('coreiq_user', JSON.stringify(currentUser));
+                localStorage.setItem('fitness_ai_user', JSON.stringify(currentUser));
                 
                 showMessage('Welcome! Loading your profile...', 'success');
                 
@@ -996,7 +996,7 @@
 
         async function logout() {
             // Clear localStorage and reset state
-            localStorage.removeItem('coreiq_user');
+            localStorage.removeItem('fitness_ai_user');
             currentUser = null;
             userProfile = null;
             userPreferences = null;
@@ -1012,7 +1012,7 @@
 
         async function checkAuthState() {
             // Check if user is stored in localStorage
-            const storedUser = localStorage.getItem('coreiq_user');
+            const storedUser = localStorage.getItem('fitness_ai_user');
             if (storedUser) {
                 try {
                     currentUser = JSON.parse(storedUser);
