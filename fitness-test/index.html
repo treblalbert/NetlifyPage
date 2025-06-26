@@ -646,7 +646,8 @@
                         data: {
                             pin: pin,
                             app_name: 'fitness_ai'
-                        }
+                        },
+                        emailRedirectTo: 'https://albertfreeman.org/fitness-test/'
                     }
                 });
 
@@ -655,7 +656,12 @@
                     throw error;
                 }
                 
-                showMessage('Account created successfully! Please sign in with the same email and PIN.', 'success');
+                // Check if email confirmation is required
+                if (data.user && !data.user.email_confirmed_at) {
+                    showMessage('Please check your email and click the confirmation link to complete registration.', 'success');
+                } else {
+                    showMessage('Account created successfully! Please sign in with the same email and PIN.', 'success');
+                }
             } catch (error) {
                 console.error('Registration failed:', error);
                 showMessage(`Registration failed: ${error.message}`, 'error');
