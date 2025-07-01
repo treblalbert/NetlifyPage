@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Analyst Dictionary</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #007AFF;
+            --secondary: #5AC8FA;
+            --accent: #FF3B30;
+            --background: #000000;
+            --surface: #1C1C1E;
+            --surface-light: #2C2C2E;
+            --text: #FFFFFF;
+            --text-secondary: #8E8E93;
+            --border: #38383A;
+            --gradient: linear-gradient(135deg, #007AFF, #5AC8FA);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(28, 28, 30, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+            padding: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 20px rgba(0, 122, 255, 0.5)); }
+            to { filter: drop-shadow(0 0 30px rgba(90, 200, 250, 0.7)); }
+        }
+
+        /* Search */
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            background: var(--surface-light);
+            border: 2px solid transparent;
+            border-radius: 15px;
+            color: var(--text);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 30px rgba(0, 122, 255, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--surface);
+            border-radius: 15px;
+            margin-top: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border);
+        }
+
+        .search-result-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background: var(--surface-light);
+            padding-left: 30px;
+        }
+
+        .search-match {
+            background: var(--primary);
+            color: white;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 160px 40px 40px;
+        }
+
+        .section {
+            margin-bottom: 80px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.3s; }
+        .section:nth-child(4) { animation-delay: 0.4s; }
+        .section:nth-child(5) { animation-delay: 0.5s; }
+        .section:nth-child(6) { animation-delay: 0.6s; }
+        .section:nth-child(7) { animation-delay: 0.7s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--surface);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .section-header:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 40px rgba(0, 122, 255, 0.2);
+        }
+
+        .section-icon {
+            font-size: 2rem;
+            margin-right: 20px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .subsection {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subsection::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 122, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .subsection:hover::before {
+            left: 100%;
+        }
+
+        .subsection:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 122, 255, 0.15);
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+
+        h4 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin: 20px 0 10px;
+            color: var(--primary);
+        }
+
+        ul {
+            list-style: none;
+            margin-left: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Code Blocks */
+        .code-example {
+            background: #0A0A0A;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-example::before {
+            content: 'PYTHON';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        code {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 14px;
+            color: #FF9500;
+        }
+
+        .code-comment {
+            color: #6C7C7C;
+        }
+
+        .code-keyword {
+            color: #FF3B30;
+        }
+
+        .code-string {
+            color: #5AC8FA;
+        }
+
+        .code-function {
+            color: #FFD60A;
+        }
+
+        /* Pills */
+        .pill {
+            display: inline-block;
+            padding: 6px 12px;
+            background: var(--surface-light);
+            border-radius: 20px;
+            font-size: 0.875rem;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        .pill:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 122, 255, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            main { padding: 140px 20px 20px; }
+            .subsection { padding: 20px; }
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+            z-index: 1001;
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+    
+    <header>
+        <div class="header-content">
+            <h1>Data Analyst Dictionary</h1>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search topics, tools, or concepts...">
+                <span class="search-icon">🔍</span>
+                <div class="search-results" id="searchResults"></div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Core Concepts -->
+        <section class="section" id="core-concepts">
+            <div class="section-header">
+                <span class="section-icon">📊</span>
+                <h2>Core Concepts in Data Analysis</h2>
+            </div>
+
+            <div class="subsection">
+                <h3>Data Literacy</h3>
+                <h4>Types of Data</h4>
+                <ul>
+                    <li>Quantitative (numerical): Measurable values</li>
+                    <li>Qualitative (categorical): Descriptive information</li>
+                    <li>Discrete: Countable values</li>
+                    <li>Continuous: Infinite possible values</li>
+                </ul>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">import</span> pandas <span class="code-keyword">as</span> pd<br>
+<span class="code-keyword">import</span> numpy <span class="code-keyword">as</span> np<br><br>
+<span class="code-comment"># Example of different data types</span><br>
+data = {<br>
+    <span class="code-string">'age'</span>: [25, 30, 35, 40],              <span class="code-comment"># Quantitative discrete</span><br>
+    <span class="code-string">'height'</span>: [1.75, 1.80, 1.65, 1.70],    <span class="code-comment"># Quantitative continuous</span><br>
+    <span class="code-string">'gender'</span>: [<span class="code-string">'M'</span>, <span class="code-string">'F'</span>, <span class="code-string">'M'</span>, <span class="code-string">'F'</span>],       <span class="code-comment"># Qualitative nominal</span><br>
+    <span class="code-string">'rating'</span>: [<span class="code-string">'Good'</span>, <span class="code-string">'Excellent'</span>, <span class="code-string">'Fair'</span>, <span class="code-string">'Good'</span>]  <span class="code-comment"># Qualitative ordinal</span><br>
+}<br>
+df = pd.DataFrame(data)<br>
+<span class="code-function">print</span>(df.dtypes)  <span class="code-comment"># Check data types</span>
+                    </code>
+                </div>
+
+                <h4>Structured vs Unstructured Data</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-comment"># Structured data - organized in tables</span><br>
+structured_df = pd.read_csv(<span class="code-string">'sales_data.csv'</span>)<br>
+<span class="code-function">print</span>(structured_df.head())<br><br>
+<span class="code-comment"># Unstructured data - requires preprocessing</span><br>
+<span class="code-keyword">import</span> json<br>
+<span class="code-keyword">with</span> <span class="code-function">open</span>(<span class="code-string">'tweets.json'</span>, <span class="code-string">'r'</span>) <span class="code-keyword">as</span> f:<br>
+    unstructured_data = json.load(f)<br>
+<span class="code-comment"># Process text, images, or other formats</span>
+                    </code>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>Statistics & Probability</h3>
+                <h4>Descriptive Statistics</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">import</span> pandas <span class="code-keyword">as</span> pd<br>
+<span class="code-keyword">import</span> numpy <span class="code-keyword">as</span> np<br>
+<span class="code-keyword">from</span> scipy <span class="code-keyword">import</span> stats<br><br>
+<span class="code-comment"># Generate sample data</span><br>
+data = np.random.normal(100, 15, 1000)<br><br>
+<span class="code-comment"># Calculate descriptive statistics</span><br>
+mean = np.mean(data)<br>
+median = np.median(data)<br>
+mode = stats.mode(data, keepdims=<span class="code-keyword">True</span>)[0][0]<br>
+std_dev = np.std(data)<br>
+variance = np.var(data)<br><br>
+<span class="code-comment"># Using pandas for quick summary</span><br>
+df = pd.DataFrame(data, columns=[<span class="code-string">'values'</span>])<br>
+<span class="code-function">print</span>(df.describe())  <span class="code-comment"># Comprehensive statistics</span>
+                    </code>
+                </div>
+
+                <h4>Hypothesis Testing</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">from</span> scipy <span class="code-keyword">import</span> stats<br><br>
+<span class="code-comment"># Example: T-test for comparing two groups</span><br>
+group1 = np.random.normal(100, 15, 50)<br>
+group2 = np.random.normal(110, 15, 50)<br><br>
+<span class="code-comment"># Perform t-test</span><br>
+t_stat, p_value = stats.ttest_ind(group1, group2)<br>
+<span class="code-function">print</span>(f<span class="code-string">"T-statistic: {t_stat:.4f}"</span>)<br>
+<span class="code-function">print</span>(f<span class="code-string">"P-value: {p_value:.4f}"</span>)<br><br>
+<span class="code-comment"># Interpret results</span><br>
+alpha = 0.05<br>
+<span class="code-keyword">if</span> p_value < alpha:<br>
+    <span class="code-function">print</span>(<span class="code-string">"Reject null hypothesis"</span>)<br>
+<span class="code-keyword">else</span>:<br>
+    <span class="code-function">print</span>(<span class="code-string">"Fail to reject null hypothesis"</span>)
+                    </code>
+                </div>
+
+                <h4>A/B Testing Example</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">import</span> pandas <span class="code-keyword">as</span> pd<br>
+<span class="code-keyword">from</span> statsmodels.stats.proportion <span class="code-keyword">import</span> proportions_ztest<br><br>
+<span class="code-comment"># A/B test for conversion rates</span><br>
+control_visitors = 1000<br>
+control_conversions = 120<br>
+variant_visitors = 1000<br>
+variant_conversions = 150<br><br>
+<span class="code-comment"># Calculate conversion rates</span><br>
+control_rate = control_conversions / control_visitors<br>
+variant_rate = variant_conversions / variant_visitors<br><br>
+<span class="code-comment"># Perform z-test</span><br>
+counts = [control_conversions, variant_conversions]<br>
+nobs = [control_visitors, variant_visitors]<br>
+z_stat, p_value = proportions_ztest(counts, nobs)<br><br>
+<span class="code-function">print</span>(f<span class="code-string">"Control conversion rate: {control_rate:.2%}"</span>)<br>
+<span class="code-function">print</span>(f<span class="code-string">"Variant conversion rate: {variant_rate:.2%}"</span>)<br>
+<span class="code-function">print</span>(f<span class="code-string">"P-value: {p_value:.4f}"</span>)
+                    </code>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>Exploratory Data Analysis (EDA)</h3>
+                <h4>Data Cleaning and Wrangling</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">import</span> pandas <span class="code-keyword">as</span> pd<br>
+<span class="code-keyword">import</span> numpy <span class="code-keyword">as</span> np<br><br>
+<span class="code-comment"># Load messy data</span><br>
+df = pd.read_csv(<span class="code-string">'raw_data.csv'</span>)<br><br>
+<span class="code-comment"># Check for missing values</span><br>
+<span class="code-function">print</span>(df.isnull().sum())<br><br>
+<span class="code-comment"># Handle missing values</span><br>
+df[<span class="code-string">'age'</span>].fillna(df[<span class="code-string">'age'</span>].median(), inplace=<span class="code-keyword">True</span>)<br>
+df[<span class="code-string">'category'</span>].fillna(<span class="code-string">'Unknown'</span>, inplace=<span class="code-keyword">True</span>)<br>
+df.dropna(subset=[<span class="code-string">'critical_column'</span>], inplace=<span class="code-keyword">True</span>)<br><br>
+<span class="code-comment"># Remove duplicates</span><br>
+df.drop_duplicates(inplace=<span class="code-keyword">True</span>)<br><br>
+<span class="code-comment"># Convert data types</span><br>
+df[<span class="code-string">'date'</span>] = pd.to_datetime(df[<span class="code-string">'date'</span>])<br>
+df[<span class="code-string">'price'</span>] = pd.to_numeric(df[<span class="code-string">'price'</span>], errors=<span class="code-string">'coerce'</span>)
+                    </code>
+                </div>
+
+                <h4>Outlier Detection</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">import</span> numpy <span class="code-keyword">as</span> np<br>
+<span class="code-keyword">from</span> scipy <span class="code-keyword">import</span> stats<br><br>
+<span class="code-comment"># Method 1: IQR (Interquartile Range)</span><br>
+Q1 = df[<span class="code-string">'price'</span>].quantile(0.25)<br>
+Q3 = df[<span class="code-string">'price'</span>].quantile(0.75)<br>
+IQR = Q3 - Q1<br>
+lower_bound = Q1 - 1.5 * IQR<br>
+upper_bound = Q3 + 1.5 * IQR<br><br>
+outliers = df[(df[<span class="code-string">'price'</span>] < lower_bound) | (df[<span class="code-string">'price'</span>] > upper_bound)]<br><br>
+<span class="code-comment"># Method 2: Z-score</span><br>
+z_scores = stats.zscore(df[<span class="code-string">'price'</span>])<br>
+outliers_z = df[np.abs(z_scores) > 3]<br><br>
+<span class="code-comment"># Remove or cap outliers</span><br>
+df[<span class="code-string">'price'</span>] = np.clip(df[<span class="code-string">'price'</span>], lower_bound, upper_bound)
+                    </code>
+                </div>
+
+                <h4>Feature Engineering</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-comment"># Create new features from existing ones</span><br>
+df[<span class="code-string">'year'</span>] = df[<span class="code-string">'date'</span>].dt.year<br>
+df[<span class="code-string">'month'</span>] = df[<span class="code-string">'date'</span>].dt.month<br>
+df[<span class="code-string">'day_of_week'</span>] = df[<span class="code-string">'date'</span>].dt.dayofweek<br>
+df[<span class="code-string">'is_weekend'</span>] = df[<span class="code-string">'day_of_week'</span>].isin([5, 6]).astype(<span class="code-function">int</span>)<br><br>
+<span class="code-comment"># Create interaction features</span><br>
+df[<span class="code-string">'price_per_sqft'</span>] = df[<span class="code-string">'price'</span>] / df[<span class="code-string">'square_feet'</span>]<br><br>
+<span class="code-comment"># Binning continuous variables</span><br>
+df[<span class="code-string">'age_group'</span>] = pd.cut(df[<span class="code-string">'age'</span>], <br>
+                           bins=[0, 18, 35, 50, 65, 100],<br>
+                           labels=[<span class="code-string">'Child'</span>, <span class="code-string">'Young Adult'</span>, <span class="code-string">'Adult'</span>, <span class="code-string">'Middle Age'</span>, <span class="code-string">'Senior'</span>])<br><br>
+<span class="code-comment"># One-hot encoding for categorical variables</span><br>
+df_encoded = pd.get_dummies(df, columns=[<span class="code-string">'category'</span>, <span class="code-string">'region'</span>])
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tools & Technologies -->
+        <section class="section" id="tools-technologies">
+            <div class="section-header">
+                <span class="section-icon">🧰</span>
+                <h2>Tools & Technologies</h2>
+            </div>
+
+            <div class="subsection">
+                <h3>Python for Data Analysis</h3>
+                <h4>Essential Libraries</h4>
+                <div class="pill">pandas</div>
+                <div class="pill">numpy</div>
+                <div class="pill">matplotlib</div>
+                <div class="pill">seaborn</div>
+                <div class="pill">scikit-learn</div>
+                <div class="pill">statsmodels</div>
+
+                <h4>Data Manipulation with Pandas</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">import</span> pandas <span class="code-keyword">as</span> pd<br><br>
+<span class="code-comment"># Read data from various sources</span><br>
+df_csv = pd.read_csv(<span class="code-string">'data.csv'</span>)<br>
+df_excel = pd.read_excel(<span class="code-string">'data.xlsx'</span>, sheet_name=<span class="code-string">'Sales'</span>)<br>
+df_json = pd.read_json(<span class="code-string">'data.json'</span>)<br><br>
+<span class="code-comment"># Basic operations</span><br>
+df.head(10)                    <span class="code-comment"># First 10 rows</span><br>
+df.info()                      <span class="code-comment"># Data types and memory usage</span><br>
+df.describe()                  <span class="code-comment"># Statistical summary</span><br><br>
+<span class="code-comment"># Filtering data</span><br>
+filtered = df[df[<span class="code-string">'sales'</span>] > 1000]<br>
+multi_filter = df[(df[<span class="code-string">'sales'</span>] > 1000) & (df[<span class="code-string">'region'</span>] == <span class="code-string">'North'</span>)]<br><br>
+<span class="code-comment"># Grouping and aggregation</span><br>
+grouped = df.groupby(<span class="code-string">'category'</span>).agg({<br>
+    <span class="code-string">'sales'</span>: [<span class="code-string">'sum'</span>, <span class="code-string">'mean'</span>, <span class="code-string">'count'</span>],<br>
+    <span class="code-string">'profit'</span>: <span class="code-string">'sum'</span><br>
+})<br><br>
+<span class="code-comment"># Merge datasets</span><br>
+merged = pd.merge(df1, df2, on=<span class="code-string">'customer_id'</span>, how=<span class="code-string">'left'</span>)<br><br>
+<span class="code-comment"># Pivot tables</span><br>
+pivot = pd.pivot_table(df, <br>
+                       values=<span class="code-string">'sales'</span>, <br>
+                       index=<span class="code-string">'date'</span>, <br>
+                       columns=<span class="code-string">'category'</span>, <br>
+                       aggfunc=<span class="code-string">'sum'</span>)
+                    </code>
+                </div>
+
+                <h4>Automating Tasks with Scripts</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">import</span> pandas <span class="code-keyword">as</span> pd<br>
+<span class="code-keyword">import</span> schedule<br>
+<span class="code-keyword">import</span> time<br>
+<span class="code-keyword">from</span> datetime <span class="code-keyword">import</span> datetime<br><br>
+<span class="code-keyword">def</span> <span class="code-function">automated_report</span>():<br>
+    <span class="code-string">"""Generate daily sales report"""</span><br>
+    <span class="code-comment"># Load latest data</span><br>
+    df = pd.read_csv(<span class="code-string">'sales_data.csv'</span>)<br>
+    <br>
+    <span class="code-comment"># Calculate daily metrics</span><br>
+    today = datetime.now().date()<br>
+    daily_sales = df[df[<span class="code-string">'date'</span>] == today][<span class="code-string">'sales'</span>].sum()<br>
+    <br>
+    <span class="code-comment"># Create report</span><br>
+    report = f<span class="code-string">"Daily Sales Report - {today}\n"</span><br>
+    report += f<span class="code-string">"Total Sales: ${daily_sales:,.2f}\n"</span><br>
+    <br>
+    <span class="code-comment"># Save report</span><br>
+    <span class="code-keyword">with</span> <span class="code-function">open</span>(f<span class="code-string">'report_{today}.txt'</span>, <span class="code-string">'w'</span>) <span class="code-keyword">as</span> f:<br>
+        f.write(report)<br>
+    <br>
+    <span class="code-function">print</span>(f<span class="code-string">"Report generated for {today}"</span>)<br><br>
+<span class="code-comment"># Schedule the task</span><br>
+schedule.every().day.at(<span class="code-string">"09:00"</span>).do(automated_report)<br><br>
+<span class="code-comment"># Keep the script running</span><br>
+<span class="code-keyword">while</span> <span class="code-keyword">True</span>:<br>
+    schedule.run_pending()<br>
+    time.sleep(60)
+                    </code>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>SQL for Data Analysis</h3>
+                <h4>Essential SQL Queries</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-comment">-- Basic SELECT with filtering</span><br>
+<span class="code-keyword">SELECT</span> customer_id, order_date, total_amount<br>
+<span class="code-keyword">FROM</span> orders<br>
+<span class="code-keyword">WHERE</span> total_amount > 1000<br>
+  <span class="code-keyword">AND</span> order_date >= <span class="code-string">'2024-01-01'</span><br>
+<span class="code-keyword">ORDER BY</span> total_amount <span class="code-keyword">DESC</span>;<br><br>
+<span class="code-comment">-- JOIN operations</span><br>
+<span class="code-keyword">SELECT</span> c.customer_name, <br>
+       <span class="code-function">COUNT</span>(o.order_id) <span class="code-keyword">AS</span> order_count,<br>
+       <span class="code-function">SUM</span>(o.total_amount) <span class="code-keyword">AS</span> total_spent<br>
+<span class="code-keyword">FROM</span> customers c<br>
+<span class="code-keyword">LEFT JOIN</span> orders o <span class="code-keyword">ON</span> c.customer_id = o.customer_id<br>
+<span class="code-keyword">GROUP BY</span> c.customer_id, c.customer_name<br>
+<span class="code-keyword">HAVING</span> <span class="code-function">SUM</span>(o.total_amount) > 5000;<br><br>
+<span class="code-comment">-- Window functions</span><br>
+<span class="code-keyword">SELECT</span> customer_id,<br>
+       order_date,<br>
+       total_amount,<br>
+       <span class="code-function">ROW_NUMBER</span>() <span class="code-keyword">OVER</span> (<span class="code-keyword">PARTITION BY</span> customer_id <span class="code-keyword">ORDER BY</span> order_date) <span class="code-keyword">AS</span> order_sequence,<br>
+       <span class="code-function">SUM</span>(total_amount) <span class="code-keyword">OVER</span> (<span class="code-keyword">PARTITION BY</span> customer_id) <span class="code-keyword">AS</span> customer_total<br>
+<span class="code-keyword">FROM</span> orders;
+                    </code>
+                </div>
+
+                <h4>Common Table Expressions (CTEs)</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-comment">-- Calculate customer lifetime value with CTEs</span><br>
+<span class="code-keyword">WITH</span> customer_metrics <span class="code-keyword">AS</span> (<br>
+    <span class="code-keyword">SELECT</span> customer_id,<br>
+           <span class="code-function">COUNT</span>(<span class="code-keyword">DISTINCT</span> order_id) <span class="code-keyword">AS</span> total_orders,<br>
+           <span class="code-function">SUM</span>(total_amount) <span class="code-keyword">AS</span> total_revenue,<br>
+           <span class="code-function">MIN</span>(order_date) <span class="code-keyword">AS</span> first_order_date,<br>
+           <span class="code-function">MAX</span>(order_date) <span class="code-keyword">AS</span> last_order_date<br>
+    <span class="code-keyword">FROM</span> orders<br>
+    <span class="code-keyword">GROUP BY</span> customer_id<br>
+),<br>
+customer_segments <span class="code-keyword">AS</span> (<br>
+    <span class="code-keyword">SELECT</span> *,<br>
+           <span class="code-keyword">CASE</span> <br>
+               <span class="code-keyword">WHEN</span> total_revenue > 10000 <span class="code-keyword">THEN</span> <span class="code-string">'VIP'</span><br>
+               <span class="code-keyword">WHEN</span> total_revenue > 5000 <span class="code-keyword">THEN</span> <span class="code-string">'Gold'</span><br>
+               <span class="code-keyword">WHEN</span> total_revenue > 1000 <span class="code-keyword">THEN</span> <span class="code-string">'Silver'</span><br>
+               <span class="code-keyword">ELSE</span> <span class="code-string">'Bronze'</span><br>
+           <span class="code-keyword">END AS</span> customer_segment<br>
+    <span class="code-keyword">FROM</span> customer_metrics<br>
+)<br>
+<span class="code-keyword">SELECT</span> customer_segment,<br>
+       <span class="code-function">COUNT</span>(*) <span class="code-keyword">AS</span> customer_count,<br>
+       <span class="code-function">AVG</span>(total_revenue) <span class="code-keyword">AS</span> avg_revenue<br>
+<span class="code-keyword">FROM</span> customer_segments<br>
+<span class="code-keyword">GROUP BY</span> customer_segment;
+                    </code>
+                </div>
+
+                <h4>Python + SQL Integration</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">import</span> pandas <span class="code-keyword">as</span> pd<br>
+<span class="code-keyword">import</span> sqlite3<br>
+<span class="code-keyword">from</span> sqlalchemy <span class="code-keyword">import</span> create_engine<br><br>
+<span class="code-comment"># Connect to database</span><br>
+conn = sqlite3.connect(<span class="code-string">'database.db'</span>)<br><br>
+<span class="code-comment"># Execute SQL query and load into pandas</span><br>
+query = <span class="code-string">"""<br>
+SELECT DATE(order_date) as date,<br>
+       COUNT(*) as order_count,<br>
+       SUM(total_amount) as daily_revenue<br>
+FROM orders<br>
+WHERE order_date >= date('now', '-30 days')<br>
+GROUP BY DATE(order_date)<br>
+"""</span><br>
+df = pd.read_sql_query(query, conn)<br><br>
+<span class="code-comment"># Use SQLAlchemy for more complex operations</span><br>
+engine = create_engine(<span class="code-string">'postgresql://user:pass@localhost/db'</span>)<br>
+df.to_sql(<span class="code-string">'processed_data'</span>, engine, if_exists=<span class="code-string">'replace'</span>)
+                    </code>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>Excel/Google Sheets Skills</h3>
+                <h4>Working with Excel in Python</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">import</span> pandas <span class="code-keyword">as</span> pd<br>
+<span class="code-keyword">import</span> openpyxl<br>
+<span class="code-keyword">from</span> openpyxl.styles <span class="code-keyword">import</span> Font, PatternFill<br><br>
+<span class="code-comment"># Read Excel with multiple sheets</span><br>
+excel_file = pd.ExcelFile(<span class="code-string">'data.xlsx'</span>)<br>
+sheet_names = excel_file.sheet_names<br><br>
+<span class="code-comment"># Process each sheet</span><br>
+all_data = {}<br>
+<span class="code-keyword">for</span> sheet <span class="code-keyword">in</span> sheet_names:<br>
+    all_data[sheet] = pd.read_excel(excel_file, sheet_name=sheet)<br><br>
+<span class="code-comment"># Create pivot table equivalent</span><br>
+pivot_df = pd.pivot_table(df, <br>
+                         values=<span class="code-string">'sales'</span>, <br>
+                         index=<span class="code-string">'region'</span>, <br>
+                         columns=<span class="code-string">'product'</span>,<br>
+                         aggfunc=<span class="code-string">'sum'</span>,<br>
+                         fill_value=0)<br><br>
+<span class="code-comment"># Write formatted Excel</span><br>
+<span class="code-keyword">with</span> pd.ExcelWriter(<span class="code-string">'report.xlsx'</span>, engine=<span class="code-string">'openpyxl'</span>) <span class="code-keyword">as</span> writer:<br>
+    pivot_df.to_excel(writer, sheet_name=<span class="code-string">'Pivot'</span>)<br>
+    df.to_excel(writer, sheet_name=<span class="code-string">'Raw Data'</span>, index=<span class="code-keyword">False</span>)<br><br>
+<span class="code-comment"># VLOOKUP equivalent in pandas</span><br>
+<span class="code-comment"># Instead of VLOOKUP, use merge</span><br>
+result = pd.merge(df1, df2[[<span class="code-string">'id'</span>, <span class="code-string">'value'</span>]], on=<span class="code-string">'id'</span>, how=<span class="code-string">'left'</span>)
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Visualization -->
+        <section class="section" id="data-visualization">
+            <div class="section-header">
+                <span class="section-icon">📈</span>
+                <h2>Data Visualization</h2>
+            </div>
+
+            <div class="subsection">
+                <h3>Visualization Principles</h3>
+                <h4>Choosing the Right Chart</h4>
+                <ul>
+                    <li><strong>Line Chart:</strong> Time series data, trends over time</li>
+                    <li><strong>Bar Chart:</strong> Comparing categories, rankings</li>
+                    <li><strong>Scatter Plot:</strong> Relationships between two variables</li>
+                    <li><strong>Histogram:</strong> Distribution of a single variable</li>
+                    <li><strong>Heatmap:</strong> Correlation matrices, patterns in 2D data</li>
+                    <li><strong>Box Plot:</strong> Distribution and outliers</li>
+                </ul>
+
+                <h4>Matplotlib Basics</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">import</span> matplotlib.pyplot <span class="code-keyword">as</span> plt<br>
+<span class="code-keyword">import</span> numpy <span class="code-keyword">as</span> np<br><br>
+<span class="code-comment"># Set style for better aesthetics</span><br>
+plt.style.use(<span class="code-string">'seaborn-v0_8-darkgrid'</span>)<br><br>
+<span class="code-comment"># Create figure with subplots</span><br>
+fig, axes = plt.subplots(2, 2, figsize=(12, 10))<br><br>
+<span class="code-comment"># Line plot</span><br>
+x = np.linspace(0, 10, 100)<br>
+axes[0, 0].plot(x, np.sin(x), label=<span class="code-string">'sin(x)'</span>)<br>
+axes[0, 0].plot(x, np.cos(x), label=<span class="code-string">'cos(x)'</span>)<br>
+axes[0, 0].set_title(<span class="code-string">'Line Plot'</span>)<br>
+axes[0, 0].legend()<br><br>
+<span class="code-comment"># Bar plot</span><br>
+categories = [<span class="code-string">'A'</span>, <span class="code-string">'B'</span>, <span class="code-string">'C'</span>, <span class="code-string">'D'</span>]<br>
+values = [23, 45, 56, 78]<br>
+axes[0, 1].bar(categories, values, color=<span class="code-string">'skyblue'</span>)<br>
+axes[0, 1].set_title(<span class="code-string">'Bar Chart'</span>)<br><br>
+<span class="code-comment"># Scatter plot</span><br>
+x_scatter = np.random.randn(100)<br>
+y_scatter = 2 * x_scatter + np.random.randn(100)<br>
+axes[1, 0].scatter(x_scatter, y_scatter, alpha=0.6)<br>
+axes[1, 0].set_title(<span class="code-string">'Scatter Plot'</span>)<br><br>
+<span class="code-comment"># Histogram</span><br>
+data = np.random.normal(100, 15, 1000)<br>
+axes[1, 1].hist(data, bins=30, edgecolor=<span class="code-string">'black'</span>)<br>
+axes[1, 1].set_title(<span class="code-string">'Histogram'</span>)<br><br>
+plt.tight_layout()<br>
+plt.show()
+                    </code>
+                </div>
+
+                <h4>Seaborn for Statistical Plots</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">import</span> seaborn <span class="code-keyword">as</span> sns<br>
+<span class="code-keyword">import</span> pandas <span class="code-keyword">as</span> pd<br><br>
+<span class="code-comment"># Load sample data</span><br>
+tips = sns.load_dataset(<span class="code-string">'tips'</span>)<br><br>
+<span class="code-comment"># Create various plots</span><br>
+fig, axes = plt.subplots(2, 2, figsize=(14, 10))<br><br>
+<span class="code-comment"># Box plot</span><br>
+sns.boxplot(data=tips, x=<span class="code-string">'day'</span>, y=<span class="code-string">'total_bill'</span>, ax=axes[0, 0])<br>
+axes[0, 0].set_title(<span class="code-string">'Bill Distribution by Day'</span>)<br><br>
+<span class="code-comment"># Violin plot</span><br>
+sns.violinplot(data=tips, x=<span class="code-string">'day'</span>, y=<span class="code-string">'total_bill'</span>, hue=<span class="code-string">'sex'</span>, ax=axes[0, 1])<br>
+axes[0, 1].set_title(<span class="code-string">'Bill Distribution by Day and Gender'</span>)<br><br>
+<span class="code-comment"># Correlation heatmap</span><br>
+corr = tips.select_dtypes(include=[<span class="code-string">'float64'</span>, <span class="code-string">'int64'</span>]).corr()<br>
+sns.heatmap(corr, annot=<span class="code-keyword">True</span>, cmap=<span class="code-string">'coolwarm'</span>, ax=axes[1, 0])<br>
+axes[1, 0].set_title(<span class="code-string">'Correlation Matrix'</span>)<br><br>
+<span class="code-comment"># Regression plot</span><br>
+sns.regplot(data=tips, x=<span class="code-string">'total_bill'</span>, y=<span class="code-string">'tip'</span>, ax=axes[1, 1])<br>
+axes[1, 1].set_title(<span class="code-string">'Bill vs Tip Regression'</span>)<br><br>
+plt.tight_layout()<br>
+plt.show()
+                    </code>
+                </div>
+
+                <h4>Interactive Visualizations with Plotly</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">import</span> plotly.graph_objects <span class="code-keyword">as</span> go<br>
+<span class="code-keyword">import</span> plotly.express <span class="code-keyword">as</span> px<br><br>
+<span class="code-comment"># Create interactive line chart</span><br>
+fig = go.Figure()<br>
+fig.add_trace(go.Scatter(x=df[<span class="code-string">'date'</span>], y=df[<span class="code-string">'sales'</span>],<br>
+                        mode=<span class="code-string">'lines+markers'</span>,<br>
+                        name=<span class="code-string">'Sales'</span>,<br>
+                        hovertemplate=<span class="code-string">'Date: %{x}<br>Sales: $%{y:,.2f}'</span>))<br><br>
+fig.update_layout(title=<span class="code-string">'Sales Over Time'</span>,<br>
+                  xaxis_title=<span class="code-string">'Date'</span>,<br>
+                  yaxis_title=<span class="code-string">'Sales ($)'</span>,<br>
+                  hovermode=<span class="code-string">'x unified'</span>)<br><br>
+<span class="code-comment"># Create interactive dashboard</span><br>
+fig = px.scatter(df, x=<span class="code-string">'marketing_spend'</span>, y=<span class="code-string">'sales'</span>,<br>
+                 size=<span class="code-string">'profit'</span>, color=<span class="code-string">'region'</span>,<br>
+                 hover_data=[<span class="code-string">'product'</span>, <span class="code-string">'date'</span>],<br>
+                 title=<span class="code-string">'Marketing Spend vs Sales Analysis'</span>)<br><br>
+fig.show()
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Management & Engineering -->
+        <section class="section" id="data-management">
+            <div class="section-header">
+                <span class="section-icon">🗄️</span>
+                <h2>Data Management & Engineering</h2>
+            </div>
+
+            <div class="subsection">
+                <h3>Database Fundamentals</h3>
+                <h4>Working with Databases in Python</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">import</span> psycopg2<br>
+<span class="code-keyword">import</span> pymongo<br>
+<span class="code-keyword">from</span> sqlalchemy <span class="code-keyword">import</span> create_engine<br><br>
+<span class="code-comment"># PostgreSQL connection</span><br>
+conn = psycopg2.connect(<br>
+    host=<span class="code-string">"localhost"</span>,<br>
+    database=<span class="code-string">"analytics"</span>,<br>
+    user=<span class="code-string">"analyst"</span>,<br>
+    password=<span class="code-string">"password"</span><br>
+)<br><br>
+<span class="code-comment"># Execute query</span><br>
+cursor = conn.cursor()<br>
+cursor.execute(<span class="code-string">"SELECT * FROM sales WHERE date >= '2024-01-01'"</span>)<br>
+results = cursor.fetchall()<br><br>
+<span class="code-comment"># MongoDB connection</span><br>
+client = pymongo.MongoClient(<span class="code-string">"mongodb://localhost:27017/"</span>)<br>
+db = client[<span class="code-string">"analytics"</span>]<br>
+collection = db[<span class="code-string">"user_events"</span>]<br><br>
+<span class="code-comment"># Query MongoDB</span><br>
+pipeline = [<br>
+    {<span class="code-string">"$match"</span>: {<span class="code-string">"event_type"</span>: <span class="code-string">"purchase"</span>}},<br>
+    {<span class="code-string">"$group"</span>: {<br>
+        <span class="code-string">"_id"</span>: <span class="code-string">"$user_id"</span>,<br>
+        <span class="code-string">"total_purchases"</span>: {<span class="code-string">"$sum"</span>: 1},<br>
+        <span class="code-string">"total_amount"</span>: {<span class="code-string">"$sum"</span>: <span class="code-string">"$amount"</span>}<br>
+    }}<br>
+]<br>
+results = list(collection.aggregate(pipeline))
+                    </code>
+                </div>
+
+                <h4>ETL Process Example</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">import</span> pandas <span class="code-keyword">as</span> pd<br>
+<span class="code-keyword">from</span> datetime <span class="code-keyword">import</span> datetime<br>
+<span class="code-keyword">import</span> logging<br><br>
+<span class="code-comment"># Configure logging</span><br>
+logging.basicConfig(level=logging.INFO)<br>
+logger = logging.getLogger(__name__)<br><br>
+<span class="code-keyword">def</span> <span class="code-function">extract</span>(source_path):<br>
+    <span class="code-string">"""Extract data from source"""</span><br>
+    logger.info(f<span class="code-string">"Extracting data from {source_path}"</span>)<br>
+    <span class="code-keyword">try</span>:<br>
+        df = pd.read_csv(source_path)<br>
+        logger.info(f<span class="code-string">"Extracted {len(df)} rows"</span>)<br>
+        <span class="code-keyword">return</span> df<br>
+    <span class="code-keyword">except</span> Exception <span class="code-keyword">as</span> e:<br>
+        logger.error(f<span class="code-string">"Extraction failed: {e}"</span>)<br>
+        <span class="code-keyword">raise</span><br><br>
+<span class="code-keyword">def</span> <span class="code-function">transform</span>(df):<br>
+    <span class="code-string">"""Transform data"""</span><br>
+    logger.info(<span class="code-string">"Starting transformation"</span>)<br>
+    <br>
+    <span class="code-comment"># Clean data</span><br>
+    df = df.dropna(subset=[<span class="code-string">'customer_id'</span>, <span class="code-string">'amount'</span>])<br>
+    <br>
+    <span class="code-comment"># Transform dates</span><br>
+    df[<span class="code-string">'date'</span>] = pd.to_datetime(df[<span class="code-string">'date'</span>])<br>
+    <br>
+    <span class="code-comment"># Add calculated fields</span><br>
+    df[<span class="code-string">'year'</span>] = df[<span class="code-string">'date'</span>].dt.year<br>
+    df[<span class="code-string">'month'</span>] = df[<span class="code-string">'date'</span>].dt.month<br>
+    df[<span class="code-string">'quarter'</span>] = df[<span class="code-string">'date'</span>].dt.quarter<br>
+    <br>
+    <span class="code-comment"># Validate data</span><br>
+    assert df[<span class="code-string">'amount'</span>].min() >= 0, <span class="code-string">"Negative amounts found"</span><br>
+    <br>
+    logger.info(f<span class="code-string">"Transformed {len(df)} rows"</span>)<br>
+    <span class="code-keyword">return</span> df<br><br>
+<span class="code-keyword">def</span> <span class="code-function">load</span>(df, target_table):<br>
+    <span class="code-string">"""Load data to destination"""</span><br>
+    logger.info(f<span class="code-string">"Loading data to {target_table}"</span>)<br>
+    <br>
+    engine = create_engine(<span class="code-string">'postgresql://user:pass@localhost/db'</span>)<br>
+    df.to_sql(target_table, engine, if_exists=<span class="code-string">'append'</span>, index=<span class="code-keyword">False</span>)<br>
+    <br>
+    logger.info(<span class="code-string">"Load completed successfully"</span>)<br><br>
+<span class="code-comment"># Run ETL pipeline</span><br>
+<span class="code-keyword">if</span> __name__ == <span class="code-string">"__main__"</span>:<br>
+    data = extract(<span class="code-string">'raw_sales.csv'</span>)<br>
+    transformed = transform(data)<br>
+    load(transformed, <span class="code-string">'sales_fact'</span>)
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <!-- Business & Domain Knowledge -->
+        <section class="section" id="business-knowledge">
+            <div class="section-header">
+                <span class="section-icon">📚</span>
+                <h2>Business & Domain Knowledge</h2>
+            </div>
+
+            <div class="subsection">
+                <h3>Key Performance Indicators (KPIs)</h3>
+                <h4>Common Business Metrics</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">import</span> pandas <span class="code-keyword">as</span> pd<br>
+<span class="code-keyword">import</span> numpy <span class="code-keyword">as</span> np<br><br>
+<span class="code-keyword">class</span> <span class="code-function">BusinessMetrics</span>:<br>
+    <span class="code-string">"""Calculate common business KPIs"""</span><br>
+    <br>
+    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(self, df):<br>
+        self.df = df<br>
+    <br>
+    <span class="code-keyword">def</span> <span class="code-function">conversion_rate</span>(self, conversions_col, visitors_col):<br>
+        <span class="code-string">"""Calculate conversion rate"""</span><br>
+        conversions = self.df[conversions_col].sum()<br>
+        visitors = self.df[visitors_col].sum()<br>
+        <span class="code-keyword">return</span> (conversions / visitors) * 100<br>
+    <br>
+    <span class="code-keyword">def</span> <span class="code-function">customer_churn_rate</span>(self, churned_col, total_col):<br>
+        <span class="code-string">"""Calculate churn rate"""</span><br>
+        churned = self.df[churned_col].sum()<br>
+        total = self.df[total_col].sum()<br>
+        <span class="code-keyword">return</span> (churned / total) * 100<br>
+    <br>
+    <span class="code-keyword">def</span> <span class="code-function">customer_lifetime_value</span>(self, revenue_col, customer_col, periods=12):<br>
+        <span class="code-string">"""Calculate CLV"""</span><br>
+        avg_purchase_value = self.df[revenue_col].sum() / self.df[customer_col].nunique()<br>
+        purchase_frequency = len(self.df) / self.df[customer_col].nunique()<br>
+        <span class="code-keyword">return</span> avg_purchase_value * purchase_frequency * periods<br>
+    <br>
+    <span class="code-keyword">def</span> <span class="code-function">retention_rate</span>(self, cohort_df):<br>
+        <span class="code-string">"""Calculate retention by cohort"""</span><br>
+        cohort_pivot = cohort_df.pivot_table(<br>
+            index=<span class="code-string">'cohort_month'</span>,<br>
+            columns=<span class="code-string">'months_since_join'</span>,<br>
+            values=<span class="code-string">'customer_id'</span>,<br>
+            aggfunc=<span class="code-string">'nunique'</span><br>
+        )<br>
+        <span class="code-comment"># Calculate retention percentage</span><br>
+        retention = cohort_pivot.divide(cohort_pivot.iloc[:, 0], axis=0) * 100<br>
+        <span class="code-keyword">return</span> retention<br>
+    <br>
+    <span class="code-keyword">def</span> <span class="code-function">roi</span>(self, revenue_col, cost_col):<br>
+        <span class="code-string">"""Calculate Return on Investment"""</span><br>
+        total_revenue = self.df[revenue_col].sum()<br>
+        total_cost = self.df[cost_col].sum()<br>
+        <span class="code-keyword">return</span> ((total_revenue - total_cost) / total_cost) * 100<br><br>
+<span class="code-comment"># Example usage</span><br>
+metrics = BusinessMetrics(sales_df)<br>
+<span class="code-function">print</span>(f<span class="code-string">"Conversion Rate: {metrics.conversion_rate('purchases', 'visitors'):.2f}%"</span>)<br>
+<span class="code-function">print</span>(f<span class="code-string">"Customer Churn: {metrics.customer_churn_rate('churned', 'total_customers'):.2f}%"</span>)<br>
+<span class="code-function">print</span>(f<span class="code-string">"CLV: ${metrics.customer_lifetime_value('revenue', 'customer_id'):,.2f}"</span>)
+                    </code>
+                </div>
+
+                <h4>Industry-Specific Metrics</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-comment"># E-commerce Metrics</span><br>
+<span class="code-keyword">def</span> <span class="code-function">calculate_ecommerce_metrics</span>(df):<br>
+    metrics = {}<br>
+    <br>
+    <span class="code-comment"># Average Order Value (AOV)</span><br>
+    metrics[<span class="code-string">'aov'</span>] = df[<span class="code-string">'order_total'</span>].mean()<br>
+    <br>
+    <span class="code-comment"># Cart Abandonment Rate</span><br>
+    carts_created = df[<span class="code-string">'cart_created'</span>].sum()<br>
+    carts_purchased = df[<span class="code-string">'cart_purchased'</span>].sum()<br>
+    metrics[<span class="code-string">'cart_abandonment'</span>] = ((carts_created - carts_purchased) / carts_created) * 100<br>
+    <br>
+    <span class="code-comment"># Product Return Rate</span><br>
+    metrics[<span class="code-string">'return_rate'</span>] = (df[<span class="code-string">'returned'</span>].sum() / len(df)) * 100<br>
+    <br>
+    <span class="code-keyword">return</span> metrics<br><br>
+<span class="code-comment"># SaaS Metrics</span><br>
+<span class="code-keyword">def</span> <span class="code-function">calculate_saas_metrics</span>(df):<br>
+    metrics = {}<br>
+    <br>
+    <span class="code-comment"># Monthly Recurring Revenue (MRR)</span><br>
+    metrics[<span class="code-string">'mrr'</span>] = df[df[<span class="code-string">'status'</span>] == <span class="code-string">'active'</span>][<span class="code-string">'monthly_fee'</span>].sum()<br>
+    <br>
+    <span class="code-comment"># Annual Recurring Revenue (ARR)</span><br>
+    metrics[<span class="code-string">'arr'</span>] = metrics[<span class="code-string">'mrr'</span>] * 12<br>
+    <br>
+    <span class="code-comment"># Customer Acquisition Cost (CAC)</span><br>
+    marketing_spend = df[<span class="code-string">'marketing_cost'</span>].sum()<br>
+    new_customers = df[df[<span class="code-string">'customer_type'</span>] == <span class="code-string">'new'</span>][<span class="code-string">'customer_id'</span>].nunique()<br>
+    metrics[<span class="code-string">'cac'</span>] = marketing_spend / new_customers<br>
+    <br>
+    <span class="code-keyword">return</span> metrics
+                    </code>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>Data-Driven Decision Making</h3>
+                <h4>Creating Business Narratives</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">def</span> <span class="code-function">generate_executive_summary</span>(df, metrics):<br>
+    <span class="code-string">"""Create narrative from data analysis"""</span><br>
+    summary = []<br>
+    <br>
+    <span class="code-comment"># Trend Analysis</span><br>
+    current_month = df[df[<span class="code-string">'month'</span>] == df[<span class="code-string">'month'</span>].max()][<span class="code-string">'revenue'</span>].sum()<br>
+    previous_month = df[df[<span class="code-string">'month'</span>] == df[<span class="code-string">'month'</span>].max() - 1][<span class="code-string">'revenue'</span>].sum()<br>
+    growth = ((current_month - previous_month) / previous_month) * 100<br>
+    <br>
+    <span class="code-keyword">if</span> growth > 0:<br>
+        summary.append(f<span class="code-string">"Revenue grew by {growth:.1f}% month-over-month"</span>)<br>
+    <span class="code-keyword">else</span>:<br>
+        summary.append(f<span class="code-string">"Revenue declined by {abs(growth):.1f}% month-over-month"</span>)<br>
+    <br>
+    <span class="code-comment"># Key Driver Analysis</span><br>
+    top_product = df.groupby(<span class="code-string">'product'</span>)[<span class="code-string">'revenue'</span>].sum().idxmax()<br>
+    product_revenue = df[df[<span class="code-string">'product'</span>] == top_product][<span class="code-string">'revenue'</span>].sum()<br>
+    product_pct = (product_revenue / df[<span class="code-string">'revenue'</span>].sum()) * 100<br>
+    <br>
+    summary.append(f<span class="code-string">"{top_product} drives {product_pct:.1f}% of total revenue"</span>)<br>
+    <br>
+    <span class="code-comment"># Recommendations</span><br>
+    <span class="code-keyword">if</span> metrics[<span class="code-string">'churn_rate'</span>] > 5:<br>
+        summary.append(<span class="code-string">"High churn rate detected - recommend retention campaign"</span>)<br>
+    <br>
+    <span class="code-keyword">return</span> <span class="code-string">"\n"</span>.join(summary)
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <!-- Machine Learning Basics -->
+        <section class="section" id="machine-learning">
+            <div class="section-header">
+                <span class="section-icon">🧠</span>
+                <h2>Basic Machine Learning & Predictive Analytics</h2>
+            </div>
+
+            <div class="subsection">
+                <h3>Supervised Learning</h3>
+                <h4>Regression Example</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">from</span> sklearn.model_selection <span class="code-keyword">import</span> train_test_split<br>
+<span class="code-keyword">from</span> sklearn.linear_model <span class="code-keyword">import</span> LinearRegression<br>
+<span class="code-keyword">from</span> sklearn.metrics <span class="code-keyword">import</span> mean_squared_error, r2_score<br>
+<span class="code-keyword">import</span> numpy <span class="code-keyword">as</span> np<br><br>
+<span class="code-comment"># Prepare data</span><br>
+X = df[[<span class="code-string">'marketing_spend'</span>, <span class="code-string">'num_salespeople'</span>, <span class="code-string">'market_size'</span>]]<br>
+y = df[<span class="code-string">'revenue'</span>]<br><br>
+<span class="code-comment"># Split data</span><br>
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)<br><br>
+<span class="code-comment"># Train model</span><br>
+model = LinearRegression()<br>
+model.fit(X_train, y_train)<br><br>
+<span class="code-comment"># Make predictions</span><br>
+y_pred = model.predict(X_test)<br><br>
+<span class="code-comment"># Evaluate model</span><br>
+mse = mean_squared_error(y_test, y_pred)<br>
+r2 = r2_score(y_test, y_pred)<br><br>
+<span class="code-function">print</span>(f<span class="code-string">"R² Score: {r2:.3f}"</span>)<br>
+<span class="code-function">print</span>(f<span class="code-string">"RMSE: ${np.sqrt(mse):,.2f}"</span>)<br><br>
+<span class="code-comment"># Feature importance</span><br>
+<span class="code-keyword">for</span> feature, coef <span class="code-keyword">in</span> <span class="code-function">zip</span>(X.columns, model.coef_):<br>
+    <span class="code-function">print</span>(f<span class="code-string">"{feature}: ${coef:,.2f} impact per unit"</span>)
+                    </code>
+                </div>
+
+                <h4>Classification Example</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">from</span> sklearn.ensemble <span class="code-keyword">import</span> RandomForestClassifier<br>
+<span class="code-keyword">from</span> sklearn.metrics <span class="code-keyword">import</span> classification_report, confusion_matrix<br>
+<span class="code-keyword">from</span> sklearn.preprocessing <span class="code-keyword">import</span> StandardScaler<br><br>
+<span class="code-comment"># Prepare data for churn prediction</span><br>
+features = [<span class="code-string">'days_since_last_purchase'</span>, <span class="code-string">'total_spent'</span>, <span class="code-string">'num_purchases'</span>, <span class="code-string">'avg_order_value'</span>]<br>
+X = df[features]<br>
+y = df[<span class="code-string">'churned'</span>]<br><br>
+<span class="code-comment"># Scale features</span><br>
+scaler = StandardScaler()<br>
+X_scaled = scaler.fit_transform(X)<br><br>
+<span class="code-comment"># Split and train</span><br>
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)<br><br>
+<span class="code-comment"># Train Random Forest</span><br>
+rf_model = RandomForestClassifier(n_estimators=100, random_state=42)<br>
+rf_model.fit(X_train, y_train)<br><br>
+<span class="code-comment"># Predictions and evaluation</span><br>
+y_pred = rf_model.predict(X_test)<br><br>
+<span class="code-function">print</span>(<span class="code-string">"Classification Report:"</span>)<br>
+<span class="code-function">print</span>(classification_report(y_test, y_pred))<br><br>
+<span class="code-comment"># Feature importance</span><br>
+feature_importance = pd.DataFrame({<br>
+    <span class="code-string">'feature'</span>: features,<br>
+    <span class="code-string">'importance'</span>: rf_model.feature_importances_<br>
+}).sort_values(<span class="code-string">'importance'</span>, ascending=<span class="code-keyword">False</span>)<br><br>
+<span class="code-function">print</span>(<span class="code-string">"\nFeature Importance:"</span>)<br>
+<span class="code-function">print</span>(feature_importance)
+                    </code>
+                </div>
+
+                <h4>Cross-Validation and Model Selection</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">from</span> sklearn.model_selection <span class="code-keyword">import</span> cross_val_score, GridSearchCV<br>
+<span class="code-keyword">from</span> sklearn.ensemble <span class="code-keyword">import</span> GradientBoostingClassifier<br><br>
+<span class="code-comment"># Cross-validation</span><br>
+cv_scores = cross_val_score(rf_model, X_scaled, y, cv=5, scoring=<span class="code-string">'accuracy'</span>)<br>
+<span class="code-function">print</span>(f<span class="code-string">"CV Accuracy: {cv_scores.mean():.3f} (+/- {cv_scores.std() * 2:.3f})"</span>)<br><br>
+<span class="code-comment"># Hyperparameter tuning</span><br>
+param_grid = {<br>
+    <span class="code-string">'n_estimators'</span>: [100, 200, 300],<br>
+    <span class="code-string">'max_depth'</span>: [5, 10, 15, <span class="code-keyword">None</span>],<br>
+    <span class="code-string">'min_samples_split'</span>: [2, 5, 10]<br>
+}<br><br>
+grid_search = GridSearchCV(RandomForestClassifier(random_state=42),<br>
+                          param_grid,<br>
+                          cv=5,<br>
+                          scoring=<span class="code-string">'accuracy'</span>,<br>
+                          n_jobs=-1)<br><br>
+grid_search.fit(X_train, y_train)<br><br>
+<span class="code-function">print</span>(f<span class="code-string">"Best parameters: {grid_search.best_params_}"</span>)<br>
+<span class="code-function">print</span>(f<span class="code-string">"Best CV score: {grid_search.best_score_:.3f}"</span>)
+                    </code>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>Unsupervised Learning</h3>
+                <h4>Customer Segmentation with K-Means</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">from</span> sklearn.cluster <span class="code-keyword">import</span> KMeans<br>
+<span class="code-keyword">from</span> sklearn.preprocessing <span class="code-keyword">import</span> StandardScaler<br>
+<span class="code-keyword">import</span> matplotlib.pyplot <span class="code-keyword">as</span> plt<br><br>
+<span class="code-comment"># Prepare data for clustering</span><br>
+features = [<span class="code-string">'recency'</span>, <span class="code-string">'frequency'</span>, <span class="code-string">'monetary'</span>]<br>
+X = df[features]<br><br>
+<span class="code-comment"># Scale features</span><br>
+scaler = StandardScaler()<br>
+X_scaled = scaler.fit_transform(X)<br><br>
+<span class="code-comment"># Find optimal number of clusters using elbow method</span><br>
+inertias = []<br>
+K_range = <span class="code-function">range</span>(1, 11)<br><br>
+<span class="code-keyword">for</span> k <span class="code-keyword">in</span> K_range:<br>
+    kmeans = KMeans(n_clusters=k, random_state=42)<br>
+    kmeans.fit(X_scaled)<br>
+    inertias.append(kmeans.inertia_)<br><br>
+<span class="code-comment"># Plot elbow curve</span><br>
+plt.figure(figsize=(10, 6))<br>
+plt.plot(K_range, inertias, <span class="code-string">'bo-'</span>)<br>
+plt.xlabel(<span class="code-string">'Number of Clusters (k)'</span>)<br>
+plt.ylabel(<span class="code-string">'Inertia'</span>)<br>
+plt.title(<span class="code-string">'Elbow Method for Optimal k'</span>)<br>
+plt.show()<br><br>
+<span class="code-comment"># Apply K-means with optimal k</span><br>
+optimal_k = 4<br>
+kmeans = KMeans(n_clusters=optimal_k, random_state=42)<br>
+df[<span class="code-string">'segment'</span>] = kmeans.fit_predict(X_scaled)<br><br>
+<span class="code-comment"># Analyze segments</span><br>
+segment_analysis = df.groupby(<span class="code-string">'segment'</span>)[features].mean()<br>
+<span class="code-function">print</span>(<span class="code-string">"Customer Segments:"</span>)<br>
+<span class="code-function">print</span>(segment_analysis)
+                    </code>
+                </div>
+
+                <h4>Dimensionality Reduction with PCA</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">from</span> sklearn.decomposition <span class="code-keyword">import</span> PCA<br>
+<span class="code-keyword">import</span> matplotlib.pyplot <span class="code-keyword">as</span> plt<br><br>
+<span class="code-comment"># Apply PCA</span><br>
+pca = PCA(n_components=2)<br>
+X_pca = pca.fit_transform(X_scaled)<br><br>
+<span class="code-comment"># Explained variance</span><br>
+<span class="code-function">print</span>(f<span class="code-string">"Explained variance ratio: {pca.explained_variance_ratio_}"</span>)<br>
+<span class="code-function">print</span>(f<span class="code-string">"Total variance explained: {sum(pca.explained_variance_ratio_):.2%}"</span>)<br><br>
+<span class="code-comment"># Visualize PCA results</span><br>
+plt.figure(figsize=(10, 8))<br>
+scatter = plt.scatter(X_pca[:, 0], X_pca[:, 1], c=df[<span class="code-string">'segment'</span>], cmap=<span class="code-string">'viridis'</span>)<br>
+plt.xlabel(<span class="code-string">'First Principal Component'</span>)<br>
+plt.ylabel(<span class="code-string">'Second Principal Component'</span>)<br>
+plt.title(<span class="code-string">'Customer Segments in PCA Space'</span>)<br>
+plt.colorbar(scatter)<br>
+plt.show()
+                    </code>
+                </div>
+            </div>
+        </section>
+
+        <!-- Soft Skills -->
+        <section class="section" id="soft-skills">
+            <div class="section-header">
+                <span class="section-icon">📤</span>
+                <h2>Soft Skills & Communication</h2>
+            </div>
+
+            <div class="subsection">
+                <h3>Storytelling with Data</h3>
+                <h4>Creating Compelling Data Stories</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">import</span> matplotlib.pyplot <span class="code-keyword">as</span> plt<br>
+<span class="code-keyword">import</span> seaborn <span class="code-keyword">as</span> sns<br><br>
+<span class="code-keyword">def</span> <span class="code-function">create_story_visualization</span>(df, story_type=<span class="code-string">'growth'</span>):<br>
+    <span class="code-string">"""Create visualizations that tell a story"""</span><br>
+    <br>
+    fig, axes = plt.subplots(2, 2, figsize=(15, 10))<br>
+    fig.suptitle(<span class="code-string">'The Growth Story: From Struggle to Success'</span>, fontsize=16)<br>
+    <br>
+    <span class="code-comment"># Act 1: The Challenge</span><br>
+    ax1 = axes[0, 0]<br>
+    early_data = df[df[<span class="code-string">'quarter'</span>] <= 2]<br>
+    ax1.plot(early_data[<span class="code-string">'month'</span>], early_data[<span class="code-string">'revenue'</span>], <span class="code-string">'r-'</span>, linewidth=2)<br>
+    ax1.set_title(<span class="code-string">'Act 1: The Challenge - Declining Revenue'</span>)<br>
+    ax1.set_ylabel(<span class="code-string">'Revenue ($)'</span>)<br>
+    <br>
+    <span class="code-comment"># Act 2: The Intervention</span><br>
+    ax2 = axes[0, 1]<br>
+    intervention_data = df[df[<span class="code-string">'quarter'</span>] == 3]<br>
+    ax2.bar(intervention_data[<span class="code-string">'initiative'</span>], intervention_data[<span class="code-string">'impact'</span>])<br>
+    ax2.set_title(<span class="code-string">'Act 2: The Intervention - New Strategies'</span>)<br>
+    ax2.set_ylabel(<span class="code-string">'Impact Score'</span>)<br>
+    <br>
+    <span class="code-comment"># Act 3: The Turnaround</span><br>
+    ax3 = axes[1, 0]<br>
+    later_data = df[df[<span class="code-string">'quarter'</span>] >= 3]<br>
+    ax3.plot(later_data[<span class="code-string">'month'</span>], later_data[<span class="code-string">'revenue'</span>], <span class="code-string">'g-'</span>, linewidth=2)<br>
+    ax3.set_title(<span class="code-string">'Act 3: The Turnaround - Revenue Recovery'</span>)<br>
+    ax3.set_ylabel(<span class="code-string">'Revenue ($)'</span>)<br>
+    <br>
+    <span class="code-comment"># Act 4: The Future</span><br>
+    ax4 = axes[1, 1]<br>
+    forecast_data = df[df[<span class="code-string">'type'</span>] == <span class="code-string">'forecast'</span>]<br>
+    ax4.plot(forecast_data[<span class="code-string">'month'</span>], forecast_data[<span class="code-string">'revenue'</span>], <span class="code-string">'b--'</span>, linewidth=2)<br>
+    ax4.fill_between(forecast_data[<span class="code-string">'month'</span>], <br>
+                     forecast_data[<span class="code-string">'revenue_low'</span>], <br>
+                     forecast_data[<span class="code-string">'revenue_high'</span>], <br>
+                     alpha=0.3)<br>
+    ax4.set_title(<span class="code-string">'Act 4: The Future - Projected Growth'</span>)<br>
+    ax4.set_ylabel(<span class="code-string">'Revenue ($)'</span>)<br>
+    <br>
+    plt.tight_layout()<br>
+    <span class="code-keyword">return</span> fig
+                    </code>
+                </div>
+
+                <h4>Executive Reporting Template</h4>
+                <div class="code-example">
+                    <code>
+<span class="code-keyword">def</span> <span class="code-function">generate_executive_report</span>(df, period=<span class="code-string">'Q4 2024'</span>):<br>
+    <span class="code-string">"""Generate executive-level report with key insights"""</span><br>
+    <br>
+    report = f<span class="code-string">"""<br>
+    EXECUTIVE SUMMARY - {period}<br>
+    {'=' * 50}<br>
+    <br>
+    KEY METRICS:<br>
+    • Revenue: ${df['revenue'].sum():,.0f} ({calculate_growth(df)}% YoY)<br>
+    • Customer Base: {df['customer_id'].nunique():,} ({calculate_retention(df)}% retention)<br>
+    • Market Share: {calculate_market_share(df)}% (+{calculate_share_growth(df)} pp)<br>
+    <br>
+    TOP 3 INSIGHTS:<br>
+    1. {get_top_insight(df, 1)}<br>
+    2. {get_top_insight(df, 2)}<br>
+    3. {get_top_insight(df, 3)}<br>
+    <br>
+    RECOMMENDED ACTIONS:<br>
+    1. {get_recommendation(df, 1)}<br>
+    2. {get_recommendation(df, 2)}<br>
+    3. {get_recommendation(df, 3)}<br>
+    <br>
+    RISKS & MITIGATION:<br>
+    • {identify_risk(df, 1)}<br>
+    • {identify_risk(df, 2)}<br>
+    """</span><br>
+    <br>
+    <span class="code-keyword">return</span> report<br><br>
+<span class="code-comment"># Best practices for presentations</span><br>
+presentation_tips = {<br>
+    <span class="code-string">'structure'</span>: [<br>
+        <span class="code-string">'Start with the conclusion'</span>,<br>
+        <span class="code-string">'Support with data'</span>,<br>
+        <span class="code-string">'Address concerns proactively'</span>,<br>
+        <span class="code-string">'End with clear next steps'</span><br>
+    ],<br>
+    <span class="code-string">'visual_rules'</span>: [<br>
+        <span class="code-string">'One message per slide'</span>,<br>
+        <span class="code-string">'Minimal text, maximum impact'</span>,<br>
+        <span class="code-string">'Consistent color scheme'</span>,<br>
+        <span class="code-string">'Data-ink ratio optimization'</span><br>
+    ],<br>
+    <span class="code-string">'delivery'</span>: [<br>
+        <span class="code-string">'Know your audience'</span>,<br>
+        <span class="code-string">'Practice the narrative'</span>,<br>
+        <span class="code-string">'Prepare for questions'</span>,<br>
+        <span class="code-string">'Have backup slides ready'</span><br>
+    ]<br>
+}
+                    </code>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const searchResults = document.getElementById('searchResults');
+        const sections = document.querySelectorAll('.section, .subsection, h3, h4, li, code');
+
+        // Create search index
+        const searchIndex = [];
+        sections.forEach((element, index) => {
+            const text = element.textContent || '';
+            const id = element.id || element.closest('.section')?.id || '';
+            searchIndex.push({
+                element: element,
+                text: text.toLowerCase(),
+                displayText: text.substring(0, 100),
+                id: id,
+                index: index
+            });
+        });
+
+        // Search function
+        function performSearch(query) {
+            if (!query) {
+                searchResults.style.display = 'none';
+                return;
+            }
+
+            const results = searchIndex.filter(item => 
+                item.text.includes(query.toLowerCase())
+            ).slice(0, 10);
+
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="search-result-item">No results found</div>';
+            } else {
+                searchResults.innerHTML = results.map(result => {
+                    const regex = new RegExp(`(${query})`, 'gi');
+                    const highlighted = result.displayText.replace(regex, '<span class="search-match">$1</span>');
+                    return `<div class="search-result-item" data-element-index="${result.index}">${highlighted}...</div>`;
+                }).join('');
+            }
+
+            searchResults.style.display = 'block';
+        }
+
+        // Search input handler
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+            performSearch(query);
+        });
+
+        // Click handler for search results
+        searchResults.addEventListener('click', (e) => {
+            const resultItem = e.target.closest('.search-result-item');
+            if (resultItem) {
+                const elementIndex = parseInt(resultItem.dataset.elementIndex);
+                const targetElement = searchIndex[elementIndex].element;
+                
+                // Scroll to element
+                targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Highlight element
+                targetElement.style.transition = 'background-color 0.3s ease';
+                targetElement.style.backgroundColor = 'rgba(0, 122, 255, 0.2)';
+                setTimeout(() => {
+                    targetElement.style.backgroundColor = '';
+                }, 2000);
+                
+                // Hide search results
+                searchResults.style.display = 'none';
+                searchInput.value = '';
+            }
+        });
+
+        // Hide search results when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-container')) {
+                searchResults.style.display = 'none';
+            }
+        });
+
+        // Scroll indicator
+        window.addEventListener('scroll', () => {
+            const scrollIndicator = document.getElementById('scrollIndicator');
+            const scrollPercentage = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            scrollIndicator.style.width = `${scrollPercentage}%`;
+        });
+
+        // Smooth scroll for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Add interactive hover effects
+        document.querySelectorAll('.code-example').forEach(codeBlock => {
+            codeBlock.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.02)';
+                this.style.boxShadow = '0 20px 40px rgba(0, 122, 255, 0.2)';
+            });
+            
+            codeBlock.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+                this.style.boxShadow = '';
+            });
+        });
+
+        // Copy code functionality
+        document.querySelectorAll('.code-example').forEach(codeBlock => {
+            codeBlock.style.cursor = 'pointer';
+            codeBlock.title = 'Click to copy code';
+            
+            codeBlock.addEventListener('click', function() {
+                const code = this.querySelector('code').textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    // Show copy notification
+                    const notification = document.createElement('div');
+                    notification.textContent = 'Code copied!';
+                    notification.style.cssText = `
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        background: var(--primary);
+                        color: white;
+                        padding: 20px 40px;
+                        border-radius: 10px;
+                        font-weight: 600;
+                        z-index: 9999;
+                        animation: fadeInOut 2s ease;
+                    `;
+                    document.body.appendChild(notification);
+                    
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 2000);
+                });
+            });
+        });
+
+        // Add fade in animation for elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all subsections
+        document.querySelectorAll('.subsection').forEach(subsection => {
+            subsection.style.opacity = '0';
+            subsection.style.transform = 'translateY(30px)';
+            subsection.style.transition = 'all 0.8s ease';
+            observer.observe(subsection);
+        });
+
+        // Add CSS animation for fade in/out
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInOut {
+                0% { opacity: 0; transform: translateY(-20px); }
+                20% { opacity: 1; transform: translateY(0); }
+                80% { opacity: 1; transform: translateY(0); }
+                100% { opacity: 0; transform: translateY(-20px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
