@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Wrench - Bringing Couch Gaming Chaos Back!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #FFF8DC 0%, #FFE4B5 50%, #DEB887 100%);
+            color: #8B4513;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            background: rgba(255, 140, 0, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(255, 140, 0, 0.2);
+        }
+
+        .logo {
+            width: 300px;
+            max-width: 80%;
+            height: auto;
+            margin-bottom: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .slogan {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #FF8C00;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        /* About Section */
+        .about-section {
+            background: linear-gradient(135deg, #FFE4B5 0%, #F4A460 100%);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 40px rgba(255, 140, 0, 0.3);
+            border: 2px solid #FF8C00;
+        }
+
+        .about-section h2 {
+            font-size: 2.5rem;
+            color: #D2691E;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-content {
+            font-size: 1.2rem;
+            color: #8B4513;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .about-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .game-title {
+            color: #FF6347;
+            font-weight: bold;
+        }
+
+        .final-message {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #D2691E;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        /* Team Section */
+        .team-section {
+            background: linear-gradient(135deg, #F4A460 0%, #CD853F 100%);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(205, 133, 63, 0.3);
+            border: 2px solid #CD853F;
+        }
+
+        .team-section h2 {
+            font-size: 2.5rem;
+            color: #8B4513;
+            margin-bottom: 2rem;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .team-member {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid #DEB887;
+        }
+
+        .team-member:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(139, 69, 19, 0.3);
+        }
+
+        .member-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 4px solid #FF8C00;
+            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+        }
+
+        .member-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #8B4513;
+            margin-bottom: 0.5rem;
+        }
+
+        .member-role {
+            font-size: 1rem;
+            color: #FF6347;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        .member-description {
+            font-size: 0.95rem;
+            color: #8B4513;
+            line-height: 1.5;
+        }
+
+        .tbd {
+            color: #CD853F;
+            font-style: italic;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .slogan {
+                font-size: 1.5rem;
+            }
+
+            .about-section, .team-section {
+                padding: 2rem;
+            }
+
+            .about-section h2, .team-section h2 {
+                font-size: 2rem;
+            }
+
+            .about-content {
+                font-size: 1.1rem;
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header, .about-section, .team-section {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .team-member {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .team-member:nth-child(2) { animation-delay: 0.1s; }
+        .team-member:nth-child(3) { animation-delay: 0.2s; }
+        .team-member:nth-child(4) { animation-delay: 0.3s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <img src="thewrech.png" alt="The Wrench Logo" class="logo">
+            <div class="slogan">Bringing Couch Gaming Chaos Back!</div>
+        </div>
+
+        <!-- About Section -->
+        <div class="about-section">
+            <h2>🎮 About Us</h2>
+            <div class="about-content">
+                <p>We're a Barcelona-based indie team on a mission to bring back the golden age of <em>sofa gaming</em> — the kind where laughter, shouting, and good times happen right next to each other. Our focus is on local multiplayer experiences that bring people together in the same room, though we're always open to expanding into online play when it makes sense.</p>
+                
+                <p>Our first game, <span class="game-title">Wrecky Kart</span>, is currently in development. It's chaotic, competitive, and all about couch-fueled kart madness. We're not ready to reveal everything just yet — but trust us, it's coming.</p>
+                
+                <div class="final-message">🛠️ Stay tuned. The wreckage is just getting started.</div>
+            </div>
+        </div>
+
+        <!-- Team Section -->
+        <div class="team-section">
+            <h2>About The Team</h2>
+            <div class="team-grid">
+                <!-- Albert Adroer -->
+                <div class="team-member">
+                    <img src="albert.jpg" alt="Albert Adroer" class="member-photo">
+                    <div class="member-name">Albert Adroer</div>
+                    <div class="member-role">Founder/CEO, Game Director, Programmer, Designer, Artist, Animator, Backend and Frontend Developer — basically handling everything related to our games, website, data, UI, and more.</div>
+                    <div class="member-description">Artist, musician, and lifelong game crafter. Though I trained as a data analyst, my true passion has been creating games since I was 12. When I'm not designing worlds, you'll find me painting with oils or making music. I founded <strong>The Wrench</strong> to bring that passion to life and build games that connect people.</div>
+                </div>
+
+                <!-- Martí Montaner -->
+                <div class="team-member">
+                    <img src="moma.jpg" alt="Martí Montaner" class="member-photo">
+                    <div class="member-name">Martí Montaner</div>
+                    <div class="member-role tbd">Role: TBD</div>
+                    <div class="member-description tbd">Description: TBD</div>
+                </div>
+
+                <!-- Martí Perez -->
+                <div class="team-member">
+                    <img src="astro.jpg" alt="Martí Perez" class="member-photo">
+                    <div class="member-name">Martí Perez</div>
+                    <div class="member-role tbd">Role: TBD</div>
+                    <div class="member-description tbd">Description: TBD</div>
+                </div>
+
+                <!-- Arnau Amat -->
+                <div class="team-member">
+                    <img src="arnold.jpg" alt="Arnau Amat" class="member-photo">
+                    <div class="member-name">Arnau Amat</div>
+                    <div class="member-role tbd">Role: TBD</div>
+                    <div class="member-description tbd">Description: TBD</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
