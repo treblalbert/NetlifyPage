@@ -129,18 +129,22 @@
       align-items: center;
       gap: 0.5rem;
       padding: 0.7rem 1.2rem;
-      background: #8b7355;
+      background: linear-gradient(135deg, #8b7355 0%, #7a6248 100%);
+      backdrop-filter: blur(10px);
       color: white;
       text-decoration: none;
       border-radius: 5px;
       font-size: 0.95rem;
       transition: all 0.3s ease;
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
     .contact-link:hover {
-      background: #6b5444;
+      background: linear-gradient(135deg, #6b5444 0%, #5a4337 100%);
       transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
     .section {
@@ -226,7 +230,8 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      background: #8b7355;
+      background: linear-gradient(135deg, #8b7355 0%, #7a6248 100%);
+      backdrop-filter: blur(10px);
       color: white;
       text-decoration: none;
       padding: 0.6rem 1.2rem;
@@ -234,11 +239,14 @@
       font-size: 0.9rem;
       transition: all 0.3s ease;
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
     .project-link:hover {
-      background: #6b5444;
+      background: linear-gradient(135deg, #6b5444 0%, #5a4337 100%);
       transform: translateX(3px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
     /* SECRET SECTION - Initially hidden */
@@ -301,18 +309,22 @@
     }
 
     .secret-button {
-      background: #8b7355;
-      border: none;
+      background: linear-gradient(135deg, #8b7355 0%, #7a6248 100%);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 5px;
       padding: 0.7rem 1.5rem;
       color: white;
       font-size: 1rem;
       cursor: pointer;
       transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
     .secret-button:hover {
-      background: #6b5444;
+      background: linear-gradient(135deg, #6b5444 0%, #5a4337 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
     .secret-feedback {
@@ -373,13 +385,18 @@
 
         <div class="subtitle">Developer • Life Enthusiast • Creative Soul</div>
         <div class="bio">
-          <p>Hey there! I'm Albert, a 27-year-old from Barcelona who believes in the power of <strong>real food, movement, and mindful living</strong>. While I spend my days coding games in Unity and analyzing data with Python, my true passion lies in the intersection of technology and wellness.</p>
+          <p>Hi there! I'm Albert, a 27-year-old from Barcelona. I'm passionate about both nature and technology. While I spend my days coding games and learning data analytics with Python, my true passion lies at the intersection of the natural and tech worlds.</p>
           
-          <p>I'm currently pouring my heart into developing a <strong>fitness app</strong>. First for myself, then for anyone who shares my belief that taking care of your body and mind is the foundation for everything else. I'm fascinated by how proper nutrition, consistent exercise, and time in nature can transform not just our bodies, but our entire approach to life. You know that feeling after a good hike? That clarity? That's what I'm chasing.</p>
+          <p>Currently, I'm studying and practicing everything related to data analytics and Python, as I'm aiming to build a career in this field.</p>
           
-          <p>Beyond the screen, you'll find me playing folk instruments, creating oil paintings, or planning my next mountain adventure. I believe in the philosophy that <strong>"if you do well, good things will happen"</strong>. It's about showing up, doing the work, and trusting the process.</p>
+          <p>At the same time, I'm working on a couple of side projects:</p>
+          <ul style="margin: 1rem 0 1rem 2rem; color: #4a4a4a; line-height: 1.8;">
+            <li style="margin-bottom: 0.8rem;"><strong>A fitness/nutrition AI-based app</strong> that I initially developed for personal use. I soon realized it had real potential, so I'm refining the main prototype to share it with others who, like me, believe that taking care of your body and mind is the foundation for everything else.</li>
+            <li style="margin-bottom: 0.8rem;"><strong>A pair of AI-powered productivity tools for data work</strong>, one focused on automating and simplifying data cleaning, and another designed to help generate visualizations and plots faster. Both are still works in progress, but they're aimed at boosting efficiency for data analysts and developers.</li>
+            <li style="margin-bottom: 0.8rem;"><strong>Game development</strong>, where I go from prototyping quirky ideas to more serious concepts. I believe creativity should be fun, and I think I've finally landed on a game prototype I'm excited to develop over the long term. It's still under wraps for now, but I look forward to revealing it in the future.</li>
+          </ul>
           
-          <p>In my free time, I still tinker with game prototypes and weird coding experiments because, honestly, creating stuff is just fun. Whether it's a fitness algorithm or a silly game mechanic, I love bringing ideas to life.</p>
+          <p>Outside of coding, you'll often find me playing various instruments, creating oil paintings, or planning my next mountain adventure. I live by the philosophy that <em>"If you do well, good things will happen."</em> It's about showing up, doing the work, and trusting the process.</p>
         </div>
         
         <div class="contact-links">
@@ -407,17 +424,47 @@
       <section class="section">
         <h2 class="section-title">Current Focus</h2>
         <div class="project-card">
-          <h3 class="project-title">Personal Fitness Companion</h3>
+          <h3 class="project-title">AI-Powered Fitness & Nutrition Companion</h3>
           <p class="project-description">
-            Building a fitness app that goes beyond just tracking—it's about creating sustainable habits, understanding your body, and making wellness accessible. Starting with my own journey and expanding to help others find their path to health.
+            A comprehensive fitness app that leverages AI to provide personalized nutrition and workout guidance. Initially built for my own journey, now being refined into a full prototype that can help others achieve their wellness goals.
           </p>
           <div class="project-tech">
-            <span class="tech-tag">React Native</span>
+            <span class="tech-tag">OpenAI API</span>
+            <span class="tech-tag">Multiple Databases</span>
             <span class="tech-tag">Python</span>
-            <span class="tech-tag">Health APIs</span>
-            <span class="tech-tag">Real Food Database</span>
+            <span class="tech-tag">AI/ML</span>
           </div>
-          <span class="project-status">In Active Development</span>
+          <span class="project-status">Prototype Stage</span>
+        </div>
+        
+        <div class="project-card">
+          <h3 class="project-title">Data Analytics Productivity Suite</h3>
+          <p class="project-description">
+            Two AI-powered tools designed to streamline data work: one automates data cleaning processes, while the other accelerates visualization and plot generation. Currently desktop-based with plans for web versions.
+          </p>
+          <div class="project-tech">
+            <span class="tech-tag">Python</span>
+            <span class="tech-tag">Tkinter UI</span>
+            <span class="tech-tag">AI Integration</span>
+            <span class="tech-tag">Data Processing</span>
+          </div>
+          <span class="project-status">In Development • Web Version Planned</span>
+        </div>
+        
+        <div class="project-card">
+          <h3 class="project-title">Long-Term Game Project</h3>
+          <p class="project-description">
+            After countless prototypes and experiments, I've found a game concept I'm truly excited about. It's a full production involving every aspect of game development, from 3D modeling to music composition. Details remain under wraps for now.
+          </p>
+          <div class="project-tech">
+            <span class="tech-tag">Unity</span>
+            <span class="tech-tag">C#</span>
+            <span class="tech-tag">Blender</span>
+            <span class="tech-tag">Substance 3D Painter</span>
+            <span class="tech-tag">FL Studio</span>
+            <span class="tech-tag">Animation</span>
+          </div>
+          <span class="project-status">Early Development</span>
         </div>
       </section>
 
@@ -426,7 +473,7 @@
         <div class="project-card">
           <h3 class="project-title">Python Data Analysis Resources</h3>
           <p class="project-description">
-            Interactive learning materials for Python data analysis—because sharing knowledge is part of the journey. Covers everything from basics to machine learning concepts.
+            Interactive learning materials for Python data analysis. Because sharing knowledge is part of the journey. Covers everything from basics to machine learning concepts.
           </p>
           <a href="./data/" class="project-link">Explore Resources →</a>
         </div>
@@ -445,7 +492,7 @@
         <div class="project-card">
           <h3 class="project-title">🔧 Barcelona Indie Game Collective</h3>
           <p class="project-description">
-            We're a local team bringing back the magic of couch gaming—where friends gather, laugh, and compete side by side. Our first project, <strong>Wrecky Kart</strong>, aims to capture that pure, chaotic fun of local multiplayer racing.
+            We're a local team bringing back the magic of couch gaming. Where friends gather, laugh, and compete side by side. Our first project, <strong>Wrecky Kart</strong>, aims to capture that pure, chaotic fun of local multiplayer racing.
           </p>
           <div class="project-tech">
             <span class="tech-tag">Unity</span>
