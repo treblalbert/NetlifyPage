@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Albert Adroer Prats - Developer Portfolio</title>
+  <title>Albert Adroer Prats - Developer & Life Enthusiast</title>
   <style>
     * {
       margin: 0;
@@ -12,109 +12,47 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      line-height: 1.6;
-      color: #fff;
-      background: transparent;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      line-height: 1.8;
+      color: #2c2c2c;
+      background: #f5f2ed;
       min-height: 100vh;
       overflow-x: hidden;
-      position: relative;
     }
 
-    .background-canvas {
+    .background-pattern {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
+      opacity: 0.03;
+      background-image: 
+        repeating-linear-gradient(45deg, #8b7355 25%, transparent 25%, transparent 75%, #8b7355 75%, #8b7355),
+        repeating-linear-gradient(-45deg, #8b7355 25%, transparent 25%, transparent 75%, #8b7355 75%, #8b7355);
+      background-size: 30px 30px;
+      background-position: 0 0, 15px 15px;
       z-index: -1;
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 900px;
       margin: 0 auto;
       padding: 2rem;
-      position: relative;
-      z-index: 10;
     }
 
     header {
       text-align: center;
-      margin-bottom: 4rem;
-      animation: fadeInUp 0.8s ease-out;
+      margin-bottom: 3rem;
     }
 
     .hero {
-      background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.25) 0%, 
-        rgba(255, 255, 255, 0.1) 25%,
-        rgba(255, 255, 255, 0.05) 50%,
-        rgba(255, 255, 255, 0.1) 75%,
-        rgba(255, 255, 255, 0.25) 100%);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border-radius: 30px;
+      background: #fff;
+      border-radius: 10px;
       padding: 3rem;
-      box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.2),
-        0 1px 0 rgba(255, 255, 255, 0.8) inset,
-        0 -1px 0 rgba(0, 0, 0, 0.2) inset,
-        0 0 0 1px rgba(255, 255, 255, 0.3);
-      border: 1px solid transparent;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e8e4dd;
       margin-bottom: 3rem;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.1s ease-out, box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      transform-style: preserve-3d;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 50%;
-      background: linear-gradient(180deg, 
-        rgba(255, 255, 255, 0.3) 0%,
-        rgba(255, 255, 255, 0.1) 50%,
-        transparent 100%);
-      border-radius: 30px 30px 0 0;
-      pointer-events: none;
-    }
-
-    .hero::after {
-      content: '';
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      right: 2px;
-      bottom: 2px;
-      background: linear-gradient(145deg, 
-        transparent 0%,
-        rgba(255, 255, 255, 0.1) 30%,
-        transparent 70%,
-        rgba(255, 255, 255, 0.05) 100%);
-      border-radius: 28px;
-      pointer-events: none;
-    }
-
-    .hero:hover {
-      transform: translateY(-5px) scale(1.02);
-      background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.35) 0%, 
-        rgba(255, 255, 255, 0.15) 25%,
-        rgba(255, 255, 255, 0.08) 50%,
-        rgba(255, 255, 255, 0.15) 75%,
-        rgba(255, 255, 255, 0.35) 100%);
-      box-shadow: 
-        0 20px 60px rgba(0, 0, 0, 0.3),
-        0 1px 0 rgba(255, 255, 255, 0.9) inset,
-        0 -1px 0 rgba(0, 0, 0, 0.3) inset,
-        0 0 0 1px rgba(255, 255, 255, 0.5),
-        0 0 20px rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(30px) saturate(220%);
-      -webkit-backdrop-filter: blur(30px) saturate(220%);
     }
 
     .hero-header {
@@ -122,395 +60,215 @@
       align-items: center;
       justify-content: center;
       gap: 2rem;
-      margin-bottom: 1rem;
+      margin-bottom: 2rem;
       flex-wrap: wrap;
     }
 
-     .profile-picture {
-      width: 120px;
-      height: 120px;
+    .profile-picture {
+      width: 140px;
+      height: 140px;
       border-radius: 50%;
       object-fit: cover;
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.3),
-        0 0 0 2px rgba(255, 255, 255, 0.1);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      z-index: 2;
+      border: 4px solid #d4c4b0;
+      transition: all 0.3s ease;
       cursor: pointer;
+      user-select: none;
     }
 
     .profile-picture:hover {
-      transform: scale(1.1);
-      border-color: rgba(255, 255, 255, 0.5);
-      box-shadow: 
-        0 12px 40px rgba(0, 0, 0, 0.4),
-        0 0 0 3px rgba(255, 255, 255, 0.2),
-        0 0 20px rgba(255, 255, 255, 0.3);
+      transform: scale(1.05);
+      border-color: #8b7355;
+    }
+
+    .profile-picture:active {
+      transform: scale(0.95);
     }
 
     h1 {
-      font-size: 3.5rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #fff 0%, #e1e5f2 50%, #fff 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-      position: relative;
-      z-index: 2;
+      font-size: 2.8rem;
+      font-weight: 400;
+      color: #2c2c2c;
+      letter-spacing: -1px;
     }
 
     .subtitle {
-      font-size: 1.3rem;
-      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.2rem;
+      color: #6b5d54;
       margin-bottom: 2rem;
-      font-weight: 300;
+      font-style: italic;
     }
 
     .bio {
       font-size: 1.1rem;
-      color: rgba(255, 255, 255, 0.8);
-      max-width: 600px;
-      margin: 0 auto 2rem;
-      line-height: 1.8;
-      position: relative;
-      z-index: 2;
+      color: #4a4a4a;
+      max-width: 700px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.9;
+      text-align: left;
+    }
+
+    .bio p {
+      margin-bottom: 1.2rem;
     }
 
     .bio strong {
-      color: rgba(255, 255, 255, 0.95);
+      color: #2c2c2c;
       font-weight: 600;
     }
 
     .contact-links {
       display: flex;
       justify-content: center;
-      gap: 5rem;
-      margin-top: 1rem;
+      gap: 2rem;
+      margin-top: 2rem;
       flex-wrap: wrap;
-      position: relative;
-      z-index: 2;
     }
 
     .contact-link {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.8rem 1.5rem;
-      background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.25) 0%, 
-        rgba(255, 255, 255, 0.1) 50%,
-        rgba(255, 255, 255, 0.2) 100%);
-      backdrop-filter: blur(15px) saturate(160%);
-      -webkit-backdrop-filter: blur(15px) saturate(160%);
+      padding: 0.7rem 1.2rem;
+      background: #8b7355;
       color: white;
       text-decoration: none;
-      border-radius: 50px;
-      font-weight: 500;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      border: 1px solid transparent;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 
-        0 6px 20px rgba(0, 0, 0, 0.15),
-        0 1px 0 rgba(255, 255, 255, 0.6) inset,
-        0 -1px 0 rgba(0, 0, 0, 0.1) inset,
-        0 0 0 1px rgba(255, 255, 255, 0.3);
-    }
-
-    .contact-link::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 50%;
-      background: linear-gradient(180deg, 
-        rgba(255, 255, 255, 0.3) 0%,
-        transparent 100%);
-      border-radius: 50px 50px 0 0;
-      pointer-events: none;
+      border-radius: 5px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     .contact-link:hover {
-      transform: translateY(-3px) scale(1.05);
-      background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.35) 0%, 
-        rgba(255, 255, 255, 0.15) 50%,
-        rgba(255, 255, 255, 0.25) 100%);
-      backdrop-filter: blur(20px) saturate(200%);
-      -webkit-backdrop-filter: blur(20px) saturate(200%);
-      box-shadow: 
-        0 12px 30px rgba(0, 0, 0, 0.25),
-        0 1px 0 rgba(255, 255, 255, 0.8) inset,
-        0 -1px 0 rgba(0, 0, 0, 0.15) inset,
-        0 0 0 1px rgba(255, 255, 255, 0.5),
-        0 0 15px rgba(255, 255, 255, 0.3);
+      background: #6b5444;
+      transform: translateY(-2px);
     }
 
-    .projects-section {
-      background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.2) 0%, 
-        rgba(255, 255, 255, 0.08) 25%,
-        rgba(255, 255, 255, 0.04) 50%,
-        rgba(255, 255, 255, 0.08) 75%,
-        rgba(255, 255, 255, 0.2) 100%);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border-radius: 30px;
-      padding: 3rem;
-      border: 1px solid transparent;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.2),
-        0 1px 0 rgba(255, 255, 255, 0.7) inset,
-        0 -1px 0 rgba(0, 0, 0, 0.2) inset,
-        0 0 0 1px rgba(255, 255, 255, 0.25);
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .projects-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 40%;
-      background: linear-gradient(180deg, 
-        rgba(255, 255, 255, 0.25) 0%,
-        rgba(255, 255, 255, 0.08) 60%,
-        transparent 100%);
-      border-radius: 30px 30px 0 0;
-      pointer-events: none;
-    }
-
-    .projects-section:hover {
-      transform: translateY(-3px) scale(1.01);
-      background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.3) 0%, 
-        rgba(255, 255, 255, 0.12) 25%,
-        rgba(255, 255, 255, 0.06) 50%,
-        rgba(255, 255, 255, 0.12) 75%,
-        rgba(255, 255, 255, 0.3) 100%);
-      box-shadow: 
-        0 16px 50px rgba(0, 0, 0, 0.25),
-        0 1px 0 rgba(255, 255, 255, 0.8) inset,
-        0 -1px 0 rgba(0, 0, 0, 0.25) inset,
-        0 0 0 1px rgba(255, 255, 255, 0.4),
-        0 0 15px rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(25px) saturate(200%);
-      -webkit-backdrop-filter: blur(25px) saturate(200%);
+    .section {
+      background: #fff;
+      border-radius: 10px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e8e4dd;
     }
 
     .section-title {
-      font-size: 2.5rem;
-      font-weight: 600;
-      text-align: center;
-      margin-bottom: 3rem;
-      color: rgba(255, 255, 255, 0.95);
-      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      font-size: 2rem;
+      font-weight: 400;
+      color: #2c2c2c;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #d4c4b0;
     }
 
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 2rem;
-      justify-content: center;
+    .renovation-notice {
+      text-align: center;
+      padding: 3rem;
+      color: #6b5d54;
+      font-style: italic;
+      background: #faf8f3;
+      border-radius: 5px;
+      border: 1px dashed #d4c4b0;
     }
 
     .project-card {
-      background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.18) 0%, 
-        rgba(255, 255, 255, 0.06) 25%,
-        rgba(255, 255, 255, 0.03) 50%,
-        rgba(255, 255, 255, 0.06) 75%,
-        rgba(255, 255, 255, 0.18) 100%);
-      backdrop-filter: blur(15px) saturate(160%);
-      -webkit-backdrop-filter: blur(15px) saturate(160%);
-      border-radius: 25px;
+      background: #faf8f3;
+      border-radius: 8px;
       padding: 2rem;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      border: 1px solid transparent;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 
-        0 6px 25px rgba(0, 0, 0, 0.15),
-        0 1px 0 rgba(255, 255, 255, 0.6) inset,
-        0 -1px 0 rgba(0, 0, 0, 0.1) inset,
-        0 0 0 1px rgba(255, 255, 255, 0.2);
-    }
-
-    .project-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 30%;
-      background: linear-gradient(180deg, 
-        rgba(255, 255, 255, 0.2) 0%,
-        rgba(255, 255, 255, 0.05) 70%,
-        transparent 100%);
-      border-radius: 25px 25px 0 0;
-      pointer-events: none;
+      margin-bottom: 1.5rem;
+      border: 1px solid #e8e4dd;
+      transition: all 0.3s ease;
     }
 
     .project-card:hover {
-      transform: translateY(-8px) scale(1.02);
-      background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.28) 0%, 
-        rgba(255, 255, 255, 0.1) 25%,
-        rgba(255, 255, 255, 0.05) 50%,
-        rgba(255, 255, 255, 0.1) 75%,
-        rgba(255, 255, 255, 0.28) 100%);
-      backdrop-filter: blur(20px) saturate(200%);
-      -webkit-backdrop-filter: blur(20px) saturate(200%);
-      box-shadow: 
-        0 20px 50px rgba(0, 0, 0, 0.25),
-        0 1px 0 rgba(255, 255, 255, 0.8) inset,
-        0 -1px 0 rgba(0, 0, 0, 0.15) inset,
-        0 0 0 1px rgba(255, 255, 255, 0.4),
-        0 0 20px rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     }
 
     .project-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      color: rgba(255, 255, 255, 0.95);
-      position: relative;
-      z-index: 2;
+      font-size: 1.4rem;
+      color: #2c2c2c;
+      margin-bottom: 0.8rem;
     }
 
     .project-description {
-      color: rgba(255, 255, 255, 0.8);
-      margin-bottom: 1.5rem;
-      line-height: 1.6;
-      position: relative;
-      z-index: 2;
+      color: #4a4a4a;
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .project-status {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      background: #d4c4b0;
+      color: #2c2c2c;
+      border-radius: 3px;
+      font-size: 0.85rem;
+      font-weight: 500;
     }
 
     .project-tech {
       display: flex;
       flex-wrap: wrap;
       gap: 0.5rem;
-      margin-bottom: 2rem;
-      position: relative;
-      z-index: 2;
+      margin-bottom: 1.5rem;
     }
 
     .tech-tag {
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
-      backdrop-filter: blur(10px);
-      color: rgba(255, 255, 255, 0.9);
-      padding: 0.3rem 0.8rem;
-      border-radius: 20px;
+      background: #e8e4dd;
+      color: #4a4a4a;
+      padding: 0.3rem 0.7rem;
+      border-radius: 3px;
       font-size: 0.8rem;
-      font-weight: 500;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     .project-link {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(25px) saturate(150%);
-      -webkit-backdrop-filter: blur(25px) saturate(150%);
+      background: #8b7355;
       color: white;
       text-decoration: none;
-      padding: 0.8rem 1.5rem;
-      border-radius: 20px;
-      font-weight: 500;
+      padding: 0.6rem 1.2rem;
+      border-radius: 5px;
+      font-size: 0.9rem;
       transition: all 0.3s ease;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-      position: relative;
-      z-index: 2;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     .project-link:hover {
-      transform: translateY(-2px);
-      background: rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(35px) saturate(200%);
-      -webkit-backdrop-filter: blur(35px) saturate(200%);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-      border-color: rgba(255, 255, 255, 0.4);
+      background: #6b5444;
+      transform: translateX(3px);
     }
 
-    /* SECRET SECTION STYLES */
+    /* SECRET SECTION - Initially hidden */
     .secret-section {
-      background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.15) 0%, 
-        rgba(255, 255, 255, 0.05) 25%,
-        rgba(255, 255, 255, 0.02) 50%,
-        rgba(255, 255, 255, 0.05) 75%,
-        rgba(255, 255, 255, 0.15) 100%);
-      backdrop-filter: blur(15px) saturate(160%);
-      -webkit-backdrop-filter: blur(15px) saturate(160%);
-      border-radius: 25px;
+      display: none;
+      background: #2c2c2c;
+      border-radius: 10px;
       padding: 2rem;
       margin: 3rem 0;
       text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      position: relative;
-      overflow: hidden;
-      box-shadow: 
-        0 6px 25px rgba(0, 0, 0, 0.1),
-        0 1px 0 rgba(255, 255, 255, 0.4) inset,
-        0 -1px 0 rgba(0, 0, 0, 0.05) inset;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      color: #f5f2ed;
+      opacity: 0;
+      transition: opacity 0.5s ease;
     }
 
-    .secret-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 30%;
-      background: linear-gradient(180deg, 
-        rgba(255, 255, 255, 0.15) 0%,
-        rgba(255, 255, 255, 0.03) 70%,
-        transparent 100%);
-      border-radius: 25px 25px 0 0;
-      pointer-events: none;
-    }
-
-    .secret-section:hover {
-      transform: translateY(-2px);
-      background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.2) 0%, 
-        rgba(255, 255, 255, 0.08) 25%,
-        rgba(255, 255, 255, 0.04) 50%,
-        rgba(255, 255, 255, 0.08) 75%,
-        rgba(255, 255, 255, 0.2) 100%);
-      box-shadow: 
-        0 12px 35px rgba(0, 0, 0, 0.15),
-        0 1px 0 rgba(255, 255, 255, 0.6) inset,
-        0 -1px 0 rgba(0, 0, 0, 0.1) inset,
-        0 0 0 1px rgba(255, 255, 255, 0.3);
+    .secret-section.visible {
+      display: block;
+      opacity: 1;
     }
 
     .secret-title {
       font-size: 1.5rem;
-      font-weight: 600;
-      color: rgba(255, 255, 255, 0.9);
+      font-weight: 400;
       margin-bottom: 1rem;
-      position: relative;
-      z-index: 2;
     }
 
     .secret-hint {
-      color: rgba(255, 255, 255, 0.7);
+      color: #d4c4b0;
       margin-bottom: 1.5rem;
       font-size: 0.95rem;
-      position: relative;
-      z-index: 2;
     }
 
     .secret-form {
@@ -519,130 +277,67 @@
       justify-content: center;
       align-items: center;
       flex-wrap: wrap;
-      position: relative;
-      z-index: 2;
     }
 
     .secret-input {
-      background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.25) 0%, 
-        rgba(255, 255, 255, 0.1) 100%);
-      backdrop-filter: blur(15px) saturate(180%);
-      -webkit-backdrop-filter: blur(15px) saturate(180%);
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-radius: 15px;
-      padding: 0.8rem 1.2rem;
-      color: white;
+      background: #4a4a4a;
+      border: 2px solid #6b5d54;
+      border-radius: 5px;
+      padding: 0.7rem 1rem;
+      color: #f5f2ed;
       font-size: 1rem;
-      font-weight: 500;
       min-width: 200px;
       transition: all 0.3s ease;
-      box-shadow: 
-        0 4px 15px rgba(0, 0, 0, 0.1),
-        0 1px 0 rgba(255, 255, 255, 0.4) inset;
     }
 
     .secret-input::placeholder {
-      color: rgba(255, 255, 255, 0.6);
+      color: #8b8b8b;
     }
 
     .secret-input:focus {
       outline: none;
-      border-color: rgba(255, 255, 255, 0.6);
-      background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.3) 0%, 
-        rgba(255, 255, 255, 0.15) 100%);
-      box-shadow: 
-        0 6px 20px rgba(0, 0, 0, 0.15),
-        0 1px 0 rgba(255, 255, 255, 0.6) inset,
-        0 0 0 3px rgba(255, 255, 255, 0.2);
-      transform: translateY(-1px);
+      border-color: #8b7355;
+      background: #5a5a5a;
     }
 
     .secret-button {
-      background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.3) 0%, 
-        rgba(255, 255, 255, 0.15) 100%);
-      backdrop-filter: blur(15px) saturate(180%);
-      -webkit-backdrop-filter: blur(15px) saturate(180%);
-      border: 2px solid rgba(255, 255, 255, 0.4);
-      border-radius: 15px;
-      padding: 0.8rem 1.5rem;
+      background: #8b7355;
+      border: none;
+      border-radius: 5px;
+      padding: 0.7rem 1.5rem;
       color: white;
       font-size: 1rem;
-      font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 
-        0 4px 15px rgba(0, 0, 0, 0.1),
-        0 1px 0 rgba(255, 255, 255, 0.5) inset;
     }
 
     .secret-button:hover {
-      transform: translateY(-2px);
-      background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.4) 0%, 
-        rgba(255, 255, 255, 0.2) 100%);
-      border-color: rgba(255, 255, 255, 0.6);
-      box-shadow: 
-        0 8px 25px rgba(0, 0, 0, 0.15),
-        0 1px 0 rgba(255, 255, 255, 0.7) inset,
-        0 0 0 2px rgba(255, 255, 255, 0.2);
-    }
-
-    .secret-button:active {
-      transform: translateY(-1px);
+      background: #6b5444;
     }
 
     .secret-feedback {
       margin-top: 1rem;
       padding: 0.8rem;
-      border-radius: 10px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      position: relative;
-      z-index: 2;
+      border-radius: 5px;
+      font-size: 0.9rem;
     }
 
     .secret-feedback.success {
-      background: linear-gradient(135deg, rgba(76, 175, 80, 0.3), rgba(76, 175, 80, 0.1));
-      color: #e8f5e8;
-      border: 1px solid rgba(76, 175, 80, 0.5);
+      background: #4a7c59;
+      color: white;
     }
 
     .secret-feedback.error {
-      background: linear-gradient(135deg, rgba(244, 67, 54, 0.3), rgba(244, 67, 54, 0.1));
-      color: #ffebee;
-      border: 1px solid rgba(244, 67, 54, 0.5);
+      background: #8b4513;
+      color: white;
     }
 
     footer {
       text-align: center;
       margin-top: 3rem;
       padding: 2rem;
-      color: rgba(255, 255, 255, 0.7);
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(30px) saturate(150%);
-      -webkit-backdrop-filter: blur(30px) saturate(150%);
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    }
-
-    .glow {
-      color: white;
-      text-shadow: 0 0 5px #ffffffaa, 0 0 10px #ffffff88;
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      color: #6b5d54;
+      font-size: 0.9rem;
     }
 
     @media (max-width: 768px) {
@@ -651,13 +346,8 @@
         gap: 1rem;
       }
       
-      .profile-picture {
-        width: 100px;
-        height: 100px;
-      }
-      
       h1 {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
       }
       
       .contact-links {
@@ -666,158 +356,116 @@
 
       .secret-form {
         flex-direction: column;
-        gap: 1rem;
-      }
-
-      .secret-input {
-        min-width: 250px;
       }
     }
   </style>
-  
-  <!-- Add the cursor CSS -->
-  <link rel="stylesheet" href="cursor-trail.css">
 </head>
 <body>
-  <canvas class="background-canvas"></canvas>
+  <div class="background-pattern"></div>
 
   <div class="container">
     <header>
       <div class="hero">
         <div class="hero-header">
-          <img src="albert.jpg" alt="Albert Adroer Prats" class="profile-picture">
-          <h1 class="glow">Albert Adroer Prats</h1>
+          <img src="albert.jpg" alt="Albert Adroer Prats" class="profile-picture" id="profilePic">
+          <h1>Albert Adroer Prats</h1>
         </div>
 
-        <div class="subtitle">Game Developer • Data Analyst • Creative Technologist</div>
+        <div class="subtitle">Developer • Life Enthusiast • Creative Soul</div>
         <div class="bio">
-          Hi, I'm Albert, a 27-year-old from Barcelona who loves coding games with C# in Unity and working with Python for data analytics and software development. I'm still studying to sharpen my data skills and constantly building prototypes to find my next big game project.
-
-          When I'm not working with tech, I enjoy playing instruments and making instrumental folk music, oil painting, or going on hikes to connect with nature.
-
-          Thanks to Claude AI, I've been able to convert my Python projects into interactive HTML apps that you can try right here on this site. Both the Python and HTML source code are available for free on each project page.
+          <p>Hey there! I'm Albert, a 27-year-old from Barcelona who believes in the power of <strong>real food, movement, and mindful living</strong>. While I spend my days coding games in Unity and analyzing data with Python, my true passion lies in the intersection of technology and wellness.</p>
+          
+          <p>I'm currently pouring my heart into developing a <strong>fitness app</strong>. First for myself, then for anyone who shares my belief that taking care of your body and mind is the foundation for everything else. I'm fascinated by how proper nutrition, consistent exercise, and time in nature can transform not just our bodies, but our entire approach to life. You know that feeling after a good hike? That clarity? That's what I'm chasing.</p>
+          
+          <p>Beyond the screen, you'll find me playing folk instruments, creating oil paintings, or planning my next mountain adventure. I believe in the philosophy that <strong>"if you do well, good things will happen"</strong>. It's about showing up, doing the work, and trusting the process.</p>
+          
+          <p>In my free time, I still tinker with game prototypes and weird coding experiments because, honestly, creating stuff is just fun. Whether it's a fitness algorithm or a silly game mechanic, I love bringing ideas to life.</p>
         </div>
         
         <div class="contact-links">
-          <!-- Portfolio & Professional -->
-          <a href="./cv.html" class="contact-link">📄 My CV</a>
+          <a href="./cv.html" class="contact-link">📄 CV</a>
           <a href="https://www.linkedin.com/in/albert-adroer-prats-615388160/" class="contact-link">💼 LinkedIn</a>
-          <a href="https://www.artstation.com/treblafreeman" class="contact-link">🎨 ArtStation</a>
-          
-          <!-- Code Related -->
+          <a href="https://www.artstation.com/treblafreeman" class="contact-link">🎨 Art Portfolio</a>
           <a href="https://github.com/treblalbert" class="contact-link">🐙 GitHub</a>
-          <a href="https://codepen.io/treblalbert-the-builder" class="contact-link">🖥️ CodePen</a>
-          
-          <!-- Creative Projects -->
-          <a href="https://store.steampowered.com/app/3489590/Bald_Ball/" class="contact-link">👾 My first Steam Game!</a>
-          <a href="https://albertfreeman.itch.io/" class="contact-link">🎮 Itch.io</a>
-          <a href="https://distrokid.com/hyperfollow/mountforsaken/mar-i-cel" class="contact-link">🎧 My music</a>
-          
-          <!-- Contact -->
+          <a href="https://store.steampowered.com/app/3489590/Bald_Ball/" class="contact-link">👾 My Steam Game</a>
+          <a href="https://albertfreeman.itch.io/" class="contact-link">🎮 Game Experiments</a>
+          <a href="https://distrokid.com/hyperfollow/mountforsaken/mar-i-cel" class="contact-link">🎧 My Music</a>
           <a href="mailto:albertadroer@gmail.com" class="contact-link">📧 Email</a>
         </div>
       </div>
     </header>
 
     <main>
-      <section class="projects-section">
-        <h2 class="section-title glow">Portfolio Projects</h2>
-        <div class="projects-grid">
-          <div class="project-card">
-            <h3 class="project-title">ASCII Art Generator</h3>
-            <p class="project-description">A web-based tool to transform images into ASCII art (animated gifs included)!</p>
-            <div class="project-tech"><span class="tech-tag">HTML</span><span class="tech-tag">Python (Original)</span></div>
-            <a href="./ascii-generator/" class="project-link">View Project <span class="arrow">→</span></a>
-          </div>
-          
-          <div class="project-card">
-            <h3 class="project-title">ASCII Dwarf Simulation</h3>
-            <p class="project-description">A complex dwarf civilization simulation in ASCII inspired by Dwarf Fortress!</p>
-            <div class="project-tech"><span class="tech-tag">HTML</span><span class="tech-tag">Python (Original)</span><span class="tech-tag">AI Systems</span></div>
-            <a href="./dwarf-simulation/" class="project-link">View Project <span class="arrow">→</span></a>
-          </div>
-          
-          <div class="project-card">
-            <h3 class="project-title">Albert's Galaxy</h3>
-            <p class="project-description">Enter to Albert's galaxy...</p>
-            <div class="project-tech"><span class="tech-tag">HTML</span><span class="tech-tag">Supabase</span></div>
-            <a href="./albert-galaxy/" class="project-link">View Project <span class="arrow">→</span></a>
-          </div>
-          
-          <div class="project-card">
-            <h3 class="project-title">Fresnel Simulator</h3>
-            <p class="project-description">A web based tool to simulate and visualize fresnel! (WORK IN PROGRESS)</p>
-            <div class="project-tech"><span class="tech-tag">HTML</span><span class="tech-tag">Fresnel!!!!</span></div>
-            <a href="./fresnel-simulation/" class="project-link">View Project <span class="arrow">→</span></a>
-          </div>
+      <section class="section">
+        <h2 class="section-title">Portfolio Projects</h2>
+        <div class="renovation-notice">
+          <p>🔨 Currently renovating this section</p>
+          <p>New projects coming soon with a fresh perspective</p>
         </div>
       </section>
 
-      <!-- COURSES SECTION -->
-      <section class="projects-section">
-        <h2 class="section-title glow">Study Resources & Courses</h2>
-        <div class="projects-grid">
-          <div class="project-card">
-            <h3 class="project-title">Python Data Analyst Interview Prep</h3>
-            <p class="project-description">Interactive Python Data Analyst interview preparation with dual modes: Study Mode for learning key concepts with code examples, and Test Mode for practice quizzes. Covers 8 essential topics from Python fundamentals to machine learning basics.</p>
-            <div class="project-tech">
-              <span class="tech-tag">Python</span>
-              <span class="tech-tag">Pandas</span>
-              <span class="tech-tag">NumPy</span>
-              <span class="tech-tag">SQL</span>
-              <span class="tech-tag">Machine Learning</span>
-              <span class="tech-tag">Interactive Quiz</span>
-            </div>
-            <a href="./data/" class="project-link">Start Learning <span class="arrow">→</span></a>
+      <section class="section">
+        <h2 class="section-title">Current Focus</h2>
+        <div class="project-card">
+          <h3 class="project-title">Personal Fitness Companion</h3>
+          <p class="project-description">
+            Building a fitness app that goes beyond just tracking—it's about creating sustainable habits, understanding your body, and making wellness accessible. Starting with my own journey and expanding to help others find their path to health.
+          </p>
+          <div class="project-tech">
+            <span class="tech-tag">React Native</span>
+            <span class="tech-tag">Python</span>
+            <span class="tech-tag">Health APIs</span>
+            <span class="tech-tag">Real Food Database</span>
           </div>
-          
-          <div class="project-card">
-            <h3 class="project-title">How I Built This Website</h3>
-            <p class="project-description">A chill step-by-step tutorial on creating and deploying a modern portfolio website using GitHub, Netlify, and Claude AI. Learn automation tricks, cool effects, and how AI can be your coding buddy!</p>
-            <div class="project-tech">
-              <span class="tech-tag">GitHub</span>
-              <span class="tech-tag">Netlify</span>
-              <span class="tech-tag">Claude AI</span>
-              <span class="tech-tag">Git</span>
-              <span class="tech-tag">Web Development</span>
-            </div>
-            <a href="./website-tutorial/" class="project-link">Read Tutorial <span class="arrow">→</span></a>
-          </div>
+          <span class="project-status">In Active Development</span>
         </div>
       </section>
 
-      <!-- THE WRENCH SECTION -->
-      <section class="projects-section">
-        <h2 class="section-title glow">The Wrench</h2>
-        <div class="projects-grid">
-          <div class="project-card" style="max-width: 600px; margin: 0 auto;">
-            <h3 class="project-title">🔧 Indie Game Development Team</h3>
-            <p class="project-description">
-              We're a Barcelona indie team dedicated to reviving the golden age of couch gaming—where laughter and fun happen side by side. We focus on local multiplayer experiences but stay open to online play when it fits.
-              <br><br>
-              Our first game, <strong>Wrecky Kart</strong>, is in development: chaotic, competitive, and pure couch kart madness. More details coming soon!
-            </p>
-            <div class="project-tech">
-              <span class="tech-tag">Unity</span>
-              <span class="tech-tag">Local Multiplayer</span>
-              <span class="tech-tag">Couch Gaming</span>
-              <span class="tech-tag">Barcelona Indie</span>
-            </div>
-            <a href="./thewrench/" class="project-link">Visit The Wrench <span class="arrow">→</span></a>
-          </div>
+      <section class="section">
+        <h2 class="section-title">Study Resources & Learning</h2>
+        <div class="project-card">
+          <h3 class="project-title">Python Data Analysis Resources</h3>
+          <p class="project-description">
+            Interactive learning materials for Python data analysis—because sharing knowledge is part of the journey. Covers everything from basics to machine learning concepts.
+          </p>
+          <a href="./data/" class="project-link">Explore Resources →</a>
+        </div>
+        
+        <div class="project-card">
+          <h3 class="project-title">Building Your Own Website</h3>
+          <p class="project-description">
+            A laid-back guide on creating and deploying a personal website. Learn how I built this site and how you can create your own digital space.
+          </p>
+          <a href="./website-tutorial/" class="project-link">Read Guide →</a>
         </div>
       </section>
 
-      <!-- SECRET SECTION -->
-      <section class="secret-section">
+      <section class="section">
+        <h2 class="section-title">The Wrench</h2>
+        <div class="project-card">
+          <h3 class="project-title">🔧 Barcelona Indie Game Collective</h3>
+          <p class="project-description">
+            We're a local team bringing back the magic of couch gaming—where friends gather, laugh, and compete side by side. Our first project, <strong>Wrecky Kart</strong>, aims to capture that pure, chaotic fun of local multiplayer racing.
+          </p>
+          <div class="project-tech">
+            <span class="tech-tag">Unity</span>
+            <span class="tech-tag">Local Multiplayer</span>
+            <span class="tech-tag">Couch Gaming Revival</span>
+          </div>
+          <span class="project-status">Work in Progress</span>
+        </div>
+      </section>
+
+      <!-- SECRET SECTION - Hidden by default -->
+      <section class="secret-section" id="secretSection">
         <h3 class="secret-title">🔐 Secret Area</h3>
-        <p class="secret-hint">There might be something hidden here... Know any secret words?</p>
+        <p class="secret-hint">You found it! Know any secret words?</p>
         <div class="secret-form">
           <input 
             type="password" 
             id="secretInput" 
             class="secret-input" 
-            placeholder="Enter secret password..."
+            placeholder="Enter password..."
             autocomplete="off"
           >
           <button type="button" class="secret-button" onclick="checkSecretPassword()">Unlock</button>
@@ -827,80 +475,60 @@
     </main>
 
     <footer>
-      <p>&copy; 2025 Albert Adroer Prats.</p>
+      <p>&copy; 2025 Albert Adroer Prats • Living well, coding with purpose</p>
     </footer>
   </div>
 
   <script>
-// Secret password functionality
+// Profile picture click counter for secret section
+let clickCount = 0;
+let clickTimer = null;
+
+document.getElementById('profilePic').addEventListener('click', function() {
+  clickCount++;
+  
+  // Reset timer on each click
+  clearTimeout(clickTimer);
+  
+  // Check if 5 clicks reached
+  if (clickCount >= 5) {
+    const secretSection = document.getElementById('secretSection');
+    secretSection.style.display = 'block';
+    setTimeout(() => {
+      secretSection.classList.add('visible');
+    }, 10);
+    clickCount = 0;
+  }
+  
+  // Reset count after 10 seconds of no clicks
+  clickTimer = setTimeout(() => {
+    clickCount = 0;
+  }, 10000);
+});
+
 // Secret password functionality
 function checkSecretPassword() {
   const input = document.getElementById('secretInput');
   const feedback = document.getElementById('secretFeedback');
   const password = input.value.toLowerCase().trim();
   
-  if (password === 'wrecky') {
-    feedback.textContent = '🎮 Access granted! Redirecting to secret project...';
+  const secrets = {
+    'wrecky': { message: '🎮 Access granted! Redirecting to secret project...', url: './wrecky/' },
+    'albert_fitness': { message: '💪 Access granted! Redirecting to fitness plan...', url: './albert-fitness/' },
+    'fitness': { message: '🤖 Access granted! Redirecting to AI Fitness Trainer...', url: './fitness/' },
+    'fitness_test': { message: '🧪 Access granted! Redirecting to fitness test...', url: './fitness-test/' },
+    'uriginal': { message: '✨ Access granted! Redirecting to uriginal project...', url: './uriginal/' },
+    'data': { message: '🧹 Access granted! Redirecting to Data Cleaner...', url: './datacleaner/' },
+    'dictionary': { message: '📖 Access granted! Redirecting to Data Dictionary...', url: './data-dictionary/' }
+  };
+  
+  if (secrets[password]) {
+    feedback.textContent = secrets[password].message;
     feedback.className = 'secret-feedback success';
     feedback.style.display = 'block';
     
-    // Redirect after a short delay
     setTimeout(() => {
-      window.location.href = './wrecky/';
-    }, 1500);
-  } else if (password === 'albert_fitness') {
-    feedback.textContent = '💪 Access granted! Redirecting to fitness plan...';
-    feedback.className = 'secret-feedback success';
-    feedback.style.display = 'block';
-    
-    // Redirect after a short delay
-    setTimeout(() => {
-      window.location.href = './albert-fitness/';
-    }, 1500);
-  } else if (password === 'fitness') {
-    feedback.textContent = '🤖 Access granted! Redirecting to AI Fitness Trainer...';
-    feedback.className = 'secret-feedback success';
-    feedback.style.display = 'block';
-    
-    // Redirect after a short delay
-    setTimeout(() => {
-      window.location.href = './fitness/';
-    }, 1500);
-  } else if (password === 'fitness_test') {
-    feedback.textContent = '🧪 Access granted! Redirecting to fitness test...';
-    feedback.className = 'secret-feedback success';
-    feedback.style.display = 'block';
-    
-    // Redirect after a short delay
-    setTimeout(() => {
-      window.location.href = './fitness-test/';
-    }, 1500);
-  } else if (password === 'uriginal') {
-    feedback.textContent = '✨ Access granted! Redirecting to uriginal project...';
-    feedback.className = 'secret-feedback success';
-    feedback.style.display = 'block';
-    
-    // Redirect after a short delay
-    setTimeout(() => {
-      window.location.href = './uriginal/';
-    }, 1500);
-  } else if (password === 'data') {
-    feedback.textContent = '🧹 Access granted! Redirecting to Data Cleaner...';
-    feedback.className = 'secret-feedback success';
-    feedback.style.display = 'block';
-    
-    // Redirect after a short delay
-    setTimeout(() => {
-      window.location.href = './datacleaner/';
-    }, 1500);
-  } else if (password === 'dictionary') {
-    feedback.textContent = '📖 Access granted! Redirecting to Data Dictionary...';
-    feedback.className = 'secret-feedback success';
-    feedback.style.display = 'block';
-    
-    // Redirect after a short delay
-    setTimeout(() => {
-      window.location.href = './data-dictionary/';
+      window.location.href = secrets[password].url;
     }, 1500);
   } else if (password === '') {
     feedback.style.display = 'none';
@@ -909,7 +537,6 @@ function checkSecretPassword() {
     feedback.className = 'secret-feedback error';
     feedback.style.display = 'block';
     
-    // Clear the error after 3 seconds
     setTimeout(() => {
       feedback.style.display = 'none';
       input.value = '';
@@ -923,230 +550,6 @@ document.getElementById('secretInput').addEventListener('keypress', function(e) 
     checkSecretPassword();
   }
 });
-
-window.addEventListener('load', () => {
-  const canvas = document.querySelector('.background-canvas');
-  const gl = canvas.getContext("webgl");
-  if (!gl) {
-    console.error("WebGL not supported");
-    return;
-  }
-
-  let width = canvas.width = window.innerWidth;
-  let height = canvas.height = window.innerHeight;
-
-  function resizeCanvas() {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-    gl.viewport(0, 0, width, height);
-  }
-  window.addEventListener("resize", resizeCanvas);
-
-  let mouse = { x: width / 2, y: height / 2 };
-  function onMouseMove(e) {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-  }
-  window.addEventListener("mousemove", onMouseMove);
-
-  const circleColors = [
-    [18 / 255, 113 / 255, 1.0],
-    [221 / 255, 74 / 255, 1.0],
-    [100 / 255, 220 / 255, 1.0],
-    [200 / 255, 50 / 255, 50 / 255],
-    [180 / 255, 180 / 255, 50 / 255],
-    [140 / 255, 100 / 255, 1.0],
-  ];
-
-  let circles = [];
-  function initCircles() {
-    circles = [];
-    const baseRadius = (width + height) * 0.2;
-    for (let i = 0; i < 5; i++) {
-      const radius = baseRadius;
-      const x = Math.random() * width;
-      const y = Math.random() * height;
-      const speedMultiplier = Math.random() * 4 + 1;
-      const vx = (Math.random() - 0.5) * speedMultiplier;
-      const vy = (Math.random() - 0.5) * speedMultiplier;
-      circles.push({
-        x,
-        y,
-        radius,
-        color: circleColors[i],
-        vx,
-        vy,
-        interactive: false,
-      });
-    }
-
-    // interactive circle
-    const interactiveRadius = (width + height) * 0.1;
-    circles.push({
-      x: width / 2,
-      y: height / 2,
-      radius: interactiveRadius,
-      color: circleColors[5],
-      vx: 0,
-      vy: 0,
-      interactive: true,
-    });
-  }
-
-  initCircles();
-
-  const vertexSrc = `
-    attribute vec2 a_position;
-    varying vec2 v_uv;
-    void main(void) {
-      v_uv = a_position * 0.5 + 0.5; 
-      v_uv.y = 1.0 - v_uv.y; 
-      gl_Position = vec4(a_position, 0.0, 1.0);
-    }
-  `;
-
-  const fragmentSrc = `
-precision mediump float;
-varying vec2 v_uv;
-
-uniform vec2 u_resolution;
-uniform bool u_darkMode;
-uniform int u_circleCount;
-uniform vec3 u_circlesColor[6];
-uniform vec3 u_circlesPosRad[6];
-uniform vec2 u_mouse;
-
-void main(void) {
-    vec2 st = v_uv * u_resolution;
-
-    vec3 topColor = vec3(108.0/255.0, 0.0, 162.0/255.0);
-    vec3 bottomColor = vec3(0.0, 17.0/255.0, 82.0/255.0);
-    vec3 bgColor = mix(topColor, bottomColor, st.y / u_resolution.y);
-
-    float fieldSum = 0.0;
-    vec3 weightedColorSum = vec3(0.0);
-    
-    for (int i = 0; i < 6; i++) {
-        if (i >= u_circleCount) { break; }
-        vec3 posRad = u_circlesPosRad[i];
-        vec2 cPos = vec2(posRad.r, posRad.g);
-        float radius = posRad.b;
-        float dist = length(st - cPos);
-        float sigma = radius * 0.5;
-        float val = exp(- (dist * dist) / (2.0 * sigma * sigma));
-        fieldSum += val;
-        weightedColorSum += u_circlesColor[i] * val;
-    }
-
-    vec3 finalCirclesColor = vec3(0.0);
-    if (fieldSum > 0.0) {
-      finalCirclesColor = weightedColorSum / fieldSum;
-    }
-
-    float intensity = pow(fieldSum, 1.4);
-    vec3 finalColor = mix(bgColor, finalCirclesColor, clamp(intensity, 0.0, 1.0));
-    gl_FragColor = vec4(finalColor, 1.0);
-}
-  `;
-
-  function createShader(type, source) {
-    const shader = gl.createShader(type);
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      console.error("Shader compile error:", gl.getShaderInfoLog(shader));
-      gl.deleteShader(shader);
-      return null;
-    }
-    return shader;
-  }
-
-  const vertShader = createShader(gl.VERTEX_SHADER, vertexSrc);
-  const fragShader = createShader(gl.FRAGMENT_SHADER, fragmentSrc);
-
-  const program = gl.createProgram();
-  gl.attachShader(program, vertShader);
-  gl.attachShader(program, fragShader);
-  gl.linkProgram(program);
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    console.error("Program link error:", gl.getProgramInfoLog(program));
-  }
-
-  gl.useProgram(program);
-
-  const quadBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
-  const vertices = new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]);
-  gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-
-  const a_position = gl.getAttribLocation(program, "a_position");
-  gl.enableVertexAttribArray(a_position);
-  gl.vertexAttribPointer(a_position, 2, gl.FLOAT, false, 0, 0);
-
-  const u_resolution = gl.getUniformLocation(program, "u_resolution");
-  const u_darkMode = gl.getUniformLocation(program, "u_darkMode");
-  const u_circleCount = gl.getUniformLocation(program, "u_circleCount");
-  const u_circlesColor = gl.getUniformLocation(program, "u_circlesColor");
-  const u_circlesPosRad = gl.getUniformLocation(program, "u_circlesPosRad");
-  const u_mouse = gl.getUniformLocation(program, "u_mouse");
-
-  gl.uniform2f(u_resolution, width, height);
-
-  function updateCircles() {
-    for (let i = 0; i < circles.length; i++) {
-      const c = circles[i];
-      if (!c.interactive) {
-        c.x += c.vx;
-        c.y += c.vy;
-        if (c.x - c.radius > width) c.x = -c.radius;
-        if (c.x + c.radius < 0) c.x = width + c.radius;
-        if (c.y - c.radius > height) c.y = -c.radius;
-        if (c.y + c.radius < 0) c.y = height + c.radius;
-      } else {
-        c.x += (mouse.x - c.x) * 0.1;
-        c.y += (mouse.y - c.y) * 0.1;
-      }
-    }
-  }
-
-  function render() {
-    updateCircles();
-
-    gl.viewport(0, 0, width, height);
-    gl.clearColor(0, 0, 0, 1);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-
-    gl.useProgram(program);
-
-    gl.uniform1i(u_circleCount, circles.length);
-    gl.uniform2f(u_resolution, width, height);
-    gl.uniform2f(u_mouse, mouse.x, mouse.y);
-
-    let colorsArr = [];
-    let posRadArr = [];
-    for (let i = 0; i < 6; i++) {
-      if (i < circles.length) {
-        const c = circles[i];
-        colorsArr.push(c.color[0], c.color[1], c.color[2]);
-        posRadArr.push(c.x, c.y, c.radius);
-      } else {
-        colorsArr.push(0, 0, 0);
-        posRadArr.push(0, 0, 0);
-      }
-    }
-
-    gl.uniform3fv(u_circlesColor, new Float32Array(colorsArr));
-    gl.uniform3fv(u_circlesPosRad, new Float32Array(posRadArr));
-
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
-    requestAnimationFrame(render);
-  }
-
-  render();
-});
   </script>
-  
-  <!-- Add the cursor JavaScript -->
-  <script src="cursor-trail.js"></script>
 </body>
 </html>
