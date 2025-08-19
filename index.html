@@ -12,33 +12,39 @@
     }
 
     body {
-      font-family: 'Georgia', 'Times New Roman', serif;
+      font-family: 'Courier New', 'Monaco', monospace;
       line-height: 1.8;
-      color: #2c2c2c;
-      background: #f5f2ed;
+      color: #00ff00;
+      background: #000;
       min-height: 100vh;
       overflow-x: hidden;
+      position: relative;
     }
 
-    .background-pattern {
+    /* ASCII Animation Canvas */
+    #ascii-canvas {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      opacity: 0.03;
-      background-image: 
-        repeating-linear-gradient(45deg, #8b7355 25%, transparent 25%, transparent 75%, #8b7355 75%, #8b7355),
-        repeating-linear-gradient(-45deg, #8b7355 25%, transparent 25%, transparent 75%, #8b7355 75%, #8b7355);
-      background-size: 30px 30px;
-      background-position: 0 0, 15px 15px;
-      z-index: -1;
+      pointer-events: none;
+      z-index: 1;
+      font-family: 'Courier New', monospace;
+      font-size: 8px;
+      line-height: 8px;
+      color: #00ff41;
+      opacity: 0.3;
+      white-space: pre;
+      user-select: none;
     }
 
     .container {
       max-width: 900px;
       margin: 0 auto;
       padding: 2rem;
+      position: relative;
+      z-index: 10;
     }
 
     header {
@@ -47,12 +53,13 @@
     }
 
     .hero {
-      background: #fff;
+      background: rgba(0, 20, 0, 0.9);
       border-radius: 10px;
       padding: 3rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-      border: 1px solid #e8e4dd;
+      box-shadow: 0 0 30px rgba(0, 255, 0, 0.2);
+      border: 2px solid #00ff00;
       margin-bottom: 3rem;
+      backdrop-filter: blur(10px);
     }
 
     .hero-header {
@@ -69,15 +76,17 @@
       height: 140px;
       border-radius: 50%;
       object-fit: cover;
-      border: 4px solid #d4c4b0;
+      border: 4px solid #00ff00;
       transition: all 0.3s ease;
       cursor: pointer;
       user-select: none;
+      filter: brightness(0.8) contrast(1.2);
     }
 
     .profile-picture:hover {
       transform: scale(1.05);
-      border-color: #8b7355;
+      border-color: #00ff41;
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
     }
 
     .profile-picture:active {
@@ -87,24 +96,31 @@
     h1 {
       font-size: 2.8rem;
       font-weight: 400;
-      color: #2c2c2c;
-      letter-spacing: -1px;
+      color: #00ff41;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
     }
 
     .subtitle {
       font-size: 1.2rem;
-      color: #6b5d54;
+      color: #00ff00;
       margin-bottom: 2rem;
-      font-style: italic;
+      font-style: normal;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .bio {
       font-size: 1.1rem;
-      color: #4a4a4a;
+      color: #00cc00;
       max-width: 700px;
       margin: 0 auto 2.5rem;
       line-height: 1.9;
       text-align: left;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 2rem;
+      border-radius: 8px;
+      border: 1px solid #004400;
     }
 
     .bio p {
@@ -112,7 +128,7 @@
     }
 
     .bio strong {
-      color: #2c2c2c;
+      color: #00ff41;
       font-weight: 600;
     }
 
@@ -129,73 +145,84 @@
       align-items: center;
       gap: 0.5rem;
       padding: 0.7rem 1.2rem;
-      background: linear-gradient(135deg, #8b7355 0%, #7a6248 100%);
+      background: linear-gradient(135deg, #002200 0%, #004400 100%);
       backdrop-filter: blur(10px);
-      color: white;
+      color: #00ff00;
       text-decoration: none;
       border-radius: 5px;
       font-size: 0.95rem;
       transition: all 0.3s ease;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      font-family: 'Courier New', monospace;
+      border: 2px solid #00aa00;
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.1);
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .contact-link:hover {
-      background: linear-gradient(135deg, #6b5444 0%, #5a4337 100%);
+      background: linear-gradient(135deg, #004400 0%, #006600 100%);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 0 25px rgba(0, 255, 0, 0.3);
+      color: #00ff41;
+      border-color: #00ff00;
     }
 
     .section {
-      background: #fff;
+      background: rgba(0, 20, 0, 0.9);
       border-radius: 10px;
       padding: 2.5rem;
       margin-bottom: 2rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-      border: 1px solid #e8e4dd;
+      box-shadow: 0 0 30px rgba(0, 255, 0, 0.1);
+      border: 2px solid #004400;
+      backdrop-filter: blur(10px);
     }
 
     .section-title {
       font-size: 2rem;
       font-weight: 400;
-      color: #2c2c2c;
+      color: #00ff41;
       margin-bottom: 1.5rem;
       padding-bottom: 0.5rem;
-      border-bottom: 2px solid #d4c4b0;
+      border-bottom: 2px solid #00aa00;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
     }
 
     .renovation-notice {
       text-align: center;
       padding: 3rem;
-      color: #6b5d54;
-      font-style: italic;
-      background: #faf8f3;
+      color: #00cc00;
+      font-style: normal;
+      background: rgba(0, 0, 0, 0.8);
       border-radius: 5px;
-      border: 1px dashed #d4c4b0;
+      border: 2px dashed #004400;
     }
 
     .project-card {
-      background: #faf8f3;
+      background: rgba(0, 10, 0, 0.8);
       border-radius: 8px;
       padding: 2rem;
       margin-bottom: 1.5rem;
-      border: 1px solid #e8e4dd;
+      border: 1px solid #004400;
       transition: all 0.3s ease;
     }
 
     .project-card:hover {
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+      border-color: #00aa00;
     }
 
     .project-title {
       font-size: 1.4rem;
-      color: #2c2c2c;
+      color: #00ff41;
       margin-bottom: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .project-description {
-      color: #4a4a4a;
+      color: #00cc00;
       line-height: 1.7;
       margin-bottom: 1rem;
     }
@@ -203,11 +230,13 @@
     .project-status {
       display: inline-block;
       padding: 0.3rem 0.8rem;
-      background: #d4c4b0;
-      color: #2c2c2c;
+      background: #002200;
+      color: #00ff00;
       border-radius: 3px;
       font-size: 0.85rem;
       font-weight: 500;
+      border: 1px solid #004400;
+      text-transform: uppercase;
     }
 
     .project-tech {
@@ -218,48 +247,54 @@
     }
 
     .tech-tag {
-      background: #e8e4dd;
-      color: #4a4a4a;
+      background: #001100;
+      color: #00aa00;
       padding: 0.3rem 0.7rem;
       border-radius: 3px;
       font-size: 0.8rem;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Courier New', monospace;
+      border: 1px solid #003300;
+      text-transform: uppercase;
     }
 
     .project-link {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      background: linear-gradient(135deg, #8b7355 0%, #7a6248 100%);
+      background: linear-gradient(135deg, #002200 0%, #004400 100%);
       backdrop-filter: blur(10px);
-      color: white;
+      color: #00ff00;
       text-decoration: none;
       padding: 0.6rem 1.2rem;
       border-radius: 5px;
       font-size: 0.9rem;
       transition: all 0.3s ease;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      font-family: 'Courier New', monospace;
+      border: 2px solid #00aa00;
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.1);
+      text-transform: uppercase;
     }
 
     .project-link:hover {
-      background: linear-gradient(135deg, #6b5444 0%, #5a4337 100%);
+      background: linear-gradient(135deg, #004400 0%, #006600 100%);
       transform: translateX(3px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 0 25px rgba(0, 255, 0, 0.3);
+      color: #00ff41;
     }
 
     /* SECRET SECTION - Initially hidden */
     .secret-section {
       display: none;
-      background: #2c2c2c;
+      background: rgba(0, 0, 0, 0.95);
       border-radius: 10px;
       padding: 2rem;
       margin: 3rem 0;
       text-align: center;
-      color: #f5f2ed;
+      color: #00ff00;
       opacity: 0;
       transition: opacity 0.5s ease;
+      border: 2px solid #ff0000;
+      box-shadow: 0 0 30px rgba(255, 0, 0, 0.3);
     }
 
     .secret-section.visible {
@@ -271,10 +306,13 @@
       font-size: 1.5rem;
       font-weight: 400;
       margin-bottom: 1rem;
+      color: #ff0000;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
 
     .secret-hint {
-      color: #d4c4b0;
+      color: #00aa00;
       margin-bottom: 1.5rem;
       font-size: 0.95rem;
     }
@@ -288,43 +326,48 @@
     }
 
     .secret-input {
-      background: #4a4a4a;
-      border: 2px solid #6b5d54;
+      background: #001100;
+      border: 2px solid #004400;
       border-radius: 5px;
       padding: 0.7rem 1rem;
-      color: #f5f2ed;
+      color: #00ff00;
       font-size: 1rem;
       min-width: 200px;
       transition: all 0.3s ease;
+      font-family: 'Courier New', monospace;
     }
 
     .secret-input::placeholder {
-      color: #8b8b8b;
+      color: #004400;
     }
 
     .secret-input:focus {
       outline: none;
-      border-color: #8b7355;
-      background: #5a5a5a;
+      border-color: #00ff00;
+      background: #002200;
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
     }
 
     .secret-button {
-      background: linear-gradient(135deg, #8b7355 0%, #7a6248 100%);
+      background: linear-gradient(135deg, #002200 0%, #004400 100%);
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 2px solid #00aa00;
       border-radius: 5px;
       padding: 0.7rem 1.5rem;
-      color: white;
+      color: #00ff00;
       font-size: 1rem;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.1);
+      font-family: 'Courier New', monospace;
+      text-transform: uppercase;
     }
 
     .secret-button:hover {
-      background: linear-gradient(135deg, #6b5444 0%, #5a4337 100%);
+      background: linear-gradient(135deg, #004400 0%, #006600 100%);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 0 25px rgba(0, 255, 0, 0.3);
+      color: #00ff41;
     }
 
     .secret-feedback {
@@ -335,20 +378,22 @@
     }
 
     .secret-feedback.success {
-      background: #4a7c59;
-      color: white;
+      background: rgba(0, 100, 0, 0.8);
+      color: #00ff00;
+      border: 1px solid #00aa00;
     }
 
     .secret-feedback.error {
-      background: #8b4513;
-      color: white;
+      background: rgba(100, 0, 0, 0.8);
+      color: #ff0000;
+      border: 1px solid #aa0000;
     }
 
     footer {
       text-align: center;
       margin-top: 3rem;
       padding: 2rem;
-      color: #6b5d54;
+      color: #00aa00;
       font-size: 0.9rem;
     }
 
@@ -370,10 +415,41 @@
         flex-direction: column;
       }
     }
+
+    /* Matrix-like scrolling text */
+    .matrix-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.05;
+    }
+
+    .matrix-column {
+      position: absolute;
+      top: 0;
+      color: #00ff00;
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      line-height: 10px;
+      animation: matrix-fall linear infinite;
+    }
+
+    @keyframes matrix-fall {
+      0% { transform: translateY(-100vh); }
+      100% { transform: translateY(100vh); }
+    }
   </style>
 </head>
 <body>
-  <div class="background-pattern"></div>
+  <!-- ASCII Canvas for cursor trail -->
+  <div id="ascii-canvas"></div>
+  
+  <!-- Matrix background -->
+  <div class="matrix-bg" id="matrix-bg"></div>
 
   <div class="container">
     <header>
@@ -385,25 +461,14 @@
 
         <div class="subtitle">Developer • Professional Cowboy</div>
         <div class="bio">
-          <p>Hi there! I'm Albert, a 27-year-old from Barcelona. I'm passionate about both nature and technology. While I spend my days coding games and learning data analytics with Python, my true passion lies at the intersection of the natural and tech worlds.</p>
-          
-          <p>Currently, I'm studying and practicing everything related to data analytics and Python, as I'm aiming to build a career in this field.</p>
-          
-          <p>At the same time, I'm working on a couple of side projects:</p>
-          <ul style="margin: 1rem 0 1rem 2rem; color: #4a4a4a; line-height: 1.8;">
-            <li style="margin-bottom: 0.8rem;"><strong>A fitness/nutrition AI-based app</strong> that I initially developed for personal use. I soon realized it had real potential, so I'm refining the main prototype to share it with others who, like me, believe that taking care of your body and mind is the foundation for everything else.</li>
-            <li style="margin-bottom: 0.8rem;"><strong>A pair of AI-powered productivity tools for data work</strong>, one focused on automating and simplifying data cleaning, and another designed to help generate visualizations and plots faster. Both are still works in progress, but they're aimed at boosting efficiency for data analysts and developers.</li>
-            <li style="margin-bottom: 0.8rem;"><strong>Game development</strong>, where I go from prototyping quirky ideas to more serious concepts. I believe creativity should be fun, and I think I've finally landed on a game prototype I'm excited to develop over the long term. It's still under wraps for now, but I look forward to revealing it in the future.</li>
-          </ul>
-          
-          <p>Outside of coding, you'll often find me playing various instruments, creating oil paintings, or planning my next mountain adventure. I live by the philosophy that <em>"If you do well, good things will happen."</em> It's about showing up, doing the work, and trusting the process.</p>
+          <p>Passionate Game Developer and Data Analyst with expertise in C# Unity development and Python programming. Currently pursuing advanced data analytics skills while actively developing game prototypes and interactive web applications. Successfully published my first Steam game "Bald Ball" and continuously exploring the intersection of technology and creativity. When not coding, I enjoy creating instrumental folk music, oil painting, and hiking in nature.</p>
         </div>
         
         <div class="contact-links">
           <a href="./cv.html" class="contact-link">📄 CV</a>
           <a href="https://www.linkedin.com/in/albert-adroer-prats-615388160/" class="contact-link">💼 LinkedIn</a>
           <a href="https://www.artstation.com/treblafreeman" class="contact-link">🎨 Art Portfolio</a>
-          <a href="https://github.com/treblalbert" class="contact-link">🐙 GitHub</a>
+          <a href="https://github.com/treblalbert" class="contact-link">🔙 GitHub</a>
           <a href="https://store.steampowered.com/app/3489590/Bald_Ball/" class="contact-link">👾 My Steam Game</a>
           <a href="https://albertfreeman.itch.io/" class="contact-link">🎮 Game Experiments</a>
           <a href="https://distrokid.com/hyperfollow/mountforsaken/mar-i-cel" class="contact-link">🎧 My Music</a>
@@ -418,53 +483,6 @@
         <div class="renovation-notice">
           <p>🔨 Currently renovating this section</p>
           <p>New projects coming soon with a fresh perspective</p>
-        </div>
-      </section>
-
-      <section class="section">
-        <h2 class="section-title">Current Focus</h2>
-        <div class="project-card">
-          <h3 class="project-title">AI-Powered Fitness & Nutrition Companion</h3>
-          <p class="project-description">
-            A comprehensive fitness app that leverages AI to provide personalized nutrition and workout guidance. Initially built for my own journey, now being refined into a full prototype that can help others achieve their wellness goals.
-          </p>
-          <div class="project-tech">
-            <span class="tech-tag">OpenAI API</span>
-            <span class="tech-tag">Multiple Databases</span>
-            <span class="tech-tag">Python</span>
-            <span class="tech-tag">AI/ML</span>
-          </div>
-          <span class="project-status">Prototype Stage</span>
-        </div>
-        
-        <div class="project-card">
-          <h3 class="project-title">Data Analytics Productivity Suite</h3>
-          <p class="project-description">
-            Two AI-powered tools designed to streamline data work: one automates data cleaning processes, while the other accelerates visualization and plot generation. Currently desktop-based with plans for web versions.
-          </p>
-          <div class="project-tech">
-            <span class="tech-tag">Python</span>
-            <span class="tech-tag">Tkinter UI</span>
-            <span class="tech-tag">AI Integration</span>
-            <span class="tech-tag">Data Processing</span>
-          </div>
-          <span class="project-status">In Development • Web Version Planned</span>
-        </div>
-        
-        <div class="project-card">
-          <h3 class="project-title">Long-Term Game Project</h3>
-          <p class="project-description">
-            After countless prototypes and experiments, I've found a game concept I'm truly excited about. It's a full production involving every aspect of game development, from 3D modeling to music composition. Details remain under wraps for now.
-          </p>
-          <div class="project-tech">
-            <span class="tech-tag">Unity</span>
-            <span class="tech-tag">C#</span>
-            <span class="tech-tag">Blender</span>
-            <span class="tech-tag">Substance 3D Painter</span>
-            <span class="tech-tag">FL Studio</span>
-            <span class="tech-tag">Animation</span>
-          </div>
-          <span class="project-status">Early Development</span>
         </div>
       </section>
 
@@ -484,22 +502,6 @@
             A laid-back guide on creating and deploying a personal website. Learn how I built this site and how you can create your own digital space.
           </p>
           <a href="./website-tutorial/" class="project-link">Read Guide →</a>
-        </div>
-      </section>
-
-      <section class="section">
-        <h2 class="section-title">The Wrench</h2>
-        <div class="project-card">
-          <h3 class="project-title">🔧 Barcelona Indie Game Collective</h3>
-          <p class="project-description">
-            We're a local team bringing back the magic of couch gaming. Where friends gather, laugh, and compete side by side. Our first project, <strong>Wrecky Kart</strong>, aims to capture that pure, chaotic fun of local multiplayer racing.
-          </p>
-          <div class="project-tech">
-            <span class="tech-tag">Unity</span>
-            <span class="tech-tag">Local Multiplayer</span>
-            <span class="tech-tag">Couch Gaming Revival</span>
-          </div>
-          <span class="project-status">Work in Progress</span>
         </div>
       </section>
 
@@ -527,76 +529,276 @@
   </div>
 
   <script>
-// Profile picture click counter for secret section
-let clickCount = 0;
-let clickTimer = null;
+    // ASCII Animation System based on Dyna
+    class Vec2 {
+      constructor(x = 0, y = 0) {
+        this.x = x;
+        this.y = y;
+      }
+      
+      static copy(v) {
+        return new Vec2(v.x, v.y);
+      }
+      
+      static length(v) {
+        return Math.sqrt(v.x * v.x + v.y * v.y);
+      }
+      
+      static add(a, b) {
+        return new Vec2(a.x + b.x, a.y + b.y);
+      }
+      
+      static sub(a, b) {
+        return new Vec2(a.x - b.x, a.y - b.y);
+      }
+      
+      static divN(v, n) {
+        return new Vec2(v.x / n, v.y / n);
+      }
+      
+      static mulN(v, n) {
+        return new Vec2(v.x * n, v.y * n);
+      }
+    }
 
-document.getElementById('profilePic').addEventListener('click', function() {
-  clickCount++;
-  
-  // Reset timer on each click
-  clearTimeout(clickTimer);
-  
-  // Check if 5 clicks reached
-  if (clickCount >= 5) {
-    const secretSection = document.getElementById('secretSection');
-    secretSection.style.display = 'block';
-    setTimeout(() => {
-      secretSection.classList.add('visible');
-    }, 10);
-    clickCount = 0;
-  }
-  
-  // Reset count after 10 seconds of no clicks
-  clickTimer = setTimeout(() => {
-    clickCount = 0;
-  }, 10000);
-});
+    function smoothstep(edge0, edge1, x) {
+      x = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
+      return x * x * (3 - 2 * x);
+    }
 
-// Secret password functionality
-function checkSecretPassword() {
-  const input = document.getElementById('secretInput');
-  const feedback = document.getElementById('secretFeedback');
-  const password = input.value.toLowerCase().trim();
-  
-  const secrets = {
-    'wrecky': { message: '🎮 Access granted! Redirecting to secret project...', url: './wrecky/' },
-    'albert_fitness': { message: '💪 Access granted! Redirecting to fitness plan...', url: './albert-fitness/' },
-    'fitness': { message: '🤖 Access granted! Redirecting to AI Fitness Trainer...', url: './fitness/' },
-    'fitness_test': { message: '🧪 Access granted! Redirecting to fitness test...', url: './fitness-test/' },
-    'uriginal': { message: '✨ Access granted! Redirecting to uriginal project...', url: './uriginal/' },
-    'data': { message: '🧹 Access granted! Redirecting to Data Cleaner...', url: './datacleaner/' },
-    'dictionary': { message: '📖 Access granted! Redirecting to Data Dictionary...', url: './data-dictionary/' }
-  };
-  
-  if (secrets[password]) {
-    feedback.textContent = secrets[password].message;
-    feedback.className = 'secret-feedback success';
-    feedback.style.display = 'block';
+    class Dyna {
+      constructor(mass, damp) {
+        this.pos = new Vec2(0, 0);
+        this.vel = new Vec2(0, 0);
+        this.pre = new Vec2(0, 0);
+        this.mass = mass;
+        this.damp = damp;
+      }
+      
+      update(cursor) {
+        const force = Vec2.sub(cursor, this.pos);
+        const acc = Vec2.divN(force, this.mass);
+        this.vel = Vec2.mulN(Vec2.add(this.vel, acc), this.damp);
+        this.pre = Vec2.copy(this.pos);
+        this.pos = Vec2.add(this.pos, this.vel);
+      }
+    }
+
+    function line(a, b) {
+      let x0 = Math.floor(a.x);
+      let y0 = Math.floor(a.y);
+      const x1 = Math.floor(b.x);
+      const y1 = Math.floor(b.y);
+      const dx = Math.abs(x1 - x0);
+      const sx = x0 < x1 ? 1 : -1;
+      const dy = -Math.abs(y1 - y0);
+      let sy = y0 < y1 ? 1 : -1;
+      let err = dx + dy;
+      const points = [];
+      
+      while (true) {
+        points.push({ x: x0, y: y0 });
+        if (x0 == x1 && y0 == y1) break;
+        let e2 = 2 * err;
+        if (e2 >= dy) {
+          err += dy;
+          x0 += sx;
+        }
+        if (e2 <= dx) {
+          err += dx;
+          y0 += sy;
+        }
+      }
+      return points;
+    }
+
+    // ASCII Animation Setup
+    const MASS = 20;
+    const DAMP = 0.95;
+    const RADIUS = 15;
+    const density = ' .:░▒▓█#+-'.split('');
     
-    setTimeout(() => {
-      window.location.href = secrets[password].url;
-    }, 1500);
-  } else if (password === '') {
-    feedback.style.display = 'none';
-  } else {
-    feedback.textContent = '❌ Incorrect password. Try again!';
-    feedback.className = 'secret-feedback error';
-    feedback.style.display = 'block';
+    let cols = 0;
+    let rows = 0;
+    let buffer = [];
+    let cursor = new Vec2(0, 0);
+    const dyna = new Dyna(MASS, DAMP);
     
-    setTimeout(() => {
-      feedback.style.display = 'none';
-      input.value = '';
-    }, 3000);
-  }
-}
+    const canvas = document.getElementById('ascii-canvas');
+    
+    function initCanvas() {
+      cols = Math.floor(window.innerWidth / 8);
+      rows = Math.floor(window.innerHeight / 8);
+      buffer = new Array(cols * rows).fill(0).map(() => ({ value: 0 }));
+      
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+    }
+    
+    function updateASCII() {
+      // Update cursor position
+      const rect = document.body.getBoundingClientRect();
+      cursor.x = (mouseX / window.innerWidth) * cols;
+      cursor.y = (mouseY / window.innerHeight) * rows;
+      
+      dyna.update(cursor);
+      
+      const a = window.innerWidth / window.innerHeight;
+      const points = line(dyna.pos, dyna.pre);
+      
+      for (const p of points) {
+        const sx = Math.max(0, p.x - RADIUS);
+        const ex = Math.min(cols, p.x + RADIUS);
+        const sy = Math.floor(Math.max(0, p.y - RADIUS * a));
+        const ey = Math.floor(Math.min(rows, p.y + RADIUS * a));
+        
+        for (let j = sy; j < ey; j++) {
+          for (let i = sx; i < ex; i++) {
+            const x = p.x - i;
+            const y = (p.y - j) / a;
+            const l = 1 - Vec2.length({ x, y }) / RADIUS;
+            const idx = i + cols * j;
+            if (buffer[idx]) {
+              buffer[idx].value = Math.max(buffer[idx].value, l);
+            }
+          }
+        }
+      }
+      
+      // Render ASCII
+      let output = '';
+      for (let j = 0; j < rows; j++) {
+        for (let i = 0; i < cols; i++) {
+          const idx = i + cols * j;
+          if (buffer[idx]) {
+            const v = smoothstep(0, 0.9, buffer[idx].value);
+            buffer[idx].value *= 0.99;
+            const charIdx = Math.floor(v * (density.length - 1));
+            output += density[charIdx];
+          } else {
+            output += ' ';
+          }
+        }
+        output += '\n';
+      }
+      
+      canvas.textContent = output;
+    }
+    
+    // Mouse tracking
+    let mouseX = 0;
+    let mouseY = 0;
+    
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+    
+    // Initialize and start animation
+    initCanvas();
+    window.addEventListener('resize', initCanvas);
+    
+    function animate() {
+      updateASCII();
+      requestAnimationFrame(animate);
+    }
+    
+    animate();
 
-// Allow Enter key to submit
-document.getElementById('secretInput').addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') {
-    checkSecretPassword();
-  }
-});
+    // Matrix background effect
+    function createMatrixEffect() {
+      const matrixBg = document.getElementById('matrix-bg');
+      const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+      
+      for (let i = 0; i < 20; i++) {
+        const column = document.createElement('div');
+        column.className = 'matrix-column';
+        column.style.left = Math.random() * 100 + '%';
+        column.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        column.style.animationDelay = Math.random() * 2 + 's';
+        
+        let text = '';
+        for (let j = 0; j < 50; j++) {
+          text += chars[Math.floor(Math.random() * chars.length)] + '\n';
+        }
+        column.textContent = text;
+        
+        matrixBg.appendChild(column);
+      }
+    }
+    
+    createMatrixEffect();
+
+    // Profile picture click counter for secret section
+    let clickCount = 0;
+    let clickTimer = null;
+
+    document.getElementById('profilePic').addEventListener('click', function() {
+      clickCount++;
+      
+      // Reset timer on each click
+      clearTimeout(clickTimer);
+      
+      // Check if 5 clicks reached
+      if (clickCount >= 5) {
+        const secretSection = document.getElementById('secretSection');
+        secretSection.style.display = 'block';
+        setTimeout(() => {
+          secretSection.classList.add('visible');
+        }, 10);
+        clickCount = 0;
+      }
+      
+      // Reset count after 10 seconds of no clicks
+      clickTimer = setTimeout(() => {
+        clickCount = 0;
+      }, 10000);
+    });
+
+    // Secret password functionality
+    function checkSecretPassword() {
+      const input = document.getElementById('secretInput');
+      const feedback = document.getElementById('secretFeedback');
+      const password = input.value.toLowerCase().trim();
+      
+      const secrets = {
+        'wrecky': { message: '🎮 Access granted! Redirecting to secret project...', url: './wrecky/' },
+        'albert_fitness': { message: '💪 Access granted! Redirecting to fitness plan...', url: './albert-fitness/' },
+        'fitness': { message: '🤖 Access granted! Redirecting to AI Fitness Trainer...', url: './fitness/' },
+        'fitness_test': { message: '🧪 Access granted! Redirecting to fitness test...', url: './fitness-test/' },
+        'uriginal': { message: '✨ Access granted! Redirecting to uriginal project...', url: './uriginal/' },
+        'data': { message: '🧹 Access granted! Redirecting to Data Cleaner...', url: './datacleaner/' },
+        'dictionary': { message: '📖 Access granted! Redirecting to Data Dictionary...', url: './data-dictionary/' }
+      };
+      
+      if (secrets[password]) {
+        feedback.textContent = secrets[password].message;
+        feedback.className = 'secret-feedback success';
+        feedback.style.display = 'block';
+        
+        setTimeout(() => {
+          window.location.href = secrets[password].url;
+        }, 1500);
+      } else if (password === '') {
+        feedback.style.display = 'none';
+      } else {
+        feedback.textContent = '❌ Incorrect password. Try again!';
+        feedback.className = 'secret-feedback error';
+        feedback.style.display = 'block';
+        
+        setTimeout(() => {
+          feedback.style.display = 'none';
+          input.value = '';
+        }, 3000);
+      }
+    }
+
+    // Allow Enter key to submit
+    document.getElementById('secretInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        checkSecretPassword();
+      }
+    });
   </script>
 </body>
 </html>
