@@ -15,18 +15,21 @@
       font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
       line-height: 1.8;
       color: #e8f4fd;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
-      background-size: 400% 400%;
-      animation: gradientShift 15s ease infinite;
+      background: #000;
       min-height: 100vh;
       overflow-x: hidden;
       position: relative;
     }
 
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    /* New Background Canvas */
+    #background-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
     }
 
     /* ASCII Animation Canvas */
@@ -495,41 +498,14 @@
         flex-direction: column;
       }
     }
-
-    /* Matrix background - subtle */
-    .matrix-bg {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.03;
-    }
-
-    .matrix-column {
-      position: absolute;
-      top: 0;
-      color: rgba(255, 255, 255, 0.5);
-      font-family: 'Consolas', monospace;
-      font-size: 8px;
-      line-height: 8px;
-      animation: matrix-fall linear infinite;
-    }
-
-    @keyframes matrix-fall {
-      0% { transform: translateY(-100vh); }
-      100% { transform: translateY(100vh); }
-    }
   </style>
 </head>
 <body>
+  <!-- New Background Canvas -->
+  <canvas id="background-canvas"></canvas>
+  
   <!-- ASCII Canvas for cursor trail -->
   <div id="ascii-canvas"></div>
-  
-  <!-- Matrix background -->
-  <div class="matrix-bg" id="matrix-bg"></div>
 
   <div class="container">
     <header>
@@ -541,16 +517,20 @@
 
         <div class="subtitle">Developer • Professional Cowboy</div>
         <div class="bio">
-          <p>Passionate Game Developer and Data Analyst with expertise in C# Unity development and Python programming. Currently pursuing advanced data analytics skills while actively developing game prototypes and interactive web applications. Successfully published my first Steam game "Bald Ball" and continuously exploring the intersection of technology and creativity. When not coding, I enjoy creating instrumental folk music, oil painting, and hiking in nature.</p>
+          <p>Hello! My name is Albert, I'm a 27-year-old from Barcelona. I love computers, creating games, building new tools, and above all, learning and continuously improving.</p>
+          <p>I've developed a set of data analytics tools designed to make a data analyst's work easier, and I'm currently in the process of renovating them.</p>
+          <p>I also have a published game on Steam made with Unity, called Bald Ball. Right now, I'm working on my first larger and more professional project, a Metroidvania titled Mushy Roots. The goal is to blend the classic feel of Hollow Knight with the depth of simulation and experimentation found in Rain World. I'm developing it with a small team of two other people, and I regularly share updates on the game's official Discord.</p>
+          <p>When I'm not working on this main project, I'm studying C++ from scratch using the book Programming: Principles and Practice Using C++ by Bjarne Stroustrup, the creator of the language himself. It's the first language I'm fully committing to learning in its entirety, with the goal of being able to code as much as possible without relying on other people's code or AI tools.</p>
+          <p>And when I'm away from the computer, you'll probably find me playing guitar and learning new pieces, painting with oils, or exploring mountains and remote places.</p>
         </div>
         
         <div class="contact-links">
           <a href="./cv.html" class="contact-link">📄 CV</a>
           <a href="https://www.linkedin.com/in/albert-adroer-prats-615388160/" class="contact-link">💼 LinkedIn</a>
-          <a href="https://www.artstation.com/treblafreeman" class="contact-link">🎨 Art Portfolio</a>
+          <a href="https://www.artstation.com/treblafreeman" class="contact-link">🎨 Artstation</a>
           <a href="https://github.com/treblalbert" class="contact-link">🔙 GitHub</a>
           <a href="https://store.steampowered.com/app/3489590/Bald_Ball/" class="contact-link">👾 My Steam Game</a>
-          <a href="https://albertfreeman.itch.io/" class="contact-link">🎮 Game Experiments</a>
+          <a href="https://albertfreeman.itch.io/" class="contact-link">🎮 Itch.Io</a>
           <a href="https://distrokid.com/hyperfollow/mountforsaken/mar-i-cel" class="contact-link">🎧 My Music</a>
           <a href="mailto:albertadroer@gmail.com" class="contact-link">📧 Email</a>
         </div>
@@ -560,9 +540,21 @@
     <main>
       <section class="section">
         <h2 class="section-title">Portfolio Projects</h2>
+        <div class="project-card">
+          <h3 class="project-title">C++ Adventures</h3>
+          <p class="project-description">
+            My journey learning C++ from scratch using Bjarne Stroustrup's "Programming: Principles and Practice Using C++". 
+            This repository contains all my exercises, experiments, and projects as I master the language.
+          </p>
+          <div class="project-tech">
+            <span class="tech-tag">C++</span>
+            <span class="tech-tag">Learning Journey</span>
+            <span class="tech-tag">Programming Fundamentals</span>
+          </div>
+          <a href="https://github.com/treblalbert/CplusplusAdventures" class="project-link">View on GitHub →</a>
+        </div>
         <div class="renovation-notice">
-          <p>🔨 Currently renovating this section</p>
-          <p>New projects coming soon with a fresh perspective</p>
+          <p>🔨 More projects coming soon</p>
         </div>
       </section>
 
@@ -609,6 +601,97 @@
   </div>
 
   <script>
+    // New Background Effect - Similar to Codepen example
+    const canvas = document.getElementById('background-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+
+    canvas.width = width;
+    canvas.height = height;
+
+    const particles = [];
+    const particleCount = 100;
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.size = Math.random() * 2 + 0.5;
+        this.speedX = Math.random() * 1 - 0.5;
+        this.speedY = Math.random() * 1 - 0.5;
+        this.color = `rgba(100, 150, 255, ${Math.random() * 0.5 + 0.1})`;
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        if (this.x > width) this.x = 0;
+        else if (this.x < 0) this.x = width;
+
+        if (this.y > height) this.y = 0;
+        else if (this.y < 0) this.y = height;
+      }
+
+      draw() {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      for (let i = 0; i < particleCount; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function connectParticles() {
+      for (let a = 0; a < particles.length; a++) {
+        for (let b = a; b < particles.length; b++) {
+          const dx = particles[a].x - particles[b].x;
+          const dy = particles[a].y - particles[b].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < 100) {
+            ctx.strokeStyle = `rgba(100, 150, 255, ${0.2 * (1 - distance / 100)})`;
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(particles[a].x, particles[a].y);
+            ctx.lineTo(particles[b].x, particles[b].y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function animateBackground() {
+      ctx.clearRect(0, 0, width, height);
+
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+      }
+
+      connectParticles();
+      requestAnimationFrame(animateBackground);
+    }
+
+    function handleResize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    }
+
+    window.addEventListener('resize', handleResize);
+
+    initParticles();
+    animateBackground();
+
     // ASCII Animation System based on Dyna - Fixed for full window
     class Vec2 {
       constructor(x = 0, y = 0) {
@@ -704,7 +787,7 @@
     let cursor = new Vec2(0, 0);
     const dyna = new Dyna(MASS, DAMP);
     
-    const canvas = document.getElementById('ascii-canvas');
+    const asciiCanvas = document.getElementById('ascii-canvas');
     
     function initCanvas() {
       // Use character size based calculations for consistent coverage
@@ -717,10 +800,10 @@
       buffer = new Array(cols * rows).fill(0).map(() => ({ value: 0 }));
       
       // Set canvas to cover full viewport
-      canvas.style.width = '100vw';
-      canvas.style.height = '100vh';
-      canvas.style.fontSize = charWidth + 'px';
-      canvas.style.lineHeight = charHeight + 'px';
+      asciiCanvas.style.width = '100vw';
+      asciiCanvas.style.height = '100vh';
+      asciiCanvas.style.fontSize = charWidth + 'px';
+      asciiCanvas.style.lineHeight = charHeight + 'px';
     }
     
     function updateASCII() {
@@ -772,7 +855,7 @@
         if (j < rows - 1) output += '\n';
       }
       
-      canvas.textContent = output;
+      asciiCanvas.textContent = output;
     }
     
     // Mouse tracking
@@ -788,6 +871,7 @@
     initCanvas();
     window.addEventListener('resize', () => {
       initCanvas();
+      handleResize();
     });
     
     function animate() {
@@ -796,30 +880,6 @@
     }
     
     animate();
-
-    // Matrix background effect - subtle
-    function createMatrixEffect() {
-      const matrixBg = document.getElementById('matrix-bg');
-      const chars = '01abcdef<>{}[]';
-      
-      for (let i = 0; i < 6; i++) {
-        const column = document.createElement('div');
-        column.className = 'matrix-column';
-        column.style.left = Math.random() * 100 + '%';
-        column.style.animationDuration = (Math.random() * 5 + 4) + 's';
-        column.style.animationDelay = Math.random() * 4 + 's';
-        
-        let text = '';
-        for (let j = 0; j < 25; j++) {
-          text += chars[Math.floor(Math.random() * chars.length)] + '\n';
-        }
-        column.textContent = text;
-        
-        matrixBg.appendChild(column);
-      }
-    }
-    
-    createMatrixEffect();
 
     // Profile picture click counter for secret section
     let clickCount = 0;
@@ -858,9 +918,10 @@
         'albert_fitness': { message: '💪 Access granted! Redirecting to fitness plan...', url: './albert-fitness/' },
         'fitness': { message: '🤖 Access granted! Redirecting to AI Fitness Trainer...', url: './fitness/' },
         'fitness_test': { message: '🧪 Access granted! Redirecting to fitness test...', url: './fitness-test/' },
-        'uriginal': { message: '✨ Access granted! Redirecting to uriginal project...', url: './uriginal/' },
-        'data': { message: '🧹 Access granted! Redirecting to Data Cleaner...', url: './datacleaner/' },
-        'dictionary': { message: '📖 Access granted! Redirecting to Data Dictionary...', url: './data-dictionary/' }
+        'uriginal': { message: '🧠 Access granted! Redirecting to Uriginal project...', url: './uriginal/' },
+        'uriginal_test': { message: '🔬 Access granted! Redirecting to Uriginal test...', url: './uriginal-test/' },
+        'test': { message: '⚗️ Access granted! Redirecting to test area...', url: './test/' },
+        'secret': { message: '🔓 Access granted! Welcome to the secret area.', url: './secret/' }
       };
       
       if (secrets[password]) {
@@ -870,22 +931,18 @@
         
         setTimeout(() => {
           window.location.href = secrets[password].url;
-        }, 1500);
-      } else if (password === '') {
-        feedback.style.display = 'none';
+        }, 2000);
       } else {
-        feedback.textContent = '❌ Incorrect password. Try again!';
+        feedback.textContent = '❌ Incorrect password. Try again.';
         feedback.className = 'secret-feedback error';
         feedback.style.display = 'block';
         
-        setTimeout(() => {
-          feedback.style.display = 'none';
-          input.value = '';
-        }, 3000);
+        // Clear input
+        input.value = '';
       }
     }
 
-    // Allow Enter key to submit
+    // Allow Enter key to submit secret password
     document.getElementById('secretInput').addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
         checkSecretPassword();
