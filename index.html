@@ -9,13 +9,20 @@
   /* reset */
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
-  body{
+  body {
     background: radial-gradient(ellipse at center, rgba(20,20,20,1) 0%, rgba(15,15,15,1) 35%, #0a0a0a 100%);
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #fff;
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
     overflow-x:hidden;
+    opacity: 0;
+    transition: opacity 1.2s ease-in-out;
+  }
+
+  body.light-theme {
+    background: radial-gradient(ellipse at center, #f5f5f7 0%, #e8e8e8 35%, #dcdcdc 100%);
+    color: #333;
   }
 
   /* ocean waves (unchanged) */
@@ -23,6 +30,14 @@
   .wave{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 88.7'%3E%3Cpath d='M800 56.9c-155.5 0-204.9-50-405.5-49.9-200 0-250 49.9-394.5 49.9v31.8h800v-.2-31.6z' fill='%23111111'/%3E%3C/svg%3E") repeat-x;position:absolute;top:-198px;width:6400px;height:198px;animation:wave 7s linear infinite;transform:translate3d(0,0,0)}
   .wave:nth-of-type(2){top:-175px;animation:wave 7s linear -.125s infinite}
   @keyframes wave{0%{margin-left:0}100%{margin-left:-1600px}}
+
+  .light-theme .ocean {
+    background: #e0e0e0;
+  }
+  
+  .light-theme .wave {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 88.7'%3E%3Cpath d='M800 56.9c-155.5 0-204.9-50-405.5-49.9-200 0-250 49.9-394.5 49.9v31.8h800v-.2-31.6z' fill='%23d0d0d0'/%3E%3C/svg%3E") repeat-x;
+  }
 
   /* layout */
   .container{position:relative;z-index:1;padding:40px 20px;min-height:100vh;display:flex;justify-content:center;align-items:center}
@@ -45,6 +60,15 @@
     transform: translateZ(0); /* create a new layer for GPU */
   }
 
+  .light-theme .glass-container {
+    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
+    border: 1px solid rgba(255,255,255,0.4);
+    box-shadow:
+      0 12px 40px rgba(0,0,0,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.6),
+      inset 0 -1px 0 rgba(255,255,255,0.3);
+  }
+
   /* Animated distortion layer - sits above the card's blurred background */
   .glass-container .distort-layer{
     pointer-events:none;
@@ -60,6 +84,10 @@
     will-change: filter;
   }
 
+  .light-theme .glass-container .distort-layer {
+    background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+  }
+
   /* Fresnel rim highlight */
   .glass-container::before{
     content:'';
@@ -73,6 +101,11 @@
     mix-blend-mode: screen;
     opacity:0.95;
     transform: translateZ(0);
+  }
+
+  .light-theme .glass-container::before {
+    background: radial-gradient(120% 80% at 10% 10%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 6%, rgba(255,255,255,0.00) 20%),
+                linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.00) 40%);
   }
 
   /* Chromatic aberration rim: 3 colored offset layers to the outside edge */
@@ -94,6 +127,13 @@
     filter: blur(6px);
   }
 
+  .light-theme .glass-container::after {
+    box-shadow:
+      -6px -3px 18px -10px rgba(255,150,150,0.4),
+      6px 3px 18px -10px rgba(150,200,255,0.4),
+      -4px 6px 22px -14px rgba(150,255,200,0.2);
+  }
+
   /* inner glass border (thin inner rim) */
   .glass-inner-border{
     position:absolute;
@@ -107,11 +147,34 @@
     mask-composite: exclude;
   }
 
+  .light-theme .glass-inner-border {
+    background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(255,255,255,0.1);
+  }
+
   /* header/content unchanged but elevated z-index so highlights show above distortion */
   .header{display:flex;align-items:center;gap:24px;margin-bottom:30px;position:relative;z-index:5}
-  .profile-pic{width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,0.15);box-shadow:0 6px 26px rgba(0,0,0,0.5)}
+  .profile-pic{
+    width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,0.15);
+    box-shadow:0 6px 26px rgba(0,0,0,0.5);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .profile-pic:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  }
+  .light-theme .profile-pic {
+    border: 3px solid rgba(0,0,0,0.1);
+    box-shadow: 0 6px 26px rgba(0,0,0,0.15);
+  }
+  .light-theme .profile-pic:hover {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
   .name{color:#ffffff;font-size:32px;font-weight:600}
+  .light-theme .name { color: #333; }
   .description{color:rgba(255,255,255,0.88);line-height:1.7;margin-bottom:35px;font-size:16px;position:relative;z-index:5}
+  .light-theme .description { color: rgba(0,0,0,0.8); }
 
   .links-container{display:flex;justify-content:center;gap:30px;margin-bottom:35px;flex-wrap:wrap;position:relative;z-index:5}
 
@@ -135,6 +198,14 @@
     z-index:5;
   }
 
+  .light-theme .icon-wrapper {
+    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
+    border: 1px solid rgba(255,255,255,0.4);
+    box-shadow:
+      0 8px 26px rgba(0,0,0,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.6);
+  }
+
   /* micro-distort & chroma for each icon */
   .icon-wrapper .icon-distort{
     pointer-events:none;
@@ -145,6 +216,10 @@
     opacity:0.45;
     mix-blend-mode: overlay;
     z-index:2;
+  }
+
+  .light-theme .icon-wrapper .icon-distort {
+    opacity: 0.3;
   }
 
   /* icon colored fringe (three small offset shadows) */
@@ -162,13 +237,24 @@
     mix-blend-mode: screen;
   }
 
+  .light-theme .icon-wrapper::after {
+    box-shadow:
+      -3px -2px 12px -7px rgba(255,150,150,0.5),
+      3px 2px 12px -7px rgba(150,200,255,0.5);
+  }
+
   .icon-wrapper img{width:40px;height:40px;object-fit:contain;filter:brightness(0) invert(1);position:relative;z-index:6}
+  .light-theme .icon-wrapper img { filter: brightness(0) invert(0.3); }
 
   .link-label{color:rgba(255,255,255,0.9);font-size:13px;text-align:center;font-weight:400;position:relative;z-index:5}
+  .light-theme .link-label { color: rgba(0,0,0,0.8); }
 
   .footer{position:relative;z-index:5;text-align:center;margin-top:30px;padding-top:25px;border-top:1px solid rgba(255,255,255,0.06)}
+  .light-theme .footer { border-top: 1px solid rgba(0,0,0,0.1); }
   .email{color:rgba(255,255,255,0.7);font-size:15px;margin-bottom:10px;text-decoration:none;display:block}
+  .light-theme .email { color: rgba(0,0,0,0.7); }
   .copyright{color:rgba(255,255,255,0.45);font-size:13px}
+  .light-theme .copyright { color: rgba(0,0,0,0.5); }
 
 /* small responsive tweaks */
   @media (max-width:600px){
@@ -215,7 +301,7 @@
       <div class="distort-layer" id="distortLayer" aria-hidden="true"></div>
 
       <div class="header">
-        <img src="Albert.jpg" alt="Albert Adroer Prats" class="profile-pic">
+        <img src="Albert.jpg" alt="Albert Adroer Prats" class="profile-pic" id="profilePic">
         <h1 class="name">Albert Adroer Prats</h1>
       </div>
 
@@ -263,6 +349,28 @@
   </div>
 
   <script>
+    // Play sound and fade in on page load
+    window.addEventListener('load', function() {
+      // Fade in effect
+      document.body.style.opacity = '1';
+      
+      // Play intro sound
+      try {
+        const audio = new Audio('intro.wav');
+        audio.volume = 0.5;
+        audio.play().catch(e => {
+          console.log('Audio playback failed:', e);
+        });
+      } catch (e) {
+        console.log('Audio initialization failed:', e);
+      }
+    });
+
+    // Theme toggle functionality
+    document.getElementById('profilePic').addEventListener('click', function() {
+      document.body.classList.toggle('light-theme');
+    });
+
     /* Small JS to animate turbulence & give a mouse-driven fresnel/parallax */
     (function(){
       const turb = document.getElementById('turb');
