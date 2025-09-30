@@ -1,953 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Albert Adroer Prats - Developer & Life Enthusiast</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Albert Adroer Prats - Game Developer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-      line-height: 1.8;
-      color: #e8f4fd;
-      background: #000;
-      min-height: 100vh;
-      overflow-x: hidden;
-      position: relative;
-    }
+        body {
+            background-color: #000000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-    /* New Background Canvas */
-    #background-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
-    }
+        .glass-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
 
-    /* ASCII Animation Canvas */
-    #ascii-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 1;
-      font-family: 'Consolas', monospace;
-      font-size: 6px;
-      line-height: 6px;
-      color: rgba(255, 255, 255, 0.6);
-      white-space: pre;
-      user-select: none;
-      overflow: hidden;
-    }
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 30px;
+        }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 2rem;
-      position: relative;
-      z-index: 10;
-    }
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
 
-    header {
-      text-align: center;
-      margin-bottom: 3rem;
-    }
+        .name {
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 600;
+        }
 
-    .hero {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(20px);
-      border-radius: 20px;
-      padding: 3rem;
-      box-shadow: 
-        0 8px 32px rgba(31, 38, 135, 0.37),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      margin-bottom: 3rem;
-    }
+        .description {
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.7;
+            margin-bottom: 35px;
+            font-size: 16px;
+        }
 
-    .hero-header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 2rem;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-    }
+        .links-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+        }
 
-    .profile-picture {
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      transition: all 0.3s ease;
-      cursor: pointer;
-      user-select: none;
-      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-    }
+        .link-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
 
-    .profile-picture:hover {
-      transform: scale(1.05);
-      border-color: rgba(255, 255, 255, 0.5);
-      box-shadow: 0 12px 40px rgba(31, 38, 135, 0.5);
-    }
+        .link-button:hover {
+            transform: translateY(-5px);
+        }
 
-    .profile-picture:active {
-      transform: scale(0.95);
-    }
+        .icon-wrapper {
+            width: 64px;
+            height: 64px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
 
-    h1 {
-      font-size: 2.8rem;
-      font-weight: 400;
-      color: rgba(255, 255, 255, 0.95);
-      letter-spacing: 1px;
-      text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
+        .link-button:hover .icon-wrapper {
+            background: rgba(255, 255, 255, 0.2);
+        }
 
-    .subtitle {
-      font-size: 1.2rem;
-      color: rgba(255, 255, 255, 0.8);
-      margin-bottom: 2rem;
-      font-style: normal;
-      letter-spacing: 0.5px;
-    }
+        .icon-wrapper img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+        }
 
-    .bio {
-      font-size: 1.1rem;
-      color: rgba(255, 255, 255, 0.9);
-      max-width: 700px;
-      margin: 0 auto 2.5rem;
-      line-height: 1.9;
-      text-align: left;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      padding: 2rem;
-      border-radius: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    }
+        .link-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            text-align: center;
+        }
 
-    .bio p {
-      margin-bottom: 1.2rem;
-    }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-    .bio strong {
-      color: rgba(255, 255, 255, 1);
-      font-weight: 600;
-    }
+        .email {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 15px;
+            margin-bottom: 10px;
+            text-decoration: none;
+        }
 
-    .contact-links {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      margin-top: 2rem;
-      flex-wrap: wrap;
-    }
+        .email:hover {
+            color: rgba(255, 255, 255, 0.9);
+        }
 
-    .contact-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.8rem 1.5rem;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(20px);
-      color: rgba(255, 255, 255, 0.9);
-      text-decoration: none;
-      border-radius: 50px;
-      font-size: 0.95rem;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      font-family: 'Consolas', monospace;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 
-        0 8px 32px rgba(31, 38, 135, 0.37),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      position: relative;
-      overflow: hidden;
-    }
+        .copyright {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+        }
 
-    .contact-link::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.6s;
-    }
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
 
-    .contact-link:hover::before {
-      left: 100%;
-    }
+            .name {
+                font-size: 26px;
+            }
 
-    .contact-link:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: translateY(-2px);
-      box-shadow: 
-        0 12px 40px rgba(31, 38, 135, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-      color: rgba(255, 255, 255, 1);
-      border-color: rgba(255, 255, 255, 0.3);
-    }
-
-    .section {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(20px);
-      border-radius: 20px;
-      padding: 2.5rem;
-      margin-bottom: 2rem;
-      box-shadow: 
-        0 8px 32px rgba(31, 38, 135, 0.37),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-    }
-
-    .section-title {
-      font-size: 2rem;
-      font-weight: 400;
-      color: rgba(255, 255, 255, 0.95);
-      margin-bottom: 1.5rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-      letter-spacing: 1px;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
-
-    .renovation-notice {
-      text-align: center;
-      padding: 3rem;
-      color: rgba(255, 255, 255, 0.8);
-      font-style: italic;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      border-radius: 15px;
-      border: 1px dashed rgba(255, 255, 255, 0.2);
-    }
-
-    .project-card {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      border-radius: 15px;
-      padding: 2rem;
-      margin-bottom: 1.5rem;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    }
-
-    .project-card:hover {
-      box-shadow: 
-        0 8px 32px rgba(31, 38, 135, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      border-color: rgba(255, 255, 255, 0.2);
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .project-title {
-      font-size: 1.4rem;
-      color: rgba(255, 255, 255, 0.95);
-      margin-bottom: 0.8rem;
-      letter-spacing: 0.5px;
-    }
-
-    .project-description {
-      color: rgba(255, 255, 255, 0.85);
-      line-height: 1.7;
-      margin-bottom: 1rem;
-    }
-
-    .project-status {
-      display: inline-block;
-      padding: 0.3rem 0.8rem;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      color: rgba(255, 255, 255, 0.9);
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .project-tech {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .tech-tag {
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(5px);
-      color: rgba(255, 255, 255, 0.8);
-      padding: 0.3rem 0.7rem;
-      border-radius: 15px;
-      font-size: 0.8rem;
-      font-family: 'Consolas', monospace;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .project-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(20px);
-      color: rgba(255, 255, 255, 0.9);
-      text-decoration: none;
-      padding: 0.7rem 1.5rem;
-      border-radius: 50px;
-      font-size: 0.9rem;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      font-family: 'Consolas', monospace;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 
-        0 8px 32px rgba(31, 38, 135, 0.37),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .project-link::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.6s;
-    }
-
-    .project-link:hover::before {
-      left: 100%;
-    }
-
-    .project-link:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: translateX(3px);
-      box-shadow: 
-        0 12px 40px rgba(31, 38, 135, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-      color: rgba(255, 255, 255, 1);
-    }
-
-    /* SECRET SECTION - Initially hidden */
-    .secret-section {
-      display: none;
-      background: rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(20px);
-      border-radius: 20px;
-      padding: 2rem;
-      margin: 3rem 0;
-      text-align: center;
-      color: rgba(255, 255, 255, 0.9);
-      opacity: 0;
-      transition: opacity 0.5s ease;
-      border: 2px solid rgba(255, 100, 100, 0.5);
-      box-shadow: 
-        0 8px 32px rgba(255, 100, 100, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    }
-
-    .secret-section.visible {
-      display: block;
-      opacity: 1;
-    }
-
-    .secret-title {
-      font-size: 1.5rem;
-      font-weight: 400;
-      margin-bottom: 1rem;
-      color: rgba(255, 150, 150, 0.9);
-      letter-spacing: 1px;
-    }
-
-    .secret-hint {
-      color: rgba(255, 255, 255, 0.7);
-      margin-bottom: 1.5rem;
-      font-size: 0.95rem;
-    }
-
-    .secret-form {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .secret-input {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 25px;
-      padding: 0.7rem 1rem;
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 1rem;
-      min-width: 200px;
-      transition: all 0.3s ease;
-      font-family: 'Consolas', monospace;
-    }
-
-    .secret-input::placeholder {
-      color: rgba(255, 255, 255, 0.5);
-    }
-
-    .secret-input:focus {
-      outline: none;
-      border-color: rgba(255, 255, 255, 0.4);
-      background: rgba(255, 255, 255, 0.15);
-      box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
-    }
-
-    .secret-button {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 25px;
-      padding: 0.7rem 1.5rem;
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 
-        0 8px 32px rgba(31, 38, 135, 0.37),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      font-family: 'Consolas', monospace;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .secret-button::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.6s;
-    }
-
-    .secret-button:hover::before {
-      left: 100%;
-    }
-
-    .secret-button:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: translateY(-2px);
-      box-shadow: 
-        0 12px 40px rgba(31, 38, 135, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3);
-      color: rgba(255, 255, 255, 1);
-    }
-
-    .secret-feedback {
-      margin-top: 1rem;
-      padding: 0.8rem;
-      border-radius: 15px;
-      font-size: 0.9rem;
-      backdrop-filter: blur(10px);
-    }
-
-    .secret-feedback.success {
-      background: rgba(100, 255, 100, 0.2);
-      color: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(100, 255, 100, 0.3);
-    }
-
-    .secret-feedback.error {
-      background: rgba(255, 100, 100, 0.2);
-      color: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(255, 100, 100, 0.3);
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 3rem;
-      padding: 2rem;
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 0.9rem;
-    }
-
-    @media (max-width: 768px) {
-      .hero-header {
-        flex-direction: column;
-        gap: 1rem;
-      }
-      
-      h1 {
-        font-size: 2.2rem;
-      }
-      
-      .contact-links {
-        gap: 1rem;
-      }
-
-      .secret-form {
-        flex-direction: column;
-      }
-    }
-  </style>
+            .glass-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <!-- New Background Canvas -->
-  <canvas id="background-canvas"></canvas>
-  
-  <!-- ASCII Canvas for cursor trail -->
-  <div id="ascii-canvas"></div>
-
-  <div class="container">
-    <header>
-      <div class="hero">
-        <div class="hero-header">
-          <img src="albert.jpg" alt="Albert Adroer Prats" class="profile-picture" id="profilePic">
-          <h1>Albert Adroer Prats</h1>
+    <div class="glass-container">
+        <div class="header">
+            <img src="Albert.jpg" alt="Albert Adroer Prats" class="profile-pic">
+            <h1 class="name">Albert Adroer Prats</h1>
         </div>
 
-        <div class="subtitle">Developer • Professional Cowboy</div>
-        <div class="bio">
-          <p>Hello! My name is Albert, I'm a 27-year-old from Barcelona. I love computers, creating games, building new tools, and above all, learning and continuously improving.</p>
-          <p>I've developed a set of data analytics tools designed to make a data analyst's work easier, and I'm currently in the process of renovating them.</p>
-          <p>I also have a published game on Steam made with Unity, called Bald Ball. Right now, I'm working on my first larger and more professional project, a Metroidvania titled Mushy Roots. The goal is to blend the classic feel of Hollow Knight with the depth of simulation and experimentation found in Rain World. I'm developing it with a small team of two other people, and I regularly share updates on the game's official Discord.</p>
-          <p>When I'm not working on this main project, I'm studying C++ from scratch using the book Programming: Principles and Practice Using C++ by Bjarne Stroustrup, the creator of the language himself. It's the first language I'm fully committing to learning in its entirety, with the goal of being able to code as much as possible without relying on other people's code or AI tools.</p>
-          <p>And when I'm away from the computer, you'll probably find me playing guitar and learning new pieces, painting with oils, or exploring mountains and remote places.</p>
+        <div class="description">
+            <p>I'm a 27-year-old game developer from Barcelona passionate about creating immersive gaming experiences. As a Unity developer, I've published <strong>Bald Ball</strong>, my first commercial game on Steam, and continue to share experimental projects on itch.io.</p>
+            
+            <p style="margin-top: 15px;">Currently, I'm leading the development of <strong>Mushy Roots</strong>, an ambitious metroidvania project where I work as the lead developer alongside a talented digital artist and music composer. I handle most aspects of development while coordinating our small but dedicated team.</p>
+            
+            <p style="margin-top: 15px;">My technical journey includes graduating from Ironhack's Data Analytics Bootcamp and developing Python + AI tools to streamline data analysis workflows. Right now, I'm deeply engaged in learning C++ from the ground up through Bjarne Stroustrup's "Programming: Principles and Practice Using C++"—my most profound learning experience yet as I work toward becoming a software engineer.</p>
+            
+            <p style="margin-top: 15px;">When I find time away from coding, I enjoy making music, oil painting, bouldering, and hiking—though these passions are currently on hold as I focus on my development goals.</p>
         </div>
-        
-        <div class="contact-links">
-          <a href="./cv.html" class="contact-link">📄 CV</a>
-          <a href="https://www.linkedin.com/in/albert-adroer-prats-615388160/" class="contact-link">💼 LinkedIn</a>
-          <a href="https://www.artstation.com/treblafreeman" class="contact-link">🎨 Artstation</a>
-          <a href="https://github.com/treblalbert" class="contact-link">🔙 GitHub</a>
-          <a href="https://store.steampowered.com/app/3489590/Bald_Ball/" class="contact-link">👾 My Steam Game</a>
-          <a href="https://albertfreeman.itch.io/" class="contact-link">🎮 Itch.Io</a>
-          <a href="https://distrokid.com/hyperfollow/mountforsaken/mar-i-cel" class="contact-link">🎧 My Music</a>
-          <a href="mailto:albertadroer@gmail.com" class="contact-link">📧 Email</a>
+
+        <div class="links-container">
+            <a href="https://store.steampowered.com/app/3489590/Bald_Ball/" class="link-button" target="_blank">
+                <div class="icon-wrapper">
+                    <img src="steam-icon.png" alt="Steam">
+                </div>
+                <span class="link-label">Bald Ball</span>
+            </a>
+
+            <a href="https://github.com/treblalbert" class="link-button" target="_blank">
+                <div class="icon-wrapper">
+                    <img src="github-icon.png" alt="GitHub">
+                </div>
+                <span class="link-label">GitHub</span>
+            </a>
+
+            <a href="https://albertfreeman.itch.io/" class="link-button" target="_blank">
+                <div class="icon-wrapper">
+                    <img src="itch-icon.png" alt="Itch.io">
+                </div>
+                <span class="link-label">Itch.io</span>
+            </a>
         </div>
-      </div>
-    </header>
 
-    <main>
-      <section class="section">
-        <h2 class="section-title">Portfolio Projects</h2>
-        <div class="project-card">
-          <h3 class="project-title">C++ Adventures</h3>
-          <p class="project-description">
-            My journey learning C++ from scratch using Bjarne Stroustrup's "Programming: Principles and Practice Using C++". 
-            This repository contains all my exercises, experiments, and projects as I master the language.
-          </p>
-          <div class="project-tech">
-            <span class="tech-tag">C++</span>
-            <span class="tech-tag">Learning Journey</span>
-            <span class="tech-tag">Programming Fundamentals</span>
-          </div>
-          <a href="https://github.com/treblalbert/CplusplusAdventures" class="project-link">View on GitHub →</a>
+        <div class="footer">
+            <a href="mailto:albertadroer@gmail.com" class="email">albertadroer@gmail.com</a>
+            <div class="copyright">© 2025 Albert Adroer Prats</div>
         </div>
-        <div class="renovation-notice">
-          <p>🔨 More projects coming soon</p>
-        </div>
-      </section>
-
-      <section class="section">
-        <h2 class="section-title">Study Resources & Learning</h2>
-        <div class="project-card">
-          <h3 class="project-title">Python Data Analysis Resources</h3>
-          <p class="project-description">
-            Interactive learning materials for Python data analysis. Because sharing knowledge is part of the journey. Covers everything from basics to machine learning concepts.
-          </p>
-          <a href="./data/" class="project-link">Explore Resources →</a>
-        </div>
-        
-        <div class="project-card">
-          <h3 class="project-title">Building Your Own Website</h3>
-          <p class="project-description">
-            A laid-back guide on creating and deploying a personal website. Learn how I built this site and how you can create your own digital space.
-          </p>
-          <a href="./website-tutorial/" class="project-link">Read Guide →</a>
-        </div>
-      </section>
-
-      <!-- SECRET SECTION - Hidden by default -->
-      <section class="secret-section" id="secretSection">
-        <h3 class="secret-title">🔐 Secret Area</h3>
-        <p class="secret-hint">You found it! Know any secret words?</p>
-        <div class="secret-form">
-          <input 
-            type="password" 
-            id="secretInput" 
-            class="secret-input" 
-            placeholder="Enter password..."
-            autocomplete="off"
-          >
-          <button type="button" class="secret-button" onclick="checkSecretPassword()">Unlock</button>
-        </div>
-        <div id="secretFeedback" class="secret-feedback" style="display: none;"></div>
-      </section>
-    </main>
-
-    <footer>
-      <p>&copy; 2025 Albert Adroer Prats</p>
-    </footer>
-  </div>
-
-  <script>
-    // New Background Effect - Similar to Codepen example
-    const canvas = document.getElementById('background-canvas');
-    const ctx = canvas.getContext('2d');
-
-    let width = window.innerWidth;
-    let height = window.innerHeight;
-
-    canvas.width = width;
-    canvas.height = height;
-
-    const particles = [];
-    const particleCount = 100;
-
-    class Particle {
-      constructor() {
-        this.x = Math.random() * width;
-        this.y = Math.random() * height;
-        this.size = Math.random() * 2 + 0.5;
-        this.speedX = Math.random() * 1 - 0.5;
-        this.speedY = Math.random() * 1 - 0.5;
-        this.color = `rgba(100, 150, 255, ${Math.random() * 0.5 + 0.1})`;
-      }
-
-      update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-
-        if (this.x > width) this.x = 0;
-        else if (this.x < 0) this.x = width;
-
-        if (this.y > height) this.y = 0;
-        else if (this.y < 0) this.y = height;
-      }
-
-      draw() {
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-
-    function initParticles() {
-      for (let i = 0; i < particleCount; i++) {
-        particles.push(new Particle());
-      }
-    }
-
-    function connectParticles() {
-      for (let a = 0; a < particles.length; a++) {
-        for (let b = a; b < particles.length; b++) {
-          const dx = particles[a].x - particles[b].x;
-          const dy = particles[a].y - particles[b].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < 100) {
-            ctx.strokeStyle = `rgba(100, 150, 255, ${0.2 * (1 - distance / 100)})`;
-            ctx.lineWidth = 0.5;
-            ctx.beginPath();
-            ctx.moveTo(particles[a].x, particles[a].y);
-            ctx.lineTo(particles[b].x, particles[b].y);
-            ctx.stroke();
-          }
-        }
-      }
-    }
-
-    function animateBackground() {
-      ctx.clearRect(0, 0, width, height);
-
-      for (let i = 0; i < particles.length; i++) {
-        particles[i].update();
-        particles[i].draw();
-      }
-
-      connectParticles();
-      requestAnimationFrame(animateBackground);
-    }
-
-    function handleResize() {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
-    }
-
-    window.addEventListener('resize', handleResize);
-
-    initParticles();
-    animateBackground();
-
-    // ASCII Animation System based on Dyna - Fixed for full window
-    class Vec2 {
-      constructor(x = 0, y = 0) {
-        this.x = x;
-        this.y = y;
-      }
-      
-      static copy(v) {
-        return new Vec2(v.x, v.y);
-      }
-      
-      static length(v) {
-        return Math.sqrt(v.x * v.x + v.y * v.y);
-      }
-      
-      static add(a, b) {
-        return new Vec2(a.x + b.x, a.y + b.y);
-      }
-      
-      static sub(a, b) {
-        return new Vec2(a.x - b.x, a.y - b.y);
-      }
-      
-      static divN(v, n) {
-        return new Vec2(v.x / n, v.y / n);
-      }
-      
-      static mulN(v, n) {
-        return new Vec2(v.x * n, v.y * n);
-      }
-    }
-
-    function smoothstep(edge0, edge1, x) {
-      x = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
-      return x * x * (3 - 2 * x);
-    }
-
-    class Dyna {
-      constructor(mass, damp) {
-        this.pos = new Vec2(0, 0);
-        this.vel = new Vec2(0, 0);
-        this.pre = new Vec2(0, 0);
-        this.mass = mass;
-        this.damp = damp;
-      }
-      
-      update(cursor) {
-        const force = Vec2.sub(cursor, this.pos);
-        const acc = Vec2.divN(force, this.mass);
-        this.vel = Vec2.mulN(Vec2.add(this.vel, acc), this.damp);
-        this.pre = Vec2.copy(this.pos);
-        this.pos = Vec2.add(this.pos, this.vel);
-      }
-    }
-
-    function line(a, b) {
-      let x0 = Math.floor(a.x);
-      let y0 = Math.floor(a.y);
-      const x1 = Math.floor(b.x);
-      const y1 = Math.floor(b.y);
-      const dx = Math.abs(x1 - x0);
-      const sx = x0 < x1 ? 1 : -1;
-      const dy = -Math.abs(y1 - y0);
-      let sy = y0 < y1 ? 1 : -1;
-      let err = dx + dy;
-      const points = [];
-      
-      while (true) {
-        points.push({ x: x0, y: y0 });
-        if (x0 == x1 && y0 == y1) break;
-        let e2 = 2 * err;
-        if (e2 >= dy) {
-          err += dy;
-          x0 += sx;
-        }
-        if (e2 <= dx) {
-          err += dx;
-          y0 += sy;
-        }
-      }
-      return points;
-    }
-
-    // ASCII Animation Setup - Fixed sizing
-    const MASS = 25;
-    const DAMP = 0.96;
-    const RADIUS = 12;
-    const density = ' .:░▒▓█#+-'.split('');
-    
-    let cols = 0;
-    let rows = 0;
-    let buffer = [];
-    let cursor = new Vec2(0, 0);
-    const dyna = new Dyna(MASS, DAMP);
-    
-    const asciiCanvas = document.getElementById('ascii-canvas');
-    
-    function initCanvas() {
-      // Use character size based calculations for consistent coverage
-      const charWidth = 6; // approximate character width in pixels
-      const charHeight = 6; // approximate character height in pixels
-      
-      cols = Math.ceil(window.innerWidth / charWidth);
-      rows = Math.ceil(window.innerHeight / charHeight);
-      
-      buffer = new Array(cols * rows).fill(0).map(() => ({ value: 0 }));
-      
-      // Set canvas to cover full viewport
-      asciiCanvas.style.width = '100vw';
-      asciiCanvas.style.height = '100vh';
-      asciiCanvas.style.fontSize = charWidth + 'px';
-      asciiCanvas.style.lineHeight = charHeight + 'px';
-    }
-    
-    function updateASCII() {
-      // Convert mouse position to grid coordinates
-      cursor.x = (mouseX / window.innerWidth) * cols;
-      cursor.y = (mouseY / window.innerHeight) * rows;
-      
-      dyna.update(cursor);
-      
-      const aspectRatio = window.innerWidth / window.innerHeight;
-      const points = line(dyna.pos, dyna.pre);
-      
-      for (const p of points) {
-        const sx = Math.max(0, Math.floor(p.x - RADIUS));
-        const ex = Math.min(cols, Math.ceil(p.x + RADIUS));
-        const sy = Math.max(0, Math.floor(p.y - RADIUS / aspectRatio));
-        const ey = Math.min(rows, Math.ceil(p.y + RADIUS / aspectRatio));
-        
-        for (let j = sy; j < ey; j++) {
-          for (let i = sx; i < ex; i++) {
-            if (i >= 0 && i < cols && j >= 0 && j < rows) {
-              const x = p.x - i;
-              const y = (p.y - j) * aspectRatio;
-              const distance = Vec2.length({ x, y });
-              const l = Math.max(0, 1 - distance / RADIUS);
-              const idx = i + cols * j;
-              if (buffer[idx]) {
-                buffer[idx].value = Math.max(buffer[idx].value, l);
-              }
-            }
-          }
-        }
-      }
-      
-      // Render ASCII
-      let output = '';
-      for (let j = 0; j < rows; j++) {
-        for (let i = 0; i < cols; i++) {
-          const idx = i + cols * j;
-          if (buffer[idx]) {
-            const v = smoothstep(0, 0.85, buffer[idx].value);
-            buffer[idx].value *= 0.98;
-            const charIdx = Math.floor(v * (density.length - 1));
-            output += density[charIdx];
-          } else {
-            output += ' ';
-          }
-        }
-        if (j < rows - 1) output += '\n';
-      }
-      
-      asciiCanvas.textContent = output;
-    }
-    
-    // Mouse tracking
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-    
-    document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    });
-    
-    // Initialize and start animation
-    initCanvas();
-    window.addEventListener('resize', () => {
-      initCanvas();
-      handleResize();
-    });
-    
-    function animate() {
-      updateASCII();
-      requestAnimationFrame(animate);
-    }
-    
-    animate();
-
-    // Profile picture click counter for secret section
-    let clickCount = 0;
-    let clickTimer = null;
-
-    document.getElementById('profilePic').addEventListener('click', function() {
-      clickCount++;
-      
-      // Reset timer on each click
-      clearTimeout(clickTimer);
-      
-      // Check if 5 clicks reached
-      if (clickCount >= 5) {
-        const secretSection = document.getElementById('secretSection');
-        secretSection.style.display = 'block';
-        setTimeout(() => {
-          secretSection.classList.add('visible');
-        }, 10);
-        clickCount = 0;
-      }
-      
-      // Reset count after 10 seconds of no clicks
-      clickTimer = setTimeout(() => {
-        clickCount = 0;
-      }, 10000);
-    });
-
-    // Secret password functionality
-    function checkSecretPassword() {
-      const input = document.getElementById('secretInput');
-      const feedback = document.getElementById('secretFeedback');
-      const password = input.value.toLowerCase().trim();
-      
-      const secrets = {
-        'wrecky': { message: '🎮 Access granted! Redirecting to secret project...', url: './wrecky/' },
-        'albert_fitness': { message: '💪 Access granted! Redirecting to fitness plan...', url: './albert-fitness/' },
-        'fitness': { message: '🤖 Access granted! Redirecting to AI Fitness Trainer...', url: './fitness/' },
-        'fitness_test': { message: '🧪 Access granted! Redirecting to fitness test...', url: './fitness-test/' },
-        'uriginal': { message: '🧠 Access granted! Redirecting to Uriginal project...', url: './uriginal/' },
-        'uriginal_test': { message: '🔬 Access granted! Redirecting to Uriginal test...', url: './uriginal-test/' },
-        'test': { message: '⚗️ Access granted! Redirecting to test area...', url: './test/' },
-        'secret': { message: '🔓 Access granted! Welcome to the secret area.', url: './secret/' }
-      };
-      
-      if (secrets[password]) {
-        feedback.textContent = secrets[password].message;
-        feedback.className = 'secret-feedback success';
-        feedback.style.display = 'block';
-        
-        setTimeout(() => {
-          window.location.href = secrets[password].url;
-        }, 2000);
-      } else {
-        feedback.textContent = '❌ Incorrect password. Try again.';
-        feedback.className = 'secret-feedback error';
-        feedback.style.display = 'block';
-        
-        // Clear input
-        input.value = '';
-      }
-    }
-
-    // Allow Enter key to submit secret password
-    document.getElementById('secretInput').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        checkSecretPassword();
-      }
-    });
-  </script>
+    </div>
 </body>
 </html>
