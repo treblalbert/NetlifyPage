@@ -4,194 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Albert Adroer Prats - Game Developer</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: #000000;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .glass-container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 40px;
-            max-width: 700px;
-            width: 100%;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
-
-        .header {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-            margin-bottom: 30px;
-        }
-
-        .profile-pic {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .name {
-            color: #ffffff;
-            font-size: 32px;
-            font-weight: 600;
-        }
-
-        .description {
-            color: rgba(255, 255, 255, 0.85);
-            line-height: 1.7;
-            margin-bottom: 35px;
-            font-size: 16px;
-        }
-
-        .links-container {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 35px;
-            flex-wrap: wrap;
-        }
-
-        .link-button {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            transition: transform 0.2s ease;
-        }
-
-        .link-button:hover {
-            transform: translateY(-5px);
-        }
-
-        .icon-wrapper {
-            width: 64px;
-            height: 64px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: background 0.3s ease;
-        }
-
-        .link-button:hover .icon-wrapper {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .icon-wrapper img {
-            width: 36px;
-            height: 36px;
-            object-fit: contain;
-        }
-
-        .link-label {
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 13px;
-            text-align: center;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 25px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .email {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 15px;
-            margin-bottom: 10px;
-            text-decoration: none;
-        }
-
-        .email:hover {
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .copyright {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 13px;
-        }
-
-        @media (max-width: 600px) {
-            .header {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .name {
-                font-size: 26px;
-            }
-
-            .glass-container {
-                padding: 30px 20px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="glass-container">
-        <div class="header">
-            <img src="Albert.jpg" alt="Albert Adroer Prats" class="profile-pic">
-            <h1 class="name">Albert Adroer Prats</h1>
-        </div>
+    <div class="glass-container effect">
+        <svg class="filter" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <filter id="filter" color-interpolation-filters="sRGB">
+                    <feImage x="0" y="0" width="100%" height="100%" result="map"></feImage>
+                    
+                    <feDisplacementMap in="SourceGraphic" in2="map" id="redchannel" xChannelSelector="R" yChannelSelector="G" result="dispRed" />
+                    <feColorMatrix in="dispRed" type="matrix" values="1 0 0 0 0, 0 0 0 0 0, 0 0 0 0 0, 0 0 0 1 0" result="red" />
+                    
+                    <feDisplacementMap in="SourceGraphic" in2="map" id="greenchannel" xChannelSelector="R" yChannelSelector="G" result="dispGreen" />
+                    <feColorMatrix in="dispGreen" type="matrix" values="0 0 0 0 0, 0 1 0 0 0, 0 0 0 0 0, 0 0 0 1 0" result="green" />
+                    
+                    <feDisplacementMap in="SourceGraphic" in2="map" id="bluechannel" xChannelSelector="R" yChannelSelector="G" result="dispBlue" />
+                    <feColorMatrix in="dispBlue" type="matrix" values="0 0 0 0 0, 0 0 0 0 0, 0 0 1 0 0, 0 0 0 1 0" result="blue" />
+                    
+                    <feBlend in="red" in2="green" mode="screen" result="rg" />
+                    <feBlend in="rg" in2="blue" mode="screen" result="output" />
+                    <feGaussianBlur in="output" stdDeviation="0.7" />
+                </filter>
+            </defs>
+        </svg>
 
-        <div class="description">
-            <p>I'm a 27-year-old game developer from Barcelona passionate about creating immersive gaming experiences. As a Unity developer, I've published <strong>Bald Ball</strong>, my first commercial game on Steam, and continue to share experimental projects on itch.io.</p>
-            
-            <p style="margin-top: 15px;">Currently, I'm leading the development of <strong>Mushy Roots</strong>, an ambitious metroidvania project where I work as the lead developer alongside a talented digital artist and music composer. I handle most aspects of development while coordinating our small but dedicated team.</p>
-            
-            <p style="margin-top: 15px;">My technical journey includes graduating from Ironhack's Data Analytics Bootcamp and developing Python + AI tools to streamline data analysis workflows. Right now, I'm deeply engaged in learning C++ from the ground up through Bjarne Stroustrup's "Programming: Principles and Practice Using C++"—my most profound learning experience yet as I work toward becoming a software engineer.</p>
-            
-            <p style="margin-top: 15px;">When I find time away from coding, I enjoy making music, oil painting, bouldering, and hiking—though these passions are currently on hold as I focus on my development goals.</p>
-        </div>
+        <div class="content-wrapper">
+            <div class="header">
+                <img src="Albert.jpg" alt="Albert Adroer Prats" class="profile-pic">
+                <h1 class="name">Albert Adroer Prats</h1>
+            </div>
 
-        <div class="links-container">
-            <a href="https://store.steampowered.com/app/3489590/Bald_Ball/" class="link-button" target="_blank">
-                <div class="icon-wrapper">
-                    <img src="steam-icon.png" alt="Steam">
-                </div>
-                <span class="link-label">Bald Ball</span>
-            </a>
+            <div class="description">
+                <p>I'm a 27-year-old game developer from Barcelona passionate about creating immersive gaming experiences. As a Unity developer, I've published <strong>Bald Ball</strong>, my first commercial game on Steam, and continue to share experimental projects on itch.io.</p>
+                
+                <p style="margin-top: 15px;">Currently, I'm leading the development of <strong>Mushy Roots</strong>, an ambitious metroidvania project where I work as the lead developer alongside a talented digital artist and music composer. I handle most aspects of development while coordinating our small but dedicated team.</p>
+                
+                <p style="margin-top: 15px;">My technical journey includes graduating from Ironhack's Data Analytics Bootcamp and developing Python + AI tools to streamline data analysis workflows. Right now, I'm deeply engaged in learning C++ from the ground up through Bjarne Stroustrup's "Programming: Principles and Practice Using C++" - my most profound learning experience yet as I work toward becoming a software engineer.</p>
+                
+                <p style="margin-top: 15px;">When I find time away from coding, I enjoy making music, oil painting, bouldering, and hiking, though these passions are currently on hold as I focus on my development goals.</p>
+            </div>
 
-            <a href="https://github.com/treblalbert" class="link-button" target="_blank">
-                <div class="icon-wrapper">
-                    <img src="github-icon.png" alt="GitHub">
-                </div>
-                <span class="link-label">GitHub</span>
-            </a>
+            <div class="links-container">
+                <a href="https://store.steampowered.com/app/3489590/Bald_Ball/" class="link-button" target="_blank">
+                    <div class="icon-wrapper glass-button">
+                        <img src="steam-icon.png" alt="Steam">
+                    </div>
+                    <span class="link-label">Bald Ball</span>
+                </a>
 
-            <a href="https://albertfreeman.itch.io/" class="link-button" target="_blank">
-                <div class="icon-wrapper">
-                    <img src="itch-icon.png" alt="Itch.io">
-                </div>
-                <span class="link-label">Itch.io</span>
-            </a>
-        </div>
+                <a href="https://github.com/treblalbert" class="link-button" target="_blank">
+                    <div class="icon-wrapper glass-button">
+                        <img src="github-icon.png" alt="GitHub">
+                    </div>
+                    <span class="link-label">GitHub</span>
+                </a>
 
-        <div class="footer">
-            <a href="mailto:albertadroer@gmail.com" class="email">albertadroer@gmail.com</a>
-            <div class="copyright">© 2025 Albert Adroer Prats</div>
+                <a href="https://albertfreeman.itch.io/" class="link-button" target="_blank">
+                    <div class="icon-wrapper glass-button">
+                        <img src="itch-icon.png" alt="Itch.io">
+                    </div>
+                    <span class="link-label">Itch.io</span>
+                </a>
+            </div>
+
+            <div class="footer">
+                <a href="mailto:albertadroer@gmail.com" class="email">albertadroer@gmail.com</a>
+                <div class="copyright">© 2025 Albert Adroer Prats</div>
+            </div>
         </div>
     </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
