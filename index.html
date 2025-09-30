@@ -10,9 +10,9 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body {
-    background: radial-gradient(ellipse at center, rgba(20,20,20,1) 0%, rgba(15,15,15,1) 35%, #0a0a0a 100%);
+    background: radial-gradient(ellipse at center, #f5f5f7 0%, #e8e8e8 35%, #dcdcdc 100%);
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #fff;
+    color: #333;
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
     overflow-x:hidden;
@@ -20,23 +20,23 @@
     transition: opacity 1.2s ease-in-out;
   }
 
-  body.light-theme {
-    background: radial-gradient(ellipse at center, #f5f5f7 0%, #e8e8e8 35%, #dcdcdc 100%);
-    color: #333;
+  body.dark-theme {
+    background: radial-gradient(ellipse at center, rgba(20,20,20,1) 0%, rgba(15,15,15,1) 35%, #0a0a0a 100%);
+    color: #fff;
   }
 
   /* ocean waves (unchanged) */
-  .ocean{height:5%;width:100%;position:fixed;bottom:0;left:0;background:#1a1a1a;z-index:0}
-  .wave{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 88.7'%3E%3Cpath d='M800 56.9c-155.5 0-204.9-50-405.5-49.9-200 0-250 49.9-394.5 49.9v31.8h800v-.2-31.6z' fill='%23111111'/%3E%3C/svg%3E") repeat-x;position:absolute;top:-198px;width:6400px;height:198px;animation:wave 7s linear infinite;transform:translate3d(0,0,0)}
+  .ocean{height:5%;width:100%;position:fixed;bottom:0;left:0;background:#e0e0e0;z-index:0}
+  .wave{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 88.7'%3E%3Cpath d='M800 56.9c-155.5 0-204.9-50-405.5-49.9-200 0-250 49.9-394.5 49.9v31.8h800v-.2-31.6z' fill='%23d0d0d0'/%3E%3C/svg%3E") repeat-x;position:absolute;top:-198px;width:6400px;height:198px;animation:wave 7s linear infinite;transform:translate3d(0,0,0)}
   .wave:nth-of-type(2){top:-175px;animation:wave 7s linear -.125s infinite}
   @keyframes wave{0%{margin-left:0}100%{margin-left:-1600px}}
 
-  .light-theme .ocean {
-    background: #e0e0e0;
+  .dark-theme .ocean {
+    background: #1a1a1a;
   }
   
-  .light-theme .wave {
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 88.7'%3E%3Cpath d='M800 56.9c-155.5 0-204.9-50-405.5-49.9-200 0-250 49.9-394.5 49.9v31.8h800v-.2-31.6z' fill='%23d0d0d0'/%3E%3C/svg%3E") repeat-x;
+  .dark-theme .wave {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 88.7'%3E%3Cpath d='M800 56.9c-155.5 0-204.9-50-405.5-49.9-200 0-250 49.9-394.5 49.9v31.8h800v-.2-31.6z' fill='%23111111'/%3E%3C/svg%3E") repeat-x;
   }
 
   /* layout */
@@ -48,25 +48,25 @@
     border-radius:28px;
     padding:40px;
     /* subtle base color so backdrop-filter shows through nicely */
-    background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
-    border: 1px solid rgba(255,255,255,0.08);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    backdrop-filter: blur(24px) saturate(180%);
-    box-shadow:
-      0 12px 40px rgba(0,0,0,0.6),
-      inset 0 1px 0 rgba(255,255,255,0.04),
-      inset 0 -1px 0 rgba(255,255,255,0.02);
-    overflow:visible;
-    transform: translateZ(0); /* create a new layer for GPU */
-  }
-
-  .light-theme .glass-container {
     background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
     border: 1px solid rgba(255,255,255,0.4);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
     box-shadow:
       0 12px 40px rgba(0,0,0,0.15),
       inset 0 1px 0 rgba(255,255,255,0.6),
       inset 0 -1px 0 rgba(255,255,255,0.3);
+    overflow:visible;
+    transform: translateZ(0); /* create a new layer for GPU */
+  }
+
+  .dark-theme .glass-container {
+    background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow:
+      0 12px 40px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.04),
+      inset 0 -1px 0 rgba(255,255,255,0.02);
   }
 
   /* Animated distortion layer - sits above the card's blurred background */
@@ -77,15 +77,15 @@
     border-radius:28px;
     z-index:3;
     /* subtle translucency, will be filtered by SVG turbulence */
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
     mix-blend-mode: overlay;
     opacity:0.5;
     filter: url(#liquid); /* SVG filter applied here */
     will-change: filter;
   }
 
-  .light-theme .glass-container .distort-layer {
-    background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+  .dark-theme .glass-container .distort-layer {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
   }
 
   /* Fresnel rim highlight */
@@ -96,16 +96,16 @@
     inset:0;
     border-radius:28px;
     pointer-events:none;
-    background: radial-gradient(120% 80% at 10% 10%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 6%, rgba(255,255,255,0.00) 20%),
-                linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.00) 40%);
+    background: radial-gradient(120% 80% at 10% 10%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 6%, rgba(255,255,255,0.00) 20%),
+                linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.00) 40%);
     mix-blend-mode: screen;
     opacity:0.95;
     transform: translateZ(0);
   }
 
-  .light-theme .glass-container::before {
-    background: radial-gradient(120% 80% at 10% 10%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 6%, rgba(255,255,255,0.00) 20%),
-                linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.00) 40%);
+  .dark-theme .glass-container::before {
+    background: radial-gradient(120% 80% at 10% 10%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 6%, rgba(255,255,255,0.00) 20%),
+                linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.00) 40%);
   }
 
   /* Chromatic aberration rim: 3 colored offset layers to the outside edge */
@@ -119,19 +119,19 @@
     background: transparent;
     box-shadow:
       /* subtle colored glows offset slightly to simulate fringing */
-      -6px -3px 18px -10px rgba(255,80,100,0.25),
-      6px 3px 18px -10px rgba(120,180,255,0.25),
-      -4px 6px 22px -14px rgba(120,255,200,0.12);
+      -6px -3px 18px -10px rgba(255,150,150,0.4),
+      6px 3px 18px -10px rgba(150,200,255,0.4),
+      -4px 6px 22px -14px rgba(150,255,200,0.2);
     mix-blend-mode: screen;
     opacity:0.9;
     filter: blur(6px);
   }
 
-  .light-theme .glass-container::after {
+  .dark-theme .glass-container::after {
     box-shadow:
-      -6px -3px 18px -10px rgba(255,150,150,0.4),
-      6px 3px 18px -10px rgba(150,200,255,0.4),
-      -4px 6px 22px -14px rgba(150,255,200,0.2);
+      -6px -3px 18px -10px rgba(255,80,100,0.25),
+      6px 3px 18px -10px rgba(120,180,255,0.25),
+      -4px 6px 22px -14px rgba(120,255,200,0.12);
   }
 
   /* inner glass border (thin inner rim) */
@@ -141,40 +141,40 @@
     border-radius:26px;
     z-index:4;
     pointer-events:none;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(255,255,255,0.02);
+    background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(255,255,255,0.1);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask-composite: exclude;
   }
 
-  .light-theme .glass-inner-border {
-    background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(255,255,255,0.1);
+  .dark-theme .glass-inner-border {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(255,255,255,0.02);
   }
 
   /* header/content unchanged but elevated z-index so highlights show above distortion */
   .header{display:flex;align-items:center;gap:24px;margin-bottom:30px;position:relative;z-index:5}
   .profile-pic{
-    width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,0.15);
-    box-shadow:0 6px 26px rgba(0,0,0,0.5);
+    width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid rgba(0,0,0,0.1);
+    box-shadow:0 6px 26px rgba(0,0,0,0.15);
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   .profile-pic:hover {
     transform: scale(1.05);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-  }
-  .light-theme .profile-pic {
-    border: 3px solid rgba(0,0,0,0.1);
-    box-shadow: 0 6px 26px rgba(0,0,0,0.15);
-  }
-  .light-theme .profile-pic:hover {
     box-shadow: 0 8px 30px rgba(0,0,0,0.2);
   }
-  .name{color:#ffffff;font-size:32px;font-weight:600}
-  .light-theme .name { color: #333; }
-  .description{color:rgba(255,255,255,0.88);line-height:1.7;margin-bottom:35px;font-size:16px;position:relative;z-index:5}
-  .light-theme .description { color: rgba(0,0,0,0.8); }
+  .dark-theme .profile-pic {
+    border: 3px solid rgba(255,255,255,0.15);
+    box-shadow:0 6px 26px rgba(0,0,0,0.5);
+  }
+  .dark-theme .profile-pic:hover {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  }
+  .name{color:#333;font-size:32px;font-weight:600}
+  .dark-theme .name { color: #ffffff; }
+  .description{color:rgba(0,0,0,0.8);line-height:1.7;margin-bottom:35px;font-size:16px;position:relative;z-index:5}
+  .dark-theme .description { color: rgba(255,255,255,0.88); }
 
   .links-container{display:flex;justify-content:center;gap:30px;margin-bottom:35px;flex-wrap:wrap;position:relative;z-index:5}
 
@@ -185,25 +185,25 @@
   .icon-wrapper{
     position:relative;
     width:72px;height:72px;border-radius:18px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
     -webkit-backdrop-filter: blur(18px) saturate(170%);
     backdrop-filter: blur(18px) saturate(170%);
-    border: 1px solid rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.4);
     display:flex;justify-content:center;align-items:center;
     box-shadow:
-      0 8px 26px rgba(0,0,0,0.45),
-      inset 0 1px 0 rgba(255,255,255,0.06);
+      0 8px 26px rgba(0,0,0,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.6);
     overflow:visible;
     transition:all .26s cubic-bezier(.2,.9,.2,1);
     z-index:5;
   }
 
-  .light-theme .icon-wrapper {
-    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
-    border: 1px solid rgba(255,255,255,0.4);
+  .dark-theme .icon-wrapper {
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255,255,255,0.09);
     box-shadow:
-      0 8px 26px rgba(0,0,0,0.15),
-      inset 0 1px 0 rgba(255,255,255,0.6);
+      0 8px 26px rgba(0,0,0,0.45),
+      inset 0 1px 0 rgba(255,255,255,0.06);
   }
 
   /* micro-distort & chroma for each icon */
@@ -213,13 +213,13 @@
     inset:0;
     border-radius:16px;
     filter: url(#liquid-small);
-    opacity:0.45;
+    opacity:0.3;
     mix-blend-mode: overlay;
     z-index:2;
   }
 
-  .light-theme .icon-wrapper .icon-distort {
-    opacity: 0.3;
+  .dark-theme .icon-wrapper .icon-distort {
+    opacity: 0.45;
   }
 
   /* icon colored fringe (three small offset shadows) */
@@ -231,30 +231,30 @@
     pointer-events:none;
     z-index:1;
     box-shadow:
-      -3px -2px 12px -7px rgba(255,110,120,0.7),
-      3px 2px 12px -7px rgba(110,160,255,0.7);
+      -3px -2px 12px -7px rgba(255,150,150,0.5),
+      3px 2px 12px -7px rgba(150,200,255,0.5);
     filter: blur(4px);
     mix-blend-mode: screen;
   }
 
-  .light-theme .icon-wrapper::after {
+  .dark-theme .icon-wrapper::after {
     box-shadow:
-      -3px -2px 12px -7px rgba(255,150,150,0.5),
-      3px 2px 12px -7px rgba(150,200,255,0.5);
+      -3px -2px 12px -7px rgba(255,110,120,0.7),
+      3px 2px 12px -7px rgba(110,160,255,0.7);
   }
 
-  .icon-wrapper img{width:40px;height:40px;object-fit:contain;filter:brightness(0) invert(1);position:relative;z-index:6}
-  .light-theme .icon-wrapper img { filter: brightness(0) invert(0.3); }
+  .icon-wrapper img{width:40px;height:40px;object-fit:contain;filter:brightness(0) invert(0.3);position:relative;z-index:6}
+  .dark-theme .icon-wrapper img { filter: brightness(0) invert(1); }
 
-  .link-label{color:rgba(255,255,255,0.9);font-size:13px;text-align:center;font-weight:400;position:relative;z-index:5}
-  .light-theme .link-label { color: rgba(0,0,0,0.8); }
+  .link-label{color:rgba(0,0,0,0.8);font-size:13px;text-align:center;font-weight:400;position:relative;z-index:5}
+  .dark-theme .link-label { color: rgba(255,255,255,0.9); }
 
-  .footer{position:relative;z-index:5;text-align:center;margin-top:30px;padding-top:25px;border-top:1px solid rgba(255,255,255,0.06)}
-  .light-theme .footer { border-top: 1px solid rgba(0,0,0,0.1); }
-  .email{color:rgba(255,255,255,0.7);font-size:15px;margin-bottom:10px;text-decoration:none;display:block}
-  .light-theme .email { color: rgba(0,0,0,0.7); }
-  .copyright{color:rgba(255,255,255,0.45);font-size:13px}
-  .light-theme .copyright { color: rgba(0,0,0,0.5); }
+  .footer{position:relative;z-index:5;text-align:center;margin-top:30px;padding-top:25px;border-top:1px solid rgba(0,0,0,0.1)}
+  .dark-theme .footer { border-top: 1px solid rgba(255,255,255,0.06); }
+  .email{color:rgba(0,0,0,0.7);font-size:15px;margin-bottom:10px;text-decoration:none;display:block}
+  .dark-theme .email { color: rgba(255,255,255,0.7); }
+  .copyright{color:rgba(0,0,0,0.5);font-size:13px}
+  .dark-theme .copyright { color: rgba(255,255,255,0.45); }
 
 /* small responsive tweaks */
   @media (max-width:600px){
@@ -357,10 +357,25 @@
       // Play intro sound
       try {
         const audio = new Audio('intro.wav');
-        audio.volume = 0.5;
-        audio.play().catch(e => {
-          console.log('Audio playback failed:', e);
-        });
+        audio.preload = 'auto';
+        audio.volume = 0.6;
+        
+        // Try to play the sound with user interaction fallback
+        const playSound = () => {
+          audio.play().catch(e => {
+            console.log('Audio playback failed:', e);
+          });
+        };
+        
+        // Try to play immediately
+        playSound();
+        
+        // Also try on first user interaction as fallback
+        document.addEventListener('click', function playOnce() {
+          playSound();
+          document.removeEventListener('click', playOnce);
+        }, { once: true });
+        
       } catch (e) {
         console.log('Audio initialization failed:', e);
       }
@@ -368,7 +383,7 @@
 
     // Theme toggle functionality
     document.getElementById('profilePic').addEventListener('click', function() {
-      document.body.classList.toggle('light-theme');
+      document.body.classList.toggle('dark-theme');
     });
 
     /* Small JS to animate turbulence & give a mouse-driven fresnel/parallax */
