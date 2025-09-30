@@ -1,305 +1,318 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Albert Adroer Prats - Game Developer</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Albert Adroer Prats - Game Developer</title>
 
-        html, body {
-            height: 100%;
-        }
+<style>
+  /* reset */
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    background: radial-gradient(ellipse at center, rgba(20,20,20,1) 0%, rgba(15,15,15,1) 35%, #0a0a0a 100%);
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #fff;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    overflow-x:hidden;
+  }
 
-        body {
-            background: radial-gradient(ellipse at center, rgba(20,20,20,1) 0%, rgba(15,15,15,1) 35%, #0a0a0a 100%);
-            overflow-x: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-weight: 300;
-        }
+  /* ocean waves (unchanged) */
+  .ocean{height:5%;width:100%;position:fixed;bottom:0;left:0;background:#1a1a1a;z-index:0}
+  .wave{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 88.7'%3E%3Cpath d='M800 56.9c-155.5 0-204.9-50-405.5-49.9-200 0-250 49.9-394.5 49.9v31.8h800v-.2-31.6z' fill='%23111111'/%3E%3C/svg%3E") repeat-x;position:absolute;top:-198px;width:6400px;height:198px;animation:wave 7s linear infinite;transform:translate3d(0,0,0)}
+  .wave:nth-of-type(2){top:-175px;animation:wave 7s linear -.125s infinite}
+  @keyframes wave{0%{margin-left:0}100%{margin-left:-1600px}}
 
-        .ocean {
-            height: 5%;
-            width: 100%;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            background: #1a1a1a;
-            z-index: 0;
-        }
+  /* layout */
+  .container{position:relative;z-index:1;padding:40px 20px;min-height:100vh;display:flex;justify-content:center;align-items:center}
+  /* MAIN GLASS card */
+  .glass-container{
+    position:relative;
+    width: min(880px, 94%);
+    border-radius:28px;
+    padding:40px;
+    /* subtle base color so backdrop-filter shows through nicely */
+    background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255,255,255,0.08);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
+    box-shadow:
+      0 12px 40px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.04),
+      inset 0 -1px 0 rgba(255,255,255,0.02);
+    overflow:visible;
+    transform: translateZ(0); /* create a new layer for GPU */
+  }
 
-        .wave {
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 88.7'%3E%3Cpath d='M800 56.9c-155.5 0-204.9-50-405.5-49.9-200 0-250 49.9-394.5 49.9v31.8h800v-.2-31.6z' fill='%23111111'/%3E%3C/svg%3E") repeat-x;
-            position: absolute;
-            top: -198px;
-            width: 6400px;
-            height: 198px;
-            animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
-            transform: translate3d(0, 0, 0);
-        }
+  /* Animated distortion layer - sits above the card's blurred background */
+  .glass-container .distort-layer{
+    pointer-events:none;
+    position:absolute;
+    inset:0;
+    border-radius:28px;
+    z-index:3;
+    /* subtle translucency, will be filtered by SVG turbulence */
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    mix-blend-mode: overlay;
+    opacity:0.5;
+    filter: url(#liquid); /* SVG filter applied here */
+    will-change: filter;
+  }
 
-        .wave:nth-of-type(2) {
-            top: -175px;
-            animation: wave 7s cubic-bezier(0.36, 0.45, 0.63, 0.53) -.125s infinite, swell 7s ease -1.25s infinite;
-            opacity: 1;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 88.7'%3E%3Cpath d='M800 56.9c-155.5 0-204.9-50-405.5-49.9-200 0-250 49.9-394.5 49.9v31.8h800v-.2-31.6z' fill='%23181818'/%3E%3C/svg%3E") repeat-x;
-        }
+  /* Fresnel rim highlight */
+  .glass-container::before{
+    content:'';
+    position:absolute;
+    z-index:6;
+    inset:0;
+    border-radius:28px;
+    pointer-events:none;
+    background: radial-gradient(120% 80% at 10% 10%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 6%, rgba(255,255,255,0.00) 20%),
+                linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.00) 40%);
+    mix-blend-mode: screen;
+    opacity:0.95;
+    transform: translateZ(0);
+  }
 
-        @keyframes wave {
-            0% { margin-left: 0; }
-            100% { margin-left: -1600px; }
-        }
+  /* Chromatic aberration rim: 3 colored offset layers to the outside edge */
+  .glass-container::after{
+    content:'';
+    position:absolute;
+    z-index:2;
+    inset:-2px; /* allow colored fringes outside */
+    border-radius:30px;
+    pointer-events:none;
+    background: transparent;
+    box-shadow:
+      /* subtle colored glows offset slightly to simulate fringing */
+      -6px -3px 18px -10px rgba(255,80,100,0.25),
+      6px 3px 18px -10px rgba(120,180,255,0.25),
+      -4px 6px 22px -14px rgba(120,255,200,0.12);
+    mix-blend-mode: screen;
+    opacity:0.9;
+    filter: blur(6px);
+  }
 
-        @keyframes swell {
-            0%, 100% { transform: translate3d(0,-25px,0); }
-            50% { transform: translate3d(0,5px,0); }
-        }
+  /* inner glass border (thin inner rim) */
+  .glass-inner-border{
+    position:absolute;
+    inset:1px;
+    border-radius:26px;
+    z-index:4;
+    pointer-events:none;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(255,255,255,0.02);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+  }
 
-        .container {
-            position: relative;
-            z-index: 1;
-            padding: 40px 20px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+  /* header/content unchanged but elevated z-index so highlights show above distortion */
+  .header{display:flex;align-items:center;gap:24px;margin-bottom:30px;position:relative;z-index:5}
+  .profile-pic{width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,0.15);box-shadow:0 6px 26px rgba(0,0,0,0.5)}
+  .name{color:#ffffff;font-size:32px;font-weight:600}
+  .description{color:rgba(255,255,255,0.88);line-height:1.7;margin-bottom:35px;font-size:16px;position:relative;z-index:5}
 
-        .glass-container {
-            position: relative;
-            display: inline-block;
-            padding: 40px;
-            max-width: 700px;
-            width: 100%;
-            border-radius: 24px;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 
-                0 8px 32px 0 rgba(0, 0, 0, 0.37),
-                inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
-                inset 0 -1px 0 0 rgba(255, 255, 255, 0.05);
-        }
+  .links-container{display:flex;justify-content:center;gap:30px;margin-bottom:35px;flex-wrap:wrap;position:relative;z-index:5}
 
-        .glass-container::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 24px;
-            padding: 1px;
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.2) 0%, 
-                rgba(255, 255, 255, 0.05) 50%, 
-                rgba(255, 255, 255, 0.1) 100%);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
-        }
+  /* icon wrapper: glass mini-cards with distortion & chromatic edges */
+  .link-button{display:flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none;transition:transform .26s cubic-bezier(.2,.9,.2,1),filter .26s}
+  .link-button:hover{transform:translateY(-6px) scale(1.03)}
 
-        .header {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-            margin-bottom: 30px;
-        }
+  .icon-wrapper{
+    position:relative;
+    width:72px;height:72px;border-radius:18px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    -webkit-backdrop-filter: blur(18px) saturate(170%);
+    backdrop-filter: blur(18px) saturate(170%);
+    border: 1px solid rgba(255,255,255,0.09);
+    display:flex;justify-content:center;align-items:center;
+    box-shadow:
+      0 8px 26px rgba(0,0,0,0.45),
+      inset 0 1px 0 rgba(255,255,255,0.06);
+    overflow:visible;
+    transition:all .26s cubic-bezier(.2,.9,.2,1);
+    z-index:5;
+  }
 
-        .profile-pic {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-        }
+  /* micro-distort & chroma for each icon */
+  .icon-wrapper .icon-distort{
+    pointer-events:none;
+    position:absolute;
+    inset:0;
+    border-radius:16px;
+    filter: url(#liquid-small);
+    opacity:0.45;
+    mix-blend-mode: overlay;
+    z-index:2;
+  }
 
-        .name {
-            color: #ffffff;
-            font-size: 32px;
-            font-weight: 600;
-        }
+  /* icon colored fringe (three small offset shadows) */
+  .icon-wrapper::after{
+    content:'';
+    position:absolute;
+    inset:-2px;
+    border-radius:20px;
+    pointer-events:none;
+    z-index:1;
+    box-shadow:
+      -3px -2px 12px -7px rgba(255,110,120,0.7),
+      3px 2px 12px -7px rgba(110,160,255,0.7);
+    filter: blur(4px);
+    mix-blend-mode: screen;
+  }
 
-        .description {
-            color: rgba(255, 255, 255, 0.85);
-            line-height: 1.7;
-            margin-bottom: 35px;
-            font-size: 16px;
-        }
+  .icon-wrapper img{width:40px;height:40px;object-fit:contain;filter:brightness(0) invert(1);position:relative;z-index:6}
 
-        .links-container {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 35px;
-            flex-wrap: wrap;
-        }
+  .link-label{color:rgba(255,255,255,0.9);font-size:13px;text-align:center;font-weight:400;position:relative;z-index:5}
 
-        .link-button {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-            transition: transform 0.3s ease;
-        }
+  .footer{position:relative;z-index:5;text-align:center;margin-top:30px;padding-top:25px;border-top:1px solid rgba(255,255,255,0.06)}
+  .email{color:rgba(255,255,255,0.7);font-size:15px;margin-bottom:10px;text-decoration:none;display:block}
+  .copyright{color:rgba(255,255,255,0.45);font-size:13px}
 
-        .link-button:hover {
-            transform: translateY(-5px);
-        }
+/* small responsive tweaks */
+  @media (max-width:600px){
+    .header{flex-direction:column;text-align:center}
+    .name{font-size:26px}
+    .glass-container{padding:30px 20px}
+    .profile-pic{width:100px;height:100px}
+    .icon-wrapper{width:60px;height:60px;border-radius:14px}
+    .icon-wrapper img{width:34px;height:34px}
+  }
+</style>
 
-        .icon-wrapper {
-            position: relative;
-            width: 64px;
-            height: 64px;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 
-                0 4px 16px 0 rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 0 rgba(255, 255, 255, 0.1),
-                inset 0 -1px 0 0 rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
-        }
+<!-- inline SVG filters -->
+<svg style="position:absolute;width:0;height:0;pointer-events:none" aria-hidden="true" focusable="false">
+  <defs>
+    <!-- Liquid displacement filter for the big card -->
+    <filter id="liquid" x="-20%" y="-20%" width="140%" height="140%">
+      <!-- animated noise -->
+      <feTurbulence id="turb" baseFrequency="0.006 0.01" numOctaves="2" seed="5" stitchTiles="stitch" type="fractalNoise"/>
+      <feColorMatrix type="saturate" values="0.8"/>
+      <!-- make displacement gentle -->
+      <feDisplacementMap in="SourceGraphic" in2="turb" scale="6" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
 
-        .icon-wrapper::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 16px;
-            padding: 1px;
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.2) 0%, 
-                rgba(255, 255, 255, 0.05) 50%, 
-                rgba(255, 255, 255, 0.1) 100%);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
-        }
-
-        .link-button:hover .icon-wrapper {
-            background: rgba(255, 255, 255, 0.08);
-            transform: scale(1.05);
-        }
-
-        .icon-wrapper img {
-            width: 36px;
-            height: 36px;
-            object-fit: contain;
-            filter: brightness(0) invert(1);
-            z-index: 1;
-        }
-
-        .link-label {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 13px;
-            text-align: center;
-            font-weight: 400;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 25px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .email {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 15px;
-            margin-bottom: 10px;
-            text-decoration: none;
-            display: block;
-        }
-
-        .email:hover {
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .copyright {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 13px;
-        }
-
-        @media (max-width: 600px) {
-            .header {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .name {
-                font-size: 26px;
-            }
-
-            .glass-container {
-                padding: 30px 20px;
-            }
-        }
-    </style>
+    <!-- smaller variant for the icon boxes -->
+    <filter id="liquid-small" x="-30%" y="-30%" width="160%" height="160%">
+      <feTurbulence id="turb-small" baseFrequency="0.015 0.02" numOctaves="1" seed="7" stitchTiles="stitch" type="fractalNoise"/>
+      <feDisplacementMap in="SourceGraphic" in2="turb-small" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
 </head>
+
 <body>
-    <div class="ocean">
-        <div class="wave"></div>
-        <div class="wave"></div>
+  <div class="ocean">
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+
+  <div class="container">
+    <!-- NOTE: small wrapper "glass-inner-border" and "distort-layer" added -->
+    <div class="glass-container" id="glass">
+      <div class="glass-inner-border" aria-hidden="true"></div>
+      <div class="distort-layer" id="distortLayer" aria-hidden="true"></div>
+
+      <div class="header">
+        <img src="Albert.jpg" alt="Albert Adroer Prats" class="profile-pic">
+        <h1 class="name">Albert Adroer Prats</h1>
+      </div>
+
+      <div class="description">
+        <p>I'm a 27 year old game developer from Barcelona. I make Unity games and love creating immersive experiences. My first commercial game, Bald Ball, is published on Steam, and I share other experiments on itch.io.</p>
+
+        <p style="margin-top:15px">Right now I'm leading development on Mushy Roots, a metroidvania I'm building with a digital artist and a music composer. I handle most of the development while coordinating our small team.</p>
+
+        <p style="margin-top:15px">I studied data analytics at Ironhack Bootcamp and built some Python + AI tools to make data analysis easier. That project is paused while I finish the Mushy Roots demo. I'm also learning C++ from scratch using Bjarne Stroustrup's book, which has been the best learning experience so far. C++ is just the start of my path to becoming a software engineer.</p>
+
+        <p style="margin-top:15px">In my free time I like making music, painting with oil, bouldering and hiking, though I don't have much time for those things right now.</p>
+      </div>
+
+      <div class="links-container">
+        <a href="https://store.steampowered.com/app/3489590/Bald_Ball/" class="link-button" target="_blank">
+          <div class="icon-wrapper">
+            <div class="icon-distort"></div>
+            <img src="steam-icon.png" alt="Steam">
+          </div>
+          <span class="link-label">Bald Ball</span>
+        </a>
+
+        <a href="https://github.com/treblalbert" class="link-button" target="_blank">
+          <div class="icon-wrapper">
+            <div class="icon-distort"></div>
+            <img src="github-icon.png" alt="GitHub">
+          </div>
+          <span class="link-label">GitHub</span>
+        </a>
+
+        <a href="https://albertfreeman.itch.io/" class="link-button" target="_blank">
+          <div class="icon-wrapper">
+            <div class="icon-distort"></div>
+            <img src="itch-icon.png" alt="Itch.io">
+          </div>
+          <span class="link-label">Itch.io</span>
+        </a>
+      </div>
+
+      <div class="footer">
+        <a class="email" href="mailto:albertadroer@gmail.com">albertadroer@gmail.com</a>
+        <div class="copyright">© 2025 Albert Adroer Prats</div>
+      </div>
     </div>
+  </div>
 
-    <div class="container">
-        <div class="glass-container">
-            <div class="header">
-                <img src="Albert.jpg" alt="Albert Adroer Prats" class="profile-pic">
-                <h1 class="name">Albert Adroer Prats</h1>
-            </div>
+  <script>
+    /* Small JS to animate turbulence & give a mouse-driven fresnel/parallax */
+    (function(){
+      const turb = document.getElementById('turb');
+      const turbSmall = document.getElementById('turb-small');
+      const glass = document.getElementById('glass');
+      const distortLayer = document.getElementById('distortLayer');
 
-            <div class="description">
-                <p>I'm a 27 year old game developer from Barcelona. I make Unity games and love creating immersive experiences. My first commercial game, Bald Ball, is published on Steam, and I share other experiments on itch.io.</p>
-                
-                <p style="margin-top: 15px;">Right now I'm leading development on Mushy Roots, a metroidvania I'm building with a digital artist and a music composer. I handle most of the development while coordinating our small team.</p>
-                
-                <p style="margin-top: 15px;">I studied data analytics at Ironhack Bootcamp and built some Python + AI tools to make data analysis easier. That project is paused while I finish the Mushy Roots demo. I'm also learning C++ from scratch using Bjarne Stroustrup's book, which has been the best learning experience so far. C++ is just the start of my path to becoming a software engineer.</p>
-                
-                <p style="margin-top: 15px;">In my free time I like making music, painting with oil, bouldering and hiking, though I don't have much time for those things right now.</p>
-            </div>
+      let t = 0;
 
-            <div class="links-container">
-                <a href="https://store.steampowered.com/app/3489590/Bald_Ball/" class="link-button" target="_blank">
-                    <div class="icon-wrapper">
-                        <img src="steam-icon.png" alt="Steam">
-                    </div>
-                    <span class="link-label">Bald Ball</span>
-                </a>
+      // gentle oscillation of baseFrequency to create organic wobble
+      function animate() {
+        t += 0.01;
+        // subtle variation values tuned to be decorative, not distracting
+        const bf1 = 0.005 + Math.sin(t * 0.9) * 0.002;
+        const bf2 = 0.009 + Math.cos(t * 0.7) * 0.003;
+        if (turb) turb.setAttribute('baseFrequency', bf1 + ' ' + bf2);
+        if (turbSmall) turbSmall.setAttribute('baseFrequency', (0.012 + Math.sin(t*1.3)*0.004) + ' ' + (0.018 + Math.cos(t*0.9)*0.004));
+        requestAnimationFrame(animate);
+      }
+      requestAnimationFrame(animate);
 
-                <a href="https://github.com/treblalbert" class="link-button" target="_blank">
-                    <div class="icon-wrapper">
-                        <img src="github-icon.png" alt="GitHub">
-                    </div>
-                    <span class="link-label">GitHub</span>
-                </a>
+      // subtle mouse parallax that shifts the sheen / fresnel
+      window.addEventListener('mousemove', (e) => {
+        const rect = glass.getBoundingClientRect();
+        const rx = (e.clientX - rect.left) / rect.width; // 0..1
+        const ry = (e.clientY - rect.top) / rect.height;
+        const moveX = (rx - 0.5) * 30; // small offset
+        const moveY = (ry - 0.5) * 20;
+        // move the distort layer slightly for parallax
+        distortLayer.style.transform = `translate(${moveX*0.18}px, ${moveY*0.18}px)`;
+        // modulate opacity (very small) to make fresnel reactive
+        const op = 0.45 + Math.abs((rx - 0.5)) * 0.14 + Math.abs((ry - 0.5)) * 0.06;
+        distortLayer.style.opacity = op;
+        // rotate tiny for a believable holographic response
+        glass.style.transform = `perspective(800px) rotateX(${(ry-0.5)*2}deg) rotateY(${(0.5-rx)*2}deg)`;
+      });
 
-                <a href="https://albertfreeman.itch.io/" class="link-button" target="_blank">
-                    <div class="icon-wrapper">
-                        <img src="itch-icon.png" alt="Itch.io">
-                    </div>
-                    <span class="link-label">Itch.io</span>
-                </a>
-            </div>
-
-            <div class="footer">
-                <a href="mailto:albertadroer@gmail.com" class="email">albertadroer@gmail.com</a>
-                <div class="copyright">© 2025 Albert Adroer Prats</div>
-            </div>
-        </div>
-    </div>
+      // on touch devices reduce motion; lower intensity
+      function reduceMotionCheck(){
+        const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+        if(mq.matches){
+          if (turb) turb.setAttribute('baseFrequency','0.01 0.015');
+          if (turbSmall) turbSmall.setAttribute('baseFrequency','0.018 0.022');
+          window.removeEventListener('mousemove', ()=>{});
+          glass.style.transform = '';
+        }
+      }
+      reduceMotionCheck();
+      window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', reduceMotionCheck);
+    })();
+  </script>
 </body>
 </html>
