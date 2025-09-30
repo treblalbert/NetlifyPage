@@ -4,64 +4,256 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Albert Adroer Prats - Game Developer</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .liquidGlass-wrapper {
+            position: relative;
+            display: flex;
+            overflow: hidden;
+            box-shadow: 0 6px 6px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .liquidGlass-effect {
+            position: absolute;
+            z-index: 0;
+            inset: 0;
+            backdrop-filter: blur(3px);
+            filter: url(#glass-distortion);
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        .liquidGlass-tint {
+            z-index: 1;
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .liquidGlass-shine {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            overflow: hidden;
+            box-shadow: inset 2px 2px 1px 0 rgba(255, 255, 255, 0.5),
+                inset -1px -1px 1px 1px rgba(255, 255, 255, 0.5);
+        }
+
+        .liquidGlass-text {
+            z-index: 3;
+            position: relative;
+            width: 100%;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .name {
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 600;
+        }
+
+        .description {
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.7;
+            margin-bottom: 35px;
+            font-size: 16px;
+        }
+
+        .links-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+        }
+
+        .link-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+
+        .link-button:hover {
+            transform: translateY(-5px);
+        }
+
+        .icon-wrapper {
+            position: relative;
+            display: flex;
+            overflow: hidden;
+            box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2), 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2);
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .glass-effect {
+            position: absolute;
+            z-index: 0;
+            inset: 0;
+            backdrop-filter: blur(3px);
+            filter: url(#glass-distortion);
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        .glass-tint {
+            z-index: 1;
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .glass-shine {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            overflow: hidden;
+            box-shadow: inset 2px 2px 1px 0 rgba(255, 255, 255, 0.5),
+                inset -1px -1px 1px 1px rgba(255, 255, 255, 0.5);
+        }
+
+        .icon-wrapper img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            z-index: 3;
+            position: relative;
+        }
+
+        .link-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .email {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 15px;
+            margin-bottom: 10px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .email:hover {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .copyright {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .name {
+                font-size: 26px;
+            }
+
+            .liquidGlass-wrapper {
+                padding: 30px 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="glass-container effect">
-        <svg class="filter" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <filter id="filter" color-interpolation-filters="sRGB">
-                    <feImage x="0" y="0" width="100%" height="100%" result="map"></feImage>
-                    
-                    <feDisplacementMap in="SourceGraphic" in2="map" id="redchannel" xChannelSelector="R" yChannelSelector="G" result="dispRed" />
-                    <feColorMatrix in="dispRed" type="matrix" values="1 0 0 0 0, 0 0 0 0 0, 0 0 0 0 0, 0 0 0 1 0" result="red" />
-                    
-                    <feDisplacementMap in="SourceGraphic" in2="map" id="greenchannel" xChannelSelector="R" yChannelSelector="G" result="dispGreen" />
-                    <feColorMatrix in="dispGreen" type="matrix" values="0 0 0 0 0, 0 1 0 0 0, 0 0 0 0 0, 0 0 0 1 0" result="green" />
-                    
-                    <feDisplacementMap in="SourceGraphic" in2="map" id="bluechannel" xChannelSelector="R" yChannelSelector="G" result="dispBlue" />
-                    <feColorMatrix in="dispBlue" type="matrix" values="0 0 0 0 0, 0 0 0 0 0, 0 0 1 0 0, 0 0 0 1 0" result="blue" />
-                    
-                    <feBlend in="red" in2="green" mode="screen" result="rg" />
-                    <feBlend in="rg" in2="blue" mode="screen" result="output" />
-                    <feGaussianBlur in="output" stdDeviation="0.7" />
-                </filter>
-            </defs>
-        </svg>
-
-        <div class="content-wrapper">
+    <div class="liquidGlass-wrapper">
+        <div class="liquidGlass-effect"></div>
+        <div class="liquidGlass-tint"></div>
+        <div class="liquidGlass-shine"></div>
+        <div class="liquidGlass-text">
             <div class="header">
                 <img src="Albert.jpg" alt="Albert Adroer Prats" class="profile-pic">
                 <h1 class="name">Albert Adroer Prats</h1>
             </div>
 
             <div class="description">
-                <p>I'm a 27-year-old game developer from Barcelona passionate about creating immersive gaming experiences. As a Unity developer, I've published <strong>Bald Ball</strong>, my first commercial game on Steam, and continue to share experimental projects on itch.io.</p>
+                <p>I'm a 27 year old game developer from Barcelona. I make Unity games and love creating immersive experiences. My first commercial game, Bald Ball, is published on Steam, and I share other experiments on itch.io.</p>
                 
-                <p style="margin-top: 15px;">Currently, I'm leading the development of <strong>Mushy Roots</strong>, an ambitious metroidvania project where I work as the lead developer alongside a talented digital artist and music composer. I handle most aspects of development while coordinating our small but dedicated team.</p>
+                <p style="margin-top: 15px;">Right now I'm leading development on Mushy Roots, a metroidvania I'm building with a digital artist and a music composer. I handle most of the development while coordinating our small team.</p>
                 
-                <p style="margin-top: 15px;">My technical journey includes graduating from Ironhack's Data Analytics Bootcamp and developing Python + AI tools to streamline data analysis workflows. Right now, I'm deeply engaged in learning C++ from the ground up through Bjarne Stroustrup's "Programming: Principles and Practice Using C++" - my most profound learning experience yet as I work toward becoming a software engineer.</p>
+                <p style="margin-top: 15px;">I studied data analytics at Ironhack Bootcamp and built some Python + AI tools to make data analysis easier. That project is paused while I finish the Mushy Roots demo. I'm also learning C++ from scratch using Bjarne Stroustrup's book, which has been the best learning experience so far. C++ is just the start of my path to becoming a software engineer.</p>
                 
-                <p style="margin-top: 15px;">When I find time away from coding, I enjoy making music, oil painting, bouldering, and hiking, though these passions are currently on hold as I focus on my development goals.</p>
+                <p style="margin-top: 15px;">In my free time I like making music, painting with oil, bouldering and hiking, though I don't have much time for those things right now.</p>
             </div>
 
             <div class="links-container">
                 <a href="https://store.steampowered.com/app/3489590/Bald_Ball/" class="link-button" target="_blank">
-                    <div class="icon-wrapper glass-button">
+                    <div class="icon-wrapper">
+                        <div class="glass-effect"></div>
+                        <div class="glass-tint"></div>
+                        <div class="glass-shine"></div>
                         <img src="steam-icon.png" alt="Steam">
                     </div>
                     <span class="link-label">Bald Ball</span>
                 </a>
 
                 <a href="https://github.com/treblalbert" class="link-button" target="_blank">
-                    <div class="icon-wrapper glass-button">
+                    <div class="icon-wrapper">
+                        <div class="glass-effect"></div>
+                        <div class="glass-tint"></div>
+                        <div class="glass-shine"></div>
                         <img src="github-icon.png" alt="GitHub">
                     </div>
                     <span class="link-label">GitHub</span>
                 </a>
 
                 <a href="https://albertfreeman.itch.io/" class="link-button" target="_blank">
-                    <div class="icon-wrapper glass-button">
+                    <div class="icon-wrapper">
+                        <div class="glass-effect"></div>
+                        <div class="glass-tint"></div>
+                        <div class="glass-shine"></div>
                         <img src="itch-icon.png" alt="Itch.io">
                     </div>
                     <span class="link-label">Itch.io</span>
@@ -75,6 +267,55 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <svg style="display: none">
+        <filter
+            id="glass-distortion"
+            x="0%"
+            y="0%"
+            width="100%"
+            height="100%"
+            filterUnits="objectBoundingBox"
+        >
+            <feTurbulence
+                type="fractalNoise"
+                baseFrequency="0.01 0.01"
+                numOctaves="1"
+                seed="5"
+                result="turbulence"
+            />
+            <feComponentTransfer in="turbulence" result="mapped">
+                <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5" />
+                <feFuncG type="gamma" amplitude="0" exponent="1" offset="0" />
+                <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5" />
+            </feComponentTransfer>
+            <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap" />
+            <feSpecularLighting
+                in="softMap"
+                surfaceScale="5"
+                specularConstant="1"
+                specularExponent="100"
+                lighting-color="white"
+                result="specLight"
+            >
+                <fePointLight x="-200" y="-200" z="300" />
+            </feSpecularLighting>
+            <feComposite
+                in="specLight"
+                operator="arithmetic"
+                k1="0"
+                k2="1"
+                k3="1"
+                k4="0"
+                result="litImage"
+            />
+            <feDisplacementMap
+                in="SourceGraphic"
+                in2="softMap"
+                scale="150"
+                xChannelSelector="R"
+                yChannelSelector="G"
+            />
+        </filter>
+    </svg>
 </body>
 </html>
