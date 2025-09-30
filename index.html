@@ -354,9 +354,9 @@
       // Fade in effect
       document.body.style.opacity = '1';
       
-      // Play intro sound
+      // Play intro sound (OGG format for better optimization)
       try {
-        const audio = new Audio('intro.wav');
+        const audio = new Audio('intro.ogg');
         audio.preload = 'auto';
         audio.volume = 0.6;
         
