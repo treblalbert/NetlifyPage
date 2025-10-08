@@ -98,6 +98,12 @@
             border-top: 2px solid #ddd;
             color: #7f8c8d;
         }
+        .new-feature {
+            background-color: #e8f6f3;
+            border-left: 4px solid #1abc9c;
+            padding: 10px 15px;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
@@ -114,6 +120,7 @@
         <li>Variables</li>
         <li>Loop Statements</li>
         <li>Conditional Statements</li>
+        <li>Parachute System</li>
         <li>Telemetry Sensors</li>
         <li>Logical Operators</li>
         <li>Complete Examples</li>
@@ -211,16 +218,6 @@ END</code>
 END</code>
     <p>Executes the impulse and wait commands 5 times.</p>
 
-    <h3>Example: Nested Loops</h3>
-    <code>LOOP 3
-    LOOP 4
-        IMPULSE 5
-        ROTATE 20
-        WAIT 0.2
-    END
-    WAIT 1
-END</code>
-
     <h3>WHILE</h3>
     <p>Repeats a block of commands while a condition remains true.</p>
     <p><strong>Syntax:</strong></p>
@@ -237,21 +234,17 @@ END</code>
 END</code>
     <p>Continues thrusting until altitude reaches 50.</p>
 
-    <h3>Example: Distance-Based Control</h3>
-    <code>WHILE ground_distance < 20
-    IMPULSE 10
-    WAIT 0.1
-END</code>
-
     <div class="page-break"></div>
 
     <h2>Conditional Statements</h2>
 
-    <h3>IF</h3>
-    <p>Executes a block of commands only if a condition is true.</p>
+    <h3>IF with ELSE</h3>
+    <p>Executes a block of commands only if a condition is true, with optional alternative commands.</p>
     <p><strong>Syntax:</strong></p>
     <code>IF &lt;condition&gt;
-    // commands
+    // commands if true
+ELSE
+    // commands if false
 END</code>
 
     <h3>Comparison Operators</h3>
@@ -299,22 +292,50 @@ END</code>
     IMPULSE 10
 END</code>
 
-    <h3>Example: Multiple Conditionals</h3>
-    <code>IF velocity > 40
-    ROTATE 180
-    FORCE 5 1
-END
-
-IF altitude < 10
-    IMPULSE 15
+    <h3>Example: IF-ELSE Logic</h3>
+    <code>IF water_distance < 20
+    IMPULSE 15  // Boost away from water
+ELSE
+    FORCE 10 1  // Normal thrust
 END</code>
 
-    <h3>Example: Nested IF in LOOP</h3>
-    <code>LOOP 20
-    IF ground_distance < 20
-        IMPULSE 8
+    <div class="page-break"></div>
+
+    <h2>Parachute System</h2>
+
+    <div class="new-feature">
+        <strong>NEW:</strong> Control the rocket's parachute for safe landings
+    </div>
+
+    <h3>PARACHUTEON</h3>
+    <p>Deploys the parachute to slow descent.</p>
+    <p><strong>Syntax:</strong> <span class="inline-code">PARACHUTEON</span></p>
+    <code>PARACHUTEON</code>
+    <p>Deploys parachute immediately.</p>
+
+    <h3>PARACHUTEOFF</h3>
+    <p>Undeploys the parachute.</p>
+    <p><strong>Syntax:</strong> <span class="inline-code">PARACHUTEOFF</span></p>
+    <code>PARACHUTEOFF</code>
+    <p>Removes parachute immediately.</p>
+
+    <h3>Example: Safe Landing</h3>
+    <code>WHILE ground_distance > 30
+    FORCE 8 0.5
+    WAIT 0.3
+END
+
+IF velocity > 15
+    PARACHUTEON
+    WAIT 2
+END</code>
+
+    <h3>Example: Emergency Parachute</h3>
+    <code>WHILE altitude > 10
+    IF velocity > 25 OR ground_distance < 20
+        PARACHUTEON
     END
-    WAIT 0.2
+    WAIT 0.1
 END</code>
 
     <div class="page-break"></div>
@@ -357,7 +378,7 @@ END</code>
     </table>
 
     <div class="note">
-        <strong>Note:</strong> Contact with water results in instant rocket destruction.
+        <strong>Warning:</strong> Contact with water results in instant rocket destruction!
     </div>
 
     <h3>Example: Sensor-Based Navigation</h3>
@@ -371,30 +392,11 @@ IF velocity > 30
     IMPULSE 5
 END</code>
 
-    <h3>Example: Water Avoidance</h3>
-    <code>IF water_distance < 15
-    IMPULSE 15
-    WAIT 0.5
-END</code>
-
-    <h3>Example: Safe Landing</h3>
-    <code>WHILE ground_distance < 20
-    IF velocity > 10
-        ROTATE 180
-        IMPULSE 5
-        WAIT 0.3
-        ROTATE 0
-    END
-    
-    IMPULSE 8
-    WAIT 0.2
-END</code>
-
     <div class="page-break"></div>
 
     <h2>Logical Operators</h2>
 
-    <p>Multiple conditions can be combined using logical operators.</p>
+    <p>Multiple conditions can be combined using logical operators for complex decision making.</p>
 
     <h3>AND</h3>
     <p>Both conditions must be true for the entire expression to be true.</p>
@@ -409,13 +411,6 @@ END</code>
     IMPULSE 10
     WAIT 0.1
 END</code>
-
-    <h3>Multiple Logical Operators</h3>
-    <p>Conditions are evaluated left to right.</p>
-    <code>IF altitude > 30 AND velocity < 25 OR ground_distance < 10
-    FORCE 8 0.5
-END</code>
-    <p>This evaluates as: <span class="inline-code">(altitude > 30 AND velocity < 25) OR ground_distance < 10</span></p>
 
     <h3>Example: Complex Landing Logic</h3>
     <code>LOOP 40
@@ -468,8 +463,8 @@ ROTATE turn_angle
 FORCE cruise_power 2.5
 ROTATE 0</code>
 
-    <h3>Example 3: Automated Landing</h3>
-    <code>// Autonomous landing system
+    <h3>Example 3: Automated Landing with Parachute</h3>
+    <code>// Autonomous landing system with parachute
 SET safe_distance = 15
 SET boost_power = 10
 
@@ -479,15 +474,21 @@ WAIT 2
 ROTATE 45
 FORCE 12 3
 
-// Auto-landing
+// Auto-landing with parachute
 WHILE ground_distance < safe_distance
+    IF velocity > 10
+        PARACHUTEON
+    ELSE
+        PARACHUTEOFF
+    END
+    
     ROTATE 0
     IMPULSE boost_power
     WAIT 0.2
 END</code>
 
-    <h3>Example 4: Water Navigation</h3>
-    <code>// Navigate around water hazard
+    <h3>Example 4: Water Navigation with Emergency Systems</h3>
+    <code>// Navigate around water hazard with safety features
 SET emergency_power = 15
 SET cruise_power = 10
 
@@ -497,6 +498,9 @@ WAIT 1
 LOOP 50
     IF water_distance < 12
         IMPULSE emergency_power
+        PARACHUTEON  // Emergency braking
+    ELSE
+        PARACHUTEOFF
     END
     
     IF water_distance > 20 AND ground_distance > 20
@@ -508,7 +512,7 @@ LOOP 50
 END</code>
 
     <h3>Example 5: Advanced Autonomous System</h3>
-    <code>// Complete autonomous navigation
+    <code>// Complete autonomous navigation with all features
 SET target_altitude = 40
 SET max_velocity = 35
 SET danger_zone = 12
@@ -517,6 +521,9 @@ SET danger_zone = 12
 WHILE altitude < target_altitude
     IF water_distance < danger_zone OR ground_distance < danger_zone
         IMPULSE 15
+        PARACHUTEON  // Emergency deploy
+    ELSE
+        PARACHUTEOFF
     END
     
     IF velocity < 20 AND water_distance > 20
@@ -538,6 +545,9 @@ LOOP 30
     
     IF water_distance < 15
         IMPULSE 12
+        PARACHUTEON
+    ELSE
+        PARACHUTEOFF
     END
     
     WAIT 0.3
@@ -548,9 +558,12 @@ ROTATE 0
 WHILE ground_distance < 25 AND water_distance > 15
     IF velocity > 10 OR ground_distance < 10
         IMPULSE 10
+        PARACHUTEON
     END
     WAIT 0.2
-END</code>
+END
+
+PARACHUTEOFF</code>
 
     <div class="page-break"></div>
 
@@ -561,7 +574,9 @@ END</code>
 IMPULSE &lt;power&gt;
 ROTATE &lt;degrees&gt;
 WAIT &lt;seconds&gt;
-SET &lt;variable&gt; = &lt;value&gt;</code>
+SET &lt;variable&gt; = &lt;value&gt;
+PARACHUTEON
+PARACHUTEOFF</code>
 
     <h3>Control Structures</h3>
     <code>LOOP &lt;iterations&gt;
@@ -573,6 +588,8 @@ WHILE &lt;condition&gt;
 END
 
 IF &lt;condition&gt;
+    // commands
+ELSE
     // commands
 END</code>
 
@@ -604,7 +621,7 @@ OR   logical or</code>
 
     <div class="page-break"></div>
 
-    <h2>Notes</h2>
+    <h2>Important Notes</h2>
 
     <ul>
         <li>Commands are case-insensitive (IMPULSE, impulse, and Impulse all work)</li>
@@ -615,8 +632,11 @@ OR   logical or</code>
         <li>Variables cannot start with a number</li>
         <li>Sensor names are reserved and cannot be used as variable names</li>
         <li>WHILE loops have a maximum iteration limit of 1000</li>
-        <li>Water contact results in instant rocket destruction</li>
+        <li><strong>Water contact results in instant rocket destruction</strong></li>
+        <li>Use parachute for controlled descent and emergency braking</li>
         <li>Use comments (//) to document your code</li>
+        <li>ELSE blocks provide alternative execution paths</li>
+        <li>Combine AND/OR for complex condition checking</li>
     </ul>
 
     <div class="footer">

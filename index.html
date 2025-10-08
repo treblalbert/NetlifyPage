@@ -1,649 +1,652 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rocket Script Language Reference</title>
-    <style>
-        @page {
-            margin: 1in;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 8.5in;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        h1 {
-            color: #2c3e50;
-            border-bottom: 3px solid #3498db;
-            padding-bottom: 10px;
-            margin-top: 0;
-        }
-        h2 {
-            color: #34495e;
-            margin-top: 35px;
-            border-left: 4px solid #3498db;
-            padding-left: 15px;
-        }
-        h3 {
-            color: #555;
-            margin-top: 25px;
-            margin-bottom: 10px;
-        }
-        code {
-            background-color: #f4f4f4;
-            padding: 15px;
-            border-left: 4px solid #3498db;
-            display: block;
-            margin: 15px 0;
-            font-family: 'Courier New', monospace;
-            white-space: pre-wrap;
-        }
-        .inline-code {
-            background-color: #f4f4f4;
-            padding: 2px 6px;
-            font-family: 'Courier New', monospace;
-            border-radius: 3px;
-        }
-        ul {
-            margin: 10px 0;
-            padding-left: 30px;
-        }
-        li {
-            margin: 5px 0;
-        }
-        .page-break {
-            page-break-after: always;
-        }
-        .header {
-            background-color: #ecf0f1;
-            padding: 20px;
-            border-radius: 5px;
-            margin-bottom: 30px;
-        }
-        strong {
-            color: #2980b9;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        table th,
-        table td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-        }
-        table th {
-            background-color: #3498db;
-            color: white;
-        }
-        table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .note {
-            background-color: #fff9e6;
-            padding: 15px;
-            border-left: 4px solid #f1c40f;
-            margin: 20px 0;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 50px;
-            padding-top: 20px;
-            border-top: 2px solid #ddd;
-            color: #7f8c8d;
-        }
-        .new-feature {
-            background-color: #e8f6f3;
-            border-left: 4px solid #1abc9c;
-            padding: 10px 15px;
-            margin: 10px 0;
-        }
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Albert Adroer Prats - Game Developer</title>
+
+<style>
+  /* reset */
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body {
+    background: radial-gradient(ellipse at center, #f5f5f7 0%, #e8e8e8 35%, #dcdcdc 100%);
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    overflow-x:hidden;
+    opacity: 0;
+    transition: opacity 1.2s ease-in-out;
+  }
+
+  body.dark-theme {
+    background: radial-gradient(ellipse at center, rgba(20,20,20,1) 0%, rgba(15,15,15,1) 35%, #0a0a0a 100%);
+    color: #fff;
+  }
+
+  /* ocean waves (unchanged) */
+  .ocean{height:5%;width:100%;position:fixed;bottom:0;left:0;background:#e0e0e0;z-index:0}
+  .wave{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 88.7'%3E%3Cpath d='M800 56.9c-155.5 0-204.9-50-405.5-49.9-200 0-250 49.9-394.5 49.9v31.8h800v-.2-31.6z' fill='%23d0d0d0'/%3E%3C/svg%3E") repeat-x;position:absolute;top:-198px;width:6400px;height:198px;animation:wave 7s linear infinite;transform:translate3d(0,0,0)}
+  .wave:nth-of-type(2){top:-175px;animation:wave 7s linear -.125s infinite}
+  @keyframes wave{0%{margin-left:0}100%{margin-left:-1600px}}
+
+  .dark-theme .ocean {
+    background: #1a1a1a;
+  }
+  
+  .dark-theme .wave {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 88.7'%3E%3Cpath d='M800 56.9c-155.5 0-204.9-50-405.5-49.9-200 0-250 49.9-394.5 49.9v31.8h800v-.2-31.6z' fill='%23111111'/%3E%3C/svg%3E") repeat-x;
+  }
+
+  /* layout */
+  .container{
+    position:relative;
+    z-index:1;
+    padding:40px 20px;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap: 30px;
+  }
+  
+  /* MAIN GLASS card */
+  .glass-container{
+    position:relative;
+    width: min(880px, 94%);
+    border-radius:28px;
+    padding:40px;
+    /* subtle base color so backdrop-filter shows through nicely */
+    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
+    border: 1px solid rgba(255,255,255,0.4);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
+    box-shadow:
+      0 12px 40px rgba(0,0,0,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.6),
+      inset 0 -1px 0 rgba(255,255,255,0.3);
+    overflow:visible;
+    transform: translateZ(0); /* create a new layer for GPU */
+    transition: transform 0.3s ease;
+  }
+
+  .dark-theme .glass-container {
+    background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow:
+      0 12px 40px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.04),
+      inset 0 -1px 0 rgba(255,255,255,0.02);
+  }
+
+  /* PDF Reader Panel */
+  .pdf-panel {
+    position: relative;
+    width: min(300px, 90%);
+    border-radius: 28px;
+    padding: 30px 25px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
+    border: 1px solid rgba(255,255,255,0.4);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
+    box-shadow:
+      0 12px 40px rgba(0,0,0,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.6),
+      inset 0 -1px 0 rgba(255,255,255,0.3);
+    overflow: visible;
+    transform: translateZ(0);
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .dark-theme .pdf-panel {
+    background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow:
+      0 12px 40px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.04),
+      inset 0 -1px 0 rgba(255,255,255,0.02);
+  }
+
+  .pdf-panel.active {
+    display: flex;
+  }
+
+  .pdf-panel .glass-inner-border,
+  .pdf-panel .distort-layer {
+    position: absolute;
+    inset: 0;
+    border-radius: 28px;
+    pointer-events: none;
+  }
+
+  .pdf-panel .glass-inner-border {
+    z-index: 4;
+    background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(255,255,255,0.1);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+  }
+
+  .dark-theme .pdf-panel .glass-inner-border {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(255,255,255,0.02);
+  }
+
+  .pdf-panel .distort-layer {
+    z-index: 3;
+    background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    mix-blend-mode: overlay;
+    opacity: 0.5;
+    filter: url(#liquid);
+    will-change: filter;
+  }
+
+  .dark-theme .pdf-panel .distort-layer {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  }
+
+  .pdf-panel::before {
+    content: '';
+    position: absolute;
+    z-index: 6;
+    inset: 0;
+    border-radius: 28px;
+    pointer-events: none;
+    background: radial-gradient(120% 80% at 10% 10%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 6%, rgba(255,255,255,0.00) 20%),
+                linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.00) 40%);
+    mix-blend-mode: screen;
+    opacity: 0.95;
+    transform: translateZ(0);
+  }
+
+  .dark-theme .pdf-panel::before {
+    background: radial-gradient(120% 80% at 10% 10%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 6%, rgba(255,255,255,0.00) 20%),
+                linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.00) 40%);
+  }
+
+  .pdf-panel::after {
+    content: '';
+    position: absolute;
+    z-index: 2;
+    inset: -2px;
+    border-radius: 30px;
+    pointer-events: none;
+    background: transparent;
+    box-shadow:
+      -6px -3px 18px -10px rgba(255,150,150,0.4),
+      6px 3px 18px -10px rgba(150,200,255,0.4),
+      -4px 6px 22px -14px rgba(150,255,200,0.2);
+    mix-blend-mode: screen;
+    opacity: 0.9;
+    filter: blur(6px);
+  }
+
+  .dark-theme .pdf-panel::after {
+    box-shadow:
+      -6px -3px 18px -10px rgba(255,80,100,0.25),
+      6px 3px 18px -10px rgba(120,180,255,0.25),
+      -4px 6px 22px -14px rgba(120,255,200,0.12);
+  }
+
+  .pdf-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 5;
+  }
+
+  .pdf-description {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 5;
+  }
+
+  .pdf-download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 14px;
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 5;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+
+  .dark-theme .pdf-download-btn {
+    background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+    border: 1px solid rgba(255,255,255,0.15);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  }
+
+  .pdf-download-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  }
+
+  .dark-theme .pdf-download-btn:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  }
+
+  .pdf-download-btn img {
+    width: 18px;
+    height: 18px;
+    filter: brightness(0) invert(0.3);
+  }
+
+  .dark-theme .pdf-download-btn img {
+    filter: brightness(0) invert(1);
+  }
+
+  /* Animated distortion layer - sits above the card's blurred background */
+  .glass-container .distort-layer{
+    pointer-events:none;
+    position:absolute;
+    inset:0;
+    border-radius:28px;
+    z-index:3;
+    /* subtle translucency, will be filtered by SVG turbulence */
+    background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    mix-blend-mode: overlay;
+    opacity:0.5;
+    filter: url(#liquid); /* SVG filter applied here */
+    will-change: filter;
+  }
+
+  .dark-theme .glass-container .distort-layer {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  }
+
+  /* Fresnel rim highlight */
+  .glass-container::before{
+    content:'';
+    position:absolute;
+    z-index:6;
+    inset:0;
+    border-radius:28px;
+    pointer-events:none;
+    background: radial-gradient(120% 80% at 10% 10%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 6%, rgba(255,255,255,0.00) 20%),
+                linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.00) 40%);
+    mix-blend-mode: screen;
+    opacity:0.95;
+    transform: translateZ(0);
+  }
+
+  .dark-theme .glass-container::before {
+    background: radial-gradient(120% 80% at 10% 10%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 6%, rgba(255,255,255,0.00) 20%),
+                linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.00) 40%);
+  }
+
+  /* Chromatic aberration rim: 3 colored offset layers to the outside edge */
+  .glass-container::after{
+    content:'';
+    position:absolute;
+    z-index:2;
+    inset:-2px; /* allow colored fringes outside */
+    border-radius:30px;
+    pointer-events:none;
+    background: transparent;
+    box-shadow:
+      /* subtle colored glows offset slightly to simulate fringing */
+      -6px -3px 18px -10px rgba(255,150,150,0.4),
+      6px 3px 18px -10px rgba(150,200,255,0.4),
+      -4px 6px 22px -14px rgba(150,255,200,0.2);
+    mix-blend-mode: screen;
+    opacity:0.9;
+    filter: blur(6px);
+  }
+
+  .dark-theme .glass-container::after {
+    box-shadow:
+      -6px -3px 18px -10px rgba(255,80,100,0.25),
+      6px 3px 18px -10px rgba(120,180,255,0.25),
+      -4px 6px 22px -14px rgba(120,255,200,0.12);
+  }
+
+  /* inner glass border (thin inner rim) */
+  .glass-inner-border{
+    position:absolute;
+    inset:1px;
+    border-radius:26px;
+    z-index:4;
+    pointer-events:none;
+    background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(255,255,255,0.1);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+  }
+
+  .dark-theme .glass-inner-border {
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(255,255,255,0.02);
+  }
+
+  /* header/content unchanged but elevated z-index so highlights show above distortion */
+  .header{display:flex;align-items:center;gap:24px;margin-bottom:30px;position:relative;z-index:5}
+  .profile-pic{
+    width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid rgba(0,0,0,0.1);
+    box-shadow:0 6px 26px rgba(0,0,0,0.15);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .profile-pic:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+  .dark-theme .profile-pic {
+    border: 3px solid rgba(255,255,255,0.15);
+    box-shadow:0 6px 26px rgba(0,0,0,0.5);
+  }
+  .dark-theme .profile-pic:hover {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+  }
+  .name{color:#333;font-size:32px;font-weight:600}
+  .dark-theme .name { color: #ffffff; }
+  .description{color:rgba(0,0,0,0.8);line-height:1.7;margin-bottom:35px;font-size:16px;position:relative;z-index:5}
+  .dark-theme .description { color: rgba(255,255,255,0.88); }
+
+  .links-container{display:flex;justify-content:center;gap:30px;margin-bottom:35px;flex-wrap:wrap;position:relative;z-index:5}
+
+  /* icon wrapper: glass mini-cards with distortion & chromatic edges */
+  .link-button{display:flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none;transition:transform .26s cubic-bezier(.2,.9,.2,1),filter .26s}
+  .link-button:hover{transform:translateY(-6px) scale(1.03)}
+
+  .icon-wrapper{
+    position:relative;
+    width:72px;height:72px;border-radius:18px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
+    -webkit-backdrop-filter: blur(18px) saturate(170%);
+    backdrop-filter: blur(18px) saturate(170%);
+    border: 1px solid rgba(255,255,255,0.4);
+    display:flex;justify-content:center;align-items:center;
+    box-shadow:
+      0 8px 26px rgba(0,0,0,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.6);
+    overflow:visible;
+    transition:all .26s cubic-bezier(.2,.9,.2,1);
+    z-index:5;
+  }
+
+  .dark-theme .icon-wrapper {
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255,255,255,0.09);
+    box-shadow:
+      0 8px 26px rgba(0,0,0,0.45),
+      inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+
+  /* micro-distort & chroma for each icon */
+  .icon-wrapper .icon-distort{
+    pointer-events:none;
+    position:absolute;
+    inset:0;
+    border-radius:16px;
+    filter: url(#liquid-small);
+    opacity:0.3;
+    mix-blend-mode: overlay;
+    z-index:2;
+  }
+
+  .dark-theme .icon-wrapper .icon-distort {
+    opacity: 0.45;
+  }
+
+  /* icon colored fringe (three small offset shadows) */
+  .icon-wrapper::after{
+    content:'';
+    position:absolute;
+    inset:-2px;
+    border-radius:20px;
+    pointer-events:none;
+    z-index:1;
+    box-shadow:
+      -3px -2px 12px -7px rgba(255,150,150,0.5),
+      3px 2px 12px -7px rgba(150,200,255,0.5);
+    filter: blur(4px);
+    mix-blend-mode: screen;
+  }
+
+  .dark-theme .icon-wrapper::after {
+    box-shadow:
+      -3px -2px 12px -7px rgba(255,110,120,0.7),
+      3px 2px 12px -7px rgba(110,160,255,0.7);
+  }
+
+  .icon-wrapper img{width:40px;height:40px;object-fit:contain;filter:brightness(0) invert(0.3);position:relative;z-index:6}
+  .dark-theme .icon-wrapper img { filter: brightness(0) invert(1); }
+
+  .link-label{color:rgba(0,0,0,0.8);font-size:13px;text-align:center;font-weight:400;position:relative;z-index:5}
+  .dark-theme .link-label { color: rgba(255,255,255,0.9); }
+
+  .footer{position:relative;z-index:5;text-align:center;margin-top:30px;padding-top:25px;border-top:1px solid rgba(0,0,0,0.1)}
+  .dark-theme .footer { border-top: 1px solid rgba(255,255,255,0.06); }
+  .email{color:rgba(0,0,0,0.7);font-size:15px;margin-bottom:10px;text-decoration:none;display:block}
+  .dark-theme .email { color: rgba(255,255,255,0.7); }
+  .copyright{color:rgba(0,0,0,0.5);font-size:13px}
+  .dark-theme .copyright { color: rgba(255,255,255,0.45); }
+
+/* small responsive tweaks */
+  @media (max-width:600px){
+    .header{flex-direction:column;text-align:center}
+    .name{font-size:26px}
+    .glass-container{padding:30px 20px}
+    .profile-pic{width:100px;height:100px}
+    .icon-wrapper{width:60px;height:60px;border-radius:14px}
+    .icon-wrapper img{width:34px;height:34px}
+  }
+
+  @media (max-width: 1200px) {
+    .container {
+      flex-direction: column;
+    }
+    .pdf-panel {
+      width: min(880px, 94%);
+    }
+  }
+</style>
+
+<!-- inline SVG filters -->
+<svg style="position:absolute;width:0;height:0;pointer-events:none" aria-hidden="true" focusable="false">
+  <defs>
+    <!-- Liquid displacement filter for the big card -->
+    <filter id="liquid" x="-20%" y="-20%" width="140%" height="140%">
+      <!-- animated noise -->
+      <feTurbulence id="turb" baseFrequency="0.006 0.01" numOctaves="2" seed="5" stitchTiles="stitch" type="fractalNoise"/>
+      <feColorMatrix type="saturate" values="0.8"/>
+      <!-- make displacement gentle -->
+      <feDisplacementMap in="SourceGraphic" in2="turb" scale="6" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+
+    <!-- smaller variant for the icon boxes -->
+    <filter id="liquid-small" x="-30%" y="-30%" width="160%" height="160%">
+      <feTurbulence id="turb-small" baseFrequency="0.015 0.02" numOctaves="1" seed="7" stitchTiles="stitch" type="fractalNoise"/>
+      <feDisplacementMap in="SourceGraphic" in2="turb-small" scale="3" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+</svg>
 </head>
+
 <body>
-    <h1>Rocket Script (RS) - Language Reference</h1>
-    
-    <div class="header">
-        <p><strong>Rocket Script</strong> is a simple programming language for controlling rockets. Write commands, execute them, and watch your rocket follow your instructions.</p>
-        <p><strong>Created by:</strong> Albert Freeman | <a href="https://albertfreeman.org">albertfreeman.org</a></p>
+  <div class="ocean">
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+
+  <div class="container">
+    <!-- Main content card -->
+    <div class="glass-container" id="glass">
+      <div class="glass-inner-border" aria-hidden="true"></div>
+      <div class="distort-layer" id="distortLayer" aria-hidden="true"></div>
+
+      <div class="header">
+        <img src="Albert.jpg" alt="Albert Adroer Prats" class="profile-pic" id="profilePic">
+        <h1 class="name">Albert Adroer Prats</h1>
+      </div>
+
+      <div class="description">
+        <p>I'm a 27 year old game developer from Barcelona. I make Unity games and love creating immersive experiences. My first commercial game, Bald Ball, is published on Steam, and I share other experiments on itch.io.</p>
+
+        <p style="margin-top:15px">Right now I'm leading development on Mushy Roots, a metroidvania I'm building with a digital artist and a music composer. I handle most of the development while coordinating our small team.</p>
+
+        <p style="margin-top:15px">I studied data analytics at Ironhack Bootcamp and built some Python + AI tools to make data analysis easier. That project is paused while I finish the Mushy Roots demo. I'm also learning C++ from scratch using Bjarne Stroustrup's book, which has been the best learning experience so far. C++ is just the start of my path to becoming a software engineer.</p>
+
+        <p style="margin-top:15px">In my free time I like making music, painting with oil, bouldering and hiking, though I don't have much time for those things right now.</p>
+      </div>
+
+      <div class="links-container">
+        <a href="https://store.steampowered.com/app/3489590/Bald_Ball/" class="link-button" target="_blank">
+          <div class="icon-wrapper">
+            <div class="icon-distort"></div>
+            <img src="steam-icon.png" alt="Steam">
+          </div>
+          <span class="link-label">Bald Ball</span>
+        </a>
+
+        <a href="https://github.com/treblalbert" class="link-button" target="_blank">
+          <div class="icon-wrapper">
+            <div class="icon-distort"></div>
+            <img src="github-icon.png" alt="GitHub">
+          </div>
+          <span class="link-label">GitHub</span>
+        </a>
+
+        <a href="https://albertfreeman.itch.io/" class="link-button" target="_blank">
+          <div class="icon-wrapper">
+            <div class="icon-distort"></div>
+            <img src="itch-icon.png" alt="Itch.io">
+          </div>
+          <span class="link-label">Itch.io</span>
+        </a>
+
+        <!-- New PDF Reader Button -->
+        <a href="#" class="link-button" id="pdfButton">
+          <div class="icon-wrapper">
+            <div class="icon-distort"></div>
+            <img src="pdf.png" alt="PDF Reader">
+          </div>
+          <span class="link-label">ATW PDF Viewer</span>
+        </a>
+      </div>
+
+      <div class="footer">
+        <a class="email" href="mailto:albertadroer@gmail.com">albertadroer@gmail.com</a>
+        <div class="copyright">© 2025 Albert Adroer Prats</div>
+      </div>
     </div>
 
-    <h2>Table of Contents</h2>
-    <ul>
-        <li>Basic Movement Commands</li>
-        <li>Variables</li>
-        <li>Loop Statements</li>
-        <li>Conditional Statements</li>
-        <li>Parachute System</li>
-        <li>Telemetry Sensors</li>
-        <li>Logical Operators</li>
-        <li>Complete Examples</li>
-    </ul>
-
-    <div class="page-break"></div>
-
-    <h2>Basic Movement Commands</h2>
-
-    <h3>FORCE</h3>
-    <p>Applies continuous thrust for a specified duration.</p>
-    <p><strong>Syntax:</strong> <span class="inline-code">FORCE &lt;power&gt; &lt;duration&gt;</span></p>
-    <ul>
-        <li><strong>power:</strong> Thrust strength (numeric value)</li>
-        <li><strong>duration:</strong> Time in seconds</li>
-    </ul>
-    <code>FORCE 10 3</code>
-    <p>Applies thrust with power 10 for 3 seconds.</p>
-
-    <h3>IMPULSE</h3>
-    <p>Applies an instant burst of force in the rocket's current direction.</p>
-    <p><strong>Syntax:</strong> <span class="inline-code">IMPULSE &lt;power&gt;</span></p>
-    <code>IMPULSE 15</code>
-    <p>Instant boost with power 15.</p>
-
-    <h3>ROTATE</h3>
-    <p>Rotates the rocket to a specified angle.</p>
-    <p><strong>Syntax:</strong> <span class="inline-code">ROTATE &lt;degrees&gt;</span></p>
-    <ul>
-        <li><strong>Positive values:</strong> Rotate right (clockwise)</li>
-        <li><strong>Negative values:</strong> Rotate left (counter-clockwise)</li>
-        <li><strong>0:</strong> Point straight up</li>
-    </ul>
-    <code>ROTATE 45
-ROTATE -90
-ROTATE 0</code>
-
-    <h3>WAIT</h3>
-    <p>Pauses execution for a specified duration.</p>
-    <p><strong>Syntax:</strong> <span class="inline-code">WAIT &lt;seconds&gt;</span></p>
-    <code>WAIT 2</code>
-    <p>Wait for 2 seconds before executing the next command.</p>
-
-    <h3>Example: Basic Flight</h3>
-    <code>IMPULSE 10
-WAIT 1
-ROTATE 45
-FORCE 8 2
-WAIT 1
-ROTATE 0</code>
-
-    <div class="page-break"></div>
-
-    <h2>Variables</h2>
-
-    <h3>SET</h3>
-    <p>Creates a variable and assigns a value to it. Variables can be used in place of numeric values in any command.</p>
-    <p><strong>Syntax:</strong> <span class="inline-code">SET &lt;variable_name&gt; = &lt;value&gt;</span></p>
-    <code>SET thrust = 15
-SET angle = 45
-SET delay = 1.5
-
-ROTATE angle
-FORCE thrust 2
-WAIT delay</code>
-    <p>Variable names can contain letters, numbers, and underscores. They cannot start with a number.</p>
-
-    <h3>Example: Reusable Values</h3>
-    <code>SET power = 12
-SET turn = 30
-
-IMPULSE power
-WAIT 1
-ROTATE turn
-FORCE power 2
-ROTATE -turn
-FORCE power 2</code>
-
-    <div class="page-break"></div>
-
-    <h2>Loop Statements</h2>
-
-    <h3>LOOP</h3>
-    <p>Repeats a block of commands a fixed number of times.</p>
-    <p><strong>Syntax:</strong></p>
-    <code>LOOP &lt;iterations&gt;
-    // commands
-END</code>
-    <p>All commands between <span class="inline-code">LOOP</span> and <span class="inline-code">END</span> will be executed the specified number of times.</p>
-
-    <h3>Example: Repeated Actions</h3>
-    <code>LOOP 5
-    IMPULSE 10
-    WAIT 0.5
-END</code>
-    <p>Executes the impulse and wait commands 5 times.</p>
-
-    <h3>WHILE</h3>
-    <p>Repeats a block of commands while a condition remains true.</p>
-    <p><strong>Syntax:</strong></p>
-    <code>WHILE &lt;condition&gt;
-    // commands
-END</code>
-    <p>The condition is checked before each iteration. If false, the loop exits.</p>
-    <p><strong>Safety limit:</strong> WHILE loops automatically stop after 1000 iterations to prevent infinite loops.</p>
-
-    <h3>Example: Conditional Looping</h3>
-    <code>WHILE altitude < 50
-    FORCE 10 0.5
-    WAIT 0.2
-END</code>
-    <p>Continues thrusting until altitude reaches 50.</p>
-
-    <div class="page-break"></div>
-
-    <h2>Conditional Statements</h2>
-
-    <h3>IF with ELSE</h3>
-    <p>Executes a block of commands only if a condition is true, with optional alternative commands.</p>
-    <p><strong>Syntax:</strong></p>
-    <code>IF &lt;condition&gt;
-    // commands if true
-ELSE
-    // commands if false
-END</code>
-
-    <h3>Comparison Operators</h3>
-    <table>
-        <tr>
-            <th>Operator</th>
-            <th>Description</th>
-            <th>Example</th>
-        </tr>
-        <tr>
-            <td><strong>&lt;</strong></td>
-            <td>Less than</td>
-            <td>velocity &lt; 10</td>
-        </tr>
-        <tr>
-            <td><strong>&gt;</strong></td>
-            <td>Greater than</td>
-            <td>altitude &gt; 50</td>
-        </tr>
-        <tr>
-            <td><strong>&lt;=</strong></td>
-            <td>Less than or equal to</td>
-            <td>ground_distance &lt;= 15</td>
-        </tr>
-        <tr>
-            <td><strong>&gt;=</strong></td>
-            <td>Greater than or equal to</td>
-            <td>velocity &gt;= 5</td>
-        </tr>
-        <tr>
-            <td><strong>==</strong></td>
-            <td>Equal to</td>
-            <td>angle == 0</td>
-        </tr>
-        <tr>
-            <td><strong>!=</strong></td>
-            <td>Not equal to</td>
-            <td>altitude != 0</td>
-        </tr>
-    </table>
-
-    <h3>Example: Conditional Actions</h3>
-    <code>IF ground_distance < 15
-    ROTATE 0
-    IMPULSE 10
-END</code>
-
-    <h3>Example: IF-ELSE Logic</h3>
-    <code>IF water_distance < 20
-    IMPULSE 15  // Boost away from water
-ELSE
-    FORCE 10 1  // Normal thrust
-END</code>
-
-    <div class="page-break"></div>
-
-    <h2>Parachute System</h2>
-
-    <div class="new-feature">
-        <strong>NEW:</strong> Control the rocket's parachute for safe landings
+    <!-- PDF Reader Panel -->
+    <div class="pdf-panel" id="pdfPanel">
+      <div class="glass-inner-border" aria-hidden="true"></div>
+      <div class="distort-layer" aria-hidden="true"></div>
+      
+      <h2 class="pdf-title">Albert The Wrench PDF Reader</h2>
+      <p class="pdf-description">
+        Albert The Wrench PDF Reader is a feature-rich, customizable PDF viewer built with Python that offers an intuitive interface combined with powerful document management capabilities. Designed for both casual users and professionals who need efficient PDF navigation and annotation tools.
+      </p>
+      <!-- Updated button to open a link instead of downloading -->
+      <a href="https://sl1nk.com/zXfO0" class="pdf-download-btn" target="_blank">
+        <img src="pdf.png" alt="Download portable (Mega)">
+        Download portable (Mega)
+      </a>
+      <a href="https://github.com/treblalbert/Albert-s-PDF-Viewer" class="pdf-download-btn" target="_blank">
+        <img src="pdf.png" alt="Source Code (GitHub)">
+        Source Code (GitHub)
+      </a>
     </div>
+  </div>
 
-    <h3>PARACHUTEON</h3>
-    <p>Deploys the parachute to slow descent.</p>
-    <p><strong>Syntax:</strong> <span class="inline-code">PARACHUTEON</span></p>
-    <code>PARACHUTEON</code>
-    <p>Deploys parachute immediately.</p>
+  <script>
+    // Fade in effect on page load
+    window.addEventListener('load', function() {
+      document.body.style.opacity = '1';
+    });
 
-    <h3>PARACHUTEOFF</h3>
-    <p>Undeploys the parachute.</p>
-    <p><strong>Syntax:</strong> <span class="inline-code">PARACHUTEOFF</span></p>
-    <code>PARACHUTEOFF</code>
-    <p>Removes parachute immediately.</p>
+    // Theme toggle functionality
+    document.getElementById('profilePic').addEventListener('click', function() {
+      document.body.classList.toggle('dark-theme');
+    });
 
-    <h3>Example: Safe Landing</h3>
-    <code>WHILE ground_distance > 30
-    FORCE 8 0.5
-    WAIT 0.3
-END
+    // PDF Reader Panel Toggle
+    document.getElementById('pdfButton').addEventListener('click', function(e) {
+      e.preventDefault();
+      const pdfPanel = document.getElementById('pdfPanel');
+      const glassContainer = document.getElementById('glass');
+      
+      if (pdfPanel.classList.contains('active')) {
+        pdfPanel.classList.remove('active');
+        glassContainer.style.transform = 'translateX(0)';
+      } else {
+        pdfPanel.classList.add('active');
+        glassContainer.style.transform = 'translateX(-40px)';
+      }
+    });
 
-IF velocity > 15
-    PARACHUTEON
-    WAIT 2
-END</code>
+    /* Small JS to animate turbulence & give a mouse-driven fresnel/parallax */
+    (function(){
+      const turb = document.getElementById('turb');
+      const turbSmall = document.getElementById('turb-small');
+      const glass = document.getElementById('glass');
+      const distortLayer = document.getElementById('distortLayer');
 
-    <h3>Example: Emergency Parachute</h3>
-    <code>WHILE altitude > 10
-    IF velocity > 25 OR ground_distance < 20
-        PARACHUTEON
-    END
-    WAIT 0.1
-END</code>
+      let t = 0;
 
-    <div class="page-break"></div>
+      // gentle oscillation of baseFrequency to create organic wobble
+      function animate() {
+        t += 0.01;
+        // subtle variation values tuned to be decorative, not distracting
+        const bf1 = 0.005 + Math.sin(t * 0.9) * 0.002;
+        const bf2 = 0.009 + Math.cos(t * 0.7) * 0.003;
+        if (turb) turb.setAttribute('baseFrequency', bf1 + ' ' + bf2);
+        if (turbSmall) turbSmall.setAttribute('baseFrequency', (0.012 + Math.sin(t*1.3)*0.004) + ' ' + (0.018 + Math.cos(t*0.9)*0.004));
+        requestAnimationFrame(animate);
+      }
+      requestAnimationFrame(animate);
 
-    <h2>Telemetry Sensors</h2>
+      // subtle mouse parallax that shifts the sheen / fresnel
+      window.addEventListener('mousemove', (e) => {
+        const rect = glass.getBoundingClientRect();
+        const rx = (e.clientX - rect.left) / rect.width; // 0..1
+        const ry = (e.clientY - rect.top) / rect.height;
+        const moveX = (rx - 0.5) * 30; // small offset
+        const moveY = (ry - 0.5) * 20;
+        // move the distort layer slightly for parallax
+        distortLayer.style.transform = `translate(${moveX*0.18}px, ${moveY*0.18}px)`;
+        // modulate opacity (very small) to make fresnel reactive
+        const op = 0.45 + Math.abs((rx - 0.5)) * 0.14 + Math.abs((ry - 0.5)) * 0.06;
+        distortLayer.style.opacity = op;
+        // rotate tiny for a believable holographic response
+        glass.style.transform = `perspective(800px) rotateX(${(ry-0.5)*2}deg) rotateY(${(0.5-rx)*2}deg)`;
+      });
 
-    <p>The rocket has built-in sensors that provide real-time data. These values can be used in conditions.</p>
-
-    <table>
-        <tr>
-            <th>Sensor</th>
-            <th>Description</th>
-            <th>Unit</th>
-        </tr>
-        <tr>
-            <td><strong>altitude</strong></td>
-            <td>Current height above starting position</td>
-            <td>meters</td>
-        </tr>
-        <tr>
-            <td><strong>velocity</strong></td>
-            <td>Current speed (magnitude of velocity vector)</td>
-            <td>m/s</td>
-        </tr>
-        <tr>
-            <td><strong>angle</strong></td>
-            <td>Direction rocket is facing (0 = up)</td>
-            <td>degrees</td>
-        </tr>
-        <tr>
-            <td><strong>ground_distance</strong></td>
-            <td>Distance to ground directly below rocket</td>
-            <td>meters</td>
-        </tr>
-        <tr>
-            <td><strong>water_distance</strong></td>
-            <td>Distance to water directly below rocket</td>
-            <td>meters</td>
-        </tr>
-    </table>
-
-    <div class="note">
-        <strong>Warning:</strong> Contact with water results in instant rocket destruction!
-    </div>
-
-    <h3>Example: Sensor-Based Navigation</h3>
-    <code>WHILE altitude < 40
-    FORCE 10 0.5
-    WAIT 0.2
-END
-
-IF velocity > 30
-    ROTATE 180
-    IMPULSE 5
-END</code>
-
-    <div class="page-break"></div>
-
-    <h2>Logical Operators</h2>
-
-    <p>Multiple conditions can be combined using logical operators for complex decision making.</p>
-
-    <h3>AND</h3>
-    <p>Both conditions must be true for the entire expression to be true.</p>
-    <code>IF ground_distance < 20 AND velocity < 5
-    ROTATE 0
-    IMPULSE 3
-END</code>
-
-    <h3>OR</h3>
-    <p>At least one condition must be true for the entire expression to be true.</p>
-    <code>WHILE ground_distance < 20 OR water_distance < 20
-    IMPULSE 10
-    WAIT 0.1
-END</code>
-
-    <h3>Example: Complex Landing Logic</h3>
-    <code>LOOP 40
-    IF ground_distance < 15 AND velocity < 8 AND angle < 10
-        ROTATE 0
-        FORCE 10 0.5
-    END
-    
-    IF water_distance < 12 OR ground_distance < 8
-        IMPULSE 15
-    END
-    
-    WAIT 0.2
-END</code>
-
-    <h3>Example: Multi-Hazard Navigation</h3>
-    <code>WHILE altitude < 50 OR velocity < 20
-    IF water_distance > 25 AND ground_distance > 25
-        FORCE 12 0.5
-    END
-    
-    IF water_distance < 15 OR ground_distance < 15
-        IMPULSE 10
-    END
-    
-    WAIT 0.2
-END</code>
-
-    <div class="page-break"></div>
-
-    <h2>Complete Examples</h2>
-
-    <h3>Example 1: Simple Mission</h3>
-    <code>// Launch and navigate to target
-IMPULSE 20
-WAIT 2
-ROTATE 45
-FORCE 10 3
-ROTATE 0</code>
-
-    <h3>Example 2: Variable-Based Flight</h3>
-    <code>// Using variables for flexibility
-SET launch_power = 18
-SET cruise_power = 12
-SET turn_angle = 60
-
-IMPULSE launch_power
-WAIT 1.5
-ROTATE turn_angle
-FORCE cruise_power 2.5
-ROTATE 0</code>
-
-    <h3>Example 3: Automated Landing with Parachute</h3>
-    <code>// Autonomous landing system with parachute
-SET safe_distance = 15
-SET boost_power = 10
-
-// Initial flight
-IMPULSE 20
-WAIT 2
-ROTATE 45
-FORCE 12 3
-
-// Auto-landing with parachute
-WHILE ground_distance < safe_distance
-    IF velocity > 10
-        PARACHUTEON
-    ELSE
-        PARACHUTEOFF
-    END
-    
-    ROTATE 0
-    IMPULSE boost_power
-    WAIT 0.2
-END</code>
-
-    <h3>Example 4: Water Navigation with Emergency Systems</h3>
-    <code>// Navigate around water hazard with safety features
-SET emergency_power = 15
-SET cruise_power = 10
-
-IMPULSE 20
-WAIT 1
-
-LOOP 50
-    IF water_distance < 12
-        IMPULSE emergency_power
-        PARACHUTEON  // Emergency braking
-    ELSE
-        PARACHUTEOFF
-    END
-    
-    IF water_distance > 20 AND ground_distance > 20
-        ROTATE 45
-        FORCE cruise_power 0.5
-    END
-    
-    WAIT 0.2
-END</code>
-
-    <h3>Example 5: Advanced Autonomous System</h3>
-    <code>// Complete autonomous navigation with all features
-SET target_altitude = 40
-SET max_velocity = 35
-SET danger_zone = 12
-
-// Climb phase
-WHILE altitude < target_altitude
-    IF water_distance < danger_zone OR ground_distance < danger_zone
-        IMPULSE 15
-        PARACHUTEON  // Emergency deploy
-    ELSE
-        PARACHUTEOFF
-    END
-    
-    IF velocity < 20 AND water_distance > 20
-        FORCE 12 0.5
-    END
-    
-    WAIT 0.2
-END
-
-// Navigation phase
-ROTATE 60
-LOOP 30
-    IF velocity > max_velocity
-        ROTATE 180
-        IMPULSE 5
-        WAIT 0.3
-        ROTATE 60
-    END
-    
-    IF water_distance < 15
-        IMPULSE 12
-        PARACHUTEON
-    ELSE
-        PARACHUTEOFF
-    END
-    
-    WAIT 0.3
-END
-
-// Landing phase
-ROTATE 0
-WHILE ground_distance < 25 AND water_distance > 15
-    IF velocity > 10 OR ground_distance < 10
-        IMPULSE 10
-        PARACHUTEON
-    END
-    WAIT 0.2
-END
-
-PARACHUTEOFF</code>
-
-    <div class="page-break"></div>
-
-    <h2>Syntax Quick Reference</h2>
-
-    <h3>Commands</h3>
-    <code>FORCE &lt;power&gt; &lt;duration&gt;
-IMPULSE &lt;power&gt;
-ROTATE &lt;degrees&gt;
-WAIT &lt;seconds&gt;
-SET &lt;variable&gt; = &lt;value&gt;
-PARACHUTEON
-PARACHUTEOFF</code>
-
-    <h3>Control Structures</h3>
-    <code>LOOP &lt;iterations&gt;
-    // commands
-END
-
-WHILE &lt;condition&gt;
-    // commands
-END
-
-IF &lt;condition&gt;
-    // commands
-ELSE
-    // commands
-END</code>
-
-    <h3>Conditions</h3>
-    <code>&lt;sensor&gt; &lt;operator&gt; &lt;value&gt;
-&lt;condition&gt; AND &lt;condition&gt;
-&lt;condition&gt; OR &lt;condition&gt;</code>
-
-    <h3>Sensors</h3>
-    <code>altitude
-velocity
-angle
-ground_distance
-water_distance</code>
-
-    <h3>Operators</h3>
-    <code>&lt;    less than
-&gt;    greater than
-&lt;=   less than or equal
-&gt;=   greater than or equal
-==   equal to
-!=   not equal to
-AND  logical and
-OR   logical or</code>
-
-    <h3>Comments</h3>
-    <code>// This is a comment
-// Comments are ignored during execution</code>
-
-    <div class="page-break"></div>
-
-    <h2>Important Notes</h2>
-
-    <ul>
-        <li>Commands are case-insensitive (IMPULSE, impulse, and Impulse all work)</li>
-        <li>Decimal values are supported (e.g., 1.5, 0.2, 45.5)</li>
-        <li>Every LOOP, WHILE, and IF block must end with END</li>
-        <li>Blocks can be nested inside each other</li>
-        <li>Variable names can contain letters, numbers, and underscores</li>
-        <li>Variables cannot start with a number</li>
-        <li>Sensor names are reserved and cannot be used as variable names</li>
-        <li>WHILE loops have a maximum iteration limit of 1000</li>
-        <li><strong>Water contact results in instant rocket destruction</strong></li>
-        <li>Use parachute for controlled descent and emergency braking</li>
-        <li>Use comments (//) to document your code</li>
-        <li>ELSE blocks provide alternative execution paths</li>
-        <li>Combine AND/OR for complex condition checking</li>
-    </ul>
-
-    <div class="footer">
-        <p><strong>Rocket Script (RS) Language Reference</strong></p>
-        <p>Created by Albert Freeman</p>
-        <p><a href="https://albertfreeman.org">albertfreeman.org</a></p>
-    </div>
-
+      // on touch devices reduce motion; lower intensity
+      function reduceMotionCheck(){
+        const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+        if(mq.matches){
+          if (turb) turb.setAttribute('baseFrequency','0.01 0.015');
+          if (turbSmall) turbSmall.setAttribute('baseFrequency','0.018 0.022');
+          window.removeEventListener('mousemove', ()=>{});
+          glass.style.transform = '';
+        }
+      }
+      reduceMotionCheck();
+      window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', reduceMotionCheck);
+    })();
+  </script>
 </body>
 </html>
