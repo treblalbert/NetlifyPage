@@ -110,20 +110,22 @@
     <h1>Rocket Script (RS) - Language Reference</h1>
     
     <div class="header">
-        <p><strong>Rocket Script</strong> is a simple programming language for controlling rockets. Write commands, execute them, and watch your rocket follow your instructions.</p>
+        <p><strong>Rocket Script</strong> is a simple programming language for controlling the rocket inside Rocket Commander. Write commands, run them and watch your rocket follow your instructions.</p>
+        <p><strong>The goal is to learn the very basics of the logic behind programming.</strong></p>
         <p><strong>Created by:</strong> Albert Freeman | <a href="https://albertfreeman.org">albertfreeman.org</a></p>
+        <p><strong>Note:</strong> The code isn't case sensitive.</p>
+        <p>Copy and paste (control c + control v) works. You can undo with control + z and redo with control + shift + z.</p>
     </div>
 
     <h2>Table of Contents</h2>
     <ul>
         <li>Basic Movement Commands</li>
-        <li>Variables</li>
-        <li>Loop Statements</li>
         <li>Conditional Statements</li>
+        <li>Loop Statements</li>
+        <li>Variables</li>
         <li>Parachute System</li>
         <li>Telemetry Sensors</li>
         <li>Logical Operators</li>
-        <li>Complete Examples</li>
     </ul>
 
     <div class="page-break"></div>
@@ -166,73 +168,14 @@ ROTATE 0</code>
 
     <h3>Example: Basic Flight</h3>
     <code>IMPULSE 10
-WAIT 1
+ROTATE -45
+FORCE 5 1
 ROTATE 45
-FORCE 8 2
-WAIT 1
-ROTATE 0</code>
+FORCE 3 1</code>
 
-    <div class="page-break"></div>
-
-    <h2>Variables</h2>
-
-    <h3>SET</h3>
-    <p>Creates a variable and assigns a value to it. Variables can be used in place of numeric values in any command.</p>
-    <p><strong>Syntax:</strong> <span class="inline-code">SET &lt;variable_name&gt; = &lt;value&gt;</span></p>
-    <code>SET thrust = 15
-SET angle = 45
-SET delay = 1.5
-
-ROTATE angle
-FORCE thrust 2
-WAIT delay</code>
-    <p>Variable names can contain letters, numbers, and underscores. They cannot start with a number.</p>
-
-    <h3>Example: Reusable Values</h3>
-    <code>SET power = 12
-SET turn = 30
-
-IMPULSE power
-WAIT 1
-ROTATE turn
-FORCE power 2
-ROTATE -turn
-FORCE power 2</code>
-
-    <div class="page-break"></div>
-
-    <h2>Loop Statements</h2>
-
-    <h3>LOOP</h3>
-    <p>Repeats a block of commands a fixed number of times.</p>
-    <p><strong>Syntax:</strong></p>
-    <code>LOOP &lt;iterations&gt;
-    // commands
-END</code>
-    <p>All commands between <span class="inline-code">LOOP</span> and <span class="inline-code">END</span> will be executed the specified number of times.</p>
-
-    <h3>Example: Repeated Actions</h3>
-    <code>LOOP 5
-    IMPULSE 10
-    WAIT 0.5
-END</code>
-    <p>Executes the impulse and wait commands 5 times.</p>
-
-    <h3>WHILE</h3>
-    <p>Repeats a block of commands while a condition remains true.</p>
-    <p><strong>Syntax:</strong></p>
-    <code>WHILE &lt;condition&gt;
-    // commands
-END</code>
-    <p>The condition is checked before each iteration. If false, the loop exits.</p>
-    <p><strong>Safety limit:</strong> WHILE loops automatically stop after 1000 iterations to prevent infinite loops.</p>
-
-    <h3>Example: Conditional Looping</h3>
-    <code>WHILE altitude < 50
-    FORCE 10 0.5
-    WAIT 0.2
-END</code>
-    <p>Continues thrusting until altitude reaches 50.</p>
+    <div class="note">
+        <strong>Important:</strong> You can finish all 3 levels only with the basic movement commands above! Everything from variables to telemetry sensors are "extras" that more experienced programmers or players can experiment with in the test level.
+    </div>
 
     <div class="page-break"></div>
 
@@ -298,6 +241,68 @@ END</code>
 ELSE
     FORCE 10 1  // Normal thrust
 END</code>
+
+    <div class="page-break"></div>
+
+    <h2>Loop Statements</h2>
+
+    <h3>LOOP</h3>
+    <p>Repeats a block of commands a fixed number of times.</p>
+    <p><strong>Syntax:</strong></p>
+    <code>LOOP &lt;iterations&gt;
+    // commands
+END</code>
+    <p>All commands between <span class="inline-code">LOOP</span> and <span class="inline-code">END</span> will be executed the specified number of times.</p>
+
+    <h3>Example: Repeated Actions</h3>
+    <code>LOOP 5
+    IMPULSE 10
+    WAIT 0.5
+END</code>
+    <p>Executes the impulse and wait commands 5 times.</p>
+
+    <h3>WHILE</h3>
+    <p>Repeats a block of commands while a condition remains true.</p>
+    <p><strong>Syntax:</strong></p>
+    <code>WHILE &lt;condition&gt;
+    // commands
+END</code>
+    <p>The condition is checked before each iteration. If false, the loop exits.</p>
+    <p><strong>Safety limit:</strong> WHILE loops automatically stop after 1000 iterations to prevent infinite loops.</p>
+
+    <h3>Example: Conditional Looping</h3>
+    <code>WHILE altitude < 50
+    FORCE 10 0.5
+    WAIT 0.2
+END</code>
+    <p>Continues thrusting until altitude reaches 50.</p>
+
+    <div class="page-break"></div>
+
+    <h2>Variables</h2>
+
+    <h3>SET</h3>
+    <p>Creates a variable and assigns a value to it. Variables can be used in place of numeric values in any command.</p>
+    <p><strong>Syntax:</strong> <span class="inline-code">SET &lt;variable_name&gt; = &lt;value&gt;</span></p>
+    <code>SET thrust = 15
+SET angle = 45
+SET delay = 1.5
+
+ROTATE angle
+FORCE thrust 2
+WAIT delay</code>
+    <p>Variable names can contain letters, numbers, and underscores. They cannot start with a number.</p>
+
+    <h3>Example: Reusable Values</h3>
+    <code>SET power = 12
+SET turn = 30
+
+IMPULSE power
+WAIT 1
+ROTATE turn
+FORCE power 2
+ROTATE -turn
+FORCE power 2</code>
 
     <div class="page-break"></div>
 
@@ -438,132 +443,6 @@ END</code>
     
     WAIT 0.2
 END</code>
-
-    <div class="page-break"></div>
-
-    <h2>Complete Examples</h2>
-
-    <h3>Example 1: Simple Mission</h3>
-    <code>// Launch and navigate to target
-IMPULSE 20
-WAIT 2
-ROTATE 45
-FORCE 10 3
-ROTATE 0</code>
-
-    <h3>Example 2: Variable-Based Flight</h3>
-    <code>// Using variables for flexibility
-SET launch_power = 18
-SET cruise_power = 12
-SET turn_angle = 60
-
-IMPULSE launch_power
-WAIT 1.5
-ROTATE turn_angle
-FORCE cruise_power 2.5
-ROTATE 0</code>
-
-    <h3>Example 3: Automated Landing with Parachute</h3>
-    <code>// Autonomous landing system with parachute
-SET safe_distance = 15
-SET boost_power = 10
-
-// Initial flight
-IMPULSE 20
-WAIT 2
-ROTATE 45
-FORCE 12 3
-
-// Auto-landing with parachute
-WHILE ground_distance < safe_distance
-    IF velocity > 10
-        PARACHUTEON
-    ELSE
-        PARACHUTEOFF
-    END
-    
-    ROTATE 0
-    IMPULSE boost_power
-    WAIT 0.2
-END</code>
-
-    <h3>Example 4: Water Navigation with Emergency Systems</h3>
-    <code>// Navigate around water hazard with safety features
-SET emergency_power = 15
-SET cruise_power = 10
-
-IMPULSE 20
-WAIT 1
-
-LOOP 50
-    IF water_distance < 12
-        IMPULSE emergency_power
-        PARACHUTEON  // Emergency braking
-    ELSE
-        PARACHUTEOFF
-    END
-    
-    IF water_distance > 20 AND ground_distance > 20
-        ROTATE 45
-        FORCE cruise_power 0.5
-    END
-    
-    WAIT 0.2
-END</code>
-
-    <h3>Example 5: Advanced Autonomous System</h3>
-    <code>// Complete autonomous navigation with all features
-SET target_altitude = 40
-SET max_velocity = 35
-SET danger_zone = 12
-
-// Climb phase
-WHILE altitude < target_altitude
-    IF water_distance < danger_zone OR ground_distance < danger_zone
-        IMPULSE 15
-        PARACHUTEON  // Emergency deploy
-    ELSE
-        PARACHUTEOFF
-    END
-    
-    IF velocity < 20 AND water_distance > 20
-        FORCE 12 0.5
-    END
-    
-    WAIT 0.2
-END
-
-// Navigation phase
-ROTATE 60
-LOOP 30
-    IF velocity > max_velocity
-        ROTATE 180
-        IMPULSE 5
-        WAIT 0.3
-        ROTATE 60
-    END
-    
-    IF water_distance < 15
-        IMPULSE 12
-        PARACHUTEON
-    ELSE
-        PARACHUTEOFF
-    END
-    
-    WAIT 0.3
-END
-
-// Landing phase
-ROTATE 0
-WHILE ground_distance < 25 AND water_distance > 15
-    IF velocity > 10 OR ground_distance < 10
-        IMPULSE 10
-        PARACHUTEON
-    END
-    WAIT 0.2
-END
-
-PARACHUTEOFF</code>
 
     <div class="page-break"></div>
 
