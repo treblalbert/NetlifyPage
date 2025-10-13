@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terra - Voxel Sandbox Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-image: url('background.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .content-box {
+            background-color: rgba(30, 40, 70, 0.85);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo img {
+            max-width: 300px;
+            height: auto;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 0 10px rgba(74, 158, 255, 0.5));
+        }
+
+        /* Buzzing effect for the logo */
+        @keyframes buzz {
+            0% { transform: translateX(0) translateY(0) rotate(0); }
+            25% { transform: translateX(1px) translateY(1px) rotate(0.5deg); }
+            50% { transform: translateX(0) translateY(0) rotate(0); }
+            75% { transform: translateX(-1px) translateY(-1px) rotate(-0.5deg); }
+            100% { transform: translateX(0) translateY(0) rotate(0); }
+        }
+
+        .logo img:hover {
+            animation: buzz 0.15s infinite;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            margin-bottom: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(100, 150, 255, 0.3);
+        }
+
+        .tab {
+            padding: 12px 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover {
+            background-color: rgba(100, 150, 255, 0.2);
+        }
+
+        .tab.active {
+            border-bottom: 3px solid #4a9eff;
+            color: #4a9eff;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px 0;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        h2 {
+            color: #4a9eff;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        h3 {
+            color: #6ab0ff;
+            margin: 25px 0 15px;
+            font-size: 22px;
+        }
+
+        p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 17px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .about-albert {
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .albert-picture {
+            flex: 0 0 200px;
+        }
+
+        .albert-picture img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .albert-description {
+            flex: 1;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .social-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: rgba(50, 70, 120, 0.7);
+            border-radius: 8px;
+            text-decoration: none;
+            color: #e0e0e0;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(100, 150, 255, 0.3);
+        }
+
+        .social-button:hover {
+            background: rgba(70, 100, 180, 0.8);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .social-button img {
+            width: 24px;
+            height: 24px;
+            filter: brightness(0) invert(1);
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .feature-column ul {
+            margin-bottom: 0;
+        }
+
+        .news-content {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .news-content h3 {
+            font-size: 24px;
+            color: #ffcc66;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .about-albert {
+                flex-direction: column;
+            }
+            
+            .albert-picture {
+                flex: none;
+                width: 200px;
+                margin: 0 auto 20px;
+            }
+            
+            .feature-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                text-align: center;
+            }
+            
+            .social-links {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content-box">
+            <!-- Logo with buzzing effect -->
+            <div class="logo">
+                <img src="terra.png" alt="Terra Game Logo">
+            </div>
+            
+            <!-- YouTube Video -->
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/R4Y7JIQlv20" 
+                        title="Terra Game Trailer" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                </iframe>
+            </div>
+            
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab active" data-tab="about">About</div>
+                <div class="tab" data-tab="news">News</div>
+                <div class="tab" data-tab="albert">About Albert Freeman</div>
+            </div>
+            
+            <!-- Tab Contents -->
+            <div class="tab-content active" id="about">
+                <h2>About Terra</h2>
+                <p>
+                    Terra is a voxel-based sandbox game created by Albert Freeman with no limits - literally, there is no height limit.
+                    Currently, the game is in the early prototype stage.
+                </p>
+                
+                <h3>Current Features</h3>
+                <div class="feature-list">
+                    <div class="feature-column">
+                        <ul>
+                            <li>Procedural generation (seed-based, with super trees and caves)</li>
+                            <li>Volumetric clouds</li>
+                            <li>Day/night cycle</li>
+                        </ul>
+                    </div>
+                    <div class="feature-column">
+                        <ul>
+                            <li>Save/load system (partially implemented, currently being improved)</li>
+                            <li>First and third person perspectives</li>
+                            <li>Basic creative building and inventory with 10+ block types</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <h3>Planned Features</h3>
+                <div class="feature-list">
+                    <div class="feature-column">
+                        <ul>
+                            <li>Multiplayer (currently in development)</li>
+                            <li>Unique survival experience</li>
+                            <li>More world customization options (island size, generation parameters, day/night duration, etc.)</li>
+                        </ul>
+                    </div>
+                    <div class="feature-column">
+                        <ul>
+                            <li>Additional block types</li>
+                            <li>In-game coding and modding support</li>
+                            <li>Steam page</li>
+                            <li>Performance optimization</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="news">
+                <h2>News</h2>
+                <div class="news-content">
+                    <h3>Work In Progress</h3>
+                    <p>Stay tuned for updates about Terra's development!</p>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="albert">
+                <h2>About Albert Freeman</h2>
+                <div class="about-albert">
+                    <div class="albert-picture">
+                        <img src="albert.jpg" alt="Albert Freeman">
+                    </div>
+                    <div class="albert-description">
+                        <p>
+                            Hi! I'm Albert Freeman, a 27-year-old from Barcelona.
+                            I've had many attempts at creating video games, with several in the realm of voxel worlds. 
+                            Terra is meant to capture what OG Minecraft was all about - FREEDOM AND NO CORPORATE GREED.
+                        </p>
+                        <p>
+                            I'm not a professional game developer and have never worked in the industry, 
+                            but I believe I'm proficient enough in all the required areas to create a game. 
+                            So here's another attempt! I hope you love it as much as I enjoy making it. 
+                            Please enjoy! <3
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="social-links">
+                    <a href="https://albertfreeman.itch.io/" class="social-button" target="_blank">
+                        <img src="itch-igon.png" alt="Itch.io">
+                        Check my other games
+                    </a>
+                    <a href="https://x.com/AlbertTheWrench" class="social-button" target="_blank">
+                        <img src="twitter.png" alt="Twitter">
+                        Follow me on Twitter
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    tab.classList.add('active');
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
