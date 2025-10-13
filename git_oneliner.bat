@@ -1,26 +1,43 @@
 @echo off
-echo === Auto Git Commit & Push with Git LFS ===
+echo =============================================
+echo     Auto Commit & Push with Git LFS Support
+echo =============================================
+echo.
 
-:: Initialize Git LFS if not already set up
-git lfs install
+:: Initialize Git LFS (safe to run every time)
+git lfs install >nul 2>&1
 
 :: Track common large file types (add more if needed)
-git lfs track "*.psd"
-git lfs track "*.fbx"
-git lfs track "*.png"
-git lfs track "*.mp4"
+git lfs track "*.exe"
 git lfs track "*.zip"
+git lfs track "*.mp4"
 git lfs track "*.wav"
+git lfs track "*.fbx"
+git lfs track "*.psd"
+git lfs track "*.png"
 
-:: Make sure .gitattributes (created by LFS) is added
-git add .gitattributes
+:: Ensure .gitattributes is included in commits
+git add .gitattributes >nul 2>&1
 
-:: Add and commit all changes
-git add .
-git commit -m "Auto commit"
+:: Add all changes
+echo Adding all changes...
+git add -A
 
-:: Push to GitHub (LFS will handle large files)
+:: Commit (only if there are changes)
+git diff --cached --quiet
+if %errorlevel% equ 1 (
+    echo Committing changes...
+    git commit -m "Auto commit with LFS support"
+) else (
+    echo No changes to commit.
+)
+
+:: Push to main branch
+echo Pushing to origin/main...
 git push origin main
 
-echo === Done! Large files handled by Git LFS ===
+echo.
+echo =============================================
+echo         ✅ Done! Large files handled by LFS
+echo =============================================
 pause
