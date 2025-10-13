@@ -110,7 +110,7 @@
         .download-button img {
             width: 24px;
             height: 24px;
-            filter: brightness(0) invert(1);
+            /* Removed the filter to keep original color */
         }
 
         .version-text {
@@ -249,13 +249,35 @@
         }
 
         .news-content {
-            text-align: center;
-            padding: 40px 0;
+            text-align: left;
+            padding: 20px 0;
         }
 
         .news-content h3 {
             font-size: 24px;
             color: #ffcc66;
+        }
+
+        .news-entry {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(100, 150, 255, 0.3);
+        }
+
+        .news-date {
+            color: #ffcc66;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(100, 150, 255, 0.3);
+            color: #a0c8ff;
+            font-size: 16px;
         }
 
         /* Responsive design */
@@ -308,7 +330,7 @@
             <!-- Download Section -->
             <div class="download-section">
                 <a href="terra.zip" class="download-button" download>
-                    <img src="download-icon.png" alt="Download">
+                    <img src="download.png" alt="Download">
                     Download Terra
                 </a>
                 <div class="version-text">Terra - Prototype V1</div>
@@ -370,8 +392,17 @@
             <div class="tab-content" id="news">
                 <h2>News</h2>
                 <div class="news-content">
-                    <h3>Work In Progress</h3>
-                    <p>Stay tuned for updates about Terra's development!</p>
+                    <div class="news-entry">
+                        <div class="news-date">13/10/2025 - Terra - Prototype V1</div>
+                        <p>Uploaded the first version of this early prototype, with these features:</p>
+                        <ul>
+                            <li>Procedural generation</li>
+                            <li>Clouds</li>
+                            <li>Day/night cycle</li>
+                            <li>First and third-person perspectives</li>
+                            <li>Basic creative building and inventory system with some blocks</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
             
@@ -406,6 +437,11 @@
                         Follow me on Twitter
                     </a>
                 </div>
+            </div>
+            
+            <!-- Copyright notice -->
+            <div class="copyright">
+                © 2025 Albert Freeman - Terra
             </div>
         </div>
     </div>
