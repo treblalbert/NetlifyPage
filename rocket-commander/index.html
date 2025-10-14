@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bald Ball - Physics-based Adventure</title>
+    <title>Rocket Commander - Learn to Code with Rockets!</title>
     <link rel="icon" type="image/png" href="download.png">
     <style>
         * {
@@ -18,9 +18,10 @@
             background-size: cover;
             background-attachment: fixed;
             background-position: center;
-            color: #e0e0e0;
+            color: #ffffff;
             min-height: 100vh;
             padding: 20px;
+            background-color: #1e6fd9; /* Lighter NASA blue fallback */
         }
 
         .container {
@@ -29,33 +30,35 @@
         }
 
         .content-box {
-            background: linear-gradient(to bottom, #ece9d8, #ffffff);
-            border-radius: 12px;
+            background: rgba(30, 111, 217, 0.85);
+            border-radius: 10px;
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            border: 2px solid #316ac5;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            border: 2px solid #fc3d21; /* NASA red accent */
         }
 
         .logo {
             text-align: center;
             margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #fc3d21;
         }
 
         .logo h1 {
-            font-size: 4rem;
-            color: #316ac5;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-            letter-spacing: 2px;
+            font-size: 3.5rem;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(252, 61, 33, 0.7);
+            letter-spacing: 3px;
             margin-bottom: 10px;
-            background: linear-gradient(to right, #316ac5, #00a2e8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-weight: bold;
         }
 
         .tagline {
-            font-size: 1.2rem;
-            font-style: italic;
-            color: #00a2e8;
+            font-size: 1.5rem;
+            color: #ffffff;
+            font-weight: 300;
+            letter-spacing: 1px;
         }
 
         .video-container {
@@ -66,8 +69,8 @@
             margin-bottom: 30px;
             border-radius: 8px;
             overflow: hidden;
-            border: 3px solid #316ac5;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+            border: 3px solid #fc3d21;
+            box-shadow: 0 0 15px rgba(252, 61, 33, 0.5);
         }
 
         .video-container iframe {
@@ -79,52 +82,42 @@
             border: none;
         }
 
-        /* Steam button styles */
-        .steam-section {
+        /* Download button styles */
+        .download-section {
             text-align: center;
             margin-bottom: 30px;
         }
 
-        .steam-button {
+        .download-button {
             display: inline-flex;
             align-items: center;
-            gap: 12px;
-            padding: 20px 40px;
-            background: linear-gradient(to bottom, #7db9e8, #1e5799);
+            justify-content: center;
+            padding: 18px 35px;
+            background: linear-gradient(135deg, #fc3d21, #ff6b4a);
             color: white;
             text-decoration: none;
             border-radius: 8px;
             font-weight: 700;
-            font-size: 24px;
+            font-size: 22px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 0 #0d3c6c, 0 8px 10px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 15px rgba(252, 61, 33, 0.4);
             margin-bottom: 15px;
-            border: 1px solid #316ac5;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            border: 2px solid #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .steam-button:hover {
+        .download-button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 6px 0 #0d3c6c, 0 10px 15px rgba(0, 0, 0, 0.4);
-            background: linear-gradient(to bottom, #8fc7ff, #2a68b9);
-        }
-
-        .steam-button:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #0d3c6c, 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .steam-button img {
-            width: 32px;
-            height: 32px;
-            filter: brightness(0) invert(1);
+            box-shadow: 0 8px 20px rgba(252, 61, 33, 0.6);
+            background: linear-gradient(135deg, #ff6b4a, #ff8c6b);
         }
 
         .tabs {
             display: flex;
             margin-bottom: 20px;
-            border-bottom: 2px solid #316ac5;
-            background: linear-gradient(to bottom, #c1d7ff, #9bc0ff);
+            border-bottom: 2px solid #fc3d21;
+            background: rgba(40, 130, 240, 0.7);
             border-radius: 8px 8px 0 0;
             overflow: hidden;
         }
@@ -136,26 +129,25 @@
             font-size: 18px;
             transition: all 0.3s ease;
             border-bottom: 3px solid transparent;
-            color: #003366;
+            color: #ffffff;
         }
 
         .tab:hover {
-            background: linear-gradient(to bottom, #a8c6ff, #7db9e8);
+            background-color: rgba(252, 61, 33, 0.3);
         }
 
         .tab.active {
-            border-bottom: 3px solid #316ac5;
-            background: linear-gradient(to bottom, #7db9e8, #4a8cd6);
-            color: white;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            border-bottom: 3px solid #fc3d21;
+            background-color: rgba(252, 61, 33, 0.5);
+            color: #ffffff;
         }
 
         .tab-content {
             display: none;
-            padding: 20px;
-            background: white;
+            padding: 25px;
+            background: rgba(40, 130, 240, 0.5);
             border-radius: 0 0 8px 8px;
-            border: 1px solid #316ac5;
+            border: 1px solid #fc3d21;
             border-top: none;
         }
 
@@ -170,14 +162,14 @@
         }
 
         h2 {
-            color: #316ac5;
+            color: #ffffff;
             margin-bottom: 20px;
             font-size: 28px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            text-shadow: 0 0 5px rgba(252, 61, 33, 0.5);
         }
 
         h3 {
-            color: #00a2e8;
+            color: #ffcc00;
             margin: 25px 0 15px;
             font-size: 22px;
         }
@@ -186,7 +178,6 @@
             line-height: 1.6;
             margin-bottom: 15px;
             font-size: 17px;
-            color: #003366;
         }
 
         ul {
@@ -197,7 +188,6 @@
         li {
             margin-bottom: 8px;
             line-height: 1.5;
-            color: #003366;
         }
 
         .about-albert {
@@ -214,8 +204,8 @@
         .albert-picture img {
             width: 100%;
             border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            border: 2px solid #316ac5;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 2px solid #fc3d21;
         }
 
         .albert-description {
@@ -233,25 +223,18 @@
             align-items: center;
             gap: 10px;
             padding: 12px 20px;
-            background: linear-gradient(to bottom, #7db9e8, #4a8cd6);
+            background: rgba(50, 140, 250, 0.7);
             border-radius: 8px;
             text-decoration: none;
-            color: white;
+            color: #ffffff;
             transition: all 0.3s ease;
-            border: 1px solid #316ac5;
-            box-shadow: 0 3px 0 #0d3c6c;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            border: 1px solid #fc3d21;
         }
 
         .social-button:hover {
-            background: linear-gradient(to bottom, #8fc7ff, #5a9ce8);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 0 #0d3c6c, 0 5px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .social-button:active {
-            transform: translateY(1px);
-            box-shadow: 0 2px 0 #0d3c6c;
+            background: rgba(70, 160, 255, 0.8);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
         .social-button img {
@@ -264,8 +247,8 @@
             text-align: center;
             margin-top: 40px;
             padding-top: 20px;
-            border-top: 2px solid #316ac5;
-            color: #003366;
+            border-top: 2px solid #fc3d21;
+            color: #ffcc00;
             font-size: 16px;
         }
 
@@ -278,56 +261,39 @@
         }
 
         .feature {
-            background: linear-gradient(to bottom, #e8f4ff, #c1d7ff);
+            background: rgba(50, 140, 250, 0.6);
             padding: 20px;
             border-radius: 8px;
-            border: 1px solid #7db9e8;
-            box-shadow: inset 0 0 10px rgba(125, 185, 232, 0.3);
+            border-left: 4px solid #ffcc00;
+            text-align: center;
         }
 
         .feature h3 {
             margin-top: 0;
             font-size: 20px;
-            color: #316ac5;
+            color: #ffcc00;
         }
 
         .feature p {
-            color: #003366;
+            color: #ffffff;
         }
 
-        /* Windows XP style elements */
-        .window-bar {
-            background: linear-gradient(to bottom, #316ac5, #1e5799);
-            height: 30px;
-            border-radius: 8px 8px 0 0;
-            display: flex;
-            align-items: center;
-            padding: 0 15px;
+        /* Documentation link */
+        .doc-link {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: rgba(252, 61, 33, 0.7);
             color: white;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            border: 1px solid #ffcc00;
         }
 
-        .window-controls {
-            margin-left: auto;
-            display: flex;
-            gap: 8px;
-        }
-
-        .window-control {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: linear-gradient(to bottom, #ff7b7b, #cc0000);
-            box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.3);
-        }
-
-        .window-control.minimize {
-            background: linear-gradient(to bottom, #ffd47b, #cc9900);
-        }
-
-        .window-control.maximize {
-            background: linear-gradient(to bottom, #7bff7b, #00cc00);
+        .doc-link:hover {
+            background: rgba(252, 61, 33, 0.9);
+            transform: translateY(-2px);
         }
 
         /* Responsive design */
@@ -355,12 +321,12 @@
             }
             
             .logo h1 {
-                font-size: 2.8rem;
+                font-size: 2.5rem;
             }
             
-            .steam-button {
-                font-size: 20px;
-                padding: 15px 30px;
+            .download-button {
+                font-size: 18px;
+                padding: 15px 25px;
             }
         }
     </style>
@@ -368,68 +334,63 @@
 <body>
     <div class="container">
         <div class="content-box">
-            <!-- Window-style title bar -->
-            <div class="window-bar">
-                Bald Ball
-                <div class="window-controls">
-                    <div class="window-control minimize"></div>
-                    <div class="window-control maximize"></div>
-                    <div class="window-control close"></div>
-                </div>
-            </div>
-            
             <!-- Game Title -->
             <div class="logo">
-                <h1>BALD BALL</h1>
-                <p class="tagline">Roll your way to the moon in this physics-based adventure!</p>
+                <h1>ROCKET COMMANDER</h1>
+                <p class="tagline">Learn to Code with Rockets!</p>
             </div>
             
             <!-- YouTube Video -->
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/HR4W9juxJP0" 
-                        title="BALD BALL - OFFICIAL TRAILER (Goty 2025)" 
+                <iframe src="https://www.youtube.com/embed/B5hdt0wmga0" 
+                        title="I made a (free) game to learn how to code!" 
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                         allowfullscreen>
                 </iframe>
             </div>
             
-            <!-- Steam Button -->
-            <div class="steam-section">
-                <a href="https://store.steampowered.com/app/3489590/Bald_Ball/" class="steam-button" target="_blank">
-                    <img src="steam.png" alt="Steam">
-                    BUY ON STEAM
+            <!-- Download Button -->
+            <div class="download-section">
+                <a href="Rocket Commander.zip" class="download-button" download>
+                    Download Rocket Commander
                 </a>
             </div>
             
             <!-- Tabs -->
             <div class="tabs">
-                <div class="tab active" data-tab="about">About Bald Ball</div>
+                <div class="tab active" data-tab="about">About Rocket Commander</div>
                 <div class="tab" data-tab="albert">About Albert Freeman</div>
             </div>
             
             <!-- Tab Contents -->
             <div class="tab-content active" id="about">
-                <h2>About Bald Ball</h2>
+                <h2>About Rocket Commander</h2>
                 <p>
-                    Bald Ball is a difficult physics-based game where you control a man in a hamster ball climbing the world to reach the moon made of cheese. Will you master the power of the hamster ball?
+                    I created this game with the goal of teaching the basics of coding.
                 </p>
+                <p>
+                    In this game, you'll go through 3 levels where you need to actually code each movement the rocket makes.
+                </p>
+                <p>
+                    To make this possible, I built a super basic mini coding language inside Unity. It's designed to help beginners start understanding the logic behind coding.
+                </p>
+                
+                <a href="https://albertfreeman.org/rc/" class="doc-link" target="_blank">
+                    View Coding Documentation
+                </a>
                 
                 <div class="features">
                     <div class="feature">
-                        <h3>Physics-Based Gameplay</h3>
-                        <p>Master realistic physics as you roll, bounce, and climb through challenging environments.</p>
+                        <h3>Learn Coding Basics</h3>
+                        <p>Understand programming logic through interactive rocket missions</p>
                     </div>
                     <div class="feature">
-                        <h3>Unique Premise</h3>
-                        <p>Help our bald protagonist reach the moon made of cheese in his trusty hamster ball.</p>
+                        <h3>Built-in Coding Language</h3>
+                        <p>Simple syntax designed specifically for beginners</p>
                     </div>
                     <div class="feature">
-                        <h3>Challenging Levels</h3>
-                        <p>Navigate through increasingly difficult obstacles and terrain on your journey to the moon.</p>
-                    </div>
-                    <div class="feature">
-                        <h3>Steam Release</h3>
-                        <p>Available now on Steam with full controller support and achievements.</p>
+                        <h3>Educational Focus</h3>
+                        <p>Designed specifically to teach programming fundamentals</p>
                     </div>
                 </div>
             </div>
@@ -467,7 +428,7 @@
             
             <!-- Copyright notice -->
             <div class="copyright">
-                © 2025 Albert Freeman - Bald Ball
+                © 2025 Albert Freeman - Rocket Commander
             </div>
         </div>
     </div>
