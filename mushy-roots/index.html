@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mushy Roots - Rogue-like Metroidvania</title>
+    <link rel="icon" type="image/png" href="download.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-image: url('background.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .content-box {
+            background-color: rgba(70, 40, 10, 0.85);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 3.5rem;
+            color: #FF8C00;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            font-style: italic;
+            color: #FFD700;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            margin-bottom: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 5px solid #A0522D;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Discord button styles */
+        .discord-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .discord-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #8B4513, #A0522D);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.4);
+            margin-bottom: 15px;
+        }
+
+        .discord-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(139, 69, 19, 0.6);
+            background: linear-gradient(135deg, #A0522D, #D2691E);
+        }
+
+        .discord-button img {
+            width: 24px;
+            height: 24px;
+            filter: brightness(0) invert(1);
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(210, 105, 30, 0.3);
+        }
+
+        .tab {
+            padding: 12px 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover {
+            background-color: rgba(210, 105, 30, 0.2);
+        }
+
+        .tab.active {
+            border-bottom: 3px solid #FF8C00;
+            color: #FF8C00;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px 0;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        h2 {
+            color: #FF8C00;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        h3 {
+            color: #FFD700;
+            margin: 25px 0 15px;
+            font-size: 22px;
+        }
+
+        p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 17px;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .about-albert {
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .albert-picture {
+            flex: 0 0 200px;
+        }
+
+        .albert-picture img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .albert-description {
+            flex: 1;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .social-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: rgba(90, 50, 10, 0.7);
+            border-radius: 8px;
+            text-decoration: none;
+            color: #e0e0e0;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(210, 105, 30, 0.3);
+        }
+
+        .social-button:hover {
+            background: rgba(120, 70, 20, 0.8);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .social-button img {
+            width: 24px;
+            height: 24px;
+            filter: brightness(0) invert(1);
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(210, 105, 30, 0.3);
+            color: #FFD700;
+            font-size: 16px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .about-albert {
+                flex-direction: column;
+            }
+            
+            .albert-picture {
+                flex: none;
+                width: 200px;
+                margin: 0 auto 20px;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                text-align: center;
+            }
+            
+            .social-links {
+                flex-direction: column;
+            }
+            
+            .logo h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content-box">
+            <!-- Game Title -->
+            <div class="logo">
+                <h1>Mushy Roots</h1>
+                <p class="tagline">A Rogue-like Metroidvania Adventure</p>
+            </div>
+            
+            <!-- YouTube Video -->
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/kHWjfwQ2Pts" 
+                        title="I'm making a metroidvania!!!" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                </iframe>
+            </div>
+            
+            <!-- Discord Button -->
+            <div class="discord-section">
+                <a href="https://discord.gg/FHVsuBUZ4A" class="discord-button" target="_blank">
+                    <img src="discord.png" alt="Discord">
+                    Join the Official Discord
+                </a>
+            </div>
+            
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab active" data-tab="about">About Mushy Roots</div>
+                <div class="tab" data-tab="albert">About Albert Freeman</div>
+            </div>
+            
+            <!-- Tab Contents -->
+            <div class="tab-content active" id="about">
+                <h2>About Mushy Roots</h2>
+                <p>
+                    Mushy Roots is a rogue-like metroidvania developed by Albert Freeman, with the help of artist 
+                    <a href="https://www.instagram.com/sergispocket/" target="_blank" style="color:#FF8C00;">Sergi Batet</a> 
+                    and musician <a href="https://www.ramireznacho.com/" target="_blank" style="color:#FF8C00;">Ignacio Ramirez</a>.
+                </p>
+                <p>
+                    Right now it's in an early prototyping stage, trying a bunch of different mechanics and stuff to see what's just fun, 
+                    as I discover what's the route I want this game to have (besides what's already planned like the lore, areas, rogue-like design, etc.).
+                </p>
+                <p>
+                    The current goal is to have a prototype demo ready for December 2025 or January 2026, to then launch with it a Kickstarter 
+                    and search for proper funding for this project.
+                </p>
+            </div>
+            
+            <div class="tab-content" id="albert">
+                <h2>About Albert Freeman</h2>
+                <div class="about-albert">
+                    <div class="albert-picture">
+                        <img src="albert.jpg" alt="Albert Freeman">
+                    </div>
+                    <div class="albert-description">
+                        <p>
+                            I'm a 27 year old game developer from Barcelona. I make Unity games. My first commercial game, Bald Ball, 
+                            is published on Steam, and I share other experiments on itch.io.
+                        </p>
+                        <p>
+                            Right now I'm leading development on Mushy Roots, a metroidvania I'm building with a digital artist and a music composer. 
+                            I handle most of the development while coordinating our small team.
+                        </p>
+                        <p>
+                            I studied data analytics at Ironhack Bootcamp and built some Python + AI tools to make data analysis easier. 
+                            That project is paused while I finish the Mushy Roots demo. I'm also learning C++ from scratch using Bjarne Stroustrup's book, 
+                            which has been the best learning experience so far. C++ is just the start of my path to becoming a software engineer.
+                        </p>
+                        <p>
+                            In my free time I like making music, painting with oil, bouldering and hiking, though I don't have much time for those things right now.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="social-links">
+                    <a href="https://albertfreeman.itch.io/" class="social-button" target="_blank">
+                        <img src="itch-io.png" alt="Itch.io">
+                        Check my other games
+                    </a>
+                    <a href="https://x.com/AlbertTheWrench" class="social-button" target="_blank">
+                        <img src="twitter.png" alt="Twitter">
+                        Follow me on Twitter
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Copyright notice -->
+            <div class="copyright">
+                © 2025 Albert Freeman - Mushy Roots
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    tab.classList.add('active');
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
