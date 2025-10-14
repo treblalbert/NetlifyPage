@@ -281,6 +281,37 @@
             font-size: 16px;
         }
 
+        /* Roadmap Styles */
+        .roadmap-intro {
+            margin-bottom: 30px;
+            font-style: italic;
+            color: #a0c8ff;
+        }
+
+        .roadmap-version {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(100, 150, 255, 0.3);
+        }
+
+        .roadmap-version:last-child {
+            border-bottom: none;
+        }
+
+        .roadmap-version h3 {
+            color: #ffcc66;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .roadmap-version ul {
+            margin-left: 30px;
+        }
+
+        .roadmap-version li {
+            margin-bottom: 10px;
+        }
+
         /* Responsive design */
         @media (max-width: 768px) {
             .about-albert {
@@ -340,6 +371,7 @@
             <!-- Tabs -->
             <div class="tabs">
                 <div class="tab active" data-tab="about">About</div>
+                <div class="tab" data-tab="roadmap">Roadmap</div>
                 <div class="tab" data-tab="news">News</div>
                 <div class="tab" data-tab="albert">About Albert Freeman</div>
             </div>
@@ -351,42 +383,79 @@
                     Terra is a voxel-based sandbox game created by Albert Freeman with no limits - literally, there is no height limit.
                     Currently, the game is in the early prototype stage.
                 </p>
+                <p>
+                    In its current form, Terra is an island-based survival experience where players find themselves stranded on a procedurally generated island. 
+                    The goal is to create a unique survival-packed experience that captures the feeling of being stranded on an island, 
+                    with future plans to expand into multiplayer gameplay.
+                </p>
+                <p>
+                    As development progresses, Terra will evolve into a floating islands-based survival experience, 
+                    where the world will be made up of multiple sky islands, focusing on exploration, survival, 
+                    and building across floating lands. This update will mark a major shift in world design and gameplay style.
+                </p>
+            </div>
+            
+            <div class="tab-content" id="roadmap">
+                <h2>Development Roadmap</h2>
+                <p class="roadmap-intro">
+                    This roadmap outlines the current goals for Terra's early prototype development. 
+                    These plans may evolve as development progresses.
+                </p>
                 
-                <h3>Current Features</h3>
-                <div class="feature-list">
-                    <div class="feature-column">
-                        <ul>
-                            <li>Procedural generation (seed-based, with super trees and caves)</li>
-                            <li>Volumetric clouds</li>
-                            <li>Day/night cycle</li>
-                        </ul>
-                    </div>
-                    <div class="feature-column">
-                        <ul>
-                            <li>Save/load system (partially implemented, currently being improved)</li>
-                            <li>First and third person perspectives</li>
-                            <li>Basic creative building and inventory with 10+ block types</li>
-                        </ul>
-                    </div>
+                <div class="roadmap-version">
+                    <h3>Prototype v1.3.0</h3>
+                    <ul>
+                        <li>Gameplay & Camera: Improve the third-person camera for smoother control and better angles</li>
+                        <li>Building System: Allow block rotation with an R key rotation animation</li>
+                        <li>Player Customization: Start with a random player skin, then implement a Skin Selector menu</li>
+                        <li>Animal System v1: Add Animal Behavior (basic AI), implement Animal Spawning logic, introduce the first animal: Pig</li>
+                        <li>New Blocks: Stairs, Door (with interaction system)</li>
+                        <li>Environment: Add foliage for visual variety</li>
+                        <li>World Improvements / Fixes: Fix blocks that can't be broken, fix terrain saving issues</li>
+                    </ul>
                 </div>
                 
-                <h3>Planned Features</h3>
-                <div class="feature-list">
-                    <div class="feature-column">
-                        <ul>
-                            <li>Multiplayer (currently in development)</li>
-                            <li>Unique survival experience</li>
-                            <li>More world customization options (island size, generation parameters, day/night duration, etc.)</li>
-                        </ul>
-                    </div>
-                    <div class="feature-column">
-                        <ul>
-                            <li>Additional block types</li>
-                            <li>In-game coding and modding support</li>
-                            <li>Steam page</li>
-                            <li>Performance optimization</li>
-                        </ul>
-                    </div>
+                <div class="roadmap-version">
+                    <h3>Prototype v1.4.0</h3>
+                    <ul>
+                        <li>Core Gameplay: Convert the game into Survival Mode</li>
+                        <li>Inventory System: Modify the block system so ownership is quantity-based</li>
+                        <li>New Features: Add "The Crafter" for crafting items, add "Press Q to throw cube" mechanic (usable with The Crafter)</li>
+                        <li>Combat & NPCs: Add health systems for both player and NPCs, add a weapon system for combat</li>
+                        <li>Events: Add an invasion system — plane-based, with random timing spawns</li>
+                        <li>Rest & Time: Add bed and sleeping mechanics, implement a clock/time system</li>
+                    </ul>
+                </div>
+                
+                <div class="roadmap-version">
+                    <h3>Prototype v1.5.0</h3>
+                    <ul>
+                        <li>Survival Enhancements: Add a hunger system, add hunting and cooking features, introduce "The Cooker" for preparing food</li>
+                    </ul>
+                </div>
+                
+                <div class="roadmap-version">
+                    <h3>Tree Update (Future Update)</h3>
+                    <ul>
+                        <li>Nature Systems: Implement tree falling physics, add automatic tree spawning, add manual tree planting and regrowth</li>
+                    </ul>
+                </div>
+                
+                <div class="roadmap-version">
+                    <h3>Future Update – Sky Islands</h3>
+                    <ul>
+                        <li>The game will evolve into a floating islands-based survival experience</li>
+                        <li>The world will be made up of multiple sky islands</li>
+                        <li>Focus on exploration, survival, and building across floating lands</li>
+                        <li>This update will mark a major shift in world design and gameplay style</li>
+                    </ul>
+                </div>
+                
+                <div class="roadmap-version">
+                    <h3>Prototype v1.6.0</h3>
+                    <ul>
+                        <li>Multiplayer: Implement multiplayer functionality for co-op gameplay</li>
+                    </ul>
                 </div>
             </div>
             
