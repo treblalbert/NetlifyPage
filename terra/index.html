@@ -312,6 +312,13 @@
             margin-bottom: 10px;
         }
 
+        /* Loading indicator */
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #a0c8ff;
+        }
+
         /* Responsive design */
         @media (max-width: 768px) {
             .about-albert {
@@ -461,53 +468,8 @@
             
             <div class="tab-content" id="news">
                 <h2>News</h2>
-                <div class="news-content">
-                    <div class="news-entry">
-                        <div class="news-date">14/10/2025 - Terra - Prototype v1.2.2</div>
-                        <p>Sound & Visuals mini update.</p>
-                        <ul>
-                            <li>Added sounds for movement, block interactions, and ambient environment</li>
-                            <li>Added screenshot functionality (F2) — images are saved in the Screenshots folder</li>
-                            <li>Added new blocks: pebbles, mirror</li>
-                            <li>Added Screen Space Reflections, can be toggled with keyboard button 1, not recommended for performance</li>
-                            <li>Continued work on the save system</li>
-                            <li>Updated the game logo</li>
-                            <li>Updated the cursor design</li>
-                            <li>Updated tree model</li>
-                            <li>Updated tree and window LOD distances</li>
-                            <li>Updated glass material</li>
-                        </ul>
-                    </div>
-                    <div class="news-entry">
-                        <div class="news-date">14/10/2025 - Terra - Prototype v1.2.1</div>
-                        <p>Small fixes update.</p>
-                        <ul>
-                            <li>Increased the length to place/destroy blocks</li>
-                            <li>Increased the FOV</li>
-                            <li>Added a text with the controls</li>
-                            <li>Reduced flames sound</li>
-                            <li>Attempt to fix a bug related to loading the game</li>
-                        </ul>
-                    </div>
-                    <div class="news-entry">
-                        <div class="news-date">14/10/2025 - Terra - Prototype v1.2.0</div>
-                        <p>Uploaded the second version of this early prototype, with these features:</p>
-                        <ul>
-                            <li>More stable save/load system (still work in progress)</li>
-                            <li>Updated clouds to volumetric clouds</li>
-                        </ul>
-                    </div>
-                    <div class="news-entry">
-                        <div class="news-date">13/10/2025 - Terra - Prototype V1</div>
-                        <p>Uploaded the first version of this early prototype, with these features:</p>
-                        <ul>
-                            <li>Procedural generation</li>
-                            <li>Clouds</li>
-                            <li>Day/night cycle</li>
-                            <li>First and third-person perspectives</li>
-                            <li>Basic creative building and inventory system with some blocks</li>
-                        </ul>
-                    </div>
+                <div class="news-content" id="news-container">
+                    <div class="loading">Loading news...</div>
                 </div>
             </div>
             
@@ -567,9 +529,84 @@
                     tab.classList.add('active');
                     const tabId = tab.getAttribute('data-tab');
                     document.getElementById(tabId).classList.add('active');
+                    
+                    // Load news if news tab is clicked
+                    if (tabId === 'news') {
+                        loadNews();
+                    }
                 });
             });
+            
+            // Load news if news tab is active on page load
+            if (document.getElementById('news').classList.contains('active')) {
+                loadNews();
+            }
         });
+
+        // News loading functionality
+        async function loadNews() {
+            const newsContainer = document.getElementById('news-container');
+            newsContainer.innerHTML = '<div class="loading">Loading news...</div>';
+            
+            try {
+                // Fetch the list of news files
+                const response = await fetch('news/news-list.json');
+                const fileList = await response.json();
+                
+                let allNews = [];
+                
+                // Load each news file
+                for (const fileName of fileList) {
+                    try {
+                        const newsResponse = await fetch(`news/${fileName}`);
+                        const newsText = await newsResponse.text();
+                        
+                        // Parse the news file (simple format: first line is date, rest is content)
+                        const lines = newsText.split('\n');
+                        const date = lines[0].replace('Date: ', '');
+                        const title = lines[1].replace('Title: ', '');
+                        const content = lines.slice(2).join('\n');
+                        
+                        allNews.push({
+                            date: date,
+                            title: title,
+                            content: content,
+                            fileName: fileName
+                        });
+                    } catch (error) {
+                        console.error(`Error loading news file ${fileName}:`, error);
+                    }
+                }
+                
+                // Sort news by date (newest first)
+                allNews.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                // Render news
+                if (allNews.length === 0) {
+                    newsContainer.innerHTML = '<p>No news available.</p>';
+                    return;
+                }
+                
+                let newsHTML = '';
+                allNews.forEach(news => {
+                    newsHTML += `
+                        <div class="news-entry">
+                            <div class="news-date">${news.date} - ${news.title}</div>
+                            ${marked.parse(news.content)}
+                        </div>
+                    `;
+                });
+                
+                newsContainer.innerHTML = newsHTML;
+                
+            } catch (error) {
+                console.error('Error loading news:', error);
+                newsContainer.innerHTML = '<p>Error loading news. Please try again later.</p>';
+            }
+        }
     </script>
+    
+    <!-- Marked.js library for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </body>
 </html>
