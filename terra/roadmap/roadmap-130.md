@@ -1,5 +1,5 @@
 Version: 1.3.0
-Title: Prototype v1.3.0
+Title: Prototype v1.3.0 (Currently working on it)
 Status: planned
 
 - Gameplay & Camera: Improve the third-person camera for smoother control and better angles
