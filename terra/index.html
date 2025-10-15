@@ -524,8 +524,8 @@
                     }
                 }
                 
-                // Sort news by date (newest first)
-                allNews.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                allNews.reverse();
                 
                 // Render news
                 if (allNews.length === 0) {
