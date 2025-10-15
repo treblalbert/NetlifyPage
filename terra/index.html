@@ -744,23 +744,30 @@
             galleryContainer.innerHTML = '<div class="loading">Loading gallery...</div>';
             
             try {
-                // Fetch the list of media files
-                const response = await fetch('media/media-list.json');
-                const fileList = await response.json();
+                // Try to fetch the list of media files
+                let pngFiles = [];
                 
-                // Filter for PNG files only
-                const pngFiles = fileList.filter(file => file.toLowerCase().endsWith('.png'));
+                try {
+                    const response = await fetch('media/media-list.json');
+                    const fileList = await response.json();
+                    // Filter for PNG files only
+                    pngFiles = fileList.filter(file => file.toLowerCase().endsWith('.png'));
+                } catch (error) {
+                    console.error('Error loading media list, trying to auto-detect:', error);
+                    // If media-list.json doesn't exist, try to auto-detect PNG files
+                    pngFiles = await autoDetectPNGFiles();
+                }
                 
                 // Render gallery
                 if (pngFiles.length === 0) {
-                    galleryContainer.innerHTML = '<p>No media available.</p>';
+                    galleryContainer.innerHTML = '<p>No media available. Add PNG files to the "media" folder.</p>';
                     return;
                 }
                 
                 let galleryHTML = '';
                 pngFiles.forEach(file => {
                     galleryHTML += `
-                        <div class="gallery-item" data-src="media/${file}">
+                        <div class="gallery-item">
                             <img src="media/${file}" alt="${file}" loading="lazy">
                         </div>
                     `;
@@ -769,9 +776,9 @@
                 galleryContainer.innerHTML = galleryHTML;
                 
                 // Add click event listeners to gallery items
-                document.querySelectorAll('.gallery-item').forEach(item => {
-                    item.addEventListener('click', function() {
-                        openModal(this.getAttribute('data-src'));
+                document.querySelectorAll('.gallery-item img').forEach(img => {
+                    img.addEventListener('click', function() {
+                        openModal(this.src);
                     });
                 });
                 
@@ -779,6 +786,14 @@
                 console.error('Error loading gallery:', error);
                 galleryContainer.innerHTML = '<p>Error loading gallery. Please try again later.</p>';
             }
+        }
+
+        // Function to auto-detect PNG files (fallback if media-list.json doesn't exist)
+        async function autoDetectPNGFiles() {
+            // This is a simplified approach - in a real scenario, you'd need server-side support
+            // to list directory contents. For now, we'll return an empty array.
+            console.log('Auto-detection of PNG files requires server-side support.');
+            return [];
         }
 
         // Modal functionality
