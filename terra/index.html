@@ -196,12 +196,18 @@
 
         .albert-picture {
             flex: 0 0 200px;
+            cursor: pointer;
         }
 
         .albert-picture img {
             width: 100%;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .albert-picture img:hover {
+            transform: scale(1.03);
         }
 
         .albert-description {
@@ -319,6 +325,77 @@
             color: #a0c8ff;
         }
 
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+            margin-top: 2%;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(74, 158, 255, 0.5);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-modal:hover {
+            color: #4a9eff;
+        }
+
+        /* Media Gallery Styles */
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            aspect-ratio: 1;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
         /* Responsive design */
         @media (max-width: 768px) {
             .about-albert {
@@ -345,6 +422,10 @@
             
             .social-links {
                 flex-direction: column;
+            }
+            
+            .gallery-container {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             }
         }
     </style>
@@ -380,6 +461,7 @@
                 <div class="tab active" data-tab="about">About</div>
                 <div class="tab" data-tab="roadmap">Roadmap</div>
                 <div class="tab" data-tab="news">News</div>
+                <div class="tab" data-tab="media">Media</div>
                 <div class="tab" data-tab="albert">About Albert Freeman</div>
             </div>
             
@@ -416,18 +498,26 @@
                 </div>
             </div>
             
+            <div class="tab-content" id="media">
+                <h2>Media Gallery</h2>
+                <p>Check out these screenshots and concept art from Terra:</p>
+                <div class="gallery-container" id="gallery-container">
+                    <div class="loading">Loading gallery...</div>
+                </div>
+            </div>
+            
             <div class="tab-content" id="albert">
                 <h2>About Albert Freeman</h2>
                 <div class="about-albert">
-                    <div class="albert-picture">
+                    <div class="albert-picture" id="albert-picture">
                         <img src="albert.jpg" alt="Albert Freeman">
                     </div>
                     <div class="albert-description">
                         <p>
-                            I’m a 27 year old game developer from Barcelona who creates Unity games. My first commercial game, Bald Ball, is available on Steam. I also publish smaller experiments on itch.io and on this personal website.
+                            I'm a 27 year old game developer from Barcelona who creates Unity games. My first commercial game, Bald Ball, is available on Steam. I also publish smaller experiments on itch.io and on this personal website.
                         </p>
                         <p>
-                            I studied data analytics at Ironhack Bootcamp and am currently learning C++ from scratch using Bjarne Stroustrup’s book, which has been one of my best learning experiences so far.
+                            I studied data analytics at Ironhack Bootcamp and am currently learning C++ from scratch using Bjarne Stroustrup's book, which has been one of my best learning experiences so far.
                         </p>
                         <p>
                             In my free time I like making music, painting with oil, bouldering and hiking, though I don't have much time for those things right now.
@@ -454,6 +544,12 @@
         </div>
     </div>
 
+    <!-- Modal for image viewing -->
+    <div id="imageModal" class="modal">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
     <script>
         // Tab functionality
         document.addEventListener('DOMContentLoaded', function() {
@@ -476,6 +572,8 @@
                         loadNews();
                     } else if (tabId === 'roadmap') {
                         loadRoadmap();
+                    } else if (tabId === 'media') {
+                        loadGallery();
                     }
                 });
             });
@@ -487,6 +585,12 @@
             if (document.getElementById('roadmap').classList.contains('active')) {
                 loadRoadmap();
             }
+            if (document.getElementById('media').classList.contains('active')) {
+                loadGallery();
+            }
+            
+            // Initialize modal functionality
+            initModal();
         });
 
         // News loading functionality
@@ -631,6 +735,89 @@
             } catch (error) {
                 console.error('Error loading roadmap:', error);
                 roadmapContainer.innerHTML = '<p>Error loading roadmap. Please try again later.</p>';
+            }
+        }
+
+        // Gallery loading functionality
+        async function loadGallery() {
+            const galleryContainer = document.getElementById('gallery-container');
+            galleryContainer.innerHTML = '<div class="loading">Loading gallery...</div>';
+            
+            try {
+                // Fetch the list of media files
+                const response = await fetch('media/media-list.json');
+                const fileList = await response.json();
+                
+                // Filter for PNG files only
+                const pngFiles = fileList.filter(file => file.toLowerCase().endsWith('.png'));
+                
+                // Render gallery
+                if (pngFiles.length === 0) {
+                    galleryContainer.innerHTML = '<p>No media available.</p>';
+                    return;
+                }
+                
+                let galleryHTML = '';
+                pngFiles.forEach(file => {
+                    galleryHTML += `
+                        <div class="gallery-item" data-src="media/${file}">
+                            <img src="media/${file}" alt="${file}" loading="lazy">
+                        </div>
+                    `;
+                });
+                
+                galleryContainer.innerHTML = galleryHTML;
+                
+                // Add click event listeners to gallery items
+                document.querySelectorAll('.gallery-item').forEach(item => {
+                    item.addEventListener('click', function() {
+                        openModal(this.getAttribute('data-src'));
+                    });
+                });
+                
+            } catch (error) {
+                console.error('Error loading gallery:', error);
+                galleryContainer.innerHTML = '<p>Error loading gallery. Please try again later.</p>';
+            }
+        }
+
+        // Modal functionality
+        function initModal() {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            const closeBtn = document.querySelector('.close-modal');
+            
+            // Open modal when clicking on Albert's picture
+            document.getElementById('albert-picture').addEventListener('click', function() {
+                openModal('albert.jpg');
+            });
+            
+            // Close modal when clicking the X
+            closeBtn.addEventListener('click', function() {
+                closeModal();
+            });
+            
+            // Close modal when clicking outside the image
+            modal.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+            
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape') {
+                    closeModal();
+                }
+            });
+            
+            function openModal(src) {
+                modal.style.display = 'block';
+                modalImg.src = src;
+            }
+            
+            function closeModal() {
+                modal.style.display = 'none';
             }
         }
     </script>
