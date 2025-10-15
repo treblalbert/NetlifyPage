@@ -4,7 +4,7 @@ Status: planned
 
 - Gameplay & Camera: Improvd third person camera ✅
 - Building System: Allow block rotation with an R key rotation animation ✅
-- Player Customization: Start with a random player skin, then implement a Skin Selector menu
+- Player Customization: Skin selector ✅
 - Animal System v1: Add Animal Behavior (basic AI), implement Animal Spawning logic, introduce the first animal: Pig
 - New Blocks: Stairs, Door (with interaction system)
 - Environment: Add foliage for visual variety
