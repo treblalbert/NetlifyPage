@@ -739,6 +739,7 @@
         }
 
         // Gallery loading functionality
+        // Gallery loading functionality
         async function loadGallery() {
             const galleryContainer = document.getElementById('gallery-container');
             galleryContainer.innerHTML = '<div class="loading">Loading gallery...</div>';
@@ -775,12 +776,26 @@
                 
                 galleryContainer.innerHTML = galleryHTML;
                 
-                // Add click event listeners to gallery items
-                document.querySelectorAll('.gallery-item img').forEach(img => {
-                    img.addEventListener('click', function() {
-                        openModal(this.src);
+                // Wait a brief moment for DOM to update, then add click event listeners
+                setTimeout(() => {
+                    const galleryItems = document.querySelectorAll('.gallery-item');
+                    galleryItems.forEach(item => {
+                        item.addEventListener('click', function() {
+                            const img = this.querySelector('img');
+                            if (img) {
+                                openModal(img.src);
+                            }
+                        });
                     });
-                });
+                    
+                    // Also add click listeners directly to images as backup
+                    document.querySelectorAll('.gallery-item img').forEach(img => {
+                        img.addEventListener('click', function(event) {
+                            event.stopPropagation(); // Prevent triggering the parent div's click event twice
+                            openModal(this.src);
+                        });
+                    });
+                }, 100);
                 
             } catch (error) {
                 console.error('Error loading gallery:', error);
@@ -827,8 +842,17 @@
             });
             
             function openModal(src) {
+                const modal = document.getElementById('imageModal');
+                const modalImg = document.getElementById('modalImage');
+                
                 modal.style.display = 'block';
                 modalImg.src = src;
+                
+                // Add a small fade-in effect for the modal image
+                modalImg.style.opacity = '0';
+                setTimeout(() => {
+                    modalImg.style.opacity = '1';
+                }, 10);
             }
             
             function closeModal() {
