@@ -108,6 +108,16 @@
             background: linear-gradient(135deg, #6ab0ff, #8ac2ff);
         }
 
+        .download-button.preview {
+            background: linear-gradient(135deg, #ff9e4a, #ffb06a);
+            box-shadow: 0 5px 15px rgba(255, 158, 74, 0.4);
+        }
+
+        .download-button.preview:hover {
+            background: linear-gradient(135deg, #ffb06a, #ffc28a);
+            box-shadow: 0 8px 20px rgba(255, 158, 74, 0.6);
+        }
+
         .download-button img {
             width: 24px;
             height: 24px;
@@ -118,6 +128,17 @@
             color: #a0c8ff;
             font-size: 16px;
             font-style: italic;
+        }
+
+        .version-text.preview {
+            color: #ffc28a;
+        }
+
+        .download-buttons-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
         }
 
         .tabs {
@@ -449,11 +470,19 @@
             
             <!-- Download Section -->
             <div class="download-section">
-                <a href="terra.zip" class="download-button" download>
-                    <img src="download.png" alt="Download">
-                    Download Terra
-                </a>
-                <div class="version-text">Terra - Prototype v1.3.1</div>
+                <div class="download-buttons-container">
+                    <a href="terra.zip" class="download-button" download>
+                        <img src="download.png" alt="Download">
+                        Download Terra
+                    </a>
+                    <div class="version-text">Terra - Prototype v1.3.1</div>
+                    
+                    <a href="terra_preview.zip" class="download-button preview" download>
+                        <img src="download.png" alt="Download">
+                        Download Terra Preview
+                    </a>
+                    <div class="version-text preview">Terra - Prototype Preview v1.4.0</div>
+                </div>
             </div>
             
             <!-- Tabs -->
