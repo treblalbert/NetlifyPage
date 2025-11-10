@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Analytics Definitive Dictionary</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -14,6 +15,10 @@
             --python-color: #3776ab;
             --sql-color: #336791;
             --powerbi-color: #f2c811;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --chat-user: #3498db;
+            --chat-bot: #2ecc71;
         }
         
         * {
@@ -35,6 +40,7 @@
             padding: 2rem 0;
             text-align: center;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
         
         h1 {
@@ -48,9 +54,96 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+        }
+        
+        .main-content {
+            grid-column: 1;
+        }
+        
+        .chat-container {
+            grid-column: 2;
+            position: sticky;
+            top: 2rem;
+            height: calc(100vh - 4rem);
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .message {
+            max-width: 85%;
+            padding: 0.75rem 1rem;
+            border-radius: 18px;
+            line-height: 1.4;
+        }
+        
+        .user-message {
+            align-self: flex-end;
+            background-color: var(--chat-user);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .bot-message {
+            align-self: flex-start;
+            background-color: var(--light-color);
+            color: #333;
+            border-bottom-left-radius: 4px;
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 1rem;
+            border-top: 1px solid #eee;
+            background: white;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            outline: none;
+        }
+        
+        .chat-input button {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            margin-left: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .nav-tabs {
@@ -121,6 +214,13 @@
             margin-bottom: 1.5rem;
             padding-bottom: 0.5rem;
             border-bottom: 2px solid var(--light-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section h2 i {
+            color: var(--secondary-color);
         }
         
         .term-card {
@@ -169,6 +269,7 @@
             border-radius: 0 4px 4px 0;
             font-family: 'Courier New', monospace;
             overflow-x: auto;
+            margin-top: 1rem;
         }
         
         .python-category {
@@ -212,6 +313,39 @@
             border-color: var(--secondary-color);
         }
         
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .use-case {
+            background: #e8f4fc;
+            border-left: 4px solid var(--secondary-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        .use-case h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .chat-container {
+                display: none;
+            }
+        }
+        
         @media (max-width: 768px) {
             .nav-tabs {
                 flex-direction: column;
@@ -232,6 +366,47 @@
                 margin-top: 0.5rem;
             }
         }
+        
+        .chat-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--secondary-color);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 100;
+            display: none;
+        }
+        
+        @media (max-width: 1024px) {
+            .chat-toggle {
+                display: flex;
+            }
+            
+            .chat-container {
+                position: fixed;
+                top: auto;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 70vh;
+                border-radius: 10px 10px 0 0;
+                z-index: 101;
+                transform: translateY(100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .chat-container.active {
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body>
@@ -241,325 +416,494 @@
     </header>
     
     <div class="container">
-        <div class="search-container">
-            <input type="text" class="search-box" placeholder="Search for terms...">
-        </div>
-        
-        <div class="nav-tabs">
-            <button class="tab-btn python-btn active" data-tab="python">Python for Data Analytics</button>
-            <button class="tab-btn sql-btn" data-tab="sql">SQL</button>
-            <button class="tab-btn powerbi-btn" data-tab="powerbi">Power BI</button>
-        </div>
-        
-        <div class="tab-content active" id="python-content">
-            <div class="section">
-                <h2>Python Libraries</h2>
-                
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">Pandas</h3>
-                        <span class="term-category python-category">Library</span>
+        <div class="main-content">
+            <div class="search-container">
+                <input type="text" class="search-box" placeholder="Search for terms...">
+            </div>
+            
+            <div class="nav-tabs">
+                <button class="tab-btn python-btn active" data-tab="python">Python for Data Analytics</button>
+                <button class="tab-btn sql-btn" data-tab="sql">SQL</button>
+                <button class="tab-btn powerbi-btn" data-tab="powerbi">Power BI</button>
+            </div>
+            
+            <div class="tab-content active" id="python-content">
+                <div class="section">
+                    <h2><i class="fas fa-code"></i> Python Libraries</h2>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">Pandas</h3>
+                            <span class="term-category python-category">Library</span>
+                        </div>
+                        <p class="term-definition">A powerful data manipulation and analysis library providing data structures like DataFrames for working with structured data.</p>
+                        <div class="term-example">
+                            import pandas as pd<br>
+                            df = pd.read_csv('data.csv')<br>
+                            df.head()
+                        </div>
+                        <div class="use-case">
+                            <h4>Use Case: Data Cleaning</h4>
+                            <p>Pandas is essential for handling missing values, filtering data, and transforming datasets before analysis.</p>
+                        </div>
                     </div>
-                    <p class="term-definition">A powerful data manipulation and analysis library providing data structures like DataFrames for working with structured data.</p>
-                    <div class="term-example">
-                        import pandas as pd<br>
-                        df = pd.read_csv('data.csv')<br>
-                        df.head()
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">NumPy</h3>
+                            <span class="term-category python-category">Library</span>
+                        </div>
+                        <p class="term-definition">Fundamental package for scientific computing with support for arrays, matrices, and mathematical functions.</p>
+                        <div class="term-example">
+                            import numpy as np<br>
+                            arr = np.array([1, 2, 3, 4, 5])<br>
+                            mean = np.mean(arr)
+                        </div>
+                        <div class="use-case">
+                            <h4>Use Case: Numerical Operations</h4>
+                            <p>NumPy provides efficient array operations and mathematical functions that form the foundation for many data science libraries.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">Matplotlib</h3>
+                            <span class="term-category python-category">Library</span>
+                        </div>
+                        <p class="term-definition">A comprehensive library for creating static, animated, and interactive visualizations in Python.</p>
+                        <div class="term-example">
+                            import matplotlib.pyplot as plt<br>
+                            plt.plot([1, 2, 3, 4])<br>
+                            plt.ylabel('Some Numbers')<br>
+                            plt.show()
+                        </div>
+                        <div class="use-case">
+                            <h4>Use Case: Custom Visualizations</h4>
+                            <p>Matplotlib allows for complete control over plot aesthetics and is ideal for creating publication-quality figures.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">Seaborn</h3>
+                            <span class="term-category python-category">Library</span>
+                        </div>
+                        <p class="term-definition">A statistical data visualization library based on matplotlib that provides a high-level interface for attractive graphics.</p>
+                        <div class="term-example">
+                            import seaborn as sns<br>
+                            sns.histplot(data=df, x='column_name')
+                        </div>
+                        <div class="use-case">
+                            <h4>Use Case: Statistical Visualization</h4>
+                            <p>Seaborn simplifies creating complex visualizations like heatmaps, pair plots, and categorical plots with minimal code.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">Scikit-learn</h3>
+                            <span class="term-category python-category">Library</span>
+                        </div>
+                        <p class="term-definition">A machine learning library featuring various classification, regression and clustering algorithms.</p>
+                        <div class="term-example">
+                            from sklearn.linear_model import LinearRegression<br>
+                            model = LinearRegression()<br>
+                            model.fit(X_train, y_train)
+                        </div>
+                        <div class="use-case">
+                            <h4>Use Case: Predictive Modeling</h4>
+                            <p>Scikit-learn provides tools for the entire machine learning workflow, from preprocessing to model evaluation.</p>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">NumPy</h3>
-                        <span class="term-category python-category">Library</span>
+                <div class="section">
+                    <h2><i class="fas fa-table"></i> Data Manipulation</h2>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">DataFrame</h3>
+                            <span class="term-category python-category">Data Structure</span>
+                        </div>
+                        <p class="term-definition">A two-dimensional labeled data structure with columns of potentially different types, similar to a spreadsheet or SQL table.</p>
+                        <div class="term-example">
+                            # Creating a DataFrame<br>
+                            data = {'Name': ['John', 'Anna', 'Peter'], 'Age': [28, 22, 35]}<br>
+                            df = pd.DataFrame(data)
+                        </div>
+                        <div class="use-case">
+                            <h4>Use Case: Tabular Data Representation</h4>
+                            <p>DataFrames are the primary structure for data manipulation in pandas, allowing for intuitive data operations.</p>
+                        </div>
                     </div>
-                    <p class="term-definition">Fundamental package for scientific computing with support for arrays, matrices, and mathematical functions.</p>
-                    <div class="term-example">
-                        import numpy as np<br>
-                        arr = np.array([1, 2, 3, 4, 5])<br>
-                        mean = np.mean(arr)
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">GroupBy</h3>
+                            <span class="term-category python-category">Operation</span>
+                        </div>
+                        <p class="term-definition">A process that involves splitting data into groups, applying a function to each group, and combining the results.</p>
+                        <div class="term-example">
+                            # Group by category and calculate mean<br>
+                            df.groupby('category')['value'].mean()
+                        </div>
+                        <div class="use-case">
+                            <h4>Use Case: Aggregated Analysis</h4>
+                            <p>GroupBy operations are essential for calculating summary statistics by categories in your data.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">Merge/Join</h3>
+                            <span class="term-category python-category">Operation</span>
+                        </div>
+                        <p class="term-definition">Combining DataFrames based on common columns or indices, similar to SQL JOIN operations.</p>
+                        <div class="term-example">
+                            # Merge two DataFrames on a common column<br>
+                            merged_df = pd.merge(df1, df2, on='key_column')
+                        </div>
+                        <div class="use-case">
+                            <h4>Use Case: Data Integration</h4>
+                            <p>Merging allows you to combine data from different sources to create a comprehensive dataset for analysis.</p>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">Matplotlib</h3>
-                        <span class="term-category python-category">Library</span>
+                <div class="section">
+                    <h2><i class="fas fa-chart-bar"></i> Data Visualization</h2>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">Plotly</h3>
+                            <span class="term-category python-category">Library</span>
+                        </div>
+                        <p class="term-definition">An interactive graphing library that makes interactive, publication-quality graphs online.</p>
+                        <div class="term-example">
+                            import plotly.express as px<br>
+                            fig = px.bar(df, x='category', y='values')<br>
+                            fig.show()
+                        </div>
+                        <div class="use-case">
+                            <h4>Use Case: Interactive Dashboards</h4>
+                            <p>Plotly is ideal for creating interactive visualizations that can be embedded in web applications.</p>
+                        </div>
                     </div>
-                    <p class="term-definition">A comprehensive library for creating static, animated, and interactive visualizations in Python.</p>
-                    <div class="term-example">
-                        import matplotlib.pyplot as plt<br>
-                        plt.plot([1, 2, 3, 4])<br>
-                        plt.ylabel('Some Numbers')<br>
-                        plt.show()
-                    </div>
-                </div>
-                
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">Seaborn</h3>
-                        <span class="term-category python-category">Library</span>
-                    </div>
-                    <p class="term-definition">A statistical data visualization library based on matplotlib that provides a high-level interface for attractive graphics.</p>
-                    <div class="term-example">
-                        import seaborn as sns<br>
-                        sns.histplot(data=df, x='column_name')
-                    </div>
-                </div>
-                
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">Scikit-learn</h3>
-                        <span class="term-category python-category">Library</span>
-                    </div>
-                    <p class="term-definition">A machine learning library featuring various classification, regression and clustering algorithms.</p>
-                    <div class="term-example">
-                        from sklearn.linear_model import LinearRegression<br>
-                        model = LinearRegression()<br>
-                        model.fit(X_train, y_train)
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">Matplotlib Subplots</h3>
+                            <span class="term-category python-category">Technique</span>
+                        </div>
+                        <p class="term-definition">Creating multiple plots in a single figure to compare different aspects of data.</p>
+                        <div class="term-example">
+                            fig, axes = plt.subplots(2, 2, figsize=(10, 8))<br>
+                            axes[0,0].plot(x1, y1)<br>
+                            axes[0,1].scatter(x2, y2)<br>
+                            plt.tight_layout()
+                        </div>
+                        <div class="use-case">
+                            <h4>Use Case: Multi-faceted Analysis</h4>
+                            <p>Subplots allow you to visualize different dimensions of your data side by side for comprehensive analysis.</p>
+                        </div>
                     </div>
                 </div>
             </div>
             
-            <div class="section">
-                <h2>Data Manipulation</h2>
-                
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">DataFrame</h3>
-                        <span class="term-category python-category">Data Structure</span>
+            <div class="tab-content" id="sql-content">
+                <div class="section">
+                    <h2><i class="fas fa-database"></i> SQL Fundamentals</h2>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">SELECT Statement</h3>
+                            <span class="term-category sql-category">Query</span>
+                        </div>
+                        <p class="term-definition">Used to select data from a database. The result is stored in a result table, called the result-set.</p>
+                        <div class="term-example">
+                            SELECT column1, column2<br>
+                            FROM table_name;
+                        </div>
                     </div>
-                    <p class="term-definition">A two-dimensional labeled data structure with columns of potentially different types, similar to a spreadsheet or SQL table.</p>
-                    <div class="term-example">
-                        # Creating a DataFrame<br>
-                        data = {'Name': ['John', 'Anna', 'Peter'], 'Age': [28, 22, 35]}<br>
-                        df = pd.DataFrame(data)
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">WHERE Clause</h3>
+                            <span class="term-category sql-category">Clause</span>
+                        </div>
+                        <p class="term-definition">Used to filter records and extract only those that fulfill a specified condition.</p>
+                        <div class="term-example">
+                            SELECT * FROM Customers<br>
+                            WHERE Country='Mexico';
+                        </div>
+                    </div>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">JOIN</h3>
+                            <span class="term-category sql-category">Operation</span>
+                        </div>
+                        <p class="term-definition">Used to combine rows from two or more tables, based on a related column between them.</p>
+                        <div class="term-example">
+                            SELECT Orders.OrderID, Customers.CustomerName<br>
+                            FROM Orders<br>
+                            INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID;
+                        </div>
+                    </div>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">GROUP BY</h3>
+                            <span class="term-category sql-category">Clause</span>
+                        </div>
+                        <p class="term-definition">Groups rows that have the same values into summary rows, often used with aggregate functions.</p>
+                        <div class="term-example">
+                            SELECT COUNT(CustomerID), Country<br>
+                            FROM Customers<br>
+                            GROUP BY Country;
+                        </div>
+                    </div>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">Window Functions</h3>
+                            <span class="term-category sql-category">Function</span>
+                        </div>
+                        <p class="term-definition">Perform calculations across a set of table rows that are somehow related to the current row.</p>
+                        <div class="term-example">
+                            SELECT<br>
+                              name,<br>
+                              salary,<br>
+                              RANK() OVER (ORDER BY salary DESC) as salary_rank<br>
+                            FROM employees;
+                        </div>
                     </div>
                 </div>
                 
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">GroupBy</h3>
-                        <span class="term-category python-category">Operation</span>
+                <div class="section">
+                    <h2><i class="fas fa-cogs"></i> Advanced SQL</h2>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">CTE (Common Table Expression)</h3>
+                            <span class="term-category sql-category">Concept</span>
+                        </div>
+                        <p class="term-definition">A temporary named result set that you can reference within a SELECT, INSERT, UPDATE, or DELETE statement.</p>
+                        <div class="term-example">
+                            WITH RegionalSales AS (<br>
+                              SELECT region, SUM(amount) AS total_sales<br>
+                              FROM orders<br>
+                              GROUP BY region<br>
+                            )<br>
+                            SELECT * FROM RegionalSales;
+                        </div>
                     </div>
-                    <p class="term-definition">A process that involves splitting data into groups, applying a function to each group, and combining the results.</p>
-                    <div class="term-example">
-                        # Group by category and calculate mean<br>
-                        df.groupby('category')['value'].mean()
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">Subquery</h3>
+                            <span class="term-category sql-category">Concept</span>
+                        </div>
+                        <p class="term-definition">A query nested inside another query, used to return data that will be used in the main query.</p>
+                        <div class="term-example">
+                            SELECT product_name<br>
+                            FROM products<br>
+                            WHERE product_id IN (<br>
+                              SELECT product_id<br>
+                              FROM order_details<br>
+                              WHERE quantity > 100<br>
+                            );
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="powerbi-content">
+                <div class="section">
+                    <h2><i class="fas fa-tachometer-alt"></i> Power BI Fundamentals</h2>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">Data Model</h3>
+                            <span class="term-category powerbi-category">Concept</span>
+                        </div>
+                        <p class="term-definition">The foundation of a Power BI report, consisting of tables and relationships that define how data connects.</p>
+                        <div class="term-example">
+                            Creating relationships between fact tables (transactions) and dimension tables (products, customers, dates).
+                        </div>
+                        <div class="use-case">
+                            <h4>Use Case: Data Relationship Management</h4>
+                            <p>A well-designed data model ensures accurate calculations and enables efficient filtering across related tables.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">DAX (Data Analysis Expressions)</h3>
+                            <span class="term-category powerbi-category">Language</span>
+                        </div>
+                        <p class="term-definition">A formula language used in Power BI, Power Pivot, and Analysis Services for creating custom calculations.</p>
+                        <div class="term-example">
+                            Total Sales = SUM(Sales[Amount])<br>
+                            YoY Growth = [Total Sales] - CALCULATE([Total Sales], SAMEPERIODLASTYEAR('Date'[Date]))
+                        </div>
+                        <div class="use-case">
+                            <h4>Use Case: Advanced Calculations</h4>
+                            <p>DAX enables complex time intelligence calculations, filtering contexts, and business metrics that go beyond standard aggregations.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">Measures</h3>
+                            <span class="term-category powerbi-category">Concept</span>
+                        </div>
+                        <p class="term-definition">Calculations created using DAX that are computed at query time based on user interaction with reports.</p>
+                        <div class="term-example">
+                            Total Revenue = SUM(Sales[Revenue])<br>
+                            Average Sale = AVERAGE(Sales[Amount])
+                        </div>
+                        <div class="use-case">
+                            <h4>Use Case: Dynamic Calculations</h4>
+                            <p>Measures respond to report filters and slicers, providing context-aware calculations that update with user interactions.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">Calculated Columns</h3>
+                            <span class="term-category powerbi-category">Concept</span>
+                        </div>
+                        <p class="term-definition">Columns added to a table in the data model using DAX formulas, computed during data refresh.</p>
+                        <div class="term-example">
+                            Full Name = Customer[First Name] & " " & Customer[Last Name]<br>
+                            Profit Margin = (Sales[Revenue] - Sales[Cost]) / Sales[Revenue]
+                        </div>
+                        <div class="use-case">
+                            <h4>Use Case: Row-level Calculations</h4>
+                            <p>Calculated columns are useful for creating new attributes, categorizations, or row-level calculations that don't change with filters.</p>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">Merge/Join</h3>
-                        <span class="term-category python-category">Operation</span>
+                <div class="section">
+                    <h2><i class="fas fa-chart-line"></i> Power BI Visualization</h2>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">Slicers</h3>
+                            <span class="term-category powerbi-category">Visual</span>
+                        </div>
+                        <p class="term-definition">Interactive filters that allow users to segment and filter the data in a report.</p>
+                        <div class="term-example">
+                            Adding a slicer for "Year" or "Region" to allow users to filter the entire report.
+                        </div>
+                        <div class="use-case">
+                            <h4>Use Case: Interactive Reporting</h4>
+                            <p>Slicers empower end-users to explore data by focusing on specific segments without requiring report modifications.</p>
+                        </div>
                     </div>
-                    <p class="term-definition">Combining DataFrames based on common columns or indices, similar to SQL JOIN operations.</p>
-                    <div class="term-example">
-                        # Merge two DataFrames on a common column<br>
-                        merged_df = pd.merge(df1, df2, on='key_column')
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">Drillthrough</h3>
+                            <span class="term-category powerbi-category">Feature</span>
+                        </div>
+                        <p class="term-definition">A feature that allows users to right-click a data point and navigate to a detailed page focused on that specific item.</p>
+                        <div class="term-example">
+                            Setting up a product details page that users can access by right-clicking a product in a visualization.
+                        </div>
+                        <div class="use-case">
+                            <h4>Use Case: Detailed Analysis</h4>
+                            <p>Drillthrough pages provide context-specific details without cluttering the main report with excessive information.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">Bookmarks</h3>
+                            <span class="term-category powerbi-category">Feature</span>
+                        </div>
+                        <p class="term-definition">A way to capture the current state of a report page, including filters and visual interactions.</p>
+                        <div class="term-example">
+                            Creating bookmarks for different views of the same data to create an interactive storytelling experience.
+                        </div>
+                        <div class="use-case">
+                            <h4>Use Case: Report Navigation</h4>
+                            <p>Bookmarks enable creating guided analytical experiences and custom navigation within Power BI reports.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section">
+                    <h2><i class="fas fa-rocket"></i> Advanced Power BI</h2>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">Power Query</h3>
+                            <span class="term-category powerbi-category">Tool</span>
+                        </div>
+                        <p class="term-definition">Power BI's data connectivity and preparation tool that enables data transformation before loading.</p>
+                        <div class="term-example">
+                            Using Power Query to clean data, pivot/unpivot columns, merge queries, and create custom columns.
+                        </div>
+                        <div class="use-case">
+                            <h4>Use Case: ETL Processes</h4>
+                            <p>Power Query provides a no-code interface for building robust data transformation pipelines within Power BI.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">Row-Level Security (RLS)</h3>
+                            <span class="term-category powerbi-category">Security</span>
+                        </div>
+                        <p class="term-definition">A feature that restricts data access at the row level based on user roles and filters.</p>
+                        <div class="term-example">
+                            Creating roles that filter data so salespeople only see their own region's data.
+                        </div>
+                        <div class="use-case">
+                            <h4>Use Case: Data Security</h4>
+                            <p>RLS ensures that users only see data they're authorized to view, critical for multi-tenant or departmental reports.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="term-card">
+                        <div class="term-title">
+                            <h3 class="term-name">Power BI Service</h3>
+                            <span class="term-category powerbi-category">Platform</span>
+                        </div>
+                        <p class="term-definition">The cloud-based platform for sharing, collaborating, and distributing Power BI content.</p>
+                        <div class="term-example">
+                            Publishing reports to Power BI Service, setting up data refresh schedules, and creating dashboards.
+                        </div>
+                        <div class="use-case">
+                            <h4>Use Case: Enterprise Reporting</h4>
+                            <p>Power BI Service enables organization-wide distribution of reports with features like automated refresh and app workspaces.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="tab-content" id="sql-content">
-            <div class="section">
-                <h2>SQL Fundamentals</h2>
-                
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">SELECT Statement</h3>
-                        <span class="term-category sql-category">Query</span>
-                    </div>
-                    <p class="term-definition">Used to select data from a database. The result is stored in a result table, called the result-set.</p>
-                    <div class="term-example">
-                        SELECT column1, column2<br>
-                        FROM table_name;
-                    </div>
-                </div>
-                
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">WHERE Clause</h3>
-                        <span class="term-category sql-category">Clause</span>
-                    </div>
-                    <p class="term-definition">Used to filter records and extract only those that fulfill a specified condition.</p>
-                    <div class="term-example">
-                        SELECT * FROM Customers<br>
-                        WHERE Country='Mexico';
-                    </div>
-                </div>
-                
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">JOIN</h3>
-                        <span class="term-category sql-category">Operation</span>
-                    </div>
-                    <p class="term-definition">Used to combine rows from two or more tables, based on a related column between them.</p>
-                    <div class="term-example">
-                        SELECT Orders.OrderID, Customers.CustomerName<br>
-                        FROM Orders<br>
-                        INNER JOIN Customers ON Orders.CustomerID = Customers.CustomerID;
-                    </div>
-                </div>
-                
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">GROUP BY</h3>
-                        <span class="term-category sql-category">Clause</span>
-                    </div>
-                    <p class="term-definition">Groups rows that have the same values into summary rows, often used with aggregate functions.</p>
-                    <div class="term-example">
-                        SELECT COUNT(CustomerID), Country<br>
-                        FROM Customers<br>
-                        GROUP BY Country;
-                    </div>
-                </div>
-                
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">Window Functions</h3>
-                        <span class="term-category sql-category">Function</span>
-                    </div>
-                    <p class="term-definition">Perform calculations across a set of table rows that are somehow related to the current row.</p>
-                    <div class="term-example">
-                        SELECT<br>
-                          name,<br>
-                          salary,<br>
-                          RANK() OVER (ORDER BY salary DESC) as salary_rank<br>
-                        FROM employees;
-                    </div>
+        <div class="chat-container">
+            <div class="chat-header">
+                <i class="fas fa-robot"></i> Data Analytics Assistant
+            </div>
+            <div class="chat-messages">
+                <div class="message bot-message">
+                    Hello! I'm your Data Analytics Assistant. Ask me anything about Python, SQL, or Power BI, and I'll help with explanations, code examples, or best practices.
                 </div>
             </div>
-            
-            <div class="section">
-                <h2>Advanced SQL</h2>
-                
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">CTE (Common Table Expression)</h3>
-                        <span class="term-category sql-category">Concept</span>
-                    </div>
-                    <p class="term-definition">A temporary named result set that you can reference within a SELECT, INSERT, UPDATE, or DELETE statement.</p>
-                    <div class="term-example">
-                        WITH RegionalSales AS (<br>
-                          SELECT region, SUM(amount) AS total_sales<br>
-                          FROM orders<br>
-                          GROUP BY region<br>
-                        )<br>
-                        SELECT * FROM RegionalSales;
-                    </div>
-                </div>
-                
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">Subquery</h3>
-                        <span class="term-category sql-category">Concept</span>
-                    </div>
-                    <p class="term-definition">A query nested inside another query, used to return data that will be used in the main query.</p>
-                    <div class="term-example">
-                        SELECT product_name<br>
-                        FROM products<br>
-                        WHERE product_id IN (<br>
-                          SELECT product_id<br>
-                          FROM order_details<br>
-                          WHERE quantity > 100<br>
-                        );
-                    </div>
-                </div>
+            <div class="chat-input">
+                <input type="text" placeholder="Ask a question about data analytics...">
+                <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
-        
-        <div class="tab-content" id="powerbi-content">
-            <div class="section">
-                <h2>Power BI Fundamentals</h2>
-                
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">Data Model</h3>
-                        <span class="term-category powerbi-category">Concept</span>
-                    </div>
-                    <p class="term-definition">The foundation of a Power BI report, consisting of tables and relationships that define how data connects.</p>
-                    <div class="term-example">
-                        Creating relationships between fact tables (transactions) and dimension tables (products, customers, dates).
-                    </div>
-                </div>
-                
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">DAX (Data Analysis Expressions)</h3>
-                        <span class="term-category powerbi-category">Language</span>
-                    </div>
-                    <p class="term-definition">A formula language used in Power BI, Power Pivot, and Analysis Services for creating custom calculations.</p>
-                    <div class="term-example">
-                        Total Sales = SUM(Sales[Amount])<br>
-                        YoY Growth = [Total Sales] - CALCULATE([Total Sales], SAMEPERIODLASTYEAR('Date'[Date]))
-                    </div>
-                </div>
-                
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">Measures</h3>
-                        <span class="term-category powerbi-category">Concept</span>
-                    </div>
-                    <p class="term-definition">Calculations created using DAX that are computed at query time based on user interaction with reports.</p>
-                    <div class="term-example">
-                        Total Revenue = SUM(Sales[Revenue])<br>
-                        Average Sale = AVERAGE(Sales[Amount])
-                    </div>
-                </div>
-                
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">Calculated Columns</h3>
-                        <span class="term-category powerbi-category">Concept</span>
-                    </div>
-                    <p class="term-definition">Columns added to a table in the data model using DAX formulas, computed during data refresh.</p>
-                    <div class="term-example">
-                        Full Name = Customer[First Name] & " " & Customer[Last Name]<br>
-                        Profit Margin = (Sales[Revenue] - Sales[Cost]) / Sales[Revenue]
-                    </div>
-                </div>
-            </div>
-            
-            <div class="section">
-                <h2>Power BI Visualization</h2>
-                
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">Slicers</h3>
-                        <span class="term-category powerbi-category">Visual</span>
-                    </div>
-                    <p class="term-definition">Interactive filters that allow users to segment and filter the data in a report.</p>
-                    <div class="term-example">
-                        Adding a slicer for "Year" or "Region" to allow users to filter the entire report.
-                    </div>
-                </div>
-                
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">Drillthrough</h3>
-                        <span class="term-category powerbi-category">Feature</span>
-                    </div>
-                    <p class="term-definition">A feature that allows users to right-click a data point and navigate to a detailed page focused on that specific item.</p>
-                    <div class="term-example">
-                        Setting up a product details page that users can access by right-clicking a product in a visualization.
-                    </div>
-                </div>
-                
-                <div class="term-card">
-                    <div class="term-title">
-                        <h3 class="term-name">Bookmarks</h3>
-                        <span class="term-category powerbi-category">Feature</span>
-                    </div>
-                    <p class="term-definition">A way to capture the current state of a report page, including filters and visual interactions.</p>
-                    <div class="term-example">
-                        Creating bookmarks for different views of the same data to create an interactive storytelling experience.
-                    </div>
-                </div>
-            </div>
-        </div>
+    </div>
+    
+    <div class="chat-toggle">
+        <i class="fas fa-comments"></i>
     </div>
     
     <footer>
@@ -605,6 +949,108 @@
                 }
             });
         });
+        
+        // Chat functionality
+        const chatMessages = document.querySelector('.chat-messages');
+        const chatInput = document.querySelector('.chat-input input');
+        const sendBtn = document.querySelector('#send-btn');
+        const chatToggle = document.querySelector('.chat-toggle');
+        const chatContainer = document.querySelector('.chat-container');
+        
+        // Toggle chat on mobile
+        chatToggle.addEventListener('click', () => {
+            chatContainer.classList.toggle('active');
+        });
+        
+        // Send message function
+        function sendMessage() {
+            const message = chatInput.value.trim();
+            if (message === '') return;
+            
+            // Add user message
+            addMessage(message, 'user');
+            chatInput.value = '';
+            
+            // Simulate bot response (in a real implementation, this would call an API)
+            setTimeout(() => {
+                const botResponse = generateBotResponse(message);
+                addMessage(botResponse, 'bot');
+            }, 1000);
+        }
+        
+        // Add message to chat
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', `${sender}-message`);
+            messageDiv.textContent = text;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Generate bot response (simulated)
+        function generateBotResponse(userMessage) {
+            const lowerMessage = userMessage.toLowerCase();
+            
+            // Python-related responses
+            if (lowerMessage.includes('pandas') || lowerMessage.includes('dataframe')) {
+                return "Pandas DataFrames are essential for data manipulation in Python. Key operations include: df.head() to preview data, df.describe() for statistics, df.groupby() for aggregations, and df.merge() for combining datasets. Would you like a specific code example?";
+            }
+            
+            if (lowerMessage.includes('matplotlib') || lowerMessage.includes('seaborn') || lowerMessage.includes('visualization')) {
+                return "For data visualization in Python, Matplotlib provides foundational plotting capabilities, while Seaborn offers higher-level statistical visualizations. Plotly is great for interactive charts. Each has strengths for different use cases.";
+            }
+            
+            if (lowerMessage.includes('numpy') || lowerMessage.includes('array')) {
+                return "NumPy provides efficient array operations and mathematical functions. It's the foundation for numerical computing in Python and is used by Pandas, Scikit-learn, and other data science libraries.";
+            }
+            
+            // Power BI-related responses
+            if (lowerMessage.includes('power bi') || lowerMessage.includes('dax')) {
+                return "DAX (Data Analysis Expressions) is Power BI's formula language for creating custom calculations. Key concepts include: measures (calculated on-demand), calculated columns (pre-computed), and filter context (how filters affect calculations).";
+            }
+            
+            if (lowerMessage.includes('measure') || lowerMessage.includes('calculated column')) {
+                return "In Power BI, measures are dynamic calculations that respond to report filters, while calculated columns are static computations added to each row during data refresh. Use measures for aggregations and calculated columns for row-level attributes.";
+            }
+            
+            if (lowerMessage.includes('data model') || lowerMessage.includes('relationship')) {
+                return "A well-designed data model in Power BI uses a star schema with fact tables (containing measures) and dimension tables (containing attributes). Proper relationships ensure accurate calculations and efficient filtering.";
+            }
+            
+            // SQL-related responses
+            if (lowerMessage.includes('sql') || lowerMessage.includes('query')) {
+                return "SQL is essential for data extraction and transformation. Key concepts include: SELECT for retrieving data, WHERE for filtering, JOIN for combining tables, GROUP BY for aggregations, and window functions for advanced calculations.";
+            }
+            
+            if (lowerMessage.includes('join') || lowerMessage.includes('relationship')) {
+                return "SQL JOINs combine data from multiple tables. INNER JOIN returns matching records, LEFT JOIN returns all records from the left table, RIGHT JOIN from the right table, and FULL JOIN returns all records from both tables.";
+            }
+            
+            // General responses
+            if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+                return "Hello! I'm here to help with your data analytics questions. Feel free to ask about Python, SQL, Power BI, or any data-related topics!";
+            }
+            
+            if (lowerMessage.includes('thank')) {
+                return "You're welcome! Let me know if you have any other questions about data analytics.";
+            }
+            
+            // Default response
+            return "I can help with questions about Python data analysis (Pandas, NumPy, visualization), SQL queries, or Power BI (DAX, data modeling, visualization). Could you please be more specific about what you'd like to know?";
+        }
+        
+        // Event listeners for chat
+        sendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Add some initial example messages
+        setTimeout(() => {
+            addMessage("Try asking me: 'How do I create a measure in Power BI?' or 'Show me a pandas groupby example'", 'bot');
+        }, 2000);
     </script>
 </body>
 </html>
