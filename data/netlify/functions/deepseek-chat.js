@@ -13,30 +13,32 @@ exports.handler = async function(event, context) {
   try {
     const { message } = JSON.parse(event.body);
     
-    const response = await fetch('https://api.deepseek.com/chat/completions', {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'deepseek-chat',
+        model: 'gpt-3.5-turbo',
         messages: [
           {
             role: 'system',
-            content: 'You are a data analytics expert specializing in Python, SQL, and Power BI. Provide concise, helpful explanations with code examples when appropriate.'
+            content: 'You are a data analytics expert specializing in Python, SQL, and Power BI. Provide concise, helpful explanations with code examples when appropriate. Keep responses focused and practical.'
           },
           {
             role: 'user',
             content: message
           }
         ],
-        stream: false
+        max_tokens: 500,
+        temperature: 0.7
       })
     });
 
     if (!response.ok) {
-      throw new Error(`DeepSeek API error: ${response.status}`);
+      const errorData = await response.json();
+      throw new Error(`OpenAI API error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
     }
 
     const data = await response.json();
