@@ -10,9 +10,9 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body {
-    background: radial-gradient(ellipse at center, #f5f5f7 0%, #e8e8e8 35%, #dcdcdc 100%);
+    background: radial-gradient(ellipse at center, rgba(20,20,20,1) 0%, rgba(15,15,15,1) 35%, #0a0a0a 100%);
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
+    color: #fff;
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
     overflow-x:hidden;
@@ -20,23 +20,74 @@
     transition: opacity 1.2s ease-in-out;
   }
 
-  body.dark-theme {
-    background: radial-gradient(ellipse at center, rgba(20,20,20,1) 0%, rgba(15,15,15,1) 35%, #0a0a0a 100%);
-    color: #fff;
+  body.light-theme {
+    background: radial-gradient(ellipse at center, #f5f5f7 0%, #e8e8e8 35%, #dcdcdc 100%);
+    color: #333;
   }
 
-  /* ocean waves (unchanged) */
-  .ocean{height:5%;width:100%;position:fixed;bottom:0;left:0;background:#e0e0e0;z-index:0}
-  .wave{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 88.7'%3E%3Cpath d='M800 56.9c-155.5 0-204.9-50-405.5-49.9-200 0-250 49.9-394.5 49.9v31.8h800v-.2-31.6z' fill='%23d0d0d0'/%3E%3C/svg%3E") repeat-x;position:absolute;top:-198px;width:6400px;height:198px;animation:wave 7s linear infinite;transform:translate3d(0,0,0)}
+  /* Language switcher */
+  .language-switcher {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 100;
+  }
+
+  .lang-btn {
+    padding: 8px 16px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  }
+
+  .light-theme .lang-btn {
+    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
+    border: 1px solid rgba(255,255,255,0.4);
+    color: #333;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+
+  .lang-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  }
+
+  .light-theme .lang-btn:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  }
+
+  .lang-btn.active {
+    background: linear-gradient(180deg, rgba(100,150,255,0.3), rgba(80,130,235,0.2));
+    border-color: rgba(100,150,255,0.5);
+  }
+
+  .light-theme .lang-btn.active {
+    background: linear-gradient(180deg, rgba(100,150,255,0.4), rgba(80,130,235,0.3));
+    border-color: rgba(100,150,255,0.6);
+  }
+
+  /* ocean waves */
+  .ocean{height:5%;width:100%;position:fixed;bottom:0;left:0;background:#1a1a1a;z-index:0}
+  .wave{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 88.7'%3E%3Cpath d='M800 56.9c-155.5 0-204.9-50-405.5-49.9-200 0-250 49.9-394.5 49.9v31.8h800v-.2-31.6z' fill='%23111111'/%3E%3C/svg%3E") repeat-x;position:absolute;top:-198px;width:6400px;height:198px;animation:wave 7s linear infinite;transform:translate3d(0,0,0)}
   .wave:nth-of-type(2){top:-175px;animation:wave 7s linear -.125s infinite}
   @keyframes wave{0%{margin-left:0}100%{margin-left:-1600px}}
 
-  .dark-theme .ocean {
-    background: #1a1a1a;
+  .light-theme .ocean {
+    background: #e0e0e0;
   }
   
-  .dark-theme .wave {
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 88.7'%3E%3Cpath d='M800 56.9c-155.5 0-204.9-50-405.5-49.9-200 0-250 49.9-394.5 49.9v31.8h800v-.2-31.6z' fill='%23111111'/%3E%3C/svg%3E") repeat-x;
+  .light-theme .wave {
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 88.7'%3E%3Cpath d='M800 56.9c-155.5 0-204.9-50-405.5-49.9-200 0-250 49.9-394.5 49.9v31.8h800v-.2-31.6z' fill='%23d0d0d0'/%3E%3C/svg%3E") repeat-x;
   }
 
   /* layout */
@@ -57,27 +108,26 @@
     width: min(880px, 94%);
     border-radius:28px;
     padding:40px;
-    /* subtle base color so backdrop-filter shows through nicely */
-    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
-    border: 1px solid rgba(255,255,255,0.4);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    backdrop-filter: blur(24px) saturate(180%);
-    box-shadow:
-      0 12px 40px rgba(0,0,0,0.15),
-      inset 0 1px 0 rgba(255,255,255,0.6),
-      inset 0 -1px 0 rgba(255,255,255,0.3);
-    overflow:visible;
-    transform: translateZ(0); /* create a new layer for GPU */
-    transition: transform 0.3s ease;
-  }
-
-  .dark-theme .glass-container {
     background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
     border: 1px solid rgba(255,255,255,0.08);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
     box-shadow:
       0 12px 40px rgba(0,0,0,0.6),
       inset 0 1px 0 rgba(255,255,255,0.04),
       inset 0 -1px 0 rgba(255,255,255,0.02);
+    overflow:visible;
+    transform: translateZ(0);
+    transition: transform 0.3s ease;
+  }
+
+  .light-theme .glass-container {
+    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
+    border: 1px solid rgba(255,255,255,0.4);
+    box-shadow:
+      0 12px 40px rgba(0,0,0,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.6),
+      inset 0 -1px 0 rgba(255,255,255,0.3);
   }
 
   /* PDF Reader Panel */
@@ -86,14 +136,14 @@
     width: min(300px, 90%);
     border-radius: 28px;
     padding: 30px 25px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
-    border: 1px solid rgba(255,255,255,0.4);
+    background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
+    border: 1px solid rgba(255,255,255,0.08);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     backdrop-filter: blur(24px) saturate(180%);
     box-shadow:
-      0 12px 40px rgba(0,0,0,0.15),
-      inset 0 1px 0 rgba(255,255,255,0.6),
-      inset 0 -1px 0 rgba(255,255,255,0.3);
+      0 12px 40px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.04),
+      inset 0 -1px 0 rgba(255,255,255,0.02);
     overflow: visible;
     transform: translateZ(0);
     display: none;
@@ -101,13 +151,13 @@
     gap: 20px;
   }
 
-  .dark-theme .pdf-panel {
-    background: linear-gradient(180deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
-    border: 1px solid rgba(255,255,255,0.08);
+  .light-theme .pdf-panel {
+    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
+    border: 1px solid rgba(255,255,255,0.4);
     box-shadow:
-      0 12px 40px rgba(0,0,0,0.6),
-      inset 0 1px 0 rgba(255,255,255,0.04),
-      inset 0 -1px 0 rgba(255,255,255,0.02);
+      0 12px 40px rgba(0,0,0,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.6),
+      inset 0 -1px 0 rgba(255,255,255,0.3);
   }
 
   .pdf-panel.active {
@@ -124,28 +174,28 @@
 
   .pdf-panel .glass-inner-border {
     z-index: 4;
-    background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(255,255,255,0.1);
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(255,255,255,0.02);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask-composite: exclude;
   }
 
-  .dark-theme .pdf-panel .glass-inner-border {
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(255,255,255,0.02);
+  .light-theme .pdf-panel .glass-inner-border {
+    background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(255,255,255,0.1);
   }
 
   .pdf-panel .distort-layer {
     z-index: 3;
-    background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
     mix-blend-mode: overlay;
     opacity: 0.5;
     filter: url(#liquid);
     will-change: filter;
   }
 
-  .dark-theme .pdf-panel .distort-layer {
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  .light-theme .pdf-panel .distort-layer {
+    background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
   }
 
   .pdf-panel::before {
@@ -155,16 +205,16 @@
     inset: 0;
     border-radius: 28px;
     pointer-events: none;
-    background: radial-gradient(120% 80% at 10% 10%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 6%, rgba(255,255,255,0.00) 20%),
-                linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.00) 40%);
+    background: radial-gradient(120% 80% at 10% 10%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 6%, rgba(255,255,255,0.00) 20%),
+                linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.00) 40%);
     mix-blend-mode: screen;
     opacity: 0.95;
     transform: translateZ(0);
   }
 
-  .dark-theme .pdf-panel::before {
-    background: radial-gradient(120% 80% at 10% 10%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 6%, rgba(255,255,255,0.00) 20%),
-                linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.00) 40%);
+  .light-theme .pdf-panel::before {
+    background: radial-gradient(120% 80% at 10% 10%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 6%, rgba(255,255,255,0.00) 20%),
+                linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.00) 40%);
   }
 
   .pdf-panel::after {
@@ -176,19 +226,19 @@
     pointer-events: none;
     background: transparent;
     box-shadow:
-      -6px -3px 18px -10px rgba(255,150,150,0.4),
-      6px 3px 18px -10px rgba(150,200,255,0.4),
-      -4px 6px 22px -14px rgba(150,255,200,0.2);
+      -6px -3px 18px -10px rgba(255,80,100,0.25),
+      6px 3px 18px -10px rgba(120,180,255,0.25),
+      -4px 6px 22px -14px rgba(120,255,200,0.12);
     mix-blend-mode: screen;
     opacity: 0.9;
     filter: blur(6px);
   }
 
-  .dark-theme .pdf-panel::after {
+  .light-theme .pdf-panel::after {
     box-shadow:
-      -6px -3px 18px -10px rgba(255,80,100,0.25),
-      6px 3px 18px -10px rgba(120,180,255,0.25),
-      -4px 6px 22px -14px rgba(120,255,200,0.12);
+      -6px -3px 18px -10px rgba(255,150,150,0.4),
+      6px 3px 18px -10px rgba(150,200,255,0.4),
+      -4px 6px 22px -14px rgba(150,255,200,0.2);
   }
 
   .pdf-title {
@@ -213,14 +263,14 @@
     justify-content: center;
     gap: 8px;
     padding: 12px 20px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
-    border: 1px solid rgba(255,255,255,0.4);
+    background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+    border: 1px solid rgba(255,255,255,0.15);
     border-radius: 14px;
-    color: #333;
+    color: #fff;
     text-decoration: none;
     font-weight: 500;
     font-size: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     transition: all 0.3s ease;
     position: relative;
     z-index: 5;
@@ -228,49 +278,48 @@
     backdrop-filter: blur(10px);
   }
 
-  .dark-theme .pdf-download-btn {
-    background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
-    border: 1px solid rgba(255,255,255,0.15);
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  .light-theme .pdf-download-btn {
+    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
+    border: 1px solid rgba(255,255,255,0.4);
+    color: #333;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   }
 
   .pdf-download-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
   }
 
-  .dark-theme .pdf-download-btn:hover {
-    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  .light-theme .pdf-download-btn:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
   }
 
   .pdf-download-btn img {
     width: 18px;
     height: 18px;
-    filter: brightness(0) invert(0.3);
-  }
-
-  .dark-theme .pdf-download-btn img {
     filter: brightness(0) invert(1);
   }
 
-  /* Animated distortion layer - sits above the card's blurred background */
+  .light-theme .pdf-download-btn img {
+    filter: brightness(0) invert(0.3);
+  }
+
+  /* Animated distortion layer */
   .glass-container .distort-layer{
     pointer-events:none;
     position:absolute;
     inset:0;
     border-radius:28px;
     z-index:3;
-    /* subtle translucency, will be filtered by SVG turbulence */
-    background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
     mix-blend-mode: overlay;
     opacity:0.5;
-    filter: url(#liquid); /* SVG filter applied here */
+    filter: url(#liquid);
     will-change: filter;
   }
 
-  .dark-theme .glass-container .distort-layer {
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  .light-theme .glass-container .distort-layer {
+    background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
   }
 
   /* Fresnel rim highlight */
@@ -281,97 +330,86 @@
     inset:0;
     border-radius:28px;
     pointer-events:none;
-    background: radial-gradient(120% 80% at 10% 10%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 6%, rgba(255,255,255,0.00) 20%),
-                linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.00) 40%);
+    background: radial-gradient(120% 80% at 10% 10%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 6%, rgba(255,255,255,0.00) 20%),
+                linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.00) 40%);
     mix-blend-mode: screen;
     opacity:0.95;
     transform: translateZ(0);
   }
 
-  .dark-theme .glass-container::before {
-    background: radial-gradient(120% 80% at 10% 10%, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.06) 6%, rgba(255,255,255,0.00) 20%),
-                linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.00) 40%);
+  .light-theme .glass-container::before {
+    background: radial-gradient(120% 80% at 10% 10%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 6%, rgba(255,255,255,0.00) 20%),
+                linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.00) 40%);
   }
 
-  /* Chromatic aberration rim: 3 colored offset layers to the outside edge */
+  /* Chromatic aberration rim */
   .glass-container::after{
     content:'';
     position:absolute;
     z-index:2;
-    inset:-2px; /* allow colored fringes outside */
+    inset:-2px;
     border-radius:30px;
     pointer-events:none;
     background: transparent;
     box-shadow:
-      /* subtle colored glows offset slightly to simulate fringing */
-      -6px -3px 18px -10px rgba(255,150,150,0.4),
-      6px 3px 18px -10px rgba(150,200,255,0.4),
-      -4px 6px 22px -14px rgba(150,255,200,0.2);
+      -6px -3px 18px -10px rgba(255,80,100,0.25),
+      6px 3px 18px -10px rgba(120,180,255,0.25),
+      -4px 6px 22px -14px rgba(120,255,200,0.12);
     mix-blend-mode: screen;
     opacity:0.9;
     filter: blur(6px);
   }
 
-  .dark-theme .glass-container::after {
+  .light-theme .glass-container::after {
     box-shadow:
-      -6px -3px 18px -10px rgba(255,80,100,0.25),
-      6px 3px 18px -10px rgba(120,180,255,0.25),
-      -4px 6px 22px -14px rgba(120,255,200,0.12);
+      -6px -3px 18px -10px rgba(255,150,150,0.4),
+      6px 3px 18px -10px rgba(150,200,255,0.4),
+      -4px 6px 22px -14px rgba(150,255,200,0.2);
   }
 
-  /* inner glass border (thin inner rim) */
+  /* inner glass border */
   .glass-inner-border{
     position:absolute;
     inset:1px;
     border-radius:26px;
     z-index:4;
     pointer-events:none;
-    background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(255,255,255,0.1);
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(255,255,255,0.02);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask-composite: exclude;
   }
 
-  .dark-theme .glass-inner-border {
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(255,255,255,0.02);
+  .light-theme .glass-inner-border {
+    background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(255,255,255,0.1);
   }
 
-  /* header/content unchanged but elevated z-index so highlights show above distortion */
+  /* header/content */
   .header{display:flex;align-items:center;gap:24px;margin-bottom:30px;position:relative;z-index:5}
   .profile-pic{
-    width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid rgba(0,0,0,0.1);
-    box-shadow:0 6px 26px rgba(0,0,0,0.15);
+    width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,0.15);
+    box-shadow:0 6px 26px rgba(0,0,0,0.5);
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   .profile-pic:hover {
     transform: scale(1.05);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-  }
-  .dark-theme .profile-pic {
-    border: 3px solid rgba(255,255,255,0.15);
-    box-shadow:0 6px 26px rgba(0,0,0,0.5);
-  }
-  .dark-theme .profile-pic:hover {
     box-shadow: 0 8px 30px rgba(0,0,0,0.6);
   }
-  .name{color:#333;font-size:32px;font-weight:600}
-  .dark-theme .name { color: #ffffff; }
-  .description{color:rgba(0,0,0,0.8);line-height:1.7;margin-bottom:35px;font-size:16px;position:relative;z-index:5}
-  .dark-theme .description { color: rgba(255,255,255,0.88); }
+  .light-theme .profile-pic {
+    border: 3px solid rgba(0,0,0,0.1);
+    box-shadow:0 6px 26px rgba(0,0,0,0.15);
+  }
+  .light-theme .profile-pic:hover {
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  }
+  .name{color:#ffffff;font-size:32px;font-weight:600}
+  .light-theme .name { color: #333; }
+  .description{color:rgba(255,255,255,0.88);line-height:1.7;margin-bottom:35px;font-size:16px;position:relative;z-index:5}
+  .light-theme .description { color: rgba(0,0,0,0.8); }
 
   .links-container{display:flex;justify-content:center;gap:30px;margin-bottom:35px;flex-wrap:wrap;position:relative;z-index:5}
-  
-  .additional-links-container {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin-bottom: 35px;
-    flex-wrap: wrap;
-    position: relative;
-    z-index: 5;
-  }
 
   /* Main Game Projects Section */
   .projects-section {
@@ -385,11 +423,11 @@
     font-size: 20px;
     font-weight: 600;
     margin-bottom: 20px;
-    color: rgba(0,0,0,0.8);
+    color: rgba(255,255,255,0.9);
   }
 
-  .dark-theme .section-title {
-    color: rgba(255,255,255,0.9);
+  .light-theme .section-title {
+    color: rgba(0,0,0,0.8);
   }
 
   .projects-container {
@@ -405,14 +443,14 @@
     align-items: center;
     justify-content: center;
     padding: 14px 24px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
-    border: 1px solid rgba(255,255,255,0.4);
+    background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+    border: 1px solid rgba(255,255,255,0.15);
     border-radius: 14px;
-    color: #333;
+    color: #fff;
     text-decoration: none;
     font-weight: 500;
     font-size: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     transition: all 0.3s ease;
     position: relative;
     z-index: 5;
@@ -421,67 +459,65 @@
     min-width: 140px;
   }
 
-  .dark-theme .project-button {
-    background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
-    border: 1px solid rgba(255,255,255,0.15);
-    color: #fff;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  .light-theme .project-button {
+    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
+    border: 1px solid rgba(255,255,255,0.4);
+    color: #333;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   }
 
   .project-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
-  }
-
-  .dark-theme .project-button:hover {
     box-shadow: 0 6px 20px rgba(0,0,0,0.4);
   }
 
-  /* icon wrapper: glass mini-cards with distortion & chromatic edges */
+  .light-theme .project-button:hover {
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  }
+
+  /* icon wrapper */
   .link-button{display:flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none;transition:transform .26s cubic-bezier(.2,.9,.2,1),filter .26s}
   .link-button:hover{transform:translateY(-6px) scale(1.03)}
 
   .icon-wrapper{
     position:relative;
     width:72px;height:72px;border-radius:18px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
     -webkit-backdrop-filter: blur(18px) saturate(170%);
     backdrop-filter: blur(18px) saturate(170%);
-    border: 1px solid rgba(255,255,255,0.4);
+    border: 1px solid rgba(255,255,255,0.09);
     display:flex;justify-content:center;align-items:center;
     box-shadow:
-      0 8px 26px rgba(0,0,0,0.15),
-      inset 0 1px 0 rgba(255,255,255,0.6);
+      0 8px 26px rgba(0,0,0,0.45),
+      inset 0 1px 0 rgba(255,255,255,0.06);
     overflow:visible;
     transition:all .26s cubic-bezier(.2,.9,.2,1);
     z-index:5;
   }
 
-  .dark-theme .icon-wrapper {
-    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-    border: 1px solid rgba(255,255,255,0.09);
+  .light-theme .icon-wrapper {
+    background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
+    border: 1px solid rgba(255,255,255,0.4);
     box-shadow:
-      0 8px 26px rgba(0,0,0,0.45),
-      inset 0 1px 0 rgba(255,255,255,0.06);
+      0 8px 26px rgba(0,0,0,0.15),
+      inset 0 1px 0 rgba(255,255,255,0.6);
   }
 
-  /* micro-distort & chroma for each icon */
   .icon-wrapper .icon-distort{
     pointer-events:none;
     position:absolute;
     inset:0;
     border-radius:16px;
     filter: url(#liquid-small);
-    opacity:0.3;
+    opacity:0.45;
     mix-blend-mode: overlay;
     z-index:2;
   }
 
-  .dark-theme .icon-wrapper .icon-distort {
-    opacity: 0.45;
+  .light-theme .icon-wrapper .icon-distort {
+    opacity: 0.3;
   }
 
-  /* icon colored fringe (three small offset shadows) */
   .icon-wrapper::after{
     content:'';
     position:absolute;
@@ -490,32 +526,32 @@
     pointer-events:none;
     z-index:1;
     box-shadow:
-      -3px -2px 12px -7px rgba(255,150,150,0.5),
-      3px 2px 12px -7px rgba(150,200,255,0.5);
+      -3px -2px 12px -7px rgba(255,110,120,0.7),
+      3px 2px 12px -7px rgba(110,160,255,0.7);
     filter: blur(4px);
     mix-blend-mode: screen;
   }
 
-  .dark-theme .icon-wrapper::after {
+  .light-theme .icon-wrapper::after {
     box-shadow:
-      -3px -2px 12px -7px rgba(255,110,120,0.7),
-      3px 2px 12px -7px rgba(110,160,255,0.7);
+      -3px -2px 12px -7px rgba(255,150,150,0.5),
+      3px 2px 12px -7px rgba(150,200,255,0.5);
   }
 
-  .icon-wrapper img{width:40px;height:40px;object-fit:contain;filter:brightness(0) invert(0.3);position:relative;z-index:6}
-  .dark-theme .icon-wrapper img { filter: brightness(0) invert(1); }
+  .icon-wrapper img{width:40px;height:40px;object-fit:contain;filter:brightness(0) invert(1);position:relative;z-index:6}
+  .light-theme .icon-wrapper img { filter: brightness(0) invert(0.3); }
 
-  .link-label{color:rgba(0,0,0,0.8);font-size:13px;text-align:center;font-weight:400;position:relative;z-index:5}
-  .dark-theme .link-label { color: rgba(255,255,255,0.9); }
+  .link-label{color:rgba(255,255,255,0.9);font-size:13px;text-align:center;font-weight:400;position:relative;z-index:5}
+  .light-theme .link-label { color: rgba(0,0,0,0.8); }
 
-  .footer{position:relative;z-index:5;text-align:center;margin-top:30px;padding-top:25px;border-top:1px solid rgba(0,0,0,0.1)}
-  .dark-theme .footer { border-top: 1px solid rgba(255,255,255,0.06); }
-  .email{color:rgba(0,0,0,0.7);font-size:15px;margin-bottom:10px;text-decoration:none;display:block}
-  .dark-theme .email { color: rgba(255,255,255,0.7); }
-  .copyright{color:rgba(0,0,0,0.5);font-size:13px}
-  .dark-theme .copyright { color: rgba(255,255,255,0.45); }
+  .footer{position:relative;z-index:5;text-align:center;margin-top:30px;padding-top:25px;border-top:1px solid rgba(255,255,255,0.06)}
+  .light-theme .footer { border-top: 1px solid rgba(0,0,0,0.1); }
+  .email{color:rgba(255,255,255,0.7);font-size:15px;margin-bottom:10px;text-decoration:none;display:block}
+  .light-theme .email { color: rgba(0,0,0,0.7); }
+  .copyright{color:rgba(255,255,255,0.45);font-size:13px}
+  .light-theme .copyright { color: rgba(0,0,0,0.5); }
 
-/* small responsive tweaks */
+  /* responsive */
   @media (max-width:600px){
     .header{flex-direction:column;text-align:center}
     .name{font-size:26px}
@@ -530,6 +566,15 @@
     }
     .projects-container {
       gap: 15px;
+    }
+    .language-switcher {
+      top: 10px;
+      right: 10px;
+      gap: 6px;
+    }
+    .lang-btn {
+      padding: 6px 12px;
+      font-size: 12px;
     }
   }
 
@@ -546,16 +591,12 @@
 <!-- inline SVG filters -->
 <svg style="position:absolute;width:0;height:0;pointer-events:none" aria-hidden="true" focusable="false">
   <defs>
-    <!-- Liquid displacement filter for the big card -->
     <filter id="liquid" x="-20%" y="-20%" width="140%" height="140%">
-      <!-- animated noise -->
       <feTurbulence id="turb" baseFrequency="0.006 0.01" numOctaves="2" seed="5" stitchTiles="stitch" type="fractalNoise"/>
       <feColorMatrix type="saturate" values="0.8"/>
-      <!-- make displacement gentle -->
       <feDisplacementMap in="SourceGraphic" in2="turb" scale="6" xChannelSelector="R" yChannelSelector="G"/>
     </filter>
 
-    <!-- smaller variant for the icon boxes -->
     <filter id="liquid-small" x="-30%" y="-30%" width="160%" height="160%">
       <feTurbulence id="turb-small" baseFrequency="0.015 0.02" numOctaves="1" seed="7" stitchTiles="stitch" type="fractalNoise"/>
       <feDisplacementMap in="SourceGraphic" in2="turb-small" scale="3" xChannelSelector="R" yChannelSelector="G"/>
@@ -565,6 +606,13 @@
 </head>
 
 <body>
+  <!-- Language Switcher -->
+  <div class="language-switcher">
+    <button class="lang-btn active" data-lang="en">English</button>
+    <button class="lang-btn" data-lang="es">Español</button>
+    <button class="lang-btn" data-lang="ca">Català</button>
+  </div>
+
   <div class="ocean">
     <div class="wave"></div>
     <div class="wave"></div>
@@ -578,19 +626,10 @@
 
       <div class="header">
         <img src="Albert.jpg" alt="Albert Adroer Prats" class="profile-pic" id="profilePic">
-        <h1 class="name">Albert Adroer Prats</h1>
+        <h1 class="name" data-i18n="name">Albert Adroer Prats</h1>
       </div>
 
-      <div class="description">
-        <p>I’m a 27-year-old game developer and data enthusiast from Barcelona. I build games not only to entertain but also to explore how data can reveal patterns in player behavior and design impact. In each of my projects, I implement systems that collect gameplay data, from player progress to interaction patterns, allowing me to analyze how people play and turn those insights into meaningful reports. It’s both a creative outlet and a way to bridge my passions for interactive design and data-driven storytelling.</p>
-
-        <p>My background in Unity development has given me hands-on experience building complete games, from prototypes to published titles. My first commercial release, <em>Bald Ball</em>, is available on Steam, and I regularly share smaller experiments on itch.io. I’m currently working on new gameplay prototypes and developing personal software tools to automate and optimize parts of the data analytics process.</p>
-
-        <p>I studied data analytics at Ironhack, where I built Python and AI-based tools to streamline analysis workflows. I continue to grow as a data analyst by experimenting with datasets from my own games and refining my ability to turn raw numbers into actionable insights that inform both design and development.</p>
-
-        <p>When I’m not coding, I enjoy music production, oil painting, bouldering, and hiking. These creative outlets, much like data, help me look for patterns in seemingly unconnected things.</p>
-      </div>
-
+      <div class="description" id="description"></div>
 
       <div class="links-container">
         <a href="https://github.com/treblalbert" class="link-button" target="_blank">
@@ -614,13 +653,13 @@
             <div class="icon-distort"></div>
             <img src="pdf.png" alt="PDF Reader">
           </div>
-          <span class="link-label">ATW PDF Viewer</span>
+          <span class="link-label" data-i18n="pdfViewer">ATW PDF Viewer</span>
         </a>
       </div>
       
       <!-- Main Game Projects Section -->
       <div class="projects-section">
-        <h2 class="section-title">Main Game Projects</h2>
+        <h2 class="section-title" data-i18n="projectsTitle">Main Game Projects</h2>
         <div class="projects-container">
           <a href="https://albertfreeman.org/bald-ball/" class="project-button" target="_blank">Bald Ball</a>
           <a href="https://albertfreeman.org/terra/" class="project-button" target="_blank">Terra</a>
@@ -639,23 +678,99 @@
       <div class="glass-inner-border" aria-hidden="true"></div>
       <div class="distort-layer" aria-hidden="true"></div>
       
-      <h2 class="pdf-title">Albert The Wrench PDF Reader</h2>
-      <p class="pdf-description">
+      <h2 class="pdf-title" data-i18n="pdfTitle">Albert The Wrench PDF Reader</h2>
+      <p class="pdf-description" data-i18n="pdfDescription">
         Albert The Wrench PDF Reader is a feature-rich, customizable PDF viewer built with Python that offers an intuitive interface combined with powerful document management capabilities. Designed for both casual users and professionals who need efficient PDF navigation and annotation tools.
       </p>
-      <!-- Updated button to download the local file -->
       <a href="Albert The Wrench PDF Reader.exe" class="pdf-download-btn" download>
         <img src="pdf.png" alt="Download">
-        Download
+        <span data-i18n="download">Download</span>
       </a>
       <a href="https://github.com/treblalbert/Albert-s-PDF-Viewer" class="pdf-download-btn" target="_blank">
         <img src="pdf.png" alt="Source Code (GitHub)">
-        Source Code (GitHub)
+        <span data-i18n="sourceCode">Source Code (GitHub)</span>
       </a>
     </div>
   </div>
 
   <script>
+    // Translations
+    const translations = {
+      en: {
+        name: "Albert Adroer Prats",
+        description: `<p>I'm a 27-year-old game developer and data enthusiast from Barcelona, currently working as a Data Analyst at Openteca in Sant Cugat del Vallès. I build games as a creative outlet and as a way to explore interactive design, mechanics, and player experience.</p>
+        <p>My background in Unity development has given me hands-on experience building complete games, from prototypes to published titles. My first commercial release, <em>Bald Ball</em>, is available on Steam, and I regularly share smaller experiments on itch.io. I'm currently working on new gameplay prototypes and developing personal software tools to automate and optimize parts of the data analytics process.</p>
+        <p>I studied data analytics at Ironhack, where I built Python and AI-based tools to streamline analysis workflows. As part of my final project, I designed and analyzed a dataset generated from gameplay interactions, which helped solidify my interest in combining creativity with analytical thinking. I continue to grow as a data analyst by experimenting with diverse datasets and refining my ability to turn raw information into meaningful insights.</p>
+        <p>When I'm not coding, I enjoy music production, oil painting, bouldering, and hiking. These creative outlets, much like data, help me look for patterns in seemingly unconnected things.</p>`,
+        pdfViewer: "ATW PDF Viewer",
+        projectsTitle: "Main Game Projects",
+        pdfTitle: "Albert The Wrench PDF Reader",
+        pdfDescription: "Albert The Wrench PDF Reader is a feature-rich, customizable PDF viewer built with Python that offers an intuitive interface combined with powerful document management capabilities. Designed for both casual users and professionals who need efficient PDF navigation and annotation tools.",
+        download: "Download",
+        sourceCode: "Source Code (GitHub)"
+      },
+      es: {
+        name: "Albert Adroer Prats",
+        description: `<p>Soy un desarrollador de videojuegos y entusiasta de los datos de 27 años de Barcelona, actualmente trabajando como Analista de Datos en Openteca en Sant Cugat del Vallès. Desarrollo juegos como una salida creativa y como una forma de explorar el diseño interactivo, las mecánicas y la experiencia del jugador.</p>
+        <p>Mi experiencia en desarrollo con Unity me ha dado experiencia práctica construyendo juegos completos, desde prototipos hasta títulos publicados. Mi primer lanzamiento comercial, <em>Bald Ball</em>, está disponible en Steam, y regularmente comparto experimentos más pequeños en itch.io. Actualmente estoy trabajando en nuevos prototipos de juego y desarrollando herramientas de software personales para automatizar y optimizar partes del proceso de análisis de datos.</p>
+        <p>Estudié análisis de datos en Ironhack, donde construí herramientas basadas en Python e IA para agilizar flujos de trabajo de análisis. Como parte de mi proyecto final, diseñé y analicé un conjunto de datos generado a partir de interacciones de juego, lo que ayudó a consolidar mi interés en combinar creatividad con pensamiento analítico. Continúo creciendo como analista de datos experimentando con diversos conjuntos de datos y refinando mi capacidad para convertir información sin procesar en ideas significativas.</p>
+        <p>Cuando no estoy programando, disfruto de la producción musical, la pintura al óleo, la escalada en rocódromo y el senderismo. Estas salidas creativas, al igual que los datos, me ayudan a buscar patrones en cosas aparentemente inconexas.</p>`,
+        pdfViewer: "Visor PDF ATW",
+        projectsTitle: "Principales Proyectos de Juegos",
+        pdfTitle: "Lector PDF Albert The Wrench",
+        pdfDescription: "Albert The Wrench PDF Reader es un visor de PDF rico en funciones y personalizable construido con Python que ofrece una interfaz intuitiva combinada con potentes capacidades de gestión de documentos. Diseñado tanto para usuarios casuales como para profesionales que necesitan herramientas eficientes de navegación y anotación de PDF.",
+        download: "Descargar",
+        sourceCode: "Código Fuente (GitHub)"
+      },
+      ca: {
+        name: "Albert Adroer Prats",
+        description: `<p>Sóc un desenvolupador de videojocs i entusiasta de les dades de 27 anys de Barcelona, actualment treballant com a Analista de Dades a Openteca a Sant Cugat del Vallès. Construeixo jocs com una sortida creativa i com una manera d'explorar el disseny interactiu, les mecàniques i l'experiència del jugador.</p>
+        <p>La meva experiència en desenvolupament amb Unity m'ha donat experiència pràctica construint jocs complets, des de prototips fins a títols publicats. El meu primer llançament comercial, <em>Bald Ball</em>, està disponible a Steam, i regularment comparteixo experiments més petits a itch.io. Actualment estic treballant en nous prototips de joc i desenvolupant eines de programari personals per automatitzar i optimitzar parts del procés d'anàlisi de dades.</p>
+        <p>Vaig estudiar anàlisi de dades a Ironhack, on vaig construir eines basades en Python i IA per agilitzar fluxos de treball d'anàlisi. Com a part del meu projecte final, vaig dissenyar i analitzar un conjunt de dades generat a partir d'interaccions de joc, cosa que va ajudar a consolidar el meu interès en combinar creativitat amb pensament analític. Continuo creixent com a analista de dades experimentant amb diversos conjunts de dades i refinant la meva capacitat per convertir informació sense processar en idees significatives.</p>
+        <p>Quan no estic programant, gaudeixo de la producció musical, la pintura a l'oli, l'escalada en rocòdrom i el senderisme. Aquestes sortides creatives, igual que les dades, m'ajuden a buscar patrons en coses aparentment desconnectades.</p>`,
+        pdfViewer: "Visor PDF ATW",
+        projectsTitle: "Principals Projectes de Jocs",
+        pdfTitle: "Lector PDF Albert The Wrench",
+        pdfDescription: "Albert The Wrench PDF Reader és un visor de PDF ric en funcions i personalitzable construït amb Python que ofereix una interfície intuïtiva combinada amb potents capacitats de gestió de documents. Dissenyat tant per a usuaris ocasionals com per a professionals que necessiten eines eficients de navegació i anotació de PDF.",
+        download: "Descarregar",
+        sourceCode: "Codi Font (GitHub)"
+      }
+    };
+
+    let currentLang = 'en';
+
+    function updateContent(lang) {
+      currentLang = lang;
+      const trans = translations[lang];
+      
+      // Update description
+      document.getElementById('description').innerHTML = trans.description;
+      
+      // Update all elements with data-i18n
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (trans[key]) {
+          el.textContent = trans[key];
+        }
+      });
+      
+      // Update active button
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+      });
+    }
+
+    // Language switcher
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const lang = this.getAttribute('data-lang');
+        updateContent(lang);
+      });
+    });
+
+    // Initialize with English
+    updateContent('en');
+
     // Fade in effect on page load
     window.addEventListener('load', function() {
       document.body.style.opacity = '1';
@@ -663,7 +778,7 @@
 
     // Theme toggle functionality
     document.getElementById('profilePic').addEventListener('click', function() {
-      document.body.classList.toggle('dark-theme');
+      document.body.classList.toggle('light-theme');
     });
 
     // PDF Reader Panel Toggle
@@ -681,7 +796,7 @@
       }
     });
 
-    /* Small JS to animate turbulence & give a mouse-driven fresnel/parallax */
+    /* Animation effects */
     (function(){
       const turb = document.getElementById('turb');
       const turbSmall = document.getElementById('turb-small');
@@ -690,10 +805,8 @@
 
       let t = 0;
 
-      // gentle oscillation of baseFrequency to create organic wobble
       function animate() {
         t += 0.01;
-        // subtle variation values tuned to be decorative, not distracting
         const bf1 = 0.005 + Math.sin(t * 0.9) * 0.002;
         const bf2 = 0.009 + Math.cos(t * 0.7) * 0.003;
         if (turb) turb.setAttribute('baseFrequency', bf1 + ' ' + bf2);
@@ -702,25 +815,19 @@
       }
       requestAnimationFrame(animate);
 
-      // subtle mouse parallax that shifts the sheen / fresnel
       window.addEventListener('mousemove', (e) => {
         const rect = glass.getBoundingClientRect();
-        const rx = (e.clientX - rect.left) / rect.width; // 0..1
+        const rx = (e.clientX - rect.left) / rect.width;
         const ry = (e.clientY - rect.top) / rect.height;
-        const moveX = (rx - 0.5) * 30; // small offset
+        const moveX = (rx - 0.5) * 30;
         const moveY = (ry - 0.5) * 20;
-        // move the distort layer slightly for parallax
         distortLayer.style.transform = `translate(${moveX*0.18}px, ${moveY*0.18}px)`;
-        // modulate opacity (very small) to make fresnel reactive
         const op = 0.45 + Math.abs((rx - 0.5)) * 0.14 + Math.abs((ry - 0.5)) * 0.06;
         distortLayer.style.opacity = op;
-        // rotate tiny for a believable holographic response
         glass.style.transform = `perspective(800px) rotateX(${(ry-0.5)*2}deg) rotateY(${(0.5-rx)*2}deg)`;
       });
 
-      // on touch devices reduce motion; lower animation frame rate
       if ('ontouchstart' in window) {
-        // reduce animation rate
         t = 0;
         function slowAnimate() {
           t += 0.005;
