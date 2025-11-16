@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PowerBI DAX Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #0078d4;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 3px solid #005a9e;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.95);
+            margin-top: 10px;
+            font-weight: 400;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .section h2 {
+            color: #0078d4;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .api-section {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input[type="text"], input[type="password"] {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #0078d4;
+            box-shadow: 0 0 0 3px rgba(0,120,212,0.1);
+        }
+
+        button {
+            padding: 12px 24px;
+            background: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: #005a9e;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .file-upload {
+            border: 2px dashed #0078d4;
+            border-radius: 6px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #fafbfc;
+        }
+
+        .file-upload:hover {
+            background: #f0f6fc;
+            border-color: #005a9e;
+        }
+
+        .file-upload.dragover {
+            background: #e6f2fa;
+            border-color: #005a9e;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .file-info {
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .chat-container {
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            background: white;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        .message.user {
+            background: #0078d4;
+            color: white;
+            margin-left: auto;
+        }
+
+        .message.assistant {
+            background: #f5f7fa;
+            color: #333;
+            border: 1px solid #e1e4e8;
+        }
+
+        .message pre {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+
+        .message code {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        .input-section {
+            display: flex;
+            gap: 10px;
+        }
+
+        textarea {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #0078d4;
+            box-shadow: 0 0 0 3px rgba(0,120,212,0.1);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>PowerBI DAX Assistant</h1>
+            <p>AI-powered assistant for PowerBI and DAX development</p>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h2>1. API Connection</h2>
+                <div class="api-section">
+                    <input type="password" id="apiKey" placeholder="Enter your OpenAI API Key" />
+                    <button id="testConnection">Test Connection</button>
+                </div>
+                <div id="connectionStatus"></div>
+            </div>
+
+            <div class="section hidden" id="fileSection">
+                <h2>2. Upload PowerBI File</h2>
+                <div class="file-upload" id="fileUpload">
+                    <p><strong>Upload PowerBI File</strong></p>
+                    <p style="margin-top: 10px; color: #666; font-size: 14px;">Click or drag to upload (.pbix, .pbit, or related files)</p>
+                    <input type="file" id="fileInput" accept=".pbix,.pbit,.txt,.json,.csv" />
+                </div>
+                <div id="fileInfo" class="hidden"></div>
+            </div>
+
+            <div class="section hidden" id="chatSection">
+                <h2>3. Ask Your Questions</h2>
+                <div class="chat-container" id="chatContainer">
+                    <div class="message assistant">
+                        <strong>Assistant:</strong> Hello! I'm ready to help you with PowerBI and DAX. Upload your file and ask me anything - I can help with DAX formulas, data modeling, visualizations, and step-by-step guides.
+                    </div>
+                </div>
+                <div class="input-section">
+                    <textarea id="userInput" placeholder="Ask me anything about PowerBI or DAX..."></textarea>
+                    <button id="sendButton">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+        let apiKey = '';
+        let uploadedFile = null;
+        let fileContent = null;
+        let conversationHistory = [];
+        let pbixData = null;
+
+        const elements = {
+            apiKey: document.getElementById('apiKey'),
+            testConnection: document.getElementById('testConnection'),
+            connectionStatus: document.getElementById('connectionStatus'),
+            fileSection: document.getElementById('fileSection'),
+            fileUpload: document.getElementById('fileUpload'),
+            fileInput: document.getElementById('fileInput'),
+            fileInfo: document.getElementById('fileInfo'),
+            chatSection: document.getElementById('chatSection'),
+            chatContainer: document.getElementById('chatContainer'),
+            userInput: document.getElementById('userInput'),
+            sendButton: document.getElementById('sendButton')
+        };
+
+        elements.testConnection.addEventListener('click', testConnection);
+        elements.fileUpload.addEventListener('click', () => elements.fileInput.click());
+        elements.fileInput.addEventListener('change', handleFileSelect);
+        elements.sendButton.addEventListener('click', sendMessage);
+        elements.userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        elements.fileUpload.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            elements.fileUpload.classList.add('dragover');
+        });
+
+        elements.fileUpload.addEventListener('dragleave', () => {
+            elements.fileUpload.classList.remove('dragover');
+        });
+
+        elements.fileUpload.addEventListener('drop', (e) => {
+            e.preventDefault();
+            elements.fileUpload.classList.remove('dragover');
+            if (e.dataTransfer.files.length) {
+                elements.fileInput.files = e.dataTransfer.files;
+                handleFileSelect();
+            }
+        });
+
+        async function testConnection() {
+            apiKey = elements.apiKey.value.trim();
+            
+            if (!apiKey) {
+                showStatus('error', 'Please enter an API key');
+                return;
+            }
+
+            elements.testConnection.disabled = true;
+            elements.testConnection.innerHTML = '<span class="loading"></span>';
+
+            try {
+                const response = await fetch('https://api.openai.com/v1/models', {
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`
+                    }
+                });
+
+                if (response.ok) {
+                    showStatus('success', '✓ Connection successful! You can now upload your PowerBI file.');
+                    elements.fileSection.classList.remove('hidden');
+                    elements.apiKey.disabled = true;
+                } else {
+                    showStatus('error', '✗ Connection failed. Please check your API key.');
+                }
+            } catch (error) {
+                showStatus('error', '✗ Connection error: ' + error.message);
+            }
+
+            elements.testConnection.disabled = false;
+            elements.testConnection.textContent = 'Test Connection';
+        }
+
+        function showStatus(type, message) {
+            elements.connectionStatus.className = `status ${type}`;
+            elements.connectionStatus.textContent = message;
+            elements.connectionStatus.style.display = 'block';
+        }
+
+        async function handleFileSelect() {
+            const file = elements.fileInput.files[0];
+            if (!file) return;
+
+            uploadedFile = file;
+            elements.fileInfo.innerHTML = '<div class="status info">Reading PBIX file... This may take a moment.</div>';
+            elements.fileInfo.classList.remove('hidden');
+            
+            try {
+                if (file.name.endsWith('.pbix') || file.name.endsWith('.pbit')) {
+                    await extractPBIXContent(file);
+                } else {
+                    const text = await file.text();
+                    fileContent = text;
+                    pbixData = { type: 'text', content: text };
+                }
+                
+                let summary = '';
+                if (pbixData && pbixData.tables && pbixData.tables.length > 0) {
+                    summary += `<strong>Tables found:</strong> ${pbixData.tables.length} (${pbixData.tables.slice(0, 5).join(', ')}${pbixData.tables.length > 5 ? '...' : ''})<br>`;
+                }
+                if (pbixData && pbixData.measures > 0) {
+                    summary += `<strong>Measures found:</strong> ${pbixData.measures}<br>`;
+                }
+                if (pbixData && pbixData.relationships > 0) {
+                    summary += `<strong>Relationships found:</strong> ${pbixData.relationships}<br>`;
+                }
+                if (pbixData && pbixData.columns && pbixData.columns.length > 0) {
+                    summary += `<strong>Columns found:</strong> ${pbixData.columns.length}<br>`;
+                }
+                
+                elements.fileInfo.innerHTML = `
+                    <strong>File uploaded:</strong> ${file.name}<br>
+                    <strong>Size:</strong> ${(file.size / 1024).toFixed(2)} KB<br>
+                    <strong>Type:</strong> ${file.type || 'PowerBI File'}<br>
+                    ${summary}
+                    <div class="status success" style="margin-top: 10px;">✓ File successfully analyzed and ready!</div>
+                `;
+                elements.chatSection.classList.remove('hidden');
+                
+                if (pbixData && pbixData.detailedTables && pbixData.detailedTables.length > 0) {
+                    let tablesSummary = 'I found the following tables in your PowerBI file:\n\n';
+                    pbixData.detailedTables.forEach(table => {
+                        tablesSummary += `**${table.name}**\n`;
+                        tablesSummary += `- Columns: ${table.columns.join(', ')}\n`;
+                        if (table.measures.length > 0) {
+                            tablesSummary += `- Measures: ${table.measures.map(m => m.name).join(', ')}\n`;
+                        }
+                        tablesSummary += '\n';
+                    });
+                    addMessage('assistant', tablesSummary + 'What would you like to work on?');
+                } else {
+                    addMessage('assistant', `I've analyzed your PowerBI file and found ${pbixData.tables.length} tables. What would you like to know or create?`);
+                }
+            } catch (error) {
+                elements.fileInfo.innerHTML = `
+                    <div class="status error">Error reading file: ${error.message}</div>
+                `;
+            }
+        }
+
+        async function extractPBIXContent(file) {
+            try {
+                const zip = await JSZip.loadAsync(file);
+                pbixData = {
+                    type: 'pbix',
+                    tables: [],
+                    measures: 0,
+                    relationships: 0,
+                    columns: [],
+                    metadata: {},
+                    detailedTables: []
+                };
+                
+                let dataModelContent = '';
+                let foundData = false;
+                
+                // Read Report/Layout for visual structure
+                if (zip.files['Report/Layout']) {
+                    try {
+                        const layout = await zip.files['Report/Layout'].async('text');
+                        dataModelContent += '=== REPORT LAYOUT AND VISUALS ===\n' + layout + '\n\n';
+                        
+                        // Try to parse layout JSON to extract table/column references
+                        try {
+                            const layoutJson = JSON.parse(layout);
+                            const extractedInfo = extractTablesFromLayout(layoutJson);
+                            if (extractedInfo.tables.length > 0) {
+                                pbixData.tables = [...new Set([...pbixData.tables, ...extractedInfo.tables])];
+                                pbixData.columns = [...new Set([...pbixData.columns, ...extractedInfo.columns])];
+                                foundData = true;
+                            }
+                        } catch (e) {
+                            // Layout not in expected JSON format
+                        }
+                    } catch (e) {
+                        console.error('Error reading layout:', e);
+                    }
+                }
+                
+                // Try to read Connections file
+                if (zip.files['Connections']) {
+                    try {
+                        const connections = await zip.files['Connections'].async('text');
+                        dataModelContent += '=== DATA CONNECTIONS ===\n' + connections + '\n\n';
+                    } catch (e) {
+                        console.error('Error reading connections:', e);
+                    }
+                }
+                
+                // Read DataModelSchema if it exists
+                if (zip.files['DataModelSchema']) {
+                    try {
+                        const schema = await zip.files['DataModelSchema'].async('text');
+                        dataModelContent += '=== DATA MODEL SCHEMA ===\n' + schema + '\n\n';
+                        
+                        try {
+                            const schemaJson = JSON.parse(schema);
+                            if (schemaJson.model && schemaJson.model.tables) {
+                                schemaJson.model.tables.forEach(table => {
+                                    const tableInfo = {
+                                        name: table.name,
+                                        columns: [],
+                                        measures: []
+                                    };
+                                    
+                                    if (table.columns) {
+                                        table.columns.forEach(col => {
+                                            tableInfo.columns.push(col.name);
+                                            pbixData.columns.push(`${table.name}.${col.name}`);
+                                        });
+                                    }
+                                    
+                                    if (table.measures) {
+                                        table.measures.forEach(measure => {
+                                            tableInfo.measures.push({
+                                                name: measure.name,
+                                                expression: measure.expression
+                                            });
+                                            pbixData.measures++;
+                                        });
+                                    }
+                                    
+                                    pbixData.detailedTables.push(tableInfo);
+                                    pbixData.tables.push(table.name);
+                                });
+                                
+                                if (schemaJson.model.relationships) {
+                                    pbixData.relationships = schemaJson.model.relationships.length;
+                                }
+                                foundData = true;
+                            }
+                        } catch (e) {
+                            console.error('Error parsing schema JSON:', e);
+                        }
+                    } catch (e) {
+                        console.error('Error reading schema:', e);
+                    }
+                }
+                
+                // Read DataModel as binary and try to extract readable strings
+                if (zip.files['DataModel']) {
+                    try {
+                        const dataModelBinary = await zip.files['DataModel'].async('uint8array');
+                        const readableText = extractReadableStrings(dataModelBinary);
+                        dataModelContent += '=== DATA MODEL (Extracted Text) ===\n' + readableText.substring(0, 10000) + '\n\n';
+                        
+                        // Try to find table and column names in the binary data
+                        const tableMatches = readableText.match(/\b[A-Z][a-zA-Z0-9_]{2,30}\b/g);
+                        if (tableMatches && pbixData.tables.length === 0) {
+                            const potentialTables = [...new Set(tableMatches)].filter(t => 
+                                !['String', 'Double', 'Integer', 'Boolean', 'DateTime', 'Variant'].includes(t)
+                            );
+                            pbixData.tables = potentialTables.slice(0, 20);
+                            foundData = true;
+                        }
+                    } catch (e) {
+                        console.error('Error reading DataModel:', e);
+                    }
+                }
+                
+                // List all files in the PBIX
+                const fileList = Object.keys(zip.files).join(', ');
+                dataModelContent += '\n=== FILES IN PBIX ===\n' + fileList + '\n\n';
+                
+                // Create detailed summary
+                if (pbixData.detailedTables.length > 0) {
+                    dataModelContent += '\n=== DETAILED TABLE STRUCTURE ===\n';
+                    pbixData.detailedTables.forEach(table => {
+                        dataModelContent += `\nTable: ${table.name}\n`;
+                        dataModelContent += `  Columns: ${table.columns.join(', ')}\n`;
+                        if (table.measures.length > 0) {
+                            dataModelContent += `  Measures:\n`;
+                            table.measures.forEach(m => {
+                                dataModelContent += `    - ${m.name}: ${m.expression}\n`;
+                            });
+                        }
+                    });
+                }
+                
+                fileContent = dataModelContent;
+                pbixData.rawContent = dataModelContent;
+                
+                if (!foundData) {
+                    throw new Error('Could not extract data model structure. The PBIX file format may not be supported or the file may be corrupted.');
+                }
+                
+            } catch (error) {
+                throw new Error('Failed to extract PBIX contents: ' + error.message);
+            }
+        }
+        
+        function extractReadableStrings(uint8Array) {
+            let result = '';
+            let currentString = '';
+            
+            for (let i = 0; i < uint8Array.length; i++) {
+                const byte = uint8Array[i];
+                // Readable ASCII characters
+                if (byte >= 32 && byte <= 126) {
+                    currentString += String.fromCharCode(byte);
+                } else if (byte === 0 && currentString.length > 3) {
+                    result += currentString + ' ';
+                    currentString = '';
+                } else if (byte === 0) {
+                    currentString = '';
+                }
+            }
+            
+            return result;
+        }
+        
+        function extractTablesFromLayout(layoutObj) {
+            const tables = new Set();
+            const columns = new Set();
+            
+            function traverse(obj) {
+                if (!obj || typeof obj !== 'object') return;
+                
+                if (obj.table && typeof obj.table === 'string') {
+                    tables.add(obj.table);
+                }
+                
+                if (obj.column && typeof obj.column === 'string') {
+                    columns.add(obj.column);
+                }
+                
+                if (obj.Table && typeof obj.Table === 'string') {
+                    tables.add(obj.Table);
+                }
+                
+                if (obj.Column && typeof obj.Column === 'string') {
+                    columns.add(obj.Column);
+                }
+                
+                // Check for measure expressions
+                if (obj.Expression && typeof obj.Expression === 'string') {
+                    const tableRefs = obj.Expression.match(/\b[A-Z][a-zA-Z0-9_]+\[/g);
+                    if (tableRefs) {
+                        tableRefs.forEach(ref => tables.add(ref.slice(0, -1)));
+                    }
+                }
+                
+                for (let key in obj) {
+                    if (obj.hasOwnProperty(key)) {
+                        traverse(obj[key]);
+                    }
+                }
+            }
+            
+            traverse(layoutObj);
+            
+            return {
+                tables: Array.from(tables),
+                columns: Array.from(columns)
+            };
+        }
+
+        async function sendMessage() {
+            const userMessage = elements.userInput.value.trim();
+            if (!userMessage) return;
+
+            addMessage('user', userMessage);
+            elements.userInput.value = '';
+            elements.sendButton.disabled = true;
+            elements.sendButton.innerHTML = '<span class="loading"></span>';
+
+            const systemPrompt = `You are a PowerBI and DAX expert assistant analyzing a user's actual PowerBI file.
+
+IMPORTANT: The user has uploaded their PBIX file and you have access to their actual data model structure below. Reference SPECIFIC table names, column names, and measures from THEIR file when answering.
+
+${fileContent ? `\n=== USER'S POWERBI FILE CONTENTS ===\n${fileContent}\n` : ''}
+
+${pbixData && pbixData.detailedTables && pbixData.detailedTables.length > 0 ? `
+=== QUICK REFERENCE - USER'S TABLES ===
+${pbixData.detailedTables.map(t => `
+Table: ${t.name}
+Columns: ${t.columns.join(', ')}
+${t.measures.length > 0 ? `Measures: ${t.measures.map(m => `${m.name}: ${m.expression}`).join('; ')}` : ''}
+`).join('\n')}
+` : ''}
+
+When the user asks about their data:
+1. Reference THEIR ACTUAL table and column names (shown above)
+2. Create DAX formulas using THEIR specific tables/columns
+3. If they ask "what tables do I have" or "what columns are in X table", list them from the data above
+4. Be specific - don't give generic answers
+
+Provide:
+- Working DAX code using their actual table/column names
+- Step-by-step instructions
+- Best practices and optimization tips`;
+
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o',
+                        messages: [
+                            { role: 'system', content: systemPrompt },
+                            ...conversationHistory,
+                            { role: 'user', content: userMessage }
+                        ],
+                        max_tokens: 2000,
+                        temperature: 0.7
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.choices && data.choices[0]) {
+                    const assistantMessage = data.choices[0].message.content;
+                    addMessage('assistant', assistantMessage);
+                    
+                    conversationHistory.push(
+                        { role: 'user', content: userMessage },
+                        { role: 'assistant', content: assistantMessage }
+                    );
+
+                    if (conversationHistory.length > 10) {
+                        conversationHistory = conversationHistory.slice(-10);
+                    }
+                } else {
+                    addMessage('assistant', 'Error: Unable to get response from API. ' + (data.error?.message || 'Unknown error'));
+                }
+            } catch (error) {
+                addMessage('assistant', 'Error: ' + error.message);
+            }
+
+            elements.sendButton.disabled = false;
+            elements.sendButton.textContent = 'Send';
+        }
+
+        function addMessage(role, content) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            
+            const formattedContent = content.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+                return `<pre><code>${escapeHtml(code.trim())}</code></pre>`;
+            }).replace(/`([^`]+)`/g, '<code>$1</code>');
+            
+            messageDiv.innerHTML = `<strong>${role === 'user' ? 'You' : 'Assistant'}:</strong><br>${formattedContent}`;
+            elements.chatContainer.appendChild(messageDiv);
+            elements.chatContainer.scrollTop = elements.chatContainer.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
