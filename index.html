@@ -257,6 +257,14 @@
     z-index: 5;
   }
 
+  .pdf-buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    z-index: 5;
+  }
+
   .pdf-download-btn {
     display: inline-flex;
     align-items: center;
@@ -653,7 +661,7 @@
             <div class="icon-distort"></div>
             <img src="pdf.png" alt="PDF Reader">
           </div>
-          <span class="link-label" data-i18n="pdfViewer">ATW PDF Viewer</span>
+          <span class="link-label" data-i18n="pdfViewer">Albert PDF Viewer</span>
         </a>
       </div>
       
@@ -678,18 +686,25 @@
       <div class="glass-inner-border" aria-hidden="true"></div>
       <div class="distort-layer" aria-hidden="true"></div>
       
-      <h2 class="pdf-title" data-i18n="pdfTitle">Albert The Wrench PDF Reader</h2>
+      <h2 class="pdf-title" data-i18n="pdfTitle">Albert PDF Reader</h2>
       <p class="pdf-description" data-i18n="pdfDescription">
-        Albert The Wrench PDF Reader is a feature-rich, customizable PDF viewer built with Python that offers an intuitive interface combined with powerful document management capabilities. Designed for both casual users and professionals who need efficient PDF navigation and annotation tools.
+        Albert PDF Reader is a feature-rich, customizable PDF viewer built with Python that offers an intuitive interface combined with powerful document management capabilities. Designed for both casual users and professionals who need efficient PDF navigation and annotation tools.
       </p>
-      <a href="Albert The Wrench PDF Reader.exe" class="pdf-download-btn" download>
-        <img src="pdf.png" alt="Download">
-        <span data-i18n="download">Download</span>
-      </a>
-      <a href="https://github.com/treblalbert/Albert-s-PDF-Viewer" class="pdf-download-btn" target="_blank">
-        <img src="pdf.png" alt="Source Code (GitHub)">
-        <span data-i18n="sourceCode">Source Code (GitHub)</span>
-      </a>
+      
+      <div class="pdf-buttons-container">
+        <a href="pdf/index.html" class="pdf-download-btn" target="_blank">
+          <img src="pdf.png" alt="Online Version">
+          <span data-i18n="onlineVersion">Online Version</span>
+        </a>
+        <a href="Albert PDF Reader.exe" class="pdf-download-btn" download>
+          <img src="pdf.png" alt="Download">
+          <span data-i18n="download">Download Offline Version</span>
+        </a>
+        <a href="https://github.com/treblalbert/Albert-s-PDF-Viewer" class="pdf-download-btn" target="_blank">
+          <img src="pdf.png" alt="Source Code (GitHub)">
+          <span data-i18n="sourceCode">Source Code (GitHub)</span>
+        </a>
+      </div>
     </div>
   </div>
 
@@ -702,11 +717,12 @@
         <p>My background in Unity development has given me hands-on experience building complete games, from prototypes to published titles. My first commercial release, <em>Bald Ball</em>, is available on Steam, and I regularly share smaller experiments on itch.io. I'm currently working on new gameplay prototypes and developing personal software tools to automate and optimize parts of the data analytics process.</p>
         <p>I studied data analytics at Ironhack, where I built Python and AI-based tools to streamline analysis workflows. As part of my final project, I designed and analyzed a dataset generated from gameplay interactions, which helped solidify my interest in combining creativity with analytical thinking. I continue to grow as a data analyst by experimenting with diverse datasets and refining my ability to turn raw information into meaningful insights.</p>
         <p>When I'm not coding, I enjoy music production, oil painting, bouldering, and hiking. These creative outlets, much like data, help me look for patterns in seemingly unconnected things.</p>`,
-        pdfViewer: "ATW PDF Viewer",
+        pdfViewer: "Albert PDF Viewer",
         projectsTitle: "Main Game Projects",
-        pdfTitle: "Albert The Wrench PDF Reader",
-        pdfDescription: "Albert The Wrench PDF Reader is a feature-rich, customizable PDF viewer built with Python that offers an intuitive interface combined with powerful document management capabilities. Designed for both casual users and professionals who need efficient PDF navigation and annotation tools.",
-        download: "Download",
+        pdfTitle: "Albert PDF Reader",
+        pdfDescription: "Albert PDF Reader is a feature-rich, customizable PDF viewer built with Python that offers an intuitive interface combined with powerful document management capabilities. Designed for both casual users and professionals who need efficient PDF navigation and annotation tools.",
+        onlineVersion: "Online Version",
+        download: "Download Offline Version",
         sourceCode: "Source Code (GitHub)"
       },
       es: {
@@ -715,11 +731,12 @@
         <p>Mi experiencia en desarrollo con Unity me ha dado experiencia práctica construyendo juegos completos, desde prototipos hasta títulos publicados. Mi primer lanzamiento comercial, <em>Bald Ball</em>, está disponible en Steam, y regularmente comparto experimentos más pequeños en itch.io. Actualmente estoy trabajando en nuevos prototipos de juego y desarrollando herramientas de software personales para automatizar y optimizar partes del proceso de análisis de datos.</p>
         <p>Estudié análisis de datos en Ironhack, donde construí herramientas basadas en Python e IA para agilizar flujos de trabajo de análisis. Como parte de mi proyecto final, diseñé y analicé un conjunto de datos generado a partir de interacciones de juego, lo que ayudó a consolidar mi interés en combinar creatividad con pensamiento analítico. Continúo creciendo como analista de datos experimentando con diversos conjuntos de datos y refinando mi capacidad para convertir información sin procesar en ideas significativas.</p>
         <p>Cuando no estoy programando, disfruto de la producción musical, la pintura al óleo, la escalada en rocódromo y el senderismo. Estas salidas creativas, al igual que los datos, me ayudan a buscar patrones en cosas aparentemente inconexas.</p>`,
-        pdfViewer: "Visor PDF ATW",
+        pdfViewer: "Visor PDF Albert",
         projectsTitle: "Principales Proyectos de Juegos",
         pdfTitle: "Lector PDF Albert The Wrench",
-        pdfDescription: "Albert The Wrench PDF Reader es un visor de PDF rico en funciones y personalizable construido con Python que ofrece una interfaz intuitiva combinada con potentes capacidades de gestión de documentos. Diseñado tanto para usuarios casuales como para profesionales que necesitan herramientas eficientes de navegación y anotación de PDF.",
-        download: "Descargar",
+        pdfDescription: "Albert PDF Reader es un visor de PDF rico en funciones y personalizable construido con Python que ofrece una interfaz intuitiva combinada con potentes capacidades de gestión de documentos. Diseñado tanto para usuarios casuales como para profesionales que necesitan herramientas eficientes de navegación y anotación de PDF.",
+        onlineVersion: "Versión Online",
+        download: "Descargar Versión Offline",
         sourceCode: "Código Fuente (GitHub)"
       },
       ca: {
@@ -728,11 +745,12 @@
         <p>La meva experiència en desenvolupament amb Unity m'ha donat experiència pràctica construint jocs complets, des de prototips fins a títols publicats. El meu primer llançament comercial, <em>Bald Ball</em>, està disponible a Steam, i regularment comparteixo experiments més petits a itch.io. Actualment estic treballant en nous prototips de joc i desenvolupant eines de programari personals per automatitzar i optimitzar parts del procés d'anàlisi de dades.</p>
         <p>Vaig estudiar anàlisi de dades a Ironhack, on vaig construir eines basades en Python i IA per agilitzar fluxos de treball d'anàlisi. Com a part del meu projecte final, vaig dissenyar i analitzar un conjunt de dades generat a partir d'interaccions de joc, cosa que va ajudar a consolidar el meu interès en combinar creativitat amb pensament analític. Continuo creixent com a analista de dades experimentant amb diversos conjunts de dades i refinant la meva capacitat per convertir informació sense processar en idees significatives.</p>
         <p>Quan no estic programant, gaudeixo de la producció musical, la pintura a l'oli, l'escalada en rocòdrom i el senderisme. Aquestes sortides creatives, igual que les dades, m'ajuden a buscar patrons en coses aparentment desconnectades.</p>`,
-        pdfViewer: "Visor PDF ATW",
+        pdfViewer: "Visor PDF Albert",
         projectsTitle: "Principals Projectes de Jocs",
         pdfTitle: "Lector PDF Albert The Wrench",
-        pdfDescription: "Albert The Wrench PDF Reader és un visor de PDF ric en funcions i personalitzable construït amb Python que ofereix una interfície intuïtiva combinada amb potents capacitats de gestió de documents. Dissenyat tant per a usuaris ocasionals com per a professionals que necessiten eines eficients de navegació i anotació de PDF.",
-        download: "Descarregar",
+        pdfDescription: "Albert PDF Reader és un visor de PDF ric en funcions i personalitzable construït amb Python que ofereix una interfície intuïtiva combinada amb potents capacitats de gestió de documents. Dissenyat tant per a usuaris ocasionals com per a professionals que necessiten eines eficients de navegació i anotació de PDF.",
+        onlineVersion: "Versió Online",
+        download: "Descarregar Versió Offline",
         sourceCode: "Codi Font (GitHub)"
       }
     };
