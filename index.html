@@ -130,8 +130,8 @@
       inset 0 -1px 0 rgba(255,255,255,0.3);
   }
 
-  /* PDF Reader Panel */
-  .pdf-panel {
+  /* Side Panels */
+  .side-panel {
     position: relative;
     width: min(300px, 90%);
     border-radius: 28px;
@@ -151,7 +151,7 @@
     gap: 20px;
   }
 
-  .light-theme .pdf-panel {
+  .light-theme .side-panel {
     background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
     border: 1px solid rgba(255,255,255,0.4);
     box-shadow:
@@ -160,19 +160,19 @@
       inset 0 -1px 0 rgba(255,255,255,0.3);
   }
 
-  .pdf-panel.active {
+  .side-panel.active {
     display: flex;
   }
 
-  .pdf-panel .glass-inner-border,
-  .pdf-panel .distort-layer {
+  .side-panel .glass-inner-border,
+  .side-panel .distort-layer {
     position: absolute;
     inset: 0;
     border-radius: 28px;
     pointer-events: none;
   }
 
-  .pdf-panel .glass-inner-border {
+  .side-panel .glass-inner-border {
     z-index: 4;
     background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.00));
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), inset 0 -1px 0 rgba(255,255,255,0.02);
@@ -180,12 +180,12 @@
     mask-composite: exclude;
   }
 
-  .light-theme .pdf-panel .glass-inner-border {
+  .light-theme .side-panel .glass-inner-border {
     background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.1));
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(255,255,255,0.1);
   }
 
-  .pdf-panel .distort-layer {
+  .side-panel .distort-layer {
     z-index: 3;
     background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
     mix-blend-mode: overlay;
@@ -194,11 +194,11 @@
     will-change: filter;
   }
 
-  .light-theme .pdf-panel .distort-layer {
+  .light-theme .side-panel .distort-layer {
     background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
   }
 
-  .pdf-panel::before {
+  .side-panel::before {
     content: '';
     position: absolute;
     z-index: 6;
@@ -212,12 +212,12 @@
     transform: translateZ(0);
   }
 
-  .light-theme .pdf-panel::before {
+  .light-theme .side-panel::before {
     background: radial-gradient(120% 80% at 10% 10%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 6%, rgba(255,255,255,0.00) 20%),
                 linear-gradient(180deg, rgba(255,255,255,0.4), rgba(255,255,255,0.00) 40%);
   }
 
-  .pdf-panel::after {
+  .side-panel::after {
     content: '';
     position: absolute;
     z-index: 2;
@@ -234,14 +234,14 @@
     filter: blur(6px);
   }
 
-  .light-theme .pdf-panel::after {
+  .light-theme .side-panel::after {
     box-shadow:
       -6px -3px 18px -10px rgba(255,150,150,0.4),
       6px 3px 18px -10px rgba(150,200,255,0.4),
       -4px 6px 22px -14px rgba(150,255,200,0.2);
   }
 
-  .pdf-title {
+  .panel-title {
     font-size: 22px;
     font-weight: 600;
     margin-bottom: 10px;
@@ -249,7 +249,7 @@
     z-index: 5;
   }
 
-  .pdf-description {
+  .panel-description {
     font-size: 14px;
     line-height: 1.5;
     margin-bottom: 20px;
@@ -257,7 +257,7 @@
     z-index: 5;
   }
 
-  .pdf-download-btn {
+  .panel-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -278,30 +278,48 @@
     backdrop-filter: blur(10px);
   }
 
-  .light-theme .pdf-download-btn {
+  .light-theme .panel-btn {
     background: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.5));
     border: 1px solid rgba(255,255,255,0.4);
     color: #333;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   }
 
-  .pdf-download-btn:hover {
+  .panel-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(0,0,0,0.4);
   }
 
-  .light-theme .pdf-download-btn:hover {
+  .light-theme .panel-btn:hover {
     box-shadow: 0 6px 20px rgba(0,0,0,0.15);
   }
 
-  .pdf-download-btn img {
+  .panel-btn img {
     width: 18px;
     height: 18px;
     filter: brightness(0) invert(1);
   }
 
-  .light-theme .pdf-download-btn img {
+  .light-theme .panel-btn img {
     filter: brightness(0) invert(0.3);
+  }
+
+  .coming-soon {
+    background: linear-gradient(180deg, rgba(255,193,7,0.15), rgba(255,193,7,0.08)) !important;
+    border: 1px solid rgba(255,193,7,0.3) !important;
+    color: #ffc107 !important;
+    cursor: not-allowed;
+    opacity: 0.8;
+  }
+
+  .light-theme .coming-soon {
+    background: linear-gradient(180deg, rgba(255,193,7,0.3), rgba(255,193,7,0.2)) !important;
+    border: 1px solid rgba(255,193,7,0.5) !important;
+    color: #e6a700 !important;
+  }
+
+  .coming-soon:hover {
+    transform: none !important;
   }
 
   /* Animated distortion layer */
@@ -582,7 +600,7 @@
     .container {
       flex-direction: column;
     }
-    .pdf-panel {
+    .side-panel {
       width: min(880px, 94%);
     }
   }
@@ -655,6 +673,14 @@
           </div>
           <span class="link-label" data-i18n="pdfViewer">ATW PDF Viewer</span>
         </a>
+
+        <a href="#" class="link-button" id="twitterFilterButton">
+          <div class="icon-wrapper">
+            <div class="icon-distort"></div>
+            <img src="ATCF.png" alt="Twitter Filter">
+          </div>
+          <span class="link-label" data-i18n="twitterFilter">Albert X/Twitter Filter</span>
+        </a>
       </div>
       
       <!-- Main Game Projects Section -->
@@ -674,24 +700,41 @@
     </div>
 
     <!-- PDF Reader Panel -->
-    <div class="pdf-panel" id="pdfPanel">
+    <div class="side-panel" id="pdfPanel">
       <div class="glass-inner-border" aria-hidden="true"></div>
       <div class="distort-layer" aria-hidden="true"></div>
       
-      <h2 class="pdf-title" data-i18n="pdfTitle">Albert The Wrench PDF Reader</h2>
-      <p class="pdf-description" data-i18n="pdfDescription">
-        Albert The Wrench PDF Reader is a feature-rich, customizable PDF viewer built with Python that offers an intuitive interface combined with powerful document management capabilities. Designed for both casual users and professionals who need efficient PDF navigation and annotation tools.
-      </p>
-      <a href="Albert The Wrench PDF Reader.exe" class="pdf-download-btn" download>
+      <h2 class="panel-title">Albert The Wrench PDF Reader</h2>
+      <p class="panel-description" id="pdfDescription"></p>
+      <a href="Albert The Wrench PDF Reader.exe" class="panel-btn" download>
         <img src="pdf.png" alt="Download">
         <span data-i18n="download">Download</span>
       </a>
-      <a href="https://github.com/treblalbert/Albert-s-PDF-Viewer" class="pdf-download-btn" target="_blank">
-        <img src="pdf.png" alt="Source Code (GitHub)">
+      <a href="https://github.com/treblalbert/Albert-s-PDF-Viewer" class="panel-btn" target="_blank">
+        <img src="github-icon.png" alt="Source Code (GitHub)">
         <span data-i18n="sourceCode">Source Code (GitHub)</span>
       </a>
     </div>
-  </div>
+
+    <!-- Twitter Filter Panel -->
+<div class="side-panel" id="twitterFilterPanel">
+  <div class="glass-inner-border" aria-hidden="true"></div>
+  <div class="distort-layer" aria-hidden="true"></div>
+  
+  <h2 class="panel-title">Albert's X/Twitter Filter</h2>
+  <p class="panel-description" id="twitterFilterDescription"></p>
+  
+  <p class="panel-description" id="twitterFilterInstructions"></p>
+  
+  <a href="https://github.com/treblalbert/Albert-X-Twitter-Filter" class="panel-btn" target="_blank">
+    <img src="github-icon.png" alt="Source Code (GitHub)">
+    <span data-i18n="sourceCode">Source Code (GitHub)</span>
+  </a>
+  <a href="#" class="panel-btn coming-soon">
+    <img src="ATCF.png" alt="Chrome Web Store">
+    <span>Chrome Web Store (Coming December 2025)</span>
+  </a>
+</div>
 
   <script>
     // Translations
@@ -702,12 +745,14 @@
         <p>My background in Unity development has given me hands-on experience building complete games, from prototypes to published titles. My first commercial release, <em>Bald Ball</em>, is available on Steam, and I regularly share smaller experiments on itch.io. I'm currently working on new gameplay prototypes and developing personal software tools to automate and optimize parts of the data analytics process.</p>
         <p>I studied data analytics at Ironhack, where I built Python and AI-based tools to streamline analysis workflows. As part of my final project, I designed and analyzed a dataset generated from gameplay interactions, which helped solidify my interest in combining creativity with analytical thinking. I continue to grow as a data analyst by experimenting with diverse datasets and refining my ability to turn raw information into meaningful insights.</p>
         <p>When I'm not coding, I enjoy music production, oil painting, bouldering, and hiking. These creative outlets, much like data, help me look for patterns in seemingly unconnected things.</p>`,
-        pdfViewer: "ATW PDF Viewer",
+        pdfViewer: "Albert PDF Viewer",
+        twitterFilter: "X/Twitter Filter",
         projectsTitle: "Main Game Projects",
-        pdfTitle: "Albert The Wrench PDF Reader",
-        pdfDescription: "Albert The Wrench PDF Reader is a feature-rich, customizable PDF viewer built with Python that offers an intuitive interface combined with powerful document management capabilities. Designed for both casual users and professionals who need efficient PDF navigation and annotation tools.",
         download: "Download",
-        sourceCode: "Source Code (GitHub)"
+        sourceCode: "Source Code (GitHub)",
+        pdfDescription: "Albert The Wrench PDF Reader is a feature-rich, customizable PDF viewer built with Python that offers an intuitive interface combined with powerful document management capabilities. Designed for both casual users and professionals who need efficient PDF navigation and annotation tools.",
+        twitterFilterDescription: "A powerful browser extension that filters tweets based on country location, specific users, and keywords. Take full control of your Twitter/X feed by hiding content from specific countries, blocking unwanted users, and filtering out tweets containing certain keywords. Features include real-time filtering, two display modes (dim or completely remove), country search, and detailed statistics.",
+        twitterFilterInstructions: "<strong>Want to use it now?</strong> Download the project from GitHub and load it manually in your browser:<br><br>1. Clone or download the project from GitHub<br>2. Open your browser's extension page (brave://extensions/ or chrome://extensions/)<br>3. Enable \"Developer mode\"<br>4. Click \"Load unpacked\" and select the extension folder<br>5. Enjoy your filtered Twitter/X experience!"
       },
       es: {
         name: "Albert Adroer Prats",
@@ -716,11 +761,13 @@
         <p>Estudié análisis de datos en Ironhack, donde construí herramientas basadas en Python e IA para agilizar flujos de trabajo de análisis. Como parte de mi proyecto final, diseñé y analicé un conjunto de datos generado a partir de interacciones de juego, lo que ayudó a consolidar mi interés en combinar creatividad con pensamiento analítico. Continúo creciendo como analista de datos experimentando con diversos conjuntos de datos y refinando mi capacidad para convertir información sin procesar en ideas significativas.</p>
         <p>Cuando no estoy programando, disfruto de la producción musical, la pintura al óleo, la escalada en rocódromo y el senderismo. Estas salidas creativas, al igual que los datos, me ayudan a buscar patrones en cosas aparentemente inconexas.</p>`,
         pdfViewer: "Visor PDF ATW",
+        twitterFilter: "Filtro X/Twitter",
         projectsTitle: "Principales Proyectos de Juegos",
-        pdfTitle: "Lector PDF Albert The Wrench",
-        pdfDescription: "Albert The Wrench PDF Reader es un visor de PDF rico en funciones y personalizable construido con Python que ofrece una interfaz intuitiva combinada con potentes capacidades de gestión de documentos. Diseñado tanto para usuarios casuales como para profesionales que necesitan herramientas eficientes de navegación y anotación de PDF.",
         download: "Descargar",
-        sourceCode: "Código Fuente (GitHub)"
+        sourceCode: "Código Fuente (GitHub)",
+        pdfDescription: "Albert The Wrench PDF Reader es un visor de PDF rico en funciones y personalizable construido con Python que ofrece una interfaz intuitiva combinada con potentes capacidades de gestión de documentos. Diseñado tanto para usuarios casuales como para profesionales que necesitan herramientas eficientes de navegación y anotación de PDF.",
+        twitterFilterDescription: "Una potente extensión de navegador que filtra tweets según la ubicación del país, usuarios específicos y palabras clave. Toma el control total de tu feed de Twitter/X ocultando contenido de países específicos, bloqueando usuarios no deseados y filtrando tweets que contengan ciertas palabras clave. Características incluyen filtrado en tiempo real, dos modos de visualización (atenuar o eliminar completamente), búsqueda de países y estadísticas detalladas.",
+        twitterFilterInstructions: "¿Quieres usarlo ahora? Descarga el proyecto desde GitHub y cárgalo manualmente en tu navegador:<br><br>1. Clona o descarga el proyecto desde GitHub<br>2. Abre la página de extensiones de tu navegador (brave://extensions/ o chrome://extensions/)<br>3. Habilita el \"Modo desarrollador\"<br>4. Haz clic en \"Cargar extensión sin empaquetar\" y selecciona la carpeta de la extensión<br>5. ¡Disfruta de tu experiencia filtrada en Twitter/X!"
       },
       ca: {
         name: "Albert Adroer Prats",
@@ -729,15 +776,18 @@
         <p>Vaig estudiar anàlisi de dades a Ironhack, on vaig construir eines basades en Python i IA per agilitzar fluxos de treball d'anàlisi. Com a part del meu projecte final, vaig dissenyar i analitzar un conjunt de dades generat a partir d'interaccions de joc, cosa que va ajudar a consolidar el meu interès en combinar creativitat amb pensament analític. Continuo creixent com a analista de dades experimentant amb diversos conjunts de dades i refinant la meva capacitat per convertir informació sense processar en idees significatives.</p>
         <p>Quan no estic programant, gaudeixo de la producció musical, la pintura a l'oli, l'escalada en rocòdrom i el senderisme. Aquestes sortides creatives, igual que les dades, m'ajuden a buscar patrons en coses aparentment desconnectades.</p>`,
         pdfViewer: "Visor PDF ATW",
+        twitterFilter: "Filtre X/Twitter",
         projectsTitle: "Principals Projectes de Jocs",
-        pdfTitle: "Lector PDF Albert The Wrench",
-        pdfDescription: "Albert The Wrench PDF Reader és un visor de PDF ric en funcions i personalitzable construït amb Python que ofereix una interfície intuïtiva combinada amb potents capacitats de gestió de documents. Dissenyat tant per a usuaris ocasionals com per a professionals que necessiten eines eficients de navegació i anotació de PDF.",
         download: "Descarregar",
-        sourceCode: "Codi Font (GitHub)"
+        sourceCode: "Codi Font (GitHub)",
+        pdfDescription: "Albert The Wrench PDF Reader és un visor de PDF ric en funcions i personalitzable construït amb Python que ofereix una interfície intuïtiva combinada amb potents capacitats de gestió de documents. Dissenyat tant per a usuaris ocasionals com per a professionals que necessiten eines eficients de navegació i anotació de PDF.",
+        twitterFilterDescription: "Una potent extensió de navegador que filtra tweets segons la ubicació del país, usuaris específics i paraules clau. Pren el control total del teu feed de Twitter/X amagant contingut de països específics, bloquejant usuaris no desitjats i filtrant tweets que continguin certes paraules clau. Característiques inclouen filtrat en temps real, dos modes de visualització (atenuar o eliminar completament), cerca de països i estadístiques detallades.",
+        twitterFilterInstructions: "Vols usar-lo ara? Descarrega el projecte des de GitHub i carrega'l manualment al teu navegador:<br><br>1. Clona o descarrega el projecte des de GitHub<br>2. Obre la pàgina d'extensions del teu navegador (brave://extensions/ o chrome://extensions/)<br>3. Habilita el \"Mode desenvolupador\"<br>4. Fes clic a \"Carregar extensió sense empaquetar\" i selecciona la carpeta de l'extensió<br>5. Gaudiu de la vostra experiència filtrada a Twitter/X!"
       }
-    };
+      };
 
     let currentLang = 'en';
+    let activePanel = null;
 
     function updateContent(lang) {
       currentLang = lang;
@@ -745,6 +795,11 @@
       
       // Update description
       document.getElementById('description').innerHTML = trans.description;
+      
+      // Update panel descriptions with innerHTML to render HTML tags
+      document.getElementById('pdfDescription').innerHTML = trans.pdfDescription;
+      document.getElementById('twitterFilterDescription').innerHTML = trans.twitterFilterDescription;
+      document.getElementById('twitterFilterInstructions').innerHTML = trans.twitterFilterInstructions;
       
       // Update all elements with data-i18n
       document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -758,6 +813,27 @@
       document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
       });
+    }
+
+    function closeAllPanels() {
+      document.querySelectorAll('.side-panel').forEach(panel => {
+        panel.classList.remove('active');
+      });
+      document.getElementById('glass').style.transform = 'translateX(0)';
+      activePanel = null;
+    }
+
+    function openPanel(panelId) {
+      if (activePanel === panelId) {
+        closeAllPanels();
+        return;
+      }
+      
+      closeAllPanels();
+      const panel = document.getElementById(panelId);
+      panel.classList.add('active');
+      document.getElementById('glass').style.transform = 'translateX(-40px)';
+      activePanel = panelId;
     }
 
     // Language switcher
@@ -784,15 +860,19 @@
     // PDF Reader Panel Toggle
     document.getElementById('pdfButton').addEventListener('click', function(e) {
       e.preventDefault();
-      const pdfPanel = document.getElementById('pdfPanel');
-      const glassContainer = document.getElementById('glass');
-      
-      if (pdfPanel.classList.contains('active')) {
-        pdfPanel.classList.remove('active');
-        glassContainer.style.transform = 'translateX(0)';
-      } else {
-        pdfPanel.classList.add('active');
-        glassContainer.style.transform = 'translateX(-40px)';
+      openPanel('pdfPanel');
+    });
+
+    // Twitter Filter Panel Toggle
+    document.getElementById('twitterFilterButton').addEventListener('click', function(e) {
+      e.preventDefault();
+      openPanel('twitterFilterPanel');
+    });
+
+    // Close panels when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.side-panel') && !e.target.closest('#pdfButton') && !e.target.closest('#twitterFilterButton')) {
+        closeAllPanels();
       }
     });
 

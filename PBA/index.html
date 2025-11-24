@@ -672,7 +672,19 @@
 
 IMPORTANT: The user has uploaded their PBIX file and you have access to their actual data model structure below. Reference SPECIFIC table names, column names, and measures from THEIR file when answering.
 
-${fileContent ? `\n=== USER'S POWERBI FILE CONTENTS ===\n${fileContent}\n` : ''}
+=== TABLE SUMMARY ===
+${pbixData.tables.join(", ")}
+
+=== COLUMNS ===
+${pbixData.columns.join(", ")}
+
+=== MEASURES ===
+${pbixData.detailedTables
+   .flatMap(t => t.measures.map(m => `${t.name}.${m.name}: ${m.expression}`))
+   .join("\n")}
+
+=== RELATIONSHIPS ===
+${pbixData.relationships}
 
 ${pbixData && pbixData.detailedTables && pbixData.detailedTables.length > 0 ? `
 === QUICK REFERENCE - USER'S TABLES ===
