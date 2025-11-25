@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi-Account Gmail Manager</title>
+    <title>Albert's Mail Manager</title>
     <style>
         * {
             margin: 0;
@@ -12,65 +12,130 @@
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             height: 100vh;
             overflow: hidden;
+            position: relative;
         }
-        
+
+        /* Fondo animado de olas */
+        .waves-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z' fill='%23ffffff'%3E%3C/path%3E%3C/svg%3E");
+            background-size: 50% 100%;
+            animation: wave 25s linear infinite;
+        }
+
+        .wave:nth-child(2) {
+            animation: wave 18s linear infinite;
+            opacity: 0.5;
+            animation-delay: -5s;
+        }
+
+        .wave:nth-child(3) {
+            animation: wave 20s linear infinite;
+            opacity: 0.7;
+            animation-delay: -2s;
+            background-size: 40% 100%;
+        }
+
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(-25%); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Header glassmorphism */
         .header {
-            background: #1a73e8;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 15px 20px;
+            padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 100;
         }
         
         .header h1 {
-            font-size: 20px;
-            font-weight: 500;
+            font-size: 24px;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .add-account-btn {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             color: white;
-            padding: 8px 16px;
-            border-radius: 4px;
+            padding: 10px 20px;
+            border-radius: 12px;
             cursor: pointer;
             font-size: 14px;
-            transition: background 0.2s;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         
         .add-account-btn:hover {
-            background: rgba(255,255,255,0.3);
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         }
         
         .accounts-container {
             display: flex;
-            height: calc(100vh - 60px);
+            height: calc(100vh - 70px);
             overflow-x: auto;
+            padding: 20px;
+            gap: 20px;
         }
         
+        /* Panel de cuenta con glassmorphism */
         .account-panel {
             flex: 1;
-            min-width: 400px;
-            border-right: 1px solid #ddd;
+            min-width: 420px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
             display: flex;
             flex-direction: column;
-            background: white;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
-        
-        .account-panel:last-child {
-            border-right: none;
+
+        .account-panel:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
         }
         
         .account-header {
-            padding: 15px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e0e0e0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -79,12 +144,12 @@
         .account-info {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
         
         .account-avatar {
-            width: 32px;
-            height: 32px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
@@ -92,12 +157,15 @@
             justify-content: center;
             color: white;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
         
         .account-email {
             font-size: 14px;
-            color: #333;
+            color: white;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
         
         .account-actions {
@@ -106,70 +174,144 @@
         }
         
         .action-btn {
-            padding: 6px 12px;
-            border: 1px solid #dadce0;
-            background: white;
-            border-radius: 4px;
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 12px;
-            transition: all 0.2s;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
         
         .action-btn:hover {
-            background: #f8f9fa;
-            border-color: #1a73e8;
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
         }
         
         .action-btn.danger {
-            color: #d93025;
+            background: rgba(220, 53, 69, 0.2);
+            border-color: rgba(220, 53, 69, 0.3);
         }
         
         .action-btn.danger:hover {
-            background: #fce8e6;
+            background: rgba(220, 53, 69, 0.3);
+        }
+        
+        .selection-toolbar {
+            padding: 12px 20px;
+            background: rgba(220, 53, 69, 0.15);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(220, 53, 69, 0.2);
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .selection-toolbar.active {
+            display: flex;
+        }
+        
+        .selection-toolbar span {
+            color: white;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .delete-selected-btn {
+            background: rgba(220, 53, 69, 0.3);
+            color: white;
+            border: 1px solid rgba(220, 53, 69, 0.4);
+            padding: 8px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: none;
+        }
+        
+        .delete-selected-btn:hover {
+            background: rgba(220, 53, 69, 0.4);
+            transform: translateY(-1px);
         }
         
         .folders {
-            padding: 10px;
-            border-bottom: 1px solid #e0e0e0;
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
-            gap: 5px;
+            gap: 8px;
             flex-wrap: wrap;
         }
         
         .folder-tab {
-            padding: 6px 12px;
-            border-radius: 16px;
-            background: #e8f0fe;
-            color: #1967d2;
+            padding: 8px 16px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
             font-size: 12px;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid transparent;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
         
         .folder-tab:hover {
-            background: #d2e3fc;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
         }
         
         .folder-tab.active {
-            background: #1a73e8;
+            background: rgba(255, 255, 255, 0.25);
             color: white;
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         
         .emails-list {
             flex: 1;
             overflow-y: auto;
-            padding: 10px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
         
+        /* Items de email con glassmorphism */
         .email-item {
-            padding: 12px;
-            border-bottom: 1px solid #f0f0f0;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.3s ease;
             display: flex;
             align-items: flex-start;
-            gap: 10px;
+            gap: 12px;
+        }
+        
+        .email-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .email-item.selected {
+            background: rgba(74, 144, 226, 0.2);
+            border-color: rgba(74, 144, 226, 0.4);
+        }
+        
+        .email-item.unread {
+            background: rgba(255, 255, 255, 0.12);
+            border-left: 3px solid #4a90e2;
         }
         
         .email-checkbox {
@@ -177,6 +319,7 @@
             cursor: pointer;
             width: 16px;
             height: 16px;
+            accent-color: #4a90e2;
         }
         
         .email-content {
@@ -184,33 +327,23 @@
             min-width: 0;
         }
         
-        .email-item:hover {
-            background: #f8f9fa;
-        }
-        
-        .email-item.selected {
-            background: #e8f0fe;
-        }
-        
-        .email-item.unread {
-            background: #f0f7ff;
-        }
-        
         .email-sender {
             font-weight: 600;
             font-size: 14px;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+            color: white;
         }
         
         .email-subject {
             font-size: 13px;
-            color: #333;
+            color: rgba(255, 255, 255, 0.9);
             margin-bottom: 4px;
+            font-weight: 500;
         }
         
         .email-preview {
             font-size: 12px;
-            color: #666;
+            color: rgba(255, 255, 255, 0.7);
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -218,22 +351,22 @@
         
         .email-date {
             font-size: 11px;
-            color: #888;
+            color: rgba(255, 255, 255, 0.6);
             margin-top: 4px;
         }
         
-        .loading {
+        .loading, .error {
             text-align: center;
-            padding: 20px;
-            color: #666;
+            padding: 30px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
         }
         
         .error {
-            text-align: center;
-            padding: 20px;
-            color: #d93025;
+            color: #ff6b6b;
         }
         
+        /* Auth prompt mejorado */
         .auth-prompt {
             display: flex;
             flex-direction: column;
@@ -242,230 +375,276 @@
             height: 100%;
             padding: 40px;
             text-align: center;
-        }
-        
-        .auth-btn {
-            background: #1a73e8;
             color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 4px;
-            font-size: 14px;
-            cursor: pointer;
-            margin-top: 20px;
         }
         
-        .auth-btn:hover {
-            background: #1765cc;
-        }
-        
-        .email-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        
-        .email-modal.active {
-            display: flex;
-        }
-        
-        .email-modal-content {
-            background: white;
-            width: 90%;
-            max-width: 800px;
-            max-height: 90vh;
-            border-radius: 8px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .email-modal-header {
-            padding: 20px;
-            border-bottom: 1px solid #e0e0e0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .email-modal-body {
-            padding: 20px;
-            overflow-y: auto;
-            flex: 1;
-        }
-        
-        .email-modal-subject {
-            font-size: 20px;
-            font-weight: 500;
+        .auth-prompt h2 {
+            font-size: 28px;
             margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
-        .email-modal-from {
-            color: #666;
+        .auth-prompt p {
+            color: rgba(255, 255, 255, 0.8);
             margin-bottom: 20px;
         }
         
-        .email-modal-content-text {
-            line-height: 1.6;
-            white-space: pre-wrap;
+        .auth-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         
-        .email-modal-footer {
-            padding: 15px 20px;
-            border-top: 1px solid #e0e0e0;
-            display: flex;
-            gap: 10px;
+        .auth-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         }
         
-        .compose-modal {
+        /* Modales con glassmorphism mejorado */
+        .email-modal, .compose-modal {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 1000;
+            padding: 20px;
         }
         
-        .compose-modal.active {
+        .email-modal.active, .compose-modal.active {
             display: flex;
         }
         
-        .compose-content {
-            background: white;
+        .email-modal-content, .compose-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
             width: 90%;
-            max-width: 700px;
-            border-radius: 8px;
+            max-width: 800px;
+            max-height: 90vh;
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            animation: modalAppear 0.3s ease-out;
+        }
+
+        .compose-content {
+            max-width: 700px;
+        }
+
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
         
-        .compose-header {
-            padding: 15px 20px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e0e0e0;
+        .email-modal-header, .compose-header {
+            padding: 25px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
+        }
+        
+        .email-modal-subject {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        
+        .email-modal-from, .email-modal-date {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        
+        .email-modal-body {
+            padding: 30px;
+            overflow-y: auto;
+            flex: 1;
+            line-height: 1.6;
+            color: #2c3e50;
+        }
+        
+        .email-modal-content-text {
+            white-space: pre-wrap;
+            font-size: 14px;
+        }
+        
+        .email-modal-footer, .compose-footer {
+            padding: 20px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            gap: 12px;
         }
         
         .compose-body {
-            padding: 20px;
+            padding: 30px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px;
         }
         
-        .compose-input {
+        .compose-input, .compose-textarea {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #dadce0;
-            border-radius: 4px;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 12px;
             font-size: 14px;
             font-family: inherit;
+            transition: all 0.3s ease;
+            color: #2c3e50;
+        }
+
+        .compose-input::placeholder, .compose-textarea::placeholder {
+            color: rgba(44, 62, 80, 0.6);
+        }
+
+        .compose-input:focus, .compose-textarea:focus {
+            outline: none;
+            border-color: #4a90e2;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
         }
         
         .compose-textarea {
-            width: 100%;
             min-height: 300px;
-            padding: 10px;
-            border: 1px solid #dadce0;
-            border-radius: 4px;
-            font-size: 14px;
-            font-family: inherit;
             resize: vertical;
         }
         
-        .compose-footer {
-            padding: 15px 20px;
-            border-top: 1px solid #e0e0e0;
-            display: flex;
-            gap: 10px;
-        }
-        
         .btn-primary {
-            background: #1a73e8;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 10px 24px;
-            border-radius: 4px;
+            padding: 12px 28px;
+            border-radius: 12px;
             cursor: pointer;
             font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
         
         .btn-primary:hover {
-            background: #1765cc;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
         
         .btn-secondary {
-            background: white;
-            color: #5f6368;
-            border: 1px solid #dadce0;
-            padding: 10px 24px;
-            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #7f8c8d;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 28px;
+            border-radius: 12px;
             cursor: pointer;
             font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
         
         .btn-secondary:hover {
-            background: #f8f9fa;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
         }
-        
-        .selection-toolbar {
-            padding: 10px 15px;
-            background: #fce8e6;
-            border-bottom: 1px solid #f5c0b8;
-            display: none;
-            align-items: center;
-            gap: 10px;
+
+        /* Scrollbar personalizado */
+        .emails-list::-webkit-scrollbar {
+            width: 6px;
         }
-        
-        .selection-toolbar.active {
-            display: flex;
+
+        .emails-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
         }
-        
-        .delete-selected-btn {
-            background: #d93025;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            margin-left: 10px;
-            display: none;
+
+        .emails-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
         }
-        
-        .delete-selected-btn:hover {
-            background: #c5221f;
+
+        .emails-list::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .accounts-container {
+                flex-direction: column;
+                padding: 10px;
+            }
+            
+            .account-panel {
+                min-width: 100%;
+            }
+            
+            .header {
+                padding: 12px 20px;
+            }
+            
+            .header h1 {
+                font-size: 18px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Fondo animado de olas -->
+    <div class="waves-background">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+
     <div class="header">
-        <h1>📧 Albert's Multi-Account Mail Manager</h1>
+        <h1>📧 Albert's Mail Manager</h1>
         <button class="add-account-btn" onclick="addAccount()">+ Add Account</button>
     </div>
     
     <div class="accounts-container" id="accountsContainer">
         <div class="account-panel">
             <div class="auth-prompt" id="authPrompt">
-                <h2>Welcome!</h2>
-                <p style="margin-top: 10px; color: #666;">First, upload your Google credentials JSON file</p>
+                <h2>Welcome to Your Mail Manager</h2>
+                <p>First, upload your Google credentials JSON file</p>
                 <input type="file" id="credentialsFile" accept=".json" style="display: none;" onchange="loadCredentials(event)">
                 <button class="auth-btn" onclick="document.getElementById('credentialsFile').click()">📁 Upload Credentials</button>
-                <div id="credentialsStatus" style="margin-top: 15px; color: #666; font-size: 14px;"></div>
+                <div id="credentialsStatus" style="margin-top: 15px; color: rgba(255,255,255,0.8); font-size: 14px;"></div>
             </div>
         </div>
     </div>
@@ -495,11 +674,11 @@
     <div class="compose-modal" id="composeModal" onclick="if(event.target === this) closeCompose()">
         <div class="compose-content">
             <div class="compose-header">
-                <h3>New Message</h3>
-                <button class="action-btn" onclick="closeCompose()">✕</button>
+                <h3 style="color: #2c3e50; margin: 0;">New Message</h3>
+                <button class="action-btn" style="color: #2c3e50; border-color: rgba(44, 62, 80, 0.2);" onclick="closeCompose()">✕</button>
             </div>
             <div class="compose-body">
-                <div style="color: #666; font-size: 14px;">From: <span id="composeFrom"></span></div>
+                <div style="color: #7f8c8d; font-size: 14px;">From: <span id="composeFrom" style="color: #2c3e50; font-weight: 500;"></span></div>
                 <input type="email" class="compose-input" id="composeTo" placeholder="To">
                 <input type="text" class="compose-input" id="composeSubject" placeholder="Subject">
                 <textarea class="compose-textarea" id="composeBody" placeholder="Write your message..."></textarea>
@@ -593,9 +772,9 @@
             const authPrompt = document.getElementById('authPrompt');
             authPrompt.innerHTML = `
                 <h2>Ready to Sign In!</h2>
-                <p style="margin-top: 10px; color: #666;">Click below to sign in with your Gmail accounts</p>
+                <p style="margin-top: 10px; color: rgba(255,255,255,0.8);">Click below to sign in with your Gmail accounts</p>
                 <button class="auth-btn" onclick="authenticate()">Sign in with Google</button>
-                <button class="auth-btn" style="background: #666; margin-top: 10px;" onclick="resetCredentials()">🔄 Change Credentials</button>
+                <button class="auth-btn" style="background: rgba(102,102,102,0.2); margin-top: 10px;" onclick="resetCredentials()">🔄 Change Credentials</button>
             `;
         }
         
@@ -749,7 +928,7 @@
                     <div class="account-panel">
                         <div class="auth-prompt">
                             <h2>Welcome!</h2>
-                            <p style="margin-top: 10px; color: #666;">Click below to sign in with your Gmail accounts</p>
+                            <p style="margin-top: 10px; color: rgba(255,255,255,0.8);">Click below to sign in with your Gmail accounts</p>
                             <button class="auth-btn" onclick="authenticate()">Sign in with Google</button>
                         </div>
                     </div>
@@ -895,10 +1074,10 @@
                 if (body.includes('</') || body.includes('/>') || body.includes('<br')) {
                     // Es HTML
                     modalBody.innerHTML = `
-                        <div style="border: 1px solid #ddd; border-radius: 4px; padding: 15px; background: #f9f9f9;">
+                        <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; background: #f9f9f9;">
                             ${body}
                         </div>
-                        <div style="margin-top: 10px; color: #666; font-size: 12px;">
+                        <div style="margin-top: 15px; color: #666; font-size: 12px;">
                             📄 Showing HTML content
                         </div>
                     `;
