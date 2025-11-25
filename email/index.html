@@ -519,6 +519,44 @@
         let accounts = [];
         let CLIENT_ID = null;
         
+        // Función para guardar cuentas en localStorage
+        function saveAccountsToStorage() {
+            const accountsToSave = accounts.map(account => ({
+                email: account.email,
+                accessToken: account.accessToken,
+                currentFolder: account.currentFolder || 'INBOX'
+            }));
+            localStorage.setItem('gmail_accounts', JSON.stringify(accountsToSave));
+            console.log('Accounts saved to localStorage:', accountsToSave.length);
+        }
+        
+        // Función para cargar cuentas desde localStorage
+        function loadAccountsFromStorage() {
+            const savedAccounts = localStorage.getItem('gmail_accounts');
+            if (savedAccounts) {
+                try {
+                    const parsedAccounts = JSON.parse(savedAccounts);
+                    console.log('Loaded accounts from storage:', parsedAccounts);
+                    return parsedAccounts;
+                } catch (error) {
+                    console.error('Error parsing saved accounts:', error);
+                    return [];
+                }
+            }
+            return [];
+        }
+        
+        // Función para verificar si un token sigue siendo válido
+        async function validateToken(accessToken) {
+            try {
+                const response = await fetch('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=' + accessToken);
+                const data = await response.json();
+                return !data.error;
+            } catch (error) {
+                return false;
+            }
+        }
+        
         function loadCredentials(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -564,7 +602,9 @@
         function resetCredentials() {
             localStorage.removeItem('gmail_client_id');
             localStorage.removeItem('gmail_credentials');
+            localStorage.removeItem('gmail_accounts'); // También limpiar cuentas guardadas
             CLIENT_ID = null;
+            accounts = [];
             location.reload();
         }
         
@@ -586,10 +626,40 @@
             });
         }
         
-        function checkSavedCredentials() {
+        async function checkSavedCredentials() {
             const savedClientId = localStorage.getItem('gmail_client_id');
             if (savedClientId) {
                 CLIENT_ID = savedClientId;
+                
+                // Cargar cuentas guardadas
+                const savedAccounts = loadAccountsFromStorage();
+                if (savedAccounts.length > 0) {
+                    console.log('Found saved accounts, validating tokens...');
+                    
+                    // Validar tokens y cargar cuentas válidas
+                    for (const savedAccount of savedAccounts) {
+                        const isValid = await validateToken(savedAccount.accessToken);
+                        if (isValid) {
+                            console.log('Token valid for:', savedAccount.email);
+                            accounts.push({
+                                email: savedAccount.email,
+                                accessToken: savedAccount.accessToken,
+                                currentFolder: savedAccount.currentFolder || 'INBOX',
+                                selectedEmails: []
+                            });
+                        } else {
+                            console.log('Token expired for:', savedAccount.email);
+                        }
+                    }
+                    
+                    if (accounts.length > 0) {
+                        console.log('Loading saved accounts:', accounts.length);
+                        updateAccountsDisplay();
+                        return;
+                    }
+                }
+                
+                // Si no hay cuentas válidas, mostrar botón de sign in
                 showSignInButton();
                 initGoogleAuth();
             }
@@ -619,8 +689,21 @@
                 try {
                     const userInfo = await getUserInfo(response.access_token);
                     console.log('User authenticated:', userInfo.email);
-                    addAccountPanel(userInfo.email, response.access_token);
-                    loadEmails(userInfo.email, response.access_token);
+                    
+                    // Verificar si la cuenta ya existe
+                    const existingAccountIndex = accounts.findIndex(acc => acc.email === userInfo.email);
+                    if (existingAccountIndex !== -1) {
+                        // Actualizar token existente
+                        accounts[existingAccountIndex].accessToken = response.access_token;
+                        console.log('Updated token for existing account:', userInfo.email);
+                    } else {
+                        // Añadir nueva cuenta
+                        addAccountPanel(userInfo.email, response.access_token);
+                    }
+                    
+                    // Guardar en localStorage
+                    saveAccountsToStorage();
+                    
                 } catch (error) {
                     console.error('Error in auth response:', error);
                     alert('Error loading account: ' + error.message);
@@ -660,6 +743,20 @@
         
         function updateAccountsDisplay() {
             const container = document.getElementById('accountsContainer');
+            
+            if (accounts.length === 0) {
+                container.innerHTML = `
+                    <div class="account-panel">
+                        <div class="auth-prompt">
+                            <h2>Welcome!</h2>
+                            <p style="margin-top: 10px; color: #666;">Click below to sign in with your Gmail accounts</p>
+                            <button class="auth-btn" onclick="authenticate()">Sign in with Google</button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
             container.innerHTML = '';
             
             accounts.forEach((acc, index) => {
@@ -1082,6 +1179,9 @@
             event.target.classList.add('active');
             
             loadEmails(account.email, account.accessToken, folder);
+            
+            // Guardar el folder actual
+            saveAccountsToStorage();
         }
         
         async function cleanupAccount(index) {
@@ -1146,20 +1246,10 @@
         }
         
         function removeAccount(index) {
-            accounts.splice(index, 1);
-            updateAccountsDisplay();
-            
-            if (accounts.length === 0) {
-                const container = document.getElementById('accountsContainer');
-                container.innerHTML = `
-                    <div class="account-panel">
-                        <div class="auth-prompt">
-                            <h2>Welcome!</h2>
-                            <p style="margin-top: 10px; color: #666;">Click below to sign in with your Gmail accounts</p>
-                            <button class="auth-btn" onclick="authenticate()">Sign in with Google</button>
-                        </div>
-                    </div>
-                `;
+            if (confirm(`Are you sure you want to remove ${accounts[index].email}?`)) {
+                accounts.splice(index, 1);
+                saveAccountsToStorage(); // Guardar cambios
+                updateAccountsDisplay();
             }
         }
         
@@ -1167,8 +1257,8 @@
             authenticate();
         }
         
-        window.onload = function() {
-            checkSavedCredentials();
+        window.onload = async function() {
+            await checkSavedCredentials();
             initGoogleAuth();
         };
     </script>
