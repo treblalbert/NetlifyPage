@@ -424,8 +424,8 @@
         
         .selection-toolbar {
             padding: 10px 15px;
-            background: #e8f0fe;
-            border-bottom: 1px solid #d2e3fc;
+            background: #fce8e6;
+            border-bottom: 1px solid #f5c0b8;
             display: none;
             align-items: center;
             gap: 10px;
@@ -433,6 +433,22 @@
         
         .selection-toolbar.active {
             display: flex;
+        }
+        
+        .delete-selected-btn {
+            background: #d93025;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+            display: none;
+        }
+        
+        .delete-selected-btn:hover {
+            background: #c5221f;
         }
     </style>
 </head>
@@ -566,7 +582,7 @@
                 client_id: CLIENT_ID,
                 scope: SCOPES,
                 callback: handleAuthResponse,
-                hint: '' // Opcional: puedes poner un hint de email
+                hint: ''
             });
         }
         
@@ -631,18 +647,29 @@
         
         function addAccountPanel(email, accessToken) {
             console.log('Adding account panel for:', email);
-            const account = { email, accessToken, currentFolder: 'INBOX' };
+            const account = { 
+                email, 
+                accessToken, 
+                currentFolder: 'INBOX',
+                selectedEmails: []
+            };
             accounts.push(account);
             
+            updateAccountsDisplay();
+        }
+        
+        function updateAccountsDisplay() {
             const container = document.getElementById('accountsContainer');
             container.innerHTML = '';
             
             accounts.forEach((acc, index) => {
                 const panel = createAccountPanel(acc, index);
                 container.appendChild(panel);
+                // Cargar emails inmediatamente después de crear el panel
+                setTimeout(() => {
+                    loadEmails(acc.email, acc.accessToken, acc.currentFolder);
+                }, 100);
             });
-            
-            console.log('Account panels created, total accounts:', accounts.length);
         }
         
         function createAccountPanel(account, index) {
@@ -660,9 +687,17 @@
                     </div>
                     <div class="account-actions">
                         <button class="action-btn" onclick="refreshAccount(${index})">🔄 Refresh</button>
-                        <button class="action-btn danger" onclick="cleanupAccount(${index})">🧹 Clean</button>
-                        <button class="action-btn" onclick="removeAccount(${index})">✕</button>
+                        <button class="action-btn" onclick="composeEmail(${index})">📝 Compose</button>
+                        <button class="action-btn danger" onclick="cleanupAccount(${index})">🗑️ Clean Folder</button>
+                        <button class="action-btn danger" onclick="removeAccount(${index})">✕ Remove</button>
                     </div>
+                </div>
+                <div class="selection-toolbar" id="selection-toolbar-${index}">
+                    <span id="selected-count-${index}">0 emails selected</span>
+                    <button class="delete-selected-btn" onclick="deleteSelected(${index})" id="delete-selected-${index}">
+                        🗑️ Delete Selected
+                    </button>
+                    <button class="action-btn" onclick="clearSelection(${index})">✕ Clear</button>
                 </div>
                 <div class="folders">
                     <div class="folder-tab active" onclick="switchFolder(${index}, 'INBOX')">Inbox</div>
@@ -683,94 +718,116 @@
         let currentComposeAccount = null;
         
         function openEmail(accountIndex, messageId) {
-    const account = accounts[accountIndex];
-    const modal = document.getElementById('emailModal');
-    const modalBody = document.getElementById('emailModalBody');
-    const modalSubject = document.getElementById('emailModalSubject');
-    const modalFrom = document.getElementById('emailModalFrom');
-    const modalDate = document.getElementById('emailModalDate');
-    const replyBtn = document.getElementById('replyBtn');
-    
-    currentOpenEmail = { accountIndex, messageId };
-    
-    modalBody.innerHTML = '<div class="loading">Loading email...</div>';
-    modal.classList.add('active');
-    
-    fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}?format=full`, {
-        headers: { Authorization: `Bearer ${account.accessToken}` }
-    })
-    .then(res => res.json())
-    .then(emailData => {
-        const headers = emailData.payload.headers;
-        const from = headers.find(h => h.name === 'From')?.value || 'Unknown';
-        const subject = headers.find(h => h.name === 'Subject')?.value || '(No subject)';
-        const date = new Date(parseInt(emailData.internalDate)).toLocaleString();
-        
-        modalSubject.textContent = subject;
-        modalFrom.textContent = 'From: ' + from;
-        modalDate.textContent = date;
-        
-        // Función mejorada para extraer el contenido del email
-        function getEmailBody(payload) {
-            // Si el cuerpo está directamente en el payload
-            if (payload.body && payload.body.data) {
-                return atob(payload.body.data.replace(/-/g, '+').replace(/_/g, '/'));
-            }
+            const account = accounts[accountIndex];
+            const modal = document.getElementById('emailModal');
+            const modalBody = document.getElementById('emailModalBody');
+            const modalSubject = document.getElementById('emailModalSubject');
+            const modalFrom = document.getElementById('emailModalFrom');
+            const modalDate = document.getElementById('emailModalDate');
+            const replyBtn = document.getElementById('replyBtn');
             
-            // Si hay partes, buscar la parte de texto
-            if (payload.parts) {
-                for (const part of payload.parts) {
-                    // Buscar parte de texto plano primero
-                    if (part.mimeType === 'text/plain' && part.body && part.body.data) {
-                        return atob(part.body.data.replace(/-/g, '+').replace(/_/g, '/'));
+            currentOpenEmail = { accountIndex, messageId };
+            
+            modalBody.innerHTML = '<div class="loading">Loading email...</div>';
+            modal.classList.add('active');
+            
+            fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}?format=full`, {
+                headers: { Authorization: `Bearer ${account.accessToken}` }
+            })
+            .then(res => res.json())
+            .then(emailData => {
+                const headers = emailData.payload.headers;
+                const from = headers.find(h => h.name === 'From')?.value || 'Unknown';
+                const subject = headers.find(h => h.name === 'Subject')?.value || '(No subject)';
+                const date = new Date(parseInt(emailData.internalDate)).toLocaleString();
+                
+                modalSubject.textContent = subject;
+                modalFrom.textContent = 'From: ' + from;
+                modalDate.textContent = date;
+                
+                // Función mejorada para extraer el contenido
+                function getEmailBody(payload) {
+                    // Si el cuerpo está directamente
+                    if (payload.body && payload.body.data) {
+                        const text = atob(payload.body.data.replace(/-/g, '+').replace(/_/g, '/'));
+                        return decodeURIComponent(escape(text)); // Arreglar acentos
                     }
-                    // Si no hay texto plano, usar HTML
-                    if (part.mimeType === 'text/html' && part.body && part.body.data) {
-                        return atob(part.body.data.replace(/-/g, '+').replace(/_/g, '/'));
+                    
+                    // Si hay partes
+                    if (payload.parts) {
+                        // Buscar texto plano primero
+                        const textPart = findPartByType(payload.parts, 'text/plain');
+                        if (textPart && textPart.body && textPart.body.data) {
+                            const text = atob(textPart.body.data.replace(/-/g, '+').replace(/_/g, '/'));
+                            return decodeURIComponent(escape(text)); // Arreglar acentos
+                        }
+                        
+                        // Buscar HTML
+                        const htmlPart = findPartByType(payload.parts, 'text/html');
+                        if (htmlPart && htmlPart.body && htmlPart.body.data) {
+                            const html = atob(htmlPart.body.data.replace(/-/g, '+').replace(/_/g, '/'));
+                            return html;
+                        }
+                        
+                        // Buscar recursivamente
+                        for (const part of payload.parts) {
+                            if (part.parts) {
+                                const found = getEmailBody(part);
+                                if (found && found !== 'No content available') return found;
+                            }
+                        }
                     }
-                    // Buscar recursivamente en sub-partes
-                    if (part.parts) {
-                        const subPartBody = getEmailBody(part);
-                        if (subPartBody) return subPartBody;
-                    }
+                    
+                    return 'No content available';
                 }
-            }
-            
-            return 'No content available';
-        }
-        
-        const body = getEmailBody(emailData.payload);
-        
-        // Si el contenido es HTML, crear un iframe para mostrarlo de forma segura
-        if (body.includes('<') && body.includes('>')) {
-            modalBody.innerHTML = `
-                <iframe 
-                    srcdoc="${body.replace(/"/g, '&quot;')}"
-                    style="width: 100%; height: 400px; border: none; border-radius: 4px;"
-                    sandbox="allow-same-origin"
-                ></iframe>
-                <div style="margin-top: 15px; padding: 10px; background: #f5f5f5; border-radius: 4px;">
-                    <strong>Plain text version not available. Showing HTML content above.</strong>
-                </div>
-            `;
-        } else {
-            modalBody.innerHTML = `<div class="email-modal-content-text" style="white-space: pre-wrap; line-height: 1.6;">${body}</div>`;
-        }
-        
-        replyBtn.onclick = () => {
-            closeEmailModal();
-            openCompose(accountIndex, { 
-                to: from.match(/<(.+)>/)?.[1] || from,
-                subject: subject.startsWith('Re: ') ? subject : 'Re: ' + subject,
-                inReplyTo: messageId
+                
+                function findPartByType(parts, mimeType) {
+                    for (const part of parts) {
+                        if (part.mimeType === mimeType) return part;
+                        if (part.parts) {
+                            const found = findPartByType(part.parts, mimeType);
+                            if (found) return found;
+                        }
+                    }
+                    return null;
+                }
+                
+                const body = getEmailBody(emailData.payload);
+                
+                // Mostrar el contenido adecuadamente
+                if (body.includes('</') || body.includes('/>') || body.includes('<br')) {
+                    // Es HTML
+                    modalBody.innerHTML = `
+                        <div style="border: 1px solid #ddd; border-radius: 4px; padding: 15px; background: #f9f9f9;">
+                            ${body}
+                        </div>
+                        <div style="margin-top: 10px; color: #666; font-size: 12px;">
+                            📄 Showing HTML content
+                        </div>
+                    `;
+                } else {
+                    // Es texto plano
+                    modalBody.innerHTML = `
+                        <div class="email-modal-content-text" style="white-space: pre-wrap; line-height: 1.6; font-family: inherit;">
+                            ${body}
+                        </div>
+                    `;
+                }
+                
+                replyBtn.onclick = () => {
+                    closeEmailModal();
+                    openCompose(accountIndex, { 
+                        to: from.match(/<(.+)>/)?.[1] || from,
+                        subject: subject.startsWith('Re: ') ? subject : 'Re: ' + subject,
+                        inReplyTo: messageId
+                    });
+                };
+            })
+            .catch(error => {
+                console.error('Error loading email:', error);
+                modalBody.innerHTML = `<div class="error">Error loading email: ${error.message}</div>`;
             });
-        };
-    })
-    .catch(error => {
-        console.error('Error loading email:', error);
-        modalBody.innerHTML = `<div class="error">Error loading email: ${error.message}</div>`;
-    });
-}
+        }
         
         function closeEmailModal() {
             document.getElementById('emailModal').classList.remove('active');
@@ -848,33 +905,56 @@
         
         function toggleEmailSelection(accountIndex, messageId, checkbox) {
             const emailItem = checkbox.closest('.email-item');
+            const account = accounts[accountIndex];
+            
+            if (!account.selectedEmails) {
+                account.selectedEmails = [];
+            }
             
             if (checkbox.checked) {
                 emailItem.classList.add('selected');
-                if (!accounts[accountIndex].selectedEmails) {
-                    accounts[accountIndex].selectedEmails = [];
+                if (!account.selectedEmails.includes(messageId)) {
+                    account.selectedEmails.push(messageId);
                 }
-                accounts[accountIndex].selectedEmails.push(messageId);
             } else {
                 emailItem.classList.remove('selected');
-                const selected = accounts[accountIndex].selectedEmails || [];
-                const idx = selected.indexOf(messageId);
-                if (idx > -1) selected.splice(idx, 1);
+                const idx = account.selectedEmails.indexOf(messageId);
+                if (idx > -1) account.selectedEmails.splice(idx, 1);
             }
             
             updateSelectionToolbar(accountIndex);
         }
         
         function updateSelectionToolbar(accountIndex) {
-            const selected = accounts[accountIndex].selectedEmails || [];
+            const account = accounts[accountIndex];
+            const selectedCount = account.selectedEmails ? account.selectedEmails.length : 0;
+            const toolbar = document.getElementById(`selection-toolbar-${accountIndex}`);
+            const countElement = document.getElementById(`selected-count-${accountIndex}`);
             const deleteBtn = document.getElementById(`delete-selected-${accountIndex}`);
             
-            if (selected.length > 0) {
+            if (selectedCount > 0) {
+                toolbar.classList.add('active');
+                countElement.textContent = `${selectedCount} email(s) selected`;
                 deleteBtn.style.display = 'block';
-                deleteBtn.textContent = `🗑️ Delete (${selected.length})`;
             } else {
-                deleteBtn.style.display = 'none';
+                toolbar.classList.remove('active');
             }
+        }
+        
+        function clearSelection(accountIndex) {
+            const account = accounts[accountIndex];
+            account.selectedEmails = [];
+            
+            // Desmarcar checkboxes
+            const emailsList = document.getElementById(`emails-${accountIndex}`);
+            const checkboxes = emailsList.querySelectorAll('.email-checkbox');
+            checkboxes.forEach(cb => cb.checked = false);
+            
+            // Quitar clases selected
+            const emailItems = emailsList.querySelectorAll('.email-item');
+            emailItems.forEach(item => item.classList.remove('selected'));
+            
+            updateSelectionToolbar(accountIndex);
         }
         
         async function deleteSelected(accountIndex) {
@@ -883,25 +963,33 @@
             
             if (selected.length === 0) return;
             
-            if (!confirm(`Delete ${selected.length} selected email(s)?`)) return;
+            if (!confirm(`Are you sure you want to delete ${selected.length} selected email(s)?`)) return;
             
-            for (const messageId of selected) {
-                try {
-                    await fetch(
-                        `https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}/trash`,
-                        {
-                            method: 'POST',
-                            headers: { Authorization: `Bearer ${account.accessToken}` }
-                        }
-                    );
-                } catch (error) {
-                    console.error('Error deleting email:', error);
+            try {
+                let deleted = 0;
+                for (const messageId of selected) {
+                    try {
+                        await fetch(
+                            `https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}/trash`,
+                            {
+                                method: 'POST',
+                                headers: { Authorization: `Bearer ${account.accessToken}` }
+                            }
+                        );
+                        deleted++;
+                    } catch (error) {
+                        console.error('Error deleting email:', error);
+                    }
                 }
+                
+                alert(`Successfully deleted ${deleted} email(s)!`);
+                account.selectedEmails = [];
+                updateSelectionToolbar(accountIndex);
+                refreshAccount(accountIndex);
+                
+            } catch (error) {
+                alert('Error deleting emails: ' + error.message);
             }
-            
-            account.selectedEmails = [];
-            alert('Selected emails deleted!');
-            refreshAccount(accountIndex);
         }
         
         async function loadEmails(email, accessToken, folder = 'INBOX') {
@@ -972,19 +1060,10 @@
                         
                         loaded++;
                         
-                        // Show progress
-                        if (loaded < data.messages.length) {
-                            const remaining = data.messages.length - loaded;
-                            emailsList.innerHTML += `<div class="loading">Loading ${remaining} more emails...</div>`;
-                        }
                     } catch (err) {
                         console.error('Error loading individual email:', err);
                     }
                 }
-                
-                // Remove loading message
-                const loadingMsg = emailsList.querySelector('.loading');
-                if (loadingMsg) loadingMsg.remove();
                 
                 console.log(`Loaded ${loaded} emails successfully`);
                 
@@ -1059,17 +1138,19 @@
         
         function refreshAccount(index) {
             const account = accounts[index];
-            account.selectedEmails = [];
+            if (account.selectedEmails) {
+                account.selectedEmails = [];
+            }
             updateSelectionToolbar(index);
             loadEmails(account.email, account.accessToken, account.currentFolder);
         }
         
         function removeAccount(index) {
             accounts.splice(index, 1);
-            const container = document.getElementById('accountsContainer');
-            container.innerHTML = '';
+            updateAccountsDisplay();
             
             if (accounts.length === 0) {
+                const container = document.getElementById('accountsContainer');
                 container.innerHTML = `
                     <div class="account-panel">
                         <div class="auth-prompt">
@@ -1079,12 +1160,6 @@
                         </div>
                     </div>
                 `;
-            } else {
-                accounts.forEach((acc, i) => {
-                    const panel = createAccountPanel(acc, i);
-                    container.appendChild(panel);
-                    loadEmails(acc.email, acc.accessToken, acc.currentFolder);
-                });
             }
         }
         
