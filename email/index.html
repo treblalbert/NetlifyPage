@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Account Gmail Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #1a73e8;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 20px;
+            font-weight: 500;
+        }
+        
+        .add-account-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        
+        .add-account-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .accounts-container {
+            display: flex;
+            height: calc(100vh - 60px);
+            overflow-x: auto;
+        }
+        
+        .account-panel {
+            flex: 1;
+            min-width: 400px;
+            border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+        
+        .account-panel:last-child {
+            border-right: none;
+        }
+        
+        .account-header {
+            padding: 15px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .account-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .account-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .account-email {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .account-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+            border: 1px solid #dadce0;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        
+        .action-btn:hover {
+            background: #f8f9fa;
+            border-color: #1a73e8;
+        }
+        
+        .action-btn.danger {
+            color: #d93025;
+        }
+        
+        .action-btn.danger:hover {
+            background: #fce8e6;
+        }
+        
+        .folders {
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .folder-tab {
+            padding: 6px 12px;
+            border-radius: 16px;
+            background: #e8f0fe;
+            color: #1967d2;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        
+        .folder-tab:hover {
+            background: #d2e3fc;
+        }
+        
+        .folder-tab.active {
+            background: #1a73e8;
+            color: white;
+        }
+        
+        .emails-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .email-item {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .email-checkbox {
+            margin-top: 4px;
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+        
+        .email-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .email-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .email-item.selected {
+            background: #e8f0fe;
+        }
+        
+        .email-item.unread {
+            background: #f0f7ff;
+        }
+        
+        .email-sender {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        
+        .email-subject {
+            font-size: 13px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .email-preview {
+            font-size: 12px;
+            color: #666;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .email-date {
+            font-size: 11px;
+            color: #888;
+            margin-top: 4px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 20px;
+            color: #d93025;
+        }
+        
+        .auth-prompt {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .auth-btn {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        .auth-btn:hover {
+            background: #1765cc;
+        }
+        
+        .email-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .email-modal.active {
+            display: flex;
+        }
+        
+        .email-modal-content {
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .email-modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .email-modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        
+        .email-modal-subject {
+            font-size: 20px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .email-modal-from {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .email-modal-content-text {
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        
+        .email-modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .compose-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .compose-modal.active {
+            display: flex;
+        }
+        
+        .compose-content {
+            background: white;
+            width: 90%;
+            max-width: 700px;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .compose-header {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .compose-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .compose-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        .compose-textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 10px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+        }
+        
+        .compose-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn-primary:hover {
+            background: #1765cc;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #5f6368;
+            border: 1px solid #dadce0;
+            padding: 10px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn-secondary:hover {
+            background: #f8f9fa;
+        }
+        
+        .selection-toolbar {
+            padding: 10px 15px;
+            background: #e8f0fe;
+            border-bottom: 1px solid #d2e3fc;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .selection-toolbar.active {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📧 Albert's Multi-Account Mail Manager</h1>
+        <button class="add-account-btn" onclick="addAccount()">+ Add Account</button>
+    </div>
+    
+    <div class="accounts-container" id="accountsContainer">
+        <div class="account-panel">
+            <div class="auth-prompt" id="authPrompt">
+                <h2>Welcome!</h2>
+                <p style="margin-top: 10px; color: #666;">First, upload your Google credentials JSON file</p>
+                <input type="file" id="credentialsFile" accept=".json" style="display: none;" onchange="loadCredentials(event)">
+                <button class="auth-btn" onclick="document.getElementById('credentialsFile').click()">📁 Upload Credentials</button>
+                <div id="credentialsStatus" style="margin-top: 15px; color: #666; font-size: 14px;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Email View Modal -->
+    <div class="email-modal" id="emailModal" onclick="if(event.target === this) closeEmailModal()">
+        <div class="email-modal-content">
+            <div class="email-modal-header">
+                <div>
+                    <div class="email-modal-subject" id="emailModalSubject">Subject</div>
+                    <div class="email-modal-from" id="emailModalFrom">From</div>
+                    <div class="email-modal-date" id="emailModalDate">Date</div>
+                </div>
+                <button class="action-btn" onclick="closeEmailModal()">✕</button>
+            </div>
+            <div class="email-modal-body" id="emailModalBody">
+                Loading...
+            </div>
+            <div class="email-modal-footer">
+                <button class="btn-primary" id="replyBtn">↩️ Reply</button>
+                <button class="btn-secondary" onclick="closeEmailModal()">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Compose Modal -->
+    <div class="compose-modal" id="composeModal" onclick="if(event.target === this) closeCompose()">
+        <div class="compose-content">
+            <div class="compose-header">
+                <h3>New Message</h3>
+                <button class="action-btn" onclick="closeCompose()">✕</button>
+            </div>
+            <div class="compose-body">
+                <div style="color: #666; font-size: 14px;">From: <span id="composeFrom"></span></div>
+                <input type="email" class="compose-input" id="composeTo" placeholder="To">
+                <input type="text" class="compose-input" id="composeSubject" placeholder="Subject">
+                <textarea class="compose-textarea" id="composeBody" placeholder="Write your message..."></textarea>
+            </div>
+            <div class="compose-footer">
+                <button class="btn-primary" onclick="sendEmail()">📤 Send</button>
+                <button class="btn-secondary" onclick="closeCompose()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://accounts.google.com/gsi/client"></script>
+    <script>
+        const SCOPES = 'https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.modify https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile';
+        
+        let tokenClient;
+        let accounts = [];
+        let CLIENT_ID = null;
+        
+        function loadCredentials(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const credentials = JSON.parse(e.target.result);
+                    CLIENT_ID = credentials.web.client_id;
+                    
+                    // Guardar en localStorage para recordarlo
+                    localStorage.setItem('gmail_client_id', CLIENT_ID);
+                    localStorage.setItem('gmail_credentials', e.target.result);
+                    
+                    document.getElementById('credentialsStatus').innerHTML = 
+                        '✅ Credentials loaded successfully!<br>Now you can sign in with your accounts.';
+                    
+                    // Mostrar botón de Sign in
+                    setTimeout(() => {
+                        showSignInButton();
+                    }, 1000);
+                    
+                    initGoogleAuth();
+                } catch (error) {
+                    document.getElementById('credentialsStatus').innerHTML = 
+                        '❌ Error loading credentials. Please check the JSON file.';
+                    console.error('Error parsing credentials:', error);
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        function showSignInButton() {
+            const authPrompt = document.getElementById('authPrompt');
+            authPrompt.innerHTML = `
+                <h2>Ready to Sign In!</h2>
+                <p style="margin-top: 10px; color: #666;">Click below to sign in with your Gmail accounts</p>
+                <button class="auth-btn" onclick="authenticate()">Sign in with Google</button>
+                <button class="auth-btn" style="background: #666; margin-top: 10px;" onclick="resetCredentials()">🔄 Change Credentials</button>
+            `;
+        }
+        
+        function resetCredentials() {
+            localStorage.removeItem('gmail_client_id');
+            localStorage.removeItem('gmail_credentials');
+            CLIENT_ID = null;
+            location.reload();
+        }
+        
+        function initGoogleAuth() {
+            if (!CLIENT_ID) return;
+            
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: SCOPES,
+                callback: handleAuthResponse,
+            });
+        }
+        
+        function checkSavedCredentials() {
+            const savedClientId = localStorage.getItem('gmail_client_id');
+            if (savedClientId) {
+                CLIENT_ID = savedClientId;
+                showSignInButton();
+                initGoogleAuth();
+            }
+        }
+        
+        function authenticate() {
+            if (!CLIENT_ID) {
+                alert('Please upload your credentials file first.');
+                return;
+            }
+            tokenClient.requestAccessToken();
+        }
+        
+        async function handleAuthResponse(response) {
+            if (response.error) {
+                console.error('Auth error:', response);
+                alert('Authentication failed: ' + response.error);
+                return;
+            }
+            
+            if (response.access_token) {
+                try {
+                    const userInfo = await getUserInfo(response.access_token);
+                    console.log('User authenticated:', userInfo.email);
+                    addAccountPanel(userInfo.email, response.access_token);
+                    loadEmails(userInfo.email, response.access_token);
+                } catch (error) {
+                    console.error('Error in auth response:', error);
+                    alert('Error loading account: ' + error.message);
+                }
+            }
+        }
+        
+        async function getUserInfo(accessToken) {
+            try {
+                const response = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+                    headers: { Authorization: `Bearer ${accessToken}` }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to get user info');
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('Error getting user info:', error);
+                throw error;
+            }
+        }
+        
+        function addAccountPanel(email, accessToken) {
+            console.log('Adding account panel for:', email);
+            const account = { email, accessToken, currentFolder: 'INBOX' };
+            accounts.push(account);
+            
+            const container = document.getElementById('accountsContainer');
+            container.innerHTML = '';
+            
+            accounts.forEach((acc, index) => {
+                const panel = createAccountPanel(acc, index);
+                container.appendChild(panel);
+            });
+            
+            console.log('Account panels created, total accounts:', accounts.length);
+        }
+        
+        function createAccountPanel(account, index) {
+            const panel = document.createElement('div');
+            panel.className = 'account-panel';
+            panel.id = `account-${index}`;
+            
+            const initial = account.email.charAt(0).toUpperCase();
+            
+            panel.innerHTML = `
+                <div class="account-header">
+                    <div class="account-info">
+                        <div class="account-avatar">${initial}</div>
+                        <div class="account-email">${account.email}</div>
+                    </div>
+                    <div class="account-actions">
+                        <button class="action-btn" onclick="refreshAccount(${index})">🔄 Refresh</button>
+                        <button class="action-btn danger" onclick="cleanupAccount(${index})">🧹 Clean</button>
+                        <button class="action-btn" onclick="removeAccount(${index})">✕</button>
+                    </div>
+                </div>
+                <div class="folders">
+                    <div class="folder-tab active" onclick="switchFolder(${index}, 'INBOX')">Inbox</div>
+                    <div class="folder-tab" onclick="switchFolder(${index}, 'SPAM')">Spam</div>
+                    <div class="folder-tab" onclick="switchFolder(${index}, 'CATEGORY_PROMOTIONS')">Promotions</div>
+                    <div class="folder-tab" onclick="switchFolder(${index}, 'CATEGORY_SOCIAL')">Social</div>
+                    <div class="folder-tab" onclick="switchFolder(${index}, 'CATEGORY_UPDATES')">Updates</div>
+                </div>
+                <div class="emails-list" id="emails-${index}">
+                    <div class="loading">Loading emails...</div>
+                </div>
+            `;
+            
+            return panel;
+        }
+        
+        let currentOpenEmail = null;
+        let currentComposeAccount = null;
+        
+        function openEmail(accountIndex, messageId) {
+            const account = accounts[accountIndex];
+            const modal = document.getElementById('emailModal');
+            const modalBody = document.getElementById('emailModalBody');
+            const modalSubject = document.getElementById('emailModalSubject');
+            const modalFrom = document.getElementById('emailModalFrom');
+            const modalDate = document.getElementById('emailModalDate');
+            const replyBtn = document.getElementById('replyBtn');
+            
+            currentOpenEmail = { accountIndex, messageId };
+            
+            modalBody.innerHTML = '<div class="loading">Loading email...</div>';
+            modal.classList.add('active');
+            
+            fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}?format=full`, {
+                headers: { Authorization: `Bearer ${account.accessToken}` }
+            })
+            .then(res => res.json())
+            .then(emailData => {
+                const headers = emailData.payload.headers;
+                const from = headers.find(h => h.name === 'From')?.value || 'Unknown';
+                const subject = headers.find(h => h.name === 'Subject')?.value || '(No subject)';
+                const date = new Date(parseInt(emailData.internalDate)).toLocaleString();
+                
+                modalSubject.textContent = subject;
+                modalFrom.textContent = 'From: ' + from;
+                modalDate.textContent = date;
+                
+                let body = '';
+                if (emailData.payload.body.data) {
+                    body = atob(emailData.payload.body.data.replace(/-/g, '+').replace(/_/g, '/'));
+                } else if (emailData.payload.parts) {
+                    const textPart = emailData.payload.parts.find(p => p.mimeType === 'text/plain');
+                    if (textPart && textPart.body.data) {
+                        body = atob(textPart.body.data.replace(/-/g, '+').replace(/_/g, '/'));
+                    }
+                }
+                
+                modalBody.innerHTML = `<div class="email-modal-content-text">${body || 'No content available'}</div>`;
+                
+                replyBtn.onclick = () => {
+                    closeEmailModal();
+                    openCompose(accountIndex, { 
+                        to: from.match(/<(.+)>/)?.[1] || from,
+                        subject: subject.startsWith('Re: ') ? subject : 'Re: ' + subject,
+                        inReplyTo: messageId
+                    });
+                };
+            })
+            .catch(error => {
+                modalBody.innerHTML = `<div class="error">Error loading email: ${error.message}</div>`;
+            });
+        }
+        
+        function closeEmailModal() {
+            document.getElementById('emailModal').classList.remove('active');
+            currentOpenEmail = null;
+        }
+        
+        function openCompose(accountIndex, replyData = null) {
+            currentComposeAccount = accountIndex;
+            const modal = document.getElementById('composeModal');
+            const account = accounts[accountIndex];
+            
+            document.getElementById('composeFrom').textContent = account.email;
+            document.getElementById('composeTo').value = replyData?.to || '';
+            document.getElementById('composeSubject').value = replyData?.subject || '';
+            document.getElementById('composeBody').value = '';
+            
+            modal.classList.add('active');
+            document.getElementById('composeTo').focus();
+        }
+        
+        function closeCompose() {
+            document.getElementById('composeModal').classList.remove('active');
+            currentComposeAccount = null;
+        }
+        
+        function sendEmail() {
+            if (currentComposeAccount === null) return;
+            
+            const account = accounts[currentComposeAccount];
+            const to = document.getElementById('composeTo').value;
+            const subject = document.getElementById('composeSubject').value;
+            const body = document.getElementById('composeBody').value;
+            
+            if (!to || !subject) {
+                alert('Please fill in recipient and subject');
+                return;
+            }
+            
+            const email = [
+                'Content-Type: text/plain; charset="UTF-8"\n',
+                'MIME-Version: 1.0\n',
+                'Content-Transfer-Encoding: 7bit\n',
+                'to: ' + to + '\n',
+                'subject: ' + subject + '\n\n',
+                body
+            ].join('');
+            
+            const encodedEmail = btoa(unescape(encodeURIComponent(email)))
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=+$/, '');
+            
+            fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${account.accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ raw: encodedEmail })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert('Email sent successfully!');
+                closeCompose();
+                refreshAccount(currentComposeAccount);
+            })
+            .catch(error => {
+                alert('Error sending email: ' + error.message);
+            });
+        }
+        
+        function composeEmail(accountIndex) {
+            openCompose(accountIndex);
+        }
+        
+        function toggleEmailSelection(accountIndex, messageId, checkbox) {
+            const emailItem = checkbox.closest('.email-item');
+            
+            if (checkbox.checked) {
+                emailItem.classList.add('selected');
+                if (!accounts[accountIndex].selectedEmails) {
+                    accounts[accountIndex].selectedEmails = [];
+                }
+                accounts[accountIndex].selectedEmails.push(messageId);
+            } else {
+                emailItem.classList.remove('selected');
+                const selected = accounts[accountIndex].selectedEmails || [];
+                const idx = selected.indexOf(messageId);
+                if (idx > -1) selected.splice(idx, 1);
+            }
+            
+            updateSelectionToolbar(accountIndex);
+        }
+        
+        function updateSelectionToolbar(accountIndex) {
+            const selected = accounts[accountIndex].selectedEmails || [];
+            const deleteBtn = document.getElementById(`delete-selected-${accountIndex}`);
+            
+            if (selected.length > 0) {
+                deleteBtn.style.display = 'block';
+                deleteBtn.textContent = `🗑️ Delete (${selected.length})`;
+            } else {
+                deleteBtn.style.display = 'none';
+            }
+        }
+        
+        async function deleteSelected(accountIndex) {
+            const account = accounts[accountIndex];
+            const selected = account.selectedEmails || [];
+            
+            if (selected.length === 0) return;
+            
+            if (!confirm(`Delete ${selected.length} selected email(s)?`)) return;
+            
+            for (const messageId of selected) {
+                try {
+                    await fetch(
+                        `https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}/trash`,
+                        {
+                            method: 'POST',
+                            headers: { Authorization: `Bearer ${account.accessToken}` }
+                        }
+                    );
+                } catch (error) {
+                    console.error('Error deleting email:', error);
+                }
+            }
+            
+            account.selectedEmails = [];
+            alert('Selected emails deleted!');
+            refreshAccount(accountIndex);
+        }
+        
+        async function loadEmails(email, accessToken, folder = 'INBOX') {
+            const index = accounts.findIndex(acc => acc.email === email);
+            const emailsList = document.getElementById(`emails-${index}`);
+            
+            console.log(`Loading emails for ${email}, folder: ${folder}`);
+            
+            if (!emailsList) {
+                console.error('Emails list element not found for index:', index);
+                return;
+            }
+            
+            emailsList.innerHTML = '<div class="loading">Loading emails...</div>';
+            
+            try {
+                const response = await fetch(
+                    `https://gmail.googleapis.com/gmail/v1/users/me/messages?labelIds=${folder}&maxResults=20`,
+                    { headers: { Authorization: `Bearer ${accessToken}` } }
+                );
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                console.log('Gmail API response:', data);
+                
+                if (!data.messages || data.messages.length === 0) {
+                    emailsList.innerHTML = '<div class="loading">No emails found in this folder</div>';
+                    return;
+                }
+                
+                emailsList.innerHTML = '';
+                
+                // Load emails one by one
+                let loaded = 0;
+                for (const message of data.messages) {
+                    try {
+                        const details = await fetch(
+                            `https://gmail.googleapis.com/gmail/v1/users/me/messages/${message.id}?format=metadata&metadataHeaders=From&metadataHeaders=Subject&metadataHeaders=Date`,
+                            { headers: { Authorization: `Bearer ${accessToken}` } }
+                        );
+                        
+                        if (!details.ok) continue;
+                        
+                        const emailData = await details.json();
+                        
+                        const headers = emailData.payload.headers;
+                        const from = headers.find(h => h.name === 'From')?.value || 'Unknown';
+                        const subject = headers.find(h => h.name === 'Subject')?.value || '(No subject)';
+                        const date = new Date(parseInt(emailData.internalDate)).toLocaleDateString();
+                        const isUnread = emailData.labelIds?.includes('UNREAD');
+                        
+                        const emailItem = document.createElement('div');
+                        emailItem.className = `email-item ${isUnread ? 'unread' : ''}`;
+                        emailItem.innerHTML = `
+                            <input type="checkbox" class="email-checkbox" onclick="event.stopPropagation(); toggleEmailSelection(${index}, '${message.id}', this)">
+                            <div class="email-content" onclick="openEmail(${index}, '${message.id}')">
+                                <div class="email-sender">${from.split('<')[0].trim()}</div>
+                                <div class="email-subject">${subject}</div>
+                                <div class="email-preview">${subject}</div>
+                                <div class="email-date">${date}</div>
+                            </div>
+                        `;
+                        emailsList.appendChild(emailItem);
+                        
+                        loaded++;
+                        
+                        // Show progress
+                        if (loaded < data.messages.length) {
+                            const remaining = data.messages.length - loaded;
+                            emailsList.innerHTML += `<div class="loading">Loading ${remaining} more emails...</div>`;
+                        }
+                    } catch (err) {
+                        console.error('Error loading individual email:', err);
+                    }
+                }
+                
+                // Remove loading message
+                const loadingMsg = emailsList.querySelector('.loading');
+                if (loadingMsg) loadingMsg.remove();
+                
+                console.log(`Loaded ${loaded} emails successfully`);
+                
+            } catch (error) {
+                console.error('Error loading emails:', error);
+                emailsList.innerHTML = `<div class="error">Error loading emails: ${error.message}<br>Check console for details</div>`;
+            }
+        }
+        
+        function switchFolder(index, folder) {
+            const account = accounts[index];
+            account.currentFolder = folder;
+            
+            const tabs = document.querySelectorAll(`#account-${index} .folder-tab`);
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            loadEmails(account.email, account.accessToken, folder);
+        }
+        
+        async function cleanupAccount(index) {
+            const account = accounts[index];
+            const currentFolder = account.currentFolder;
+            
+            // No permitir limpiar INBOX
+            if (currentFolder === 'INBOX') {
+                alert('Cannot clean Inbox. Please switch to another folder (Spam, Promotions, Social, or Updates).');
+                return;
+            }
+            
+            const folderNames = {
+                'SPAM': 'Spam',
+                'CATEGORY_PROMOTIONS': 'Promotions',
+                'CATEGORY_SOCIAL': 'Social',
+                'CATEGORY_UPDATES': 'Updates'
+            };
+            
+            const folderName = folderNames[currentFolder] || currentFolder;
+            
+            if (!confirm(`Delete all emails from ${folderName} for ${account.email}?`)) return;
+            
+            try {
+                const response = await fetch(
+                    `https://gmail.googleapis.com/gmail/v1/users/me/messages?labelIds=${currentFolder}`,
+                    { headers: { Authorization: `Bearer ${account.accessToken}` } }
+                );
+                const data = await response.json();
+                
+                if (data.messages) {
+                    let deleted = 0;
+                    for (const message of data.messages) {
+                        await fetch(
+                            `https://gmail.googleapis.com/gmail/v1/users/me/messages/${message.id}/trash`,
+                            {
+                                method: 'POST',
+                                headers: { Authorization: `Bearer ${account.accessToken}` }
+                            }
+                        );
+                        deleted++;
+                    }
+                    alert(`Cleaned ${deleted} emails from ${folderName}!`);
+                } else {
+                    alert('No emails to clean in this folder.');
+                }
+            } catch (error) {
+                console.error(`Error cleaning ${currentFolder}:`, error);
+                alert('Error cleaning folder: ' + error.message);
+            }
+            
+            refreshAccount(index);
+        }
+        
+        function refreshAccount(index) {
+            const account = accounts[index];
+            account.selectedEmails = [];
+            updateSelectionToolbar(index);
+            loadEmails(account.email, account.accessToken, account.currentFolder);
+        }
+        
+        function removeAccount(index) {
+            accounts.splice(index, 1);
+            const container = document.getElementById('accountsContainer');
+            container.innerHTML = '';
+            
+            if (accounts.length === 0) {
+                container.innerHTML = `
+                    <div class="account-panel">
+                        <div class="auth-prompt">
+                            <h2>Welcome!</h2>
+                            <p style="margin-top: 10px; color: #666;">Click below to sign in with your Gmail accounts</p>
+                            <button class="auth-btn" onclick="authenticate()">Sign in with Google</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                accounts.forEach((acc, i) => {
+                    const panel = createAccountPanel(acc, i);
+                    container.appendChild(panel);
+                    loadEmails(acc.email, acc.accessToken, acc.currentFolder);
+                });
+            }
+        }
+        
+        function addAccount() {
+            authenticate();
+        }
+        
+        window.onload = function() {
+            checkSavedCredentials();
+            initGoogleAuth();
+        };
+    </script>
+</body>
+</html>
