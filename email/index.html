@@ -576,6 +576,22 @@
                 alert('Please upload your credentials file first.');
                 return;
             }
+            
+            // Código de diagnóstico - mostrar información útil
+            console.log('=== DIAGNÓSTICO OAUTH ===');
+            console.log('CLIENT_ID:', CLIENT_ID);
+            console.log('URL actual:', window.location.href);
+            console.log('Origen:', window.location.origin);
+            console.log('Ruta:', window.location.pathname);
+            
+            // El redirect_uri que Google está esperando
+            const currentOrigin = window.location.origin;
+            const currentPath = window.location.pathname;
+            const expectedRedirectUri = currentOrigin + currentPath;
+            
+            console.log('Redirect_URI esperado:', expectedRedirectUri);
+            alert(`Para configurar en Google Cloud Console:\n\nURIs de redirección autorizados:\n${expectedRedirectUri}\n\nCopia esto exactamente en Google Cloud Console.`);
+            
             tokenClient.requestAccessToken();
         }
         
