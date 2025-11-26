@@ -599,9 +599,10 @@
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
         
-        .notes-content-text {
+        .notes-content-text, .notes-edit-textarea {
             white-space: pre-wrap;
             line-height: 1.6;
             font-size: 14px;
@@ -611,6 +612,23 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             max-height: 60vh;
             overflow-y: auto;
+            color: white;
+            font-family: inherit;
+        }
+        
+        .notes-edit-textarea {
+            width: 100%;
+            min-height: 400px;
+            resize: vertical;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .notes-edit-textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
         }
         
         .notes-content-text h1, .notes-content-text h2, .notes-content-text h3 {
@@ -653,24 +671,28 @@
 
         /* Scrollbar personalizado */
         .emails-list::-webkit-scrollbar,
-        .notes-content-text::-webkit-scrollbar {
+        .notes-content-text::-webkit-scrollbar,
+        .notes-edit-textarea::-webkit-scrollbar {
             width: 6px;
         }
 
         .emails-list::-webkit-scrollbar-track,
-        .notes-content-text::-webkit-scrollbar-track {
+        .notes-content-text::-webkit-scrollbar-track,
+        .notes-edit-textarea::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.08);
             border-radius: 3px;
         }
 
         .emails-list::-webkit-scrollbar-thumb,
-        .notes-content-text::-webkit-scrollbar-thumb {
+        .notes-content-text::-webkit-scrollbar-thumb,
+        .notes-edit-textarea::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.2);
             border-radius: 3px;
         }
 
         .emails-list::-webkit-scrollbar-thumb:hover,
-        .notes-content-text::-webkit-scrollbar-thumb:hover {
+        .notes-content-text::-webkit-scrollbar-thumb:hover,
+        .notes-edit-textarea::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.4);
         }
 
@@ -701,6 +723,10 @@
             .add-account-btn, .notes-btn {
                 padding: 8px 12px;
                 font-size: 12px;
+            }
+            
+            .notes-actions {
+                flex-direction: column;
             }
         }
     </style>
@@ -785,11 +811,14 @@
                 <div class="notes-actions">
                     <input type="file" id="notesFile" accept=".md,.txt" style="display: none;" onchange="loadNotesFile(event)">
                     <button class="btn-primary" onclick="document.getElementById('notesFile').click()">📁 Load Notes</button>
+                    <button class="btn-secondary" id="editNotesBtn" onclick="toggleEditMode()">✏️ Edit</button>
+                    <button class="btn-primary" id="saveNotesBtn" onclick="saveNotesToFile()" style="display: none;">💾 Save to File</button>
                     <button class="btn-secondary" onclick="clearNotes()">🗑️ Clear Notes</button>
                 </div>
                 <div class="notes-content-text" id="notesContent">
                     No notes loaded. Click "Load Notes" to load a markdown file.
                 </div>
+                <textarea class="notes-edit-textarea" id="notesEditTextarea" style="display: none;"></textarea>
             </div>
             <div class="notes-footer">
                 <button class="btn-secondary" onclick="closeNotes()">Close</button>
@@ -805,6 +834,8 @@
         let accounts = [];
         let CLIENT_ID = null;
         let currentNotesContent = '';
+        let isEditMode = false;
+        let currentFileName = '';
         
         // Función para guardar cuentas en localStorage
         function saveAccountsToStorage() {
@@ -836,14 +867,18 @@
         // Función para guardar notas en localStorage
         function saveNotesToStorage() {
             localStorage.setItem('personal_notes', currentNotesContent);
+            localStorage.setItem('personal_notes_filename', currentFileName);
             console.log('Notes saved to localStorage');
         }
         
         // Función para cargar notas desde localStorage
         function loadNotesFromStorage() {
             const savedNotes = localStorage.getItem('personal_notes');
+            const savedFileName = localStorage.getItem('personal_notes_filename');
+            
             if (savedNotes) {
                 currentNotesContent = savedNotes;
+                currentFileName = savedFileName || 'notes.md';
                 document.getElementById('notesContent').innerHTML = parseMarkdown(currentNotesContent);
                 console.log('Notes loaded from storage');
             }
@@ -1567,6 +1602,10 @@
         
         function closeNotes() {
             document.getElementById('notesModal').classList.remove('active');
+            // Exit edit mode when closing
+            if (isEditMode) {
+                toggleEditMode();
+            }
         }
         
         function loadNotesFile(event) {
@@ -1576,17 +1615,89 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 currentNotesContent = e.target.result;
+                currentFileName = file.name;
                 document.getElementById('notesContent').innerHTML = parseMarkdown(currentNotesContent);
                 saveNotesToStorage();
+                
+                // If we're in edit mode, update the textarea too
+                if (isEditMode) {
+                    document.getElementById('notesEditTextarea').value = currentNotesContent;
+                }
             };
             reader.readAsText(file);
+        }
+        
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            
+            const contentDiv = document.getElementById('notesContent');
+            const textarea = document.getElementById('notesEditTextarea');
+            const editBtn = document.getElementById('editNotesBtn');
+            const saveBtn = document.getElementById('saveNotesBtn');
+            
+            if (isEditMode) {
+                // Switch to edit mode
+                contentDiv.style.display = 'none';
+                textarea.style.display = 'block';
+                textarea.value = currentNotesContent;
+                editBtn.textContent = '👁️ View';
+                saveBtn.style.display = 'block';
+                textarea.focus();
+            } else {
+                // Switch to view mode
+                contentDiv.style.display = 'block';
+                textarea.style.display = 'none';
+                editBtn.textContent = '✏️ Edit';
+                saveBtn.style.display = 'none';
+                
+                // Update content with any changes
+                currentNotesContent = textarea.value;
+                contentDiv.innerHTML = parseMarkdown(currentNotesContent);
+                saveNotesToStorage();
+            }
+        }
+        
+        function saveNotesToFile() {
+            if (!currentNotesContent) {
+                alert('No notes to save!');
+                return;
+            }
+            
+            // Get the content from the textarea if in edit mode
+            if (isEditMode) {
+                currentNotesContent = document.getElementById('notesEditTextarea').value;
+                // Update the display too
+                document.getElementById('notesContent').innerHTML = parseMarkdown(currentNotesContent);
+                saveNotesToStorage();
+            }
+            
+            // Create a blob and download link
+            const blob = new Blob([currentNotesContent], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = currentFileName || 'notes.md';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('Notes saved to file!');
         }
         
         function clearNotes() {
             if (confirm('Are you sure you want to clear all notes?')) {
                 currentNotesContent = '';
+                currentFileName = '';
                 document.getElementById('notesContent').innerHTML = 'No notes loaded. Click "Load Notes" to load a markdown file.';
+                document.getElementById('notesEditTextarea').value = '';
                 localStorage.removeItem('personal_notes');
+                localStorage.removeItem('personal_notes_filename');
+                
+                // If in edit mode, switch back to view mode
+                if (isEditMode) {
+                    toggleEditMode();
+                }
             }
         }
         
