@@ -421,8 +421,8 @@
     -webkit-backdrop-filter: blur(40px) saturate(200%);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 20px;
-    width: 90%;
-    max-width: 800px;
+    width: 95%;
+    max-width: 1200px;
     max-height: 90vh;
     overflow: hidden;
     display: flex;
@@ -431,24 +431,24 @@
 }
 
 .compose-content {
-    max-width: 700px;
+    max-width: 800px;
 }
 
 .notes-content, .ai-chat-content {
-    max-width: 900px;
-    height: 80vh;
+    max-width: 1200px;
+    height: 85vh;
 }
 
 /* Modal Headers */
 .email-modal-header, .compose-header, .notes-header, .ai-chat-header {
-    padding: 25px 30px;
+    padding: 20px 30px;
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
 }
 
 .email-modal-subject {
@@ -466,7 +466,7 @@
 
 /* Modal Bodies */
 .email-modal-body, .notes-body, .ai-chat-body {
-    padding: 30px;
+    padding: 25px 30px;
     overflow-y: auto;
     flex: 1;
     line-height: 1.6;
@@ -480,21 +480,22 @@
 
 /* Modal Footers */
 .email-modal-footer, .compose-footer, .notes-footer, .ai-chat-footer {
-    padding: 20px 30px;
+    padding: 18px 30px;
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     gap: 12px;
+    align-items: center;
 }
 
 /* Compose Modal Specific */
 .compose-body {
-    padding: 30px;
+    padding: 25px 30px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 18px;
 }
 
 .compose-input, .compose-textarea {
@@ -531,19 +532,19 @@
 .notes-actions, .ai-chat-actions {
     display: flex;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     flex-wrap: wrap;
 }
 
 .notes-content-text, .notes-edit-textarea {
     white-space: pre-wrap;
-    line-height: 1.6;
+    line-height: 1.5;
     font-size: 14px;
     background: rgba(255, 255, 255, 0.05);
-    padding: 20px;
+    padding: 18px;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    max-height: 60vh;
+    max-height: 65vh;
     overflow-y: auto;
     color: white;
     font-family: inherit;
@@ -551,7 +552,7 @@
 
 .notes-edit-textarea {
     width: 100%;
-    min-height: 400px;
+    min-height: 450px;
     resize: vertical;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -567,17 +568,17 @@
 /* Markdown Rendering in Notes */
 .notes-content-text h1, .notes-content-text h2, .notes-content-text h3 {
     color: #3498db;
-    margin-top: 20px;
-    margin-bottom: 10px;
+    margin-top: 15px;
+    margin-bottom: 8px;
 }
 
 .notes-content-text p {
-    margin-bottom: 15px;
+    margin-bottom: 12px;
 }
 
 .notes-content-text ul, .notes-content-text ol {
-    margin-left: 20px;
-    margin-bottom: 15px;
+    margin-left: 18px;
+    margin-bottom: 12px;
 }
 
 .notes-content-text code {
@@ -589,35 +590,35 @@
 
 .notes-content-text pre {
     background: rgba(0, 0, 0, 0.3);
-    padding: 15px;
+    padding: 12px;
     border-radius: 8px;
     overflow-x: auto;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     position: relative;
 }
 
 .notes-content-text blockquote {
     border-left: 4px solid #3498db;
-    padding-left: 15px;
+    padding-left: 12px;
     margin-left: 0;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     color: rgba(255, 255, 255, 0.8);
 }
 
 /* Copy Button for Code Blocks */
 .code-block-wrapper {
     position: relative;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
 }
 
 .copy-code-btn {
     position: absolute;
-    top: 8px;
-    right: 8px;
+    top: 6px;
+    right: 6px;
     background: rgba(52, 152, 219, 0.2);
     border: 1px solid rgba(52, 152, 219, 0.3);
     color: white;
-    padding: 6px 12px;
+    padding: 5px 10px;
     border-radius: 6px;
     cursor: pointer;
     font-size: 11px;
@@ -658,8 +659,8 @@
 .chat-messages {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    max-height: 60vh;
+    gap: 12px;
+    max-height: 65vh;
     overflow-y: auto;
     padding: 10px;
     background: rgba(255, 255, 255, 0.05);
@@ -668,7 +669,7 @@
 }
 
 .message {
-    padding: 15px;
+    padding: 12px 15px;
     border-radius: 12px;
     max-width: 80%;
     line-height: 1.5;
@@ -689,7 +690,7 @@
 
 .message .sender {
     font-weight: 600;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
     font-size: 12px;
     opacity: 0.8;
 }
@@ -742,4 +743,17 @@
 
 .typing-indicator.active {
     display: block;
+}
+
+/* AI Chat Header Actions */
+.ai-chat-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ai-chat-header-actions .btn-primary,
+.ai-chat-header-actions .btn-secondary {
+    padding: 8px 16px;
+    font-size: 12px;
 }

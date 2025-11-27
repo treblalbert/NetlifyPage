@@ -118,7 +118,10 @@
         <div class="ai-chat-content">
             <div class="ai-chat-header">
                 <h3 style="color: white; margin: 0;">🤖 Albert's Assistant</h3>
-                <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="ai-chat-header-actions">
+                    <input type="file" id="apiKeyFile" accept=".txt" style="display: none;" onchange="loadAPIKey(event)">
+                    <button class="btn-primary" onclick="document.getElementById('apiKeyFile').click()">🔑 Load API Key</button>
+                    <button class="btn-secondary" onclick="clearChat()">🗑️ Clear Chat</button>
                     <div style="color: rgba(255, 255, 255, 0.7); font-size: 12px;">
                         <span id="apiKeyStatus">API Key: Not Loaded</span>
                     </div>
@@ -126,11 +129,6 @@
                 </div>
             </div>
             <div class="ai-chat-body">
-                <div class="ai-chat-actions">
-                    <input type="file" id="apiKeyFile" accept=".txt" style="display: none;" onchange="loadAPIKey(event)">
-                    <button class="btn-primary" onclick="document.getElementById('apiKeyFile').click()">🔑 Load API Key</button>
-                    <button class="btn-secondary" onclick="clearChat()">🗑️ Clear Chat</button>
-                </div>
                 <div class="chat-messages" id="chatMessages">
                     <div class="message assistant">
                         <div class="sender">Albert's Assistant</div>

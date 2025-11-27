@@ -418,7 +418,7 @@ const Gmail = {
                 }
             }
             
-            alert(`Successfully deleted ${deleted} email(s)!`);
+            // Removed the success alert here
             account.selectedEmails = [];
             this.updateSelectionToolbar(accountIndex);
             this.refreshAccount(accountIndex);
