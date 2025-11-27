@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered File Merger & Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 AI-Powered File Merger & Analyzer</h1>
+        <p>Upload, merge, analyze, and chat with your data using AI</p>
+        
+        <!-- API Key Section -->
+        <div class="api-section">
+            <h3>🔑 OpenAI API Configuration</h3>
+            <div class="api-input-group">
+                <input type="password" id="apiKeyInput" placeholder="Enter your OpenAI API key">
+                <button onclick="saveApiKey()">Save API Key</button>
+                <button onclick="loadApiKey()" class="secondary-btn">Load Saved Key</button>
+            </div>
+            <div id="apiStatus" class="api-status"></div>
+        </div>
+        
+        <div class="upload-section">
+            <input type="file" id="fileInput" multiple accept=".csv,.xlsx,.xls,.json">
+            <button onclick="uploadFiles()">Upload Files</button>
+        </div>
+        
+        <div id="fileInfo" class="file-info" style="display: none;">
+            <h3>📁 Uploaded Files</h3>
+            <div id="fileList"></div>
+        </div>
+        
+        <div id="columnAnalysis" class="column-analysis" style="display: none;">
+            <h3>🔍 Column Analysis</h3>
+            <div id="commonColumns"></div>
+            <div id="uniqueColumns"></div>
+            <div id="columnSelection"></div>
+        </div>
+        
+        <!-- AI Chat Section -->
+        <div id="chatSection" class="chat-section" style="display: none;">
+            <h3>💬 AI Data Assistant</h3>
+            <div class="chat-container">
+                <div id="chatMessages" class="chat-messages"></div>
+                <div class="chat-input-group">
+                    <input type="text" id="chatInput" placeholder="Ask questions, request plots, or modify data..." onkeypress="handleChatKeypress(event)">
+                    <button onclick="sendChatMessage()">Send</button>
+                </div>
+                <div class="chat-examples">
+                    <small>Try: "Show me a histogram of sales data" or "Remove rows with missing values" or "Create a scatter plot of X vs Y"</small>
+                </div>
+            </div>
+        </div>
+        
+        <div id="mergeOptions" class="merge-options" style="display: none;">
+            <h3>🔄 Merge Options</h3>
+            <div class="options-grid">
+                <div class="option-group">
+                    <label>Merge Type:</label>
+                    <select id="mergeType">
+                        <option value="inner">Inner Join (only matching rows)</option>
+                        <option value="outer">Outer Join (all rows from both files)</option>
+                        <option value="left">Left Join (all rows from first file + matches from others)</option>
+                        <option value="right">Right Join (all rows from last file + matches from others)</option>
+                    </select>
+                </div>
+                
+                <div class="option-group">
+                    <label>Output Format:</label>
+                    <select id="outputFormat">
+                        <option value="excel">Excel (.xlsx)</option>
+                        <option value="csv">CSV</option>
+                        <option value="json">JSON</option>
+                    </select>
+                </div>
+            </div>
+            <button onclick="mergeFiles()" class="merge-btn">Merge Files</button>
+        </div>
+        
+        <div id="loading" class="loading" style="display: none;">
+            Processing...
+        </div>
+        
+        <div id="error" class="error" style="display: none;"></div>
+    </div>
+
+    <script>
+        let currentColumnAnalysis = null;
+        
+        // Load API key when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            loadApiKey();
+        });
+        
+        async function saveApiKey() {
+            const apiKey = document.getElementById('apiKeyInput').value;
+            const apiStatus = document.getElementById('apiStatus');
+            
+            if (!apiKey) {
+                apiStatus.innerHTML = '<div class="error">Please enter an API key</div>';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/save_api_key', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ api_key: apiKey })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    apiStatus.innerHTML = '<div class="success">API key saved successfully!</div>';
+                    document.getElementById('apiKeyInput').value = '';
+                } else {
+                    apiStatus.innerHTML = `<div class="error">${result.error}</div>`;
+                }
+            } catch (error) {
+                apiStatus.innerHTML = `<div class="error">Error saving API key: ${error.message}</div>`;
+            }
+        }
+        
+        async function loadApiKey() {
+            const apiStatus = document.getElementById('apiStatus');
+            
+            try {
+                const response = await fetch('/load_api_key');
+                const result = await response.json();
+                
+                if (response.ok && result.api_key) {
+                    apiStatus.innerHTML = '<div class="success">API key loaded successfully!</div>';
+                } else {
+                    apiStatus.innerHTML = '<div class="info">No saved API key found</div>';
+                }
+            } catch (error) {
+                apiStatus.innerHTML = `<div class="error">Error loading API key: ${error.message}</div>`;
+            }
+        }
+        
+        function handleChatKeypress(event) {
+            if (event.key === 'Enter') {
+                sendChatMessage();
+            }
+        }
+        
+        async function sendChatMessage() {
+            const chatInput = document.getElementById('chatInput');
+            const chatMessages = document.getElementById('chatMessages');
+            const question = chatInput.value.trim();
+            
+            if (!question) return;
+            
+            // Add user message
+            chatMessages.innerHTML += `
+                <div class="chat-message user-message">
+                    <strong>You:</strong> ${question}
+                </div>
+            `;
+            
+            chatInput.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            const loading = document.getElementById('loading');
+            loading.style.display = 'block';
+            
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ question: question })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    // Add AI response
+                    let aiMessage = `
+                        <div class="chat-message ai-message">
+                            <strong>AI Assistant:</strong> ${result.answer}
+                    `;
+                    
+                    // Add plot if available
+                    if (result.plot_image) {
+                        aiMessage += `
+                            <div class="plot-container">
+                                <img src="data:image/png;base64,${result.plot_image}" alt="Generated Plot" class="generated-plot">
+                            </div>
+                        `;
+                    }
+                    
+                    // Add modified data info if available
+                    if (result.modified_sample) {
+                        aiMessage += `
+                            <div class="modified-data-info">
+                                <strong>Data modified successfully!</strong><br>
+                                New shape: ${result.modified_shape[0]} rows × ${result.modified_shape[1]} columns
+                                <div class="code-block">
+                                    <pre>${result.modified_sample}</pre>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    
+                    // Add error if any
+                    if (result.error) {
+                        aiMessage += `
+                            <div class="error-message">
+                                <strong>Error:</strong> ${result.error}
+                            </div>
+                        `;
+                    }
+                    
+                    aiMessage += `</div>`;
+                    
+                    chatMessages.innerHTML += aiMessage;
+                } else {
+                    chatMessages.innerHTML += `
+                        <div class="chat-message error-message">
+                            <strong>Error:</strong> ${result.error}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                chatMessages.innerHTML += `
+                    <div class="chat-message error-message">
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
+            } finally {
+                loading.style.display = 'none';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        }
+        
+        async function uploadFiles() {
+            const fileInput = document.getElementById('fileInput');
+            const files = fileInput.files;
+            
+            if (files.length === 0) {
+                alert('Please select at least one file');
+                return;
+            }
+            
+            const loading = document.getElementById('loading');
+            const errorDiv = document.getElementById('error');
+            
+            loading.style.display = 'block';
+            errorDiv.style.display = 'none';
+            
+            const formData = new FormData();
+            for (let i = 0; i < files.length; i++) {
+                formData.append('files[]', files[i]);
+            }
+            
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    currentColumnAnalysis = result.column_analysis;
+                    displayFileInfo(result);
+                    displayColumnAnalysis(result.column_analysis);
+                    document.getElementById('mergeOptions').style.display = 'block';
+                    document.getElementById('chatSection').style.display = 'block';
+                    
+                } else {
+                    throw new Error(result.error);
+                }
+                
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+        
+        function displayFileInfo(data) {
+            const fileList = document.getElementById('fileList');
+            const fileInfo = document.getElementById('fileInfo');
+            
+            fileList.innerHTML = '';
+            data.files.forEach(file => {
+                const fileDiv = document.createElement('div');
+                fileDiv.className = 'file-item';
+                fileDiv.innerHTML = `
+                    <h4>${file.filename}</h4>
+                    <p>Size: ${file.shape[0]} rows × ${file.shape[1]} columns</p>
+                    <p><strong>Columns:</strong> ${file.columns.join(', ')}</p>
+                `;
+                fileList.appendChild(fileDiv);
+            });
+            
+            fileInfo.style.display = 'block';
+        }
+        
+        function displayColumnAnalysis(analysis) {
+            const columnAnalysis = document.getElementById('columnAnalysis');
+            const commonColumns = document.getElementById('commonColumns');
+            const uniqueColumns = document.getElementById('uniqueColumns');
+            const columnSelection = document.getElementById('columnSelection');
+            
+            // Display common columns with type information
+            let commonColsHTML = `
+                <div class="analysis-section">
+                    <h4>Common Columns (will be used for matching):</h4>
+                    <div class="common-cols-list">
+            `;
+            
+            if (analysis.common_columns.length > 0) {
+                analysis.common_columns.forEach(col => {
+                    const isCompatible = analysis.type_compatibility[col].compatible;
+                    const types = analysis.type_compatibility[col].types.join(', ');
+                    const compatibilityClass = isCompatible ? 'compatible-col' : 'incompatible-col';
+                    const tooltip = `Types across files: ${types}`;
+                    
+                    commonColsHTML += `
+                        <span class="common-col ${compatibilityClass}" title="${tooltip}">
+                            ${col} ${isCompatible ? '✓' : '⚠'}
+                        </span>
+                    `;
+                });
+            } else {
+                commonColsHTML += '<p class="warning">No common columns found! Files will be concatenated.</p>';
+            }
+            
+            commonColsHTML += '</div></div>';
+            commonColumns.innerHTML = commonColsHTML;
+            
+            // Display unique columns with types
+            let uniqueColsHTML = '<div class="analysis-section"><h4>Unique Columns by File:</h4>';
+            for (const [filename, columns] of Object.entries(analysis.unique_columns)) {
+                if (columns.length > 0) {
+                    uniqueColsHTML += `
+                        <div class="unique-file-cols">
+                            <strong>${filename}:</strong>
+                            <div class="unique-cols-list">
+                    `;
+                    columns.forEach(col => {
+                        const colType = analysis.column_types[filename][col];
+                        uniqueColsHTML += `<span class="unique-col" title="Type: ${colType}">${col} (${colType})</span>`;
+                    });
+                    uniqueColsHTML += '</div></div>';
+                }
+            }
+            uniqueColsHTML += '</div>';
+            uniqueColumns.innerHTML = uniqueColsHTML;
+            
+            // Display type warnings
+            let typeWarningsHTML = '';
+            const incompatibleColumns = analysis.common_columns.filter(col => !analysis.type_compatibility[col].compatible);
+            if (incompatibleColumns.length > 0) {
+                typeWarningsHTML = `
+                    <div class="analysis-section warning">
+                        <h4>⚠ Type Compatibility Issues:</h4>
+                        <p>The following common columns have different data types across files. The system will automatically convert them for merging:</p>
+                        <ul>
+                            ${incompatibleColumns.map(col => `
+                                <li><strong>${col}:</strong> ${analysis.type_compatibility[col].types.join(' vs ')}</li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            // Column selection
+            columnSelection.innerHTML = typeWarningsHTML + `
+                <div class="analysis-section">
+                    <h4>Column Selection (Advanced):</h4>
+                    <p class="info">By default, all common columns are used. You can manually select which columns to include:</p>
+                    <div id="columnCheckboxes" class="column-checkboxes">
+                        ${analysis.all_columns.map(col => {
+                            const isCommon = analysis.common_columns.includes(col);
+                            const isCompatible = isCommon ? analysis.type_compatibility[col].compatible : true;
+                            const title = isCommon ? `Types: ${analysis.type_compatibility[col].types.join(', ')}` : 'Unique column';
+                            return `
+                                <label class="checkbox-label" title="${title}">
+                                    <input type="checkbox" name="columns" value="${col}" 
+                                        ${isCommon ? 'checked' : ''}>
+                                    ${col} ${isCommon && !isCompatible ? '⚠' : ''}
+                                </label>
+                            `;
+                        }).join('')}
+                    </div>
+                    <button onclick="useSelectedColumns()" class="small-btn">Use Selected Columns</button>
+                    <button onclick="useAllColumns()" class="small-btn">Use All Columns</button>
+                </div>
+            `;
+            
+            columnAnalysis.style.display = 'block';
+        }
+        
+        function useSelectedColumns() {
+            const checkboxes = document.querySelectorAll('input[name="columns"]:checked');
+            const selectedColumns = Array.from(checkboxes).map(cb => cb.value);
+            currentColumnAnalysis.selected_columns = selectedColumns;
+            alert(`Selected ${selectedColumns.length} columns for merging`);
+        }
+        
+        function useAllColumns() {
+            currentColumnAnalysis.selected_columns = null;
+            alert('Using all available columns for merging');
+        }
+        
+        async function mergeFiles() {
+            const mergeType = document.getElementById('mergeType').value;
+            const outputFormat = document.getElementById('outputFormat').value;
+            const loading = document.getElementById('loading');
+            const errorDiv = document.getElementById('error');
+            
+            loading.style.display = 'block';
+            errorDiv.style.display = 'none';
+            
+            const mergeData = {
+                merge_type: mergeType,
+                output_format: outputFormat
+            };
+            
+            // Add selected columns if any
+            if (currentColumnAnalysis && currentColumnAnalysis.selected_columns) {
+                mergeData.selected_columns = currentColumnAnalysis.selected_columns;
+            }
+            
+            try {
+                const response = await fetch('/merge', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(mergeData)
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    
+                    // Map output format to correct file extension
+                    const fileExtensions = {
+                        'excel': 'xlsx',
+                        'csv': 'csv', 
+                        'json': 'json'
+                    };
+                    const fileExtension = fileExtensions[outputFormat];
+                    a.download = `merged_result.${fileExtension}`;
+                    
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.error);
+                }
+                
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
