@@ -49,9 +49,15 @@
 
       <div class="description" id="description"></div>
 
+      <!-- Category Navigation Bar -->
+      <div class="category-nav">
+        <button class="category-btn active" data-category="main-games" data-i18n="mainGameProjectsTitle">Main Game Projects</button>
+        <button class="category-btn" data-category="personal" data-i18n="personalProjectsTitle">Personal Projects</button>
+        <button class="category-btn" data-category="side" data-i18n="sideProjectsTitle">Side Projects</button>
+      </div>
+
       <!-- Main Game Projects Section -->
-      <div class="projects-section">
-        <h2 class="section-title" data-i18n="mainGameProjectsTitle">Main Game Projects</h2>
+      <div class="projects-section active" id="main-games-section">
         <div class="links-container">
           <a href="https://albertfreeman.org/bald-ball/" class="link-button" target="_blank">
             <div class="icon-wrapper">
@@ -64,8 +70,7 @@
       </div>
 
       <!-- Personal Projects Section -->
-      <div class="projects-section">
-        <h2 class="section-title" data-i18n="personalProjectsTitle">Personal Projects</h2>
+      <div class="projects-section" id="personal-section">
         <div class="links-container">
           <a href="https://github.com/treblalbert" class="link-button" target="_blank">
             <div class="icon-wrapper">
@@ -86,8 +91,7 @@
       </div>
 
       <!-- Side Projects Section -->
-      <div class="projects-section">
-        <h2 class="section-title" data-i18n="sideProjectsTitle">Side Projects</h2>
+      <div class="projects-section" id="side-section">
         <div class="links-container">
           <a href="#" class="link-button" id="pdfButton">
             <div class="icon-wrapper">

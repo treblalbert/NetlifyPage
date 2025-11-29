@@ -62,6 +62,14 @@ function initializeEventListeners() {
     });
   });
 
+  // Category navigation
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const category = this.getAttribute('data-category');
+      switchCategory(category);
+    });
+  });
+
   // Theme toggle functionality
   document.getElementById('profilePic').addEventListener('click', function() {
     document.body.classList.toggle('light-theme');
@@ -87,6 +95,20 @@ function initializeEventListeners() {
       closeAllPanels();
     }
   });
+}
+
+// Switch between project categories
+function switchCategory(category) {
+  // Update active button
+  document.querySelectorAll('.category-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-category') === category);
+  });
+
+  // Update active section
+  document.querySelectorAll('.projects-section').forEach(section => {
+    section.classList.remove('active');
+  });
+  document.getElementById(category + '-section').classList.add('active');
 }
 
 // Initialize page on load
