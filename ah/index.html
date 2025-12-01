@@ -303,8 +303,12 @@
                         <input type="number" id="cliente_ahorros" placeholder="42000">
                     </div>
                     <div class="form-group">
-                        <label>Nómina/Renta Anual (€)</label>
-                        <input type="number" step="0.01" id="cliente_renta" placeholder="20480.34">
+                        <label>Nómina Mensual (€)</label>
+                        <input type="number" step="0.01" id="cliente_nomina" placeholder="2236" oninput="handleIncomeInput()">
+                    </div>
+                    <div class="form-group">
+                        <label>Renta Anual (€)</label>
+                        <input type="number" step="0.01" id="cliente_renta" placeholder="20480.34" oninput="handleIncomeInput()">
                     </div>
                     <div class="form-group">
                         <label>Tipo de Contrato</label>
@@ -421,6 +425,22 @@
     <script>
         let apiKey = '';
 
+        function handleIncomeInput() {
+            const nominaInput = document.getElementById('cliente_nomina');
+            const rentaInput = document.getElementById('cliente_renta');
+            
+            // Si hay nómina, deshabilitar renta
+            if (nominaInput.value) {
+                rentaInput.disabled = true;
+                rentaInput.style.opacity = '0.5';
+                rentaInput.style.cursor = 'not-allowed';
+            } else {
+                rentaInput.disabled = false;
+                rentaInput.style.opacity = '1';
+                rentaInput.style.cursor = 'text';
+            }
+        }
+
         async function loadApiKey() {
             const fileInput = document.getElementById('apiKeyFile');
             const manualInput = document.getElementById('apiKeyManual');
@@ -455,6 +475,21 @@
         }
 
         function getFormData() {
+            const nominaMensual = document.getElementById('cliente_nomina').value;
+            const rentaAnual = document.getElementById('cliente_renta').value;
+            
+            // Determinar qué tipo de ingreso usar
+            let tipoIngreso = '';
+            let valorIngreso = '';
+            
+            if (nominaMensual) {
+                tipoIngreso = 'nomina_mensual';
+                valorIngreso = nominaMensual;
+            } else if (rentaAnual) {
+                tipoIngreso = 'renta_anual';
+                valorIngreso = rentaAnual;
+            }
+            
             return {
                 cliente: {
                     importe_compraventa: document.getElementById('cliente_compraventa').value,
@@ -467,7 +502,8 @@
                     cuota_mensual: document.getElementById('cliente_cuota_mensual').value,
                     cuota_anual: document.getElementById('cliente_cuota_anual').value,
                     ahorros_aportados: document.getElementById('cliente_ahorros').value,
-                    renta_anual: document.getElementById('cliente_renta').value,
+                    tipo_ingreso: tipoIngreso,
+                    valor_ingreso: valorIngreso,
                     tipo_contrato: document.getElementById('cliente_contrato').value,
                     dias_trabajados: document.getElementById('cliente_dias_trabajados').value
                 },
@@ -509,6 +545,14 @@
             resultSection.classList.remove('show');
             analyzeBtn.disabled = true;
 
+            // Construir el texto de ingresos según el tipo
+            let ingresoTexto = '';
+            if (data.cliente.tipo_ingreso === 'nomina_mensual') {
+                ingresoTexto = `- Nómina mensual: ${data.cliente.valor_ingreso}€`;
+            } else if (data.cliente.tipo_ingreso === 'renta_anual') {
+                ingresoTexto = `- Renta anual: ${data.cliente.valor_ingreso}€`;
+            }
+
             const prompt = `Eres un experto analista de hipotecas. Analiza por qué la siguiente oferta hipotecaria ha sido rechazada o no coincide con lo que el cliente seleccionó.
 
 DATOS DEL CLIENTE:
@@ -522,7 +566,7 @@ DATOS DEL CLIENTE:
 - Cuota mensual: ${data.cliente.cuota_mensual}€
 - Cuota anual: ${data.cliente.cuota_anual}€
 - Ahorros aportados: ${data.cliente.ahorros_aportados}€
-- Renta anual: ${data.cliente.renta_anual}€
+${ingresoTexto}
 - Tipo contrato: ${data.cliente.tipo_contrato}
 - Días trabajados: ${data.cliente.dias_trabajados}
 
