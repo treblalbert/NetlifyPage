@@ -403,6 +403,15 @@
                 </div>
             </div>
 
+            <!-- Extra Info Section -->
+            <div class="section">
+                <h2>💬 Información Adicional (Opcional)</h2>
+                <div class="form-group">
+                    <label>Contexto adicional o preguntas para la IA</label>
+                    <textarea id="extraInfo" rows="4" placeholder="Ejemplo: El cliente tiene un segundo empleo part-time que genera 500€ al mes. ¿Esto puede ayudar?&#10;&#10;O puedes dejar esto vacío para un análisis estándar." style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 14px; resize: vertical;"></textarea>
+                </div>
+            </div>
+
             <!-- Analyze Button -->
             <button class="btn analyze-btn" onclick="analyzeOffer()" id="analyzeBtn">
                 🔍 Analizar con IA
@@ -418,12 +427,25 @@
             <div class="result-section" id="resultSection">
                 <h2>📊 Resultado del Análisis</h2>
                 <div class="result-content" id="resultContent"></div>
+                
+                <!-- Conversation Section -->
+                <div id="conversationSection" style="display: none; margin-top: 30px;">
+                    <h3 style="color: #667eea; margin-bottom: 15px;">💭 Continuar conversación con la IA</h3>
+                    <div class="form-group">
+                        <label>Pregunta o comentario de seguimiento</label>
+                        <textarea id="followUpQuestion" rows="3" placeholder="Ejemplo: ¿Y si el cliente consigue un aval? ¿Qué otras opciones tiene?" style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 14px; resize: vertical;"></textarea>
+                    </div>
+                    <button class="btn" onclick="askFollowUp()" id="followUpBtn" style="margin-top: 10px;">
+                        💬 Enviar pregunta
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
         let apiKey = '';
+        let conversationHistory = [];
 
         function handleIncomeInput() {
             const nominaInput = document.getElementById('cliente_nomina');
@@ -553,6 +575,10 @@
                 ingresoTexto = `- Renta anual: ${data.cliente.valor_ingreso}€`;
             }
 
+            // Obtener información adicional si existe
+            const extraInfo = document.getElementById('extraInfo').value.trim();
+            const extraInfoText = extraInfo ? `\n\nINFORMACIÓN ADICIONAL DEL USUARIO:\n${extraInfo}` : '';
+
             const prompt = `Eres un experto analista de hipotecas. Analiza por qué la siguiente oferta hipotecaria ha sido rechazada o no coincide con lo que el cliente seleccionó.
 
 DATOS DEL CLIENTE:
@@ -586,7 +612,7 @@ OFERTA DEL BANCO:
 - Ingresos mínimos mensuales: ${data.banco.ingresos_minimos_mensuales}€
 - Ratio endeudamiento: ${data.banco.ratio_endeudamiento}%
 - % Financiación compraventa: ${data.banco.porcentaje_financiacion_compraventa}%
-- % Financiación tasación: ${data.banco.porcentaje_financiacion_tasacion}%
+- % Financiación tasación: ${data.banco.porcentaje_financiacion_tasacion}%${extraInfoText}
 
 Por favor, analiza:
 1. Si el cliente cumple con todos los requisitos del banco (ingresos, ratio de endeudamiento, etc.)
@@ -595,6 +621,18 @@ Por favor, analiza:
 4. Proporciona una explicación clara y concisa
 
 Proporciona una respuesta estructurada y profesional.`;
+
+            // Resetear el historial de conversación para un nuevo análisis
+            conversationHistory = [
+                {
+                    role: 'system',
+                    content: 'Eres un experto analista de hipotecas que ayuda a identificar por qué las ofertas hipotecarias son rechazadas.'
+                },
+                {
+                    role: 'user',
+                    content: prompt
+                }
+            ];
 
             try {
                 const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -605,16 +643,7 @@ Proporciona una respuesta estructurada y profesional.`;
                     },
                     body: JSON.stringify({
                         model: 'gpt-4',
-                        messages: [
-                            {
-                                role: 'system',
-                                content: 'Eres un experto analista de hipotecas que ayuda a identificar por qué las ofertas hipotecarias son rechazadas.'
-                            },
-                            {
-                                role: 'user',
-                                content: prompt
-                            }
-                        ],
+                        messages: conversationHistory,
                         temperature: 0.7,
                         max_tokens: 1500
                     })
@@ -627,14 +656,94 @@ Proporciona una respuesta estructurada y profesional.`;
                 const result = await response.json();
                 const analysis = result.choices[0].message.content;
 
+                // Añadir la respuesta al historial
+                conversationHistory.push({
+                    role: 'assistant',
+                    content: analysis
+                });
+
                 resultContent.textContent = analysis;
                 resultSection.classList.add('show');
+                
+                // Mostrar la sección de conversación
+                document.getElementById('conversationSection').style.display = 'block';
             } catch (error) {
                 resultContent.textContent = `❌ Error al analizar: ${error.message}\n\nPor favor, verifica que tu API Key sea correcta y que tengas crédito disponible en tu cuenta de OpenAI.`;
                 resultSection.classList.add('show');
             } finally {
                 loadingSection.style.display = 'none';
                 analyzeBtn.disabled = false;
+            }
+        }
+
+        async function askFollowUp() {
+            const followUpQuestion = document.getElementById('followUpQuestion').value.trim();
+            
+            if (!followUpQuestion) {
+                alert('Por favor, escribe una pregunta o comentario');
+                return;
+            }
+
+            if (!apiKey) {
+                alert('Por favor, carga primero tu API Key');
+                return;
+            }
+
+            const loadingSection = document.getElementById('loadingSection');
+            const resultContent = document.getElementById('resultContent');
+            const followUpBtn = document.getElementById('followUpBtn');
+
+            // Añadir la pregunta del usuario al historial
+            conversationHistory.push({
+                role: 'user',
+                content: followUpQuestion
+            });
+
+            // Show loading
+            loadingSection.style.display = 'block';
+            followUpBtn.disabled = true;
+
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4',
+                        messages: conversationHistory,
+                        temperature: 0.7,
+                        max_tokens: 1500
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error de la API: ${response.status} ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                const aiResponse = result.choices[0].message.content;
+
+                // Añadir la respuesta al historial
+                conversationHistory.push({
+                    role: 'assistant',
+                    content: aiResponse
+                });
+
+                // Mostrar la conversación completa
+                resultContent.textContent += '\n\n---\n\n🧑 TU PREGUNTA:\n' + followUpQuestion + '\n\n🤖 RESPUESTA DE LA IA:\n' + aiResponse;
+                
+                // Limpiar el campo de pregunta
+                document.getElementById('followUpQuestion').value = '';
+                
+                // Scroll al final del resultado
+                resultContent.scrollTop = resultContent.scrollHeight;
+            } catch (error) {
+                alert(`Error al enviar la pregunta: ${error.message}`);
+            } finally {
+                loadingSection.style.display = 'none';
+                followUpBtn.disabled = false;
             }
         }
     </script>
