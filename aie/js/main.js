@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         setupEventListeners();
+        setupExamplePrompts();
         updateButtonStates();
     });
 });
@@ -195,4 +196,27 @@ function updateButtonStates() {
     addRowBtn.disabled = !hasData;
     addColBtn.disabled = !hasData;
     downloadBtn.disabled = !hasData;
+}
+
+// Add example prompts for users
+function setupExamplePrompts() {
+    // Add example button or suggestions
+    const examples = [
+        "Change value in row 3 column B to 'Completed'",
+        "Add 10% to all values in the 'Price' column",
+        "Sort rows by the 'Date' column (oldest first)",
+        "Delete empty rows",
+        "Add a new column called 'Status' with value 'Pending' for all rows",
+        "Swap rows 5 and 10",
+        "Make all text in the 'Name' column uppercase",
+        "Find and replace 'old' with 'new' in the entire sheet",
+        "Calculate sum of 'Amount' column and add as new row at bottom",
+        "Duplicate column 'A' as column 'Z'"
+    ];
+    
+    // You could add these as clickable examples in the UI
+    console.log('Try these example prompts:');
+    examples.forEach((example, i) => {
+        console.log(`${i + 1}. ${example}`);
+    });
 }
