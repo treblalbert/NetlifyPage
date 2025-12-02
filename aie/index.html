@@ -3,29 +3,449 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Albert's AI Excel Editor</title>
+    <title>AI Excel Editor</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <link rel="stylesheet" href="css/style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #e0f7ff 0%, #87ceeb 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #87ceeb 0%, #4a9fd8 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            opacity: 0.95;
+            font-size: 1.1em;
+        }
+
+        .api-setup {
+            padding: 60px 30px;
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .api-setup h2 {
+            color: #4a9fd8;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .api-setup p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .controls {
+            padding: 30px;
+            background: #f0f9ff;
+            border-bottom: 2px solid #e0f2fe;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #0369a1;
+            font-size: 0.95em;
+        }
+
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed #87ceeb;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        input[type="file"]:hover {
+            border-color: #4a9fd8;
+            background: #f0f9ff;
+        }
+
+        button {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #87ceeb 0%, #4a9fd8 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(135, 206, 235, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .main-content {
+            display: flex;
+            height: calc(100vh - 200px);
+        }
+
+        .table-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .table-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .table-wrapper {
+            flex: 1;
+            overflow: auto;
+            border: 2px solid #e0f2fe;
+            border-radius: 8px;
+            background: white;
+        }
+
+        table {
+            width: max-content;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            font-size: 0.9em;
+        }
+
+        th, td {
+            border: 1px solid #e0f2fe;
+            position: relative;
+            min-width: 100px;
+            max-width: 400px;
+        }
+
+        th {
+            background: linear-gradient(135deg, #87ceeb 0%, #4a9fd8 100%);
+            color: white;
+            padding: 10px 8px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 12;
+            user-select: none;
+        }
+
+        .row-header {
+            background: #e0f2fe;
+            color: #0369a1;
+            font-weight: 600;
+            text-align: center;
+            padding: 8px;
+            min-width: 50px;
+            position: sticky;
+            left: 0;
+            z-index: 10;
+            border-right: 2px solid #87ceeb;
+        }
+
+        th.row-header {
+            z-index: 15;
+            background: linear-gradient(135deg, #87ceeb 0%, #4a9fd8 100%);
+            color: white;
+        }
+
+        td {
+            padding: 0;
+            background: white;
+        }
+
+        td input {
+            width: 100%;
+            height: 100%;
+            padding: 8px;
+            border: none;
+            background: transparent;
+            font-size: 0.95em;
+            font-family: inherit;
+        }
+
+        td input:focus {
+            outline: 2px solid #87ceeb;
+            background: #f0f9ff;
+        }
+
+        tr:hover td:not(.row-header) {
+            background: #f0f9ff;
+        }
+
+        .resize-handle {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            cursor: col-resize;
+            user-select: none;
+            z-index: 13;
+        }
+
+        .resize-handle:hover {
+            background: #4a9fd8;
+        }
+
+        .filter-icon {
+            cursor: pointer;
+            margin-left: 5px;
+            opacity: 0.7;
+        }
+
+        .filter-icon:hover {
+            opacity: 1;
+        }
+
+        .filter-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 2px solid #87ceeb;
+            border-radius: 8px;
+            padding: 10px;
+            z-index: 20;
+            min-width: 200px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .filter-dropdown input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #e0f2fe;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .filter-options {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .filter-option {
+            padding: 6px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .filter-option:hover {
+            background: #f0f9ff;
+        }
+
+        .filter-option input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .chat-section {
+            width: 400px;
+            border-left: 2px solid #e0f2fe;
+            display: flex;
+            flex-direction: column;
+            background: #f0f9ff;
+        }
+
+        .chat-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #87ceeb 0%, #4a9fd8 100%);
+            color: white;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            max-width: 90%;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            background: white;
+            margin-left: auto;
+            border: 1px solid #e0f2fe;
+        }
+
+        .message.ai {
+            background: #bae6fd;
+            margin-right: auto;
+        }
+
+        .message.system {
+            background: #fef3c7;
+            text-align: center;
+            font-size: 0.9em;
+            margin: 10px auto;
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            background: white;
+            border-top: 2px solid #e0f2fe;
+        }
+
+        .chat-input-area textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0f2fe;
+            border-radius: 8px;
+            resize: none;
+            font-family: inherit;
+            font-size: 0.95em;
+            min-height: 60px;
+        }
+
+        .chat-input-area textarea:focus {
+            outline: none;
+            border-color: #87ceeb;
+        }
+
+        .chat-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .chat-buttons button {
+            flex: 1;
+        }
+
+        .undo-btn {
+            background: #f59e0b;
+        }
+
+        .undo-btn:hover {
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+        }
+
+        .status {
+            padding: 12px 20px;
+            margin: 20px 30px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .chat-section {
+                width: 100%;
+                border-left: none;
+                border-top: 2px solid #e0f2fe;
+                min-height: 400px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🤖 Albert's AI Excel Editor</h1>
-            <p id="appSubtitle">Intelligent spreadsheet editing powered by AI</p>
-            <div class="language-switcher">
-                <button class="lang-btn" data-lang="en">EN</button>
-                <button class="lang-btn" data-lang="es">ES</button>
-                <button class="lang-btn" data-lang="ca">CA</button>
-            </div>
+            <h1>🤖 AI Excel Editor</h1>
+            <p>Intelligent spreadsheet editing powered by AI</p>
         </div>
 
         <div id="apiSetup" class="api-setup">
-            <h2 id="setupTitle">Welcome! Let's Get Started</h2>
-            <p id="setupDescription">First, load a text file containing your OpenAI API key to unlock AI-powered features.</p>
+            <h2>Welcome! Let's Get Started</h2>
+            <p>First, load a text file containing your OpenAI API key to unlock AI-powered features.</p>
             <div class="control-group">
                 <input type="file" id="apiKeyFile" accept=".txt">
             </div>
-            <p id="securityNote" style="margin-top: 20px; font-size: 0.9em; color: #888;">
+            <p style="margin-top: 20px; font-size: 0.9em; color: #888;">
                 Your API key is stored securely in your browser and never leaves your device.
             </p>
         </div>
@@ -33,7 +453,7 @@
         <div id="mainApp" class="hidden">
             <div class="controls">
                 <div class="control-group">
-                    <label id="fileLabel">Load Excel File (.xlsx, .xls, .csv)</label>
+                    <label>Load Excel File (.xlsx, .xls, .csv)</label>
                     <input type="file" id="excelFile" accept=".xlsx,.xls,.csv">
                 </div>
             </div>
@@ -43,9 +463,9 @@
             <div class="main-content">
                 <div class="table-section">
                     <div class="table-controls">
-                        <button id="addRowBtn" disabled data-i18n="addRow">➕ Add Row</button>
-                        <button id="addColBtn" disabled data-i18n="addCol">➕ Add Column</button>
-                        <button id="downloadBtn" disabled data-i18n="download">⬇️ Download .xlsx</button>
+                        <button id="addRowBtn" disabled>➕ Add Row</button>
+                        <button id="addColBtn" disabled>➕ Add Column</button>
+                        <button id="downloadBtn" disabled>⬇️ Download .xlsx</button>
                     </div>
                     <div class="table-wrapper">
                         <table id="dataTable">
@@ -56,22 +476,14 @@
                 </div>
 
                 <div class="chat-section">
-                    <div class="chat-header">💬 <span id="aiAssistantLabel">AI Assistant</span></div>
+                    <div class="chat-header">💬 AI Assistant</div>
                     <div class="chat-messages" id="chatMessages"></div>
                     <div class="chat-input-area">
-                        <textarea id="aiPrompt" 
-                                  placeholder="Ask AI to modify your spreadsheet...
-e.g., 'Add 10% to all prices'" 
-                                  disabled
-                                  data-placeholder-en="Ask AI to modify your spreadsheet...
-e.g., 'Add 10% to all prices'"
-                                  data-placeholder-es="Pídele a la IA que modifique tu hoja de cálculo...
-ej: 'Añade 10% a todos los precios'"
-                                  data-placeholder-ca="Demana a la IA que modifiqui el teu full de càlcul...
-ex: 'Afegeix 10% a tots els preus'"></textarea>
+                        <textarea id="aiPrompt" placeholder="Ask AI to modify your spreadsheet...
+e.g., 'Add 10% to all prices'" disabled></textarea>
                         <div class="chat-buttons">
-                            <button id="aiButton" disabled data-i18n="send">Send ✨</button>
-                            <button id="undoBtn" class="undo-btn" disabled data-i18n="undo">↶ Undo</button>
+                            <button id="aiButton" disabled>Send ✨</button>
+                            <button id="undoBtn" class="undo-btn" disabled>↶ Undo</button>
                         </div>
                     </div>
                 </div>
@@ -79,9 +491,412 @@ ex: 'Afegeix 10% a tots els preus'"></textarea>
         </div>
     </div>
 
-    <!-- Load JavaScript files IN CORRECT ORDER -->
-    <script src="js/main.js"></script>
-    <script src="js/excelHandler.js"></script>
-    <script src="js/aiHandler.js"></script>
+    <script>
+        let apiKey = '';
+        let apiKeyPath = '';
+        let workbookData = [];
+        let headers = [];
+        let history = [];
+        let columnWidths = {};
+        let activeFilters = {};
+        let cellColors = {};
+
+        const apiSetup = document.getElementById('apiSetup');
+        const mainApp = document.getElementById('mainApp');
+        const apiKeyFile = document.getElementById('apiKeyFile');
+        const excelFile = document.getElementById('excelFile');
+        const aiPrompt = document.getElementById('aiPrompt');
+        const aiButton = document.getElementById('aiButton');
+        const undoBtn = document.getElementById('undoBtn');
+        const addRowBtn = document.getElementById('addRowBtn');
+        const addColBtn = document.getElementById('addColBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const statusDiv = document.getElementById('status');
+        const dataTable = document.getElementById('dataTable');
+        const tableHead = document.getElementById('tableHead');
+        const tableBody = document.getElementById('tableBody');
+        const chatMessages = document.getElementById('chatMessages');
+
+        // Load saved API key path on startup
+        window.addEventListener('load', () => {
+            const savedPath = localStorage.getItem('apiKeyPath');
+            if (savedPath) {
+                addChatMessage('system', 'Attempting to load saved API key...');
+                // Note: We can't auto-load files due to security, but we show the path
+                addChatMessage('system', `Previously used: ${savedPath}. Please load it again.`);
+            }
+        });
+
+        function showStatus(message, type = 'info') {
+            statusDiv.className = `status ${type}`;
+            statusDiv.textContent = message;
+            statusDiv.style.display = 'block';
+            setTimeout(() => statusDiv.style.display = 'none', 5000);
+        }
+
+        function addChatMessage(type, content) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${type}`;
+            msgDiv.textContent = content;
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        apiKeyFile.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const text = await file.text();
+            apiKey = text.trim();
+            apiKeyPath = file.name;
+            
+            // Save the file path/name for reference
+            localStorage.setItem('apiKeyPath', file.name);
+            
+            addChatMessage('system', '✓ API Key loaded successfully!');
+            apiSetup.classList.add('hidden');
+            mainApp.classList.remove('hidden');
+            updateButtonStates();
+        });
+
+        excelFile.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            try {
+                const data = await file.arrayBuffer();
+                const workbook = XLSX.read(data, { type: 'array', cellStyles: true });
+                const sheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[sheetName];
+                
+                // Extract cell colors
+                cellColors = {};
+                for (let cell in worksheet) {
+                    if (cell[0] === '!') continue;
+                    if (worksheet[cell].s && worksheet[cell].s.fgColor) {
+                        cellColors[cell] = '#' + worksheet[cell].s.fgColor.rgb;
+                    }
+                }
+
+                const json = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
+
+                if (json.length === 0) {
+                    showStatus('Error: File is empty', 'error');
+                    return;
+                }
+
+                headers = json[0].map(h => h || '');
+                workbookData = json.slice(1);
+                history = [];
+                activeFilters = {};
+                
+                renderTable();
+                addChatMessage('system', `✓ Loaded ${workbookData.length} rows and ${headers.length} columns`);
+                updateButtonStates();
+            } catch (error) {
+                showStatus(`Error loading file: ${error.message}`, 'error');
+                addChatMessage('system', `❌ Error: ${error.message}`);
+            }
+        });
+
+        function saveState() {
+            history.push({
+                headers: JSON.parse(JSON.stringify(headers)),
+                data: JSON.parse(JSON.stringify(workbookData)),
+                colors: JSON.parse(JSON.stringify(cellColors))
+            });
+            if (history.length > 20) history.shift();
+            updateButtonStates();
+        }
+
+        function renderTable() {
+            tableHead.innerHTML = '';
+            tableBody.innerHTML = '';
+
+            const headerRow = document.createElement('tr');
+            const cornerCell = document.createElement('th');
+            cornerCell.className = 'row-header';
+            cornerCell.textContent = '#';
+            headerRow.appendChild(cornerCell);
+
+            headers.forEach((header, i) => {
+                const th = document.createElement('th');
+                th.textContent = header || `Column ${i + 1}`;
+                th.style.width = columnWidths[i] || '150px';
+                
+                const filterIcon = document.createElement('span');
+                filterIcon.className = 'filter-icon';
+                filterIcon.textContent = '▼';
+                filterIcon.onclick = (e) => showFilterDropdown(e, i);
+                th.appendChild(filterIcon);
+
+                const resizeHandle = document.createElement('div');
+                resizeHandle.className = 'resize-handle';
+                resizeHandle.onmousedown = (e) => startResize(e, i);
+                th.appendChild(resizeHandle);
+
+                headerRow.appendChild(th);
+            });
+            tableHead.appendChild(headerRow);
+
+            const filteredData = applyFilters();
+            filteredData.forEach((row, rowIndex) => {
+                const tr = document.createElement('tr');
+                
+                const rowHeader = document.createElement('td');
+                rowHeader.className = 'row-header';
+                rowHeader.textContent = row.originalIndex + 1;
+                tr.appendChild(rowHeader);
+
+                headers.forEach((_, colIndex) => {
+                    const td = document.createElement('td');
+                    const cellRef = XLSX.utils.encode_cell({r: row.originalIndex + 1, c: colIndex});
+                    if (cellColors[cellRef]) {
+                        td.style.backgroundColor = cellColors[cellRef];
+                    }
+
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.value = row.data[colIndex] !== undefined ? row.data[colIndex] : '';
+                    input.addEventListener('change', (e) => {
+                        workbookData[row.originalIndex][colIndex] = e.target.value;
+                    });
+                    td.appendChild(input);
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+        }
+
+        function applyFilters() {
+            let filtered = workbookData.map((data, idx) => ({data, originalIndex: idx}));
+            
+            for (let colIndex in activeFilters) {
+                const filterValues = activeFilters[colIndex];
+                if (filterValues.size > 0) {
+                    filtered = filtered.filter(row => filterValues.has(String(row.data[colIndex])));
+                }
+            }
+            
+            return filtered;
+        }
+
+        function showFilterDropdown(e, colIndex) {
+            e.stopPropagation();
+            
+            // Remove existing dropdowns
+            document.querySelectorAll('.filter-dropdown').forEach(d => d.remove());
+
+            const dropdown = document.createElement('div');
+            dropdown.className = 'filter-dropdown';
+
+            const searchInput = document.createElement('input');
+            searchInput.type = 'text';
+            searchInput.placeholder = 'Search...';
+            dropdown.appendChild(searchInput);
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'filter-options';
+
+            const uniqueValues = [...new Set(workbookData.map(row => String(row[colIndex] || '')))];
+            const currentFilter = activeFilters[colIndex] || new Set();
+
+            uniqueValues.forEach(value => {
+                const option = document.createElement('div');
+                option.className = 'filter-option';
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = currentFilter.size === 0 || currentFilter.has(value);
+                checkbox.onchange = () => {
+                    if (!activeFilters[colIndex]) activeFilters[colIndex] = new Set();
+                    if (checkbox.checked) {
+                        activeFilters[colIndex].delete(value);
+                        if (activeFilters[colIndex].size === 0) delete activeFilters[colIndex];
+                    } else {
+                        uniqueValues.forEach(v => activeFilters[colIndex].add(v));
+                        activeFilters[colIndex].delete(value);
+                    }
+                    renderTable();
+                };
+                
+                option.appendChild(checkbox);
+                option.appendChild(document.createTextNode(value || '(blank)'));
+                optionsDiv.appendChild(option);
+            });
+
+            dropdown.appendChild(optionsDiv);
+            e.target.parentElement.appendChild(dropdown);
+
+            searchInput.oninput = () => {
+                const search = searchInput.value.toLowerCase();
+                optionsDiv.querySelectorAll('.filter-option').forEach(opt => {
+                    const text = opt.textContent.toLowerCase();
+                    opt.style.display = text.includes(search) ? 'block' : 'none';
+                });
+            };
+
+            document.addEventListener('click', function closeDropdown(e) {
+                if (!dropdown.contains(e.target)) {
+                    dropdown.remove();
+                    document.removeEventListener('click', closeDropdown);
+                }
+            });
+        }
+
+        function startResize(e, colIndex) {
+            e.preventDefault();
+            const startX = e.pageX;
+            const startWidth = e.target.parentElement.offsetWidth;
+
+            function onMouseMove(e) {
+                const newWidth = startWidth + (e.pageX - startX);
+                columnWidths[colIndex] = Math.max(50, newWidth) + 'px';
+                e.target.parentElement.style.width = columnWidths[colIndex];
+            }
+
+            function onMouseUp() {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            }
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        }
+
+        function updateButtonStates() {
+            const hasData = workbookData.length > 0;
+            const hasHistory = history.length > 0;
+            
+            aiButton.disabled = !hasData;
+            aiPrompt.disabled = !hasData;
+            undoBtn.disabled = !hasHistory;
+            addRowBtn.disabled = !hasData;
+            addColBtn.disabled = !hasData;
+            downloadBtn.disabled = !hasData;
+        }
+
+        aiButton.addEventListener('click', async () => {
+            const prompt = aiPrompt.value.trim();
+            if (!prompt) {
+                showStatus('Please enter a command', 'error');
+                return;
+            }
+
+            saveState();
+            addChatMessage('user', prompt);
+            aiPrompt.value = '';
+            aiButton.disabled = true;
+
+            addChatMessage('ai', '🤔 Processing your request...');
+
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o-mini',
+                        messages: [
+                            {
+                                role: 'system',
+                                content: 'You are a helpful assistant that modifies spreadsheet data. Return ONLY valid JSON with the modified data. The JSON should have this structure: {"headers": [...], "data": [[...], [...]]}'
+                            },
+                            {
+                                role: 'user',
+                                content: `Here is spreadsheet data with headers: ${JSON.stringify(headers)} and rows: ${JSON.stringify(workbookData)}. ${prompt}. Return the complete modified data as JSON with "headers" and "data" fields.`
+                            }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 4000
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const content = result.choices[0].message.content.trim();
+                
+                const jsonMatch = content.match(/\{[\s\S]*\}/);
+                if (!jsonMatch) throw new Error('Invalid response format');
+                
+                const parsed = JSON.parse(jsonMatch[0]);
+                
+                if (parsed.headers && parsed.data) {
+                    headers = parsed.headers;
+                    workbookData = parsed.data;
+                    renderTable();
+                    addChatMessage('ai', '✓ Changes applied successfully!');
+                } else {
+                    throw new Error('Invalid data structure');
+                }
+            } catch (error) {
+                addChatMessage('ai', `❌ Error: ${error.message}`);
+                showStatus(`Error: ${error.message}`, 'error');
+            } finally {
+                updateButtonStates();
+            }
+        });
+
+        undoBtn.addEventListener('click', () => {
+            if (history.length === 0) return;
+            
+            const previous = history.pop();
+            headers = previous.headers;
+            workbookData = previous.data;
+            cellColors = previous.colors;
+            renderTable();
+            addChatMessage('system', '↶ Undid last change');
+            updateButtonStates();
+        });
+
+        addRowBtn.addEventListener('click', () => {
+            saveState();
+            const newRow = new Array(headers.length).fill('');
+            workbookData.push(newRow);
+            renderTable();
+            addChatMessage('system', '✓ Added new row');
+        });
+
+        addColBtn.addEventListener('click', () => {
+            const colName = prompt('Enter column name:');
+            if (!colName) return;
+            
+            saveState();
+            headers.push(colName);
+            workbookData.forEach(row => row.push(''));
+            renderTable();
+            addChatMessage('system', `✓ Added column "${colName}"`);
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            const ws = XLSX.utils.aoa_to_sheet([headers, ...workbookData]);
+            
+            // Reapply colors
+            for (let cell in cellColors) {
+                if (ws[cell]) {
+                    ws[cell].s = {fgColor: {rgb: cellColors[cell].slice(1)}};
+                }
+            }
+            
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+            XLSX.writeFile(wb, 'modified_spreadsheet.xlsx');
+            addChatMessage('system', '✓ Downloaded successfully!');
+        });
+
+        aiPrompt.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                aiButton.click();
+            }
+        });
+
+        updateButtonStates();
+    </script>
 </body>
 </html>
