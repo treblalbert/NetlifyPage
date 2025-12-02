@@ -1,0 +1,19 @@
+{
+    "appSubtitle": "Intelligent spreadsheet editing powered by AI",
+    "setupTitle": "Welcome! Let's Get Started",
+    "setupDescription": "First, load a text file containing your OpenAI API key to unlock AI-powered features.",
+    "securityNote": "Your API key is stored securely in your browser and never leaves your device.",
+    "fileLabel": "Load Excel File (.xlsx, .xls, .csv)",
+    "addRow": "➕ Add Row",
+    "addCol": "➕ Add Column",
+    "download": "⬇️ Download .xlsx",
+    "aiAssistantLabel": "AI Assistant",
+    "send": "Send ✨",
+    "undo": "↶ Undo",
+    "savedApiKey": "Previously used: {path}. Please load it again.",
+    "apiKeyPlaceholder": "Load API key file",
+    "excelPlaceholder": "Load Excel file",
+    "promptPlaceholder": "Ask AI to modify your spreadsheet...",
+    "filterSearch": "Search...",
+    "filterBlank": "(blank)"
+}

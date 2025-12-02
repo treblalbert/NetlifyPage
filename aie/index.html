@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Albert's AI Excel Editor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Albert's AI Excel Editor</h1>
+            <p id="appSubtitle">Intelligent spreadsheet editing powered by AI</p>
+            <div class="language-switcher">
+                <button class="lang-btn" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="es">ES</button>
+                <button class="lang-btn" data-lang="ca">CA</button>
+            </div>
+        </div>
+
+        <div id="apiSetup" class="api-setup">
+            <h2 id="setupTitle">Welcome! Let's Get Started</h2>
+            <p id="setupDescription">First, load a text file containing your OpenAI API key to unlock AI-powered features.</p>
+            <div class="control-group">
+                <input type="file" id="apiKeyFile" accept=".txt">
+            </div>
+            <p id="securityNote" style="margin-top: 20px; font-size: 0.9em; color: #888;">
+                Your API key is stored securely in your browser and never leaves your device.
+            </p>
+        </div>
+
+        <div id="mainApp" class="hidden">
+            <div class="controls">
+                <div class="control-group">
+                    <label id="fileLabel">Load Excel File (.xlsx, .xls, .csv)</label>
+                    <input type="file" id="excelFile" accept=".xlsx,.xls,.csv">
+                </div>
+            </div>
+
+            <div id="status"></div>
+
+            <div class="main-content">
+                <div class="table-section">
+                    <div class="table-controls">
+                        <button id="addRowBtn" disabled data-i18n="addRow">➕ Add Row</button>
+                        <button id="addColBtn" disabled data-i18n="addCol">➕ Add Column</button>
+                        <button id="downloadBtn" disabled data-i18n="download">⬇️ Download .xlsx</button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table id="dataTable">
+                            <thead id="tableHead"></thead>
+                            <tbody id="tableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="chat-section">
+                    <div class="chat-header">💬 <span id="aiAssistantLabel">AI Assistant</span></div>
+                    <div class="chat-messages" id="chatMessages"></div>
+                    <div class="chat-input-area">
+                        <textarea id="aiPrompt" 
+                                  placeholder="Ask AI to modify your spreadsheet...
+e.g., 'Add 10% to all prices'" 
+                                  disabled
+                                  data-placeholder-en="Ask AI to modify your spreadsheet...
+e.g., 'Add 10% to all prices'"
+                                  data-placeholder-es="Pídele a la IA que modifique tu hoja de cálculo...
+ej: 'Añade 10% a todos los precios'"
+                                  data-placeholder-ca="Demana a la IA que modifiqui el teu full de càlcul...
+ex: 'Afegeix 10% a tots els preus'"></textarea>
+                        <div class="chat-buttons">
+                            <button id="aiButton" disabled data-i18n="send">Send ✨</button>
+                            <button id="undoBtn" class="undo-btn" disabled data-i18n="undo">↶ Undo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load JavaScript files -->
+    <script src="js/excelHandler.js"></script>
+    <script src="js/aiHandler.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
