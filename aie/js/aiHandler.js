@@ -1,34 +1,20 @@
-// AI-related functionality
-let apiKey = '';
-
-// Handle API key file
-async function handleApiKeyFile(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const text = await file.text();
-    apiKey = text.trim();
-    const apiKeyPath = file.name;
-    
-    // Save the file path/name for reference
-    localStorage.setItem('apiKeyPath', file.name);
-    
-    addChatMessage('system', '✓ API Key loaded successfully!');
-    apiSetup.classList.add('hidden');
-    mainApp.classList.remove('hidden');
-    updateButtonStates();
-}
-
-// Handle AI request - FIXED: Properly handles the AI request
+// AI request handler - FIXED AND SIMPLIFIED
 async function handleAiRequest() {
+    console.log('AI Button clicked'); // Debug log
+    
+    if (!apiKey) {
+        showStatus('Please load your API key first', 'error');
+        return;
+    }
+    
     const prompt = aiPrompt.value.trim();
     if (!prompt) {
         showStatus('Please enter a command', 'error');
         return;
     }
 
-    if (!apiKey) {
-        showStatus('Please load your API key first', 'error');
+    if (workbookData.length === 0) {
+        showStatus('Please load an Excel file first', 'error');
         return;
     }
 
@@ -40,6 +26,8 @@ async function handleAiRequest() {
     addChatMessage('ai', '🤔 Processing your request...');
 
     try {
+        console.log('Sending request to OpenAI...'); // Debug log
+        
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
@@ -55,7 +43,7 @@ async function handleAiRequest() {
                     },
                     {
                         role: 'user',
-                        content: `Here is spreadsheet data with headers: ${JSON.stringify(window.headers)} and rows: ${JSON.stringify(window.workbookData)}. ${prompt}. Return the complete modified data as JSON with "headers" and "data" fields.`
+                        content: `Here is spreadsheet data with headers: ${JSON.stringify(headers)} and rows: ${JSON.stringify(workbookData)}. ${prompt}. Return the complete modified data as JSON with "headers" and "data" fields.`
                     }
                 ],
                 temperature: 0.7,
@@ -64,28 +52,52 @@ async function handleAiRequest() {
         });
 
         if (!response.ok) {
-            throw new Error(`API error: ${response.status}`);
+            const errorText = await response.text();
+            console.error('API Error:', errorText);
+            throw new Error(`API error: ${response.status} - ${errorText}`);
         }
 
         const result = await response.json();
+        console.log('OpenAI Response:', result); // Debug log
+        
         const content = result.choices[0].message.content.trim();
         
-        const jsonMatch = content.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) throw new Error('Invalid response format');
+        // Try to extract JSON from the response
+        let jsonMatch;
+        try {
+            // First try to parse the whole content as JSON
+            const parsed = JSON.parse(content);
+            jsonMatch = content;
+        } catch {
+            // If that fails, try to extract JSON from the text
+            jsonMatch = content.match(/\{[\s\S]*\}/);
+            if (!jsonMatch) throw new Error('No valid JSON found in response');
+        }
         
-        const parsed = JSON.parse(jsonMatch[0]);
+        const parsed = JSON.parse(jsonMatch);
         
         if (parsed.headers && parsed.data) {
-            window.headers = parsed.headers;
-            window.workbookData = parsed.data;
+            headers = parsed.headers;
+            workbookData = parsed.data;
             renderTable();
             addChatMessage('ai', '✓ Changes applied successfully!');
+            showStatus('AI modifications applied successfully', 'success');
         } else {
-            throw new Error('Invalid data structure');
+            throw new Error('Invalid data structure in response');
         }
     } catch (error) {
+        console.error('AI Request Error:', error); // Debug log
         addChatMessage('ai', `❌ Error: ${error.message}`);
         showStatus(`Error: ${error.message}`, 'error');
+        
+        // Try to undo if the AI request failed
+        if (history.length > 0) {
+            const previous = history.pop();
+            headers = previous.headers;
+            workbookData = previous.data;
+            cellColors = previous.colors;
+            renderTable();
+        }
     } finally {
         aiButton.disabled = false;
         updateButtonStates();
@@ -94,11 +106,11 @@ async function handleAiRequest() {
 
 // Handle undo
 function handleUndo() {
-    if (window.history.length === 0) return;
+    if (history.length === 0) return;
     
-    const previous = window.history.pop();
-    window.headers = previous.headers;
-    window.workbookData = previous.data;
+    const previous = history.pop();
+    headers = previous.headers;
+    workbookData = previous.data;
     cellColors = previous.colors;
     renderTable();
     addChatMessage('system', '↶ Undid last change');

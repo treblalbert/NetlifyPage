@@ -1,9 +1,4 @@
-// Excel-specific functionality
-let columnWidths = {};
-let activeFilters = {};
-let cellColors = {};
-
-// Handle Excel file upload
+// Excel file handler
 async function handleExcelFile(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -30,14 +25,14 @@ async function handleExcelFile(e) {
             return;
         }
 
-        window.headers = json[0].map(h => h || '');
-        window.workbookData = json.slice(1);
-        window.history = [];
+        headers = json[0].map(h => h || '');
+        workbookData = json.slice(1);
+        history = [];
         activeFilters = {};
         columnWidths = {};
         
         renderTable();
-        addChatMessage('system', `✓ Loaded ${window.workbookData.length} rows and ${window.headers.length} columns`);
+        addChatMessage('system', `✓ Loaded ${workbookData.length} rows and ${headers.length} columns`);
         updateButtonStates();
     } catch (error) {
         showStatus(`Error loading file: ${error.message}`, 'error');
@@ -47,12 +42,12 @@ async function handleExcelFile(e) {
 
 // Save current state
 function saveState() {
-    window.history.push({
-        headers: JSON.parse(JSON.stringify(window.headers)),
-        data: JSON.parse(JSON.stringify(window.workbookData)),
+    history.push({
+        headers: JSON.parse(JSON.stringify(headers)),
+        data: JSON.parse(JSON.stringify(workbookData)),
         colors: JSON.parse(JSON.stringify(cellColors))
     });
-    if (window.history.length > 20) window.history.shift();
+    if (history.length > 20) history.shift();
     updateButtonStates();
 }
 
@@ -60,6 +55,8 @@ function saveState() {
 function renderTable() {
     const tableHead = document.getElementById('tableHead');
     const tableBody = document.getElementById('tableBody');
+    
+    if (!tableHead || !tableBody) return;
     
     tableHead.innerHTML = '';
     tableBody.innerHTML = '';
@@ -70,7 +67,7 @@ function renderTable() {
     cornerCell.textContent = '#';
     headerRow.appendChild(cornerCell);
 
-    window.headers.forEach((header, i) => {
+    headers.forEach((header, i) => {
         const th = document.createElement('th');
         th.textContent = header || `Column ${i + 1}`;
         th.style.width = columnWidths[i] || '150px';
@@ -100,7 +97,7 @@ function renderTable() {
         rowHeader.textContent = row.originalIndex + 1;
         tr.appendChild(rowHeader);
 
-        window.headers.forEach((_, colIndex) => {
+        headers.forEach((_, colIndex) => {
             const td = document.createElement('td');
             const cellRef = XLSX.utils.encode_cell({r: row.originalIndex + 1, c: colIndex});
             if (cellColors[cellRef]) {
@@ -111,7 +108,7 @@ function renderTable() {
             input.type = 'text';
             input.value = row.data[colIndex] !== undefined ? row.data[colIndex] : '';
             input.addEventListener('change', (e) => {
-                window.workbookData[row.originalIndex][colIndex] = e.target.value;
+                workbookData[row.originalIndex][colIndex] = e.target.value;
             });
             td.appendChild(input);
             tr.appendChild(td);
@@ -122,7 +119,7 @@ function renderTable() {
 
 // Apply filters
 function applyFilters() {
-    let filtered = window.workbookData.map((data, idx) => ({data, originalIndex: idx}));
+    let filtered = workbookData.map((data, idx) => ({data, originalIndex: idx}));
     
     for (let colIndex in activeFilters) {
         const filterValues = activeFilters[colIndex];
@@ -152,7 +149,7 @@ function showFilterDropdown(e, colIndex) {
     const optionsDiv = document.createElement('div');
     optionsDiv.className = 'filter-options';
 
-    const uniqueValues = [...new Set(window.workbookData.map(row => String(row[colIndex] || '')))];
+    const uniqueValues = [...new Set(workbookData.map(row => String(row[colIndex] || '')))];
     const currentFilter = activeFilters[colIndex] || new Set();
 
     uniqueValues.forEach(value => {
@@ -198,7 +195,7 @@ function showFilterDropdown(e, colIndex) {
     });
 }
 
-// Start column resize - FIXED VERSION
+// Start column resize
 function startResize(e, colIndex) {
     e.preventDefault();
     e.stopPropagation();
@@ -211,16 +208,6 @@ function startResize(e, colIndex) {
         const newWidth = startWidth + (moveEvent.clientX - startX);
         columnWidths[colIndex] = Math.max(50, newWidth) + 'px';
         th.style.width = columnWidths[colIndex];
-        
-        // Update all cells in this column
-        const tableBody = document.getElementById('tableBody');
-        const rows = tableBody.querySelectorAll('tr');
-        rows.forEach(row => {
-            const cells = row.querySelectorAll('td');
-            if (cells[colIndex + 1]) { // +1 because first cell is row header
-                cells[colIndex + 1].style.width = columnWidths[colIndex];
-            }
-        });
     }
 
     function onMouseUp() {
@@ -237,8 +224,8 @@ function startResize(e, colIndex) {
 // Add row
 function handleAddRow() {
     saveState();
-    const newRow = new Array(window.headers.length).fill('');
-    window.workbookData.push(newRow);
+    const newRow = new Array(headers.length).fill('');
+    workbookData.push(newRow);
     renderTable();
     addChatMessage('system', '✓ Added new row');
 }
@@ -249,15 +236,15 @@ function handleAddColumn() {
     if (!colName) return;
     
     saveState();
-    window.headers.push(colName);
-    window.workbookData.forEach(row => row.push(''));
+    headers.push(colName);
+    workbookData.forEach(row => row.push(''));
     renderTable();
     addChatMessage('system', `✓ Added column "${colName}"`);
 }
 
 // Download file
 function handleDownload() {
-    const ws = XLSX.utils.aoa_to_sheet([window.headers, ...window.workbookData]);
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...workbookData]);
     
     // Reapply colors
     for (let cell in cellColors) {

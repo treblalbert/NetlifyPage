@@ -133,7 +133,7 @@ button {
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
-button:hover {
+button:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(135, 206, 235, 0.4);
 }
@@ -146,6 +146,7 @@ button:disabled {
     background: #94a3b8;
     cursor: not-allowed;
     transform: none;
+    opacity: 0.6;
 }
 
 .main-content {
@@ -406,7 +407,7 @@ tr:hover td:not(.row-header) {
     background: #f59e0b;
 }
 
-.undo-btn:hover {
+.undo-btn:hover:not(:disabled) {
     box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
 }
 
@@ -415,6 +416,7 @@ tr:hover td:not(.row-header) {
     margin: 20px 30px;
     border-radius: 8px;
     font-weight: 500;
+    display: none;
 }
 
 .status.success {
@@ -439,6 +441,15 @@ tr:hover td:not(.row-header) {
     display: none !important;
 }
 
+/* Make AI button more visible when active */
+#aiButton:not(:disabled) {
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+}
+
+#aiButton:not(:disabled):hover {
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
 @media (max-width: 1024px) {
     .main-content {
         flex-direction: column;
@@ -450,5 +461,14 @@ tr:hover td:not(.row-header) {
         border-left: none;
         border-top: 2px solid #e0f2fe;
         min-height: 400px;
+    }
+    
+    .header {
+        padding-top: 50px;
+    }
+    
+    .language-switcher {
+        top: 10px;
+        right: 10px;
     }
 }
