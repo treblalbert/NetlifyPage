@@ -8,6 +8,7 @@ const translations = {
     <p>When I'm not coding, I enjoy music production, oil painting, bouldering, and hiking. These creative outlets, much like data, help me look for patterns in seemingly unconnected things.</p>`,
     pdfViewer: "Albert PDF Viewer",
     twitterFilter: "X/Twitter Filter",
+    excelEditor: "Albert AI Excel Editor",
     personalProjectsTitle: "Personal Projects",
     sideProjectsTitle: "Side Projects",
     mainGameProjectsTitle: "Main Game Projects",
@@ -15,7 +16,9 @@ const translations = {
     sourceCode: "Source Code (GitHub)",
     pdfDescription: "Albert The Wrench PDF Reader is a feature-rich, customizable PDF viewer built with Python that offers an intuitive interface combined with powerful document management capabilities. Designed for both casual users and professionals who need efficient PDF navigation and annotation tools.",
     twitterFilterDescription: "A powerful browser extension that filters tweets based on country location, specific users, and keywords. Take full control of your Twitter/X feed by hiding content from specific countries, blocking unwanted users, and filtering out tweets containing certain keywords. Features include real-time filtering, two display modes (dim or completely remove), country search, and detailed statistics.",
-    twitterFilterInstructions: "<strong>Want to use it now?</strong> Download the project from GitHub and load it manually in your browser:<br><br>1. Clone or download the project from GitHub<br>2. Open your browser's extension page (brave://extensions/ or chrome://extensions/)<br>3. Enable \"Developer mode\"<br>4. Click \"Load unpacked\" and select the extension folder<br>5. Enjoy your filtered Twitter/X experience!"
+    twitterFilterInstructions: "<strong>Want to use it now?</strong> Download the project from GitHub and load it manually in your browser:<br><br>1. Clone or download the project from GitHub<br>2. Open your browser's extension page (brave://extensions/ or chrome://extensions/)<br>3. Enable \"Developer mode\"<br>4. Click \"Load unpacked\" and select the extension folder<br>5. Enjoy your filtered Twitter/X experience!",
+    excelEditorDescription: "Albert AI Excel Editor is an advanced Excel editor with OpenAI integration (API key needed). This is an alpha version and some features might not work as intended. The application includes powerful filters, an AI chat interface for asking specific questions about your Excel data or applying automatic modifications, and highlights all AI-edited cells for easy tracking.",
+    excelEditorInstructions: "<strong>Key Features:</strong><br>• OpenAI integration for AI-powered Excel editing<br>• Built-in filters for data manipulation<br>• AI chat interface for data queries and automatic modifications<br>• Highlights AI-edited cells for easy tracking<br>• Comparison window to view old vs new versions<br>• Unlimited undo functionality<br>• Available in English, Spanish, and Catalan languages<br><br><strong>Note:</strong> This is an alpha release. Some features may not work as intended. You will need your own OpenAI API key to use the AI functionality."
   },
   es: {
     name: "Albert Adroer Prats",
@@ -25,6 +28,7 @@ const translations = {
     <p>Cuando no estoy programando, disfruto de la producción musical, la pintura al óleo, la escalada en rocódromo y el senderismo. Estas salidas creativas, al igual que los datos, me ayudan a buscar patrones en cosas aparentemente inconexas.</p>`,
     pdfViewer: "Visor PDF ATW",
     twitterFilter: "Filtro X/Twitter",
+    excelEditor: "Editor AI Excel Albert",
     personalProjectsTitle: "Proyectos Personales",
     sideProjectsTitle: "Proyectos Paralelos",
     mainGameProjectsTitle: "Principales Proyectos de Juegos",
@@ -32,7 +36,9 @@ const translations = {
     sourceCode: "Código Fuente (GitHub)",
     pdfDescription: "Albert The Wrench PDF Reader es un visor de PDF rico en funciones y personalizable construido con Python que ofrece una interfaz intuitiva combinada con potentes capacidades de gestión de documentos. Diseñado tanto para usuarios casuales como para profesionales que necesitan herramientas eficientes de navegación y anotación de PDF.",
     twitterFilterDescription: "Una potente extensión de navegador que filtra tweets según la ubicación del país, usuarios específicos y palabras clave. Toma el control total de tu feed de Twitter/X ocultando contenido de países específicos, bloqueando usuarios no deseados y filtrando tweets que contengan ciertas palabras clave. Características incluyen filtrado en tiempo real, dos modos de visualización (atenuar o eliminar completamente), búsqueda de países y estadísticas detalladas.",
-    twitterFilterInstructions: "¿Quieres usarlo ahora? Descarga el proyecto desde GitHub y cárgalo manualmente en tu navegador:<br><br>1. Clona o descarga el proyecto desde GitHub<br>2. Abre la página de extensiones de tu navegador (brave://extensions/ o chrome://extensions/)<br>3. Habilita el \"Modo desarrollador\"<br>4. Haz clic en \"Cargar extensión sin empaquetar\" y selecciona la carpeta de la extensión<br>5. ¡Disfruta de tu experiencia filtrada en Twitter/X!"
+    twitterFilterInstructions: "¿Quieres usarlo ahora? Descarga el proyecto desde GitHub y cárgalo manualmente en tu navegador:<br><br>1. Clona o descarga el proyecto desde GitHub<br>2. Abre la página de extensiones de tu navegador (brave://extensions/ o chrome://extensions/)<br>3. Habilita el \"Modo desarrollador\"<br>4. Haz clic en \"Cargar extensión sin empaquetar\" y selecciona la carpeta de la extensión<br>5. ¡Disfruta de tu experiencia filtrada en Twitter/X!",
+    excelEditorDescription: "Albert AI Excel Editor es un editor avanzado de Excel con integración de OpenAI (se necesita clave API). Esta es una versión alfa y algunas funciones pueden no funcionar como se espera. La aplicación incluye filtros potentes, una interfaz de chat con IA para hacer preguntas específicas sobre tus datos de Excel o aplicar modificaciones automáticas, y resalta todas las celdas editadas por IA para un fácil seguimiento.",
+    excelEditorInstructions: "<strong>Características principales:</strong><br>• Integración con OpenAI para edición de Excel potenciada por IA<br>• Filtros incorporados para manipulación de datos<br>• Interfaz de chat con IA para consultas de datos y modificaciones automáticas<br>• Resalta celdas editadas por IA para fácil seguimiento<br>• Ventana de comparación para ver versiones antiguas vs nuevas<br>• Funcionalidad de deshacer ilimitada<br>• Disponible en inglés, español y catalán<br><br><strong>Nota:</strong> Esta es una versión alfa. Algunas funciones pueden no funcionar como se espera. Necesitarás tu propia clave API de OpenAI para usar la funcionalidad de IA."
   },
   ca: {
     name: "Albert Adroer Prats",
@@ -42,6 +48,7 @@ const translations = {
     <p>Quan no estic programant, gaudeixo de la producció musical, la pintura a l'oli, l'escalada en rocòdrom i el senderisme. Aquestes sortides creatives, igual que les dades, m'ajuden a buscar patrons en coses aparentment desconnectades.</p>`,
     pdfViewer: "Visor PDF ATW",
     twitterFilter: "Filtre X/Twitter",
+    excelEditor: "Editor AI Excel Albert",
     personalProjectsTitle: "Projectes Personals",
     sideProjectsTitle: "Projectes Paral·lels",
     mainGameProjectsTitle: "Principals Projectes de Jocs",
@@ -49,6 +56,8 @@ const translations = {
     sourceCode: "Codi Font (GitHub)",
     pdfDescription: "Albert The Wrench PDF Reader és un visor de PDF ric en funcions i personalitzable construït amb Python que ofereix una interfície intuïtiva combinada amb potents capacitats de gestió de documents. Dissenyat tant per a usuaris ocasionals com per a professionals que necessiten eines eficients de navegació i anotació de PDF.",
     twitterFilterDescription: "Una potent extensió de navegador que filtra tweets segons la ubicació del país, usuaris específics i paraules clau. Pren el control total del teu feed de Twitter/X amagant contingut de països específics, bloquejant usuaris no desitjats i filtrant tweets que continguin certes paraules clau. Característiques inclouen filtrat en temps real, dos modes de visualització (atenuar o eliminar completament), cerca de països i estadístiques detallades.",
-    twitterFilterInstructions: "Vols usar-lo ara? Descarrega el projecte des de GitHub i carrega'l manualment al teu navegador:<br><br>1. Clona o descarrega el projecte des de GitHub<br>2. Obre la pàgina d'extensions del teu navegador (brave://extensions/ o chrome://extensions/)<br>3. Habilita el \"Mode desenvolupador\"<br>4. Fes clic a \"Carregar extensió sense empaquetar\" i selecciona la carpeta de l'extensió<br>5. Gaudiu de la vostra experiència filtrada a Twitter/X!"
+    twitterFilterInstructions: "Vols usar-lo ara? Descarrega el projecte des de GitHub i carrega'l manualment al teu navegador:<br><br>1. Clona o descarrega el projecte des de GitHub<br>2. Obre la pàgina d'extensions del teu navegador (brave://extensions/ o chrome://extensions/)<br>3. Habilita el \"Mode desenvolupador\"<br>4. Fes clic a \"Carregar extensió sense empaquetar\" i selecciona la carpeta de l'extensió<br>5. Gaudiu de la vostra experiència filtrada a Twitter/X!",
+    excelEditorDescription: "Albert AI Excel Editor és un editor avançat d'Excel amb integració d'OpenAI (es necessita clau API). Aquesta és una versió alfa i algunes funcions poden no funcionar com s'espera. L'aplicació inclou filtres potents, una interfície de xat amb IA per fer preguntes específiques sobre les teves dades d'Excel o aplicar modificacions automàtiques, i ressalta totes les cel·les editades per IA per a un fàcil seguiment.",
+    excelEditorInstructions: "<strong>Característiques principals:</strong><br>• Integració amb OpenAI per a edició d'Excel potenciada per IA<br>• Filtres incorporats per a manipulació de dades<br>• Interfície de xat amb IA per a consultes de dades i modificacions automàtiques<br>• Ressalta cel·les editades per IA per a fàcil seguiment<br>• Finestra de comparació per a veure versions antigues vs noves<br>• Funcionalitat de desfer il·limitada<br>• Disponible en anglès, espanyol i català<br><br><strong>Nota:</strong> Aquesta és una versió alfa. Algunes funcions poden no funcionar com s'espera. Necessitaràs la teva pròpia clau API d'OpenAI per a usar la funcionalitat d'IA."
   }
 };

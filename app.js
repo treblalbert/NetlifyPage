@@ -14,6 +14,8 @@ function updateContent(lang) {
   document.getElementById('pdfDescription').innerHTML = trans.pdfDescription;
   document.getElementById('twitterFilterDescription').innerHTML = trans.twitterFilterDescription;
   document.getElementById('twitterFilterInstructions').innerHTML = trans.twitterFilterInstructions;
+  document.getElementById('excelEditorDescription').innerHTML = trans.excelEditorDescription;
+  document.getElementById('excelEditorInstructions').innerHTML = trans.excelEditorInstructions;
   
   // Update all elements with data-i18n
   document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -87,11 +89,18 @@ function initializeEventListeners() {
     openPanel('twitterFilterPanel');
   });
 
+  // Excel Editor Panel Toggle
+  document.getElementById('excelEditorButton').addEventListener('click', function(e) {
+    e.preventDefault();
+    openPanel('excelEditorPanel');
+  });
+
   // Close panels when clicking outside
   document.addEventListener('click', function(e) {
     if (!e.target.closest('.side-panel') && 
         !e.target.closest('#pdfButton') && 
-        !e.target.closest('#twitterFilterButton')) {
+        !e.target.closest('#twitterFilterButton') &&
+        !e.target.closest('#excelEditorButton')) {
       closeAllPanels();
     }
   });
