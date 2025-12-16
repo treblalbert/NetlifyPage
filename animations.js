@@ -1,77 +1,84 @@
-// Animation effects for the glass morphism elements
+// Animation effects for AlbertOS
 (function() {
+  'use strict';
+
+  // Turbulence filter animation for liquid glass effects
   const turb = document.getElementById('turb');
   const turbSmall = document.getElementById('turb-small');
-  const glass = document.getElementById('glass');
-  const distortLayer = document.getElementById('distortLayer');
-
+  
   let t = 0;
 
-  // Continuous animation loop for distortion effects
-  function animate() {
-    t += 0.01;
-    const bf1 = 0.005 + Math.sin(t * 0.9) * 0.002;
-    const bf2 = 0.009 + Math.cos(t * 0.7) * 0.003;
+  function animateTurbulence() {
+    t += 0.008;
     
     if (turb) {
+      const bf1 = 0.005 + Math.sin(t * 0.7) * 0.002;
+      const bf2 = 0.008 + Math.cos(t * 0.5) * 0.003;
       turb.setAttribute('baseFrequency', bf1 + ' ' + bf2);
     }
     
     if (turbSmall) {
-      const smallBf1 = 0.012 + Math.sin(t * 1.3) * 0.004;
-      const smallBf2 = 0.018 + Math.cos(t * 0.9) * 0.004;
+      const smallBf1 = 0.012 + Math.sin(t * 1.1) * 0.003;
+      const smallBf2 = 0.016 + Math.cos(t * 0.8) * 0.003;
       turbSmall.setAttribute('baseFrequency', smallBf1 + ' ' + smallBf2);
     }
     
-    requestAnimationFrame(animate);
+    requestAnimationFrame(animateTurbulence);
   }
 
-  // Start animation
-  requestAnimationFrame(animate);
+  // Start turbulence animation
+  if (turb || turbSmall) {
+    requestAnimationFrame(animateTurbulence);
+  }
 
-  // Mouse movement parallax effect
-  window.addEventListener('mousemove', (e) => {
-    const rect = glass.getBoundingClientRect();
-    const rx = (e.clientX - rect.left) / rect.width;
-    const ry = (e.clientY - rect.top) / rect.height;
-    
-    // Calculate movement offset
-    const moveX = (rx - 0.5) * 30;
-    const moveY = (ry - 0.5) * 20;
-    
-    // Apply parallax to distortion layer
-    distortLayer.style.transform = `translate(${moveX * 0.18}px, ${moveY * 0.18}px)`;
-    
-    // Adjust opacity based on mouse position
-    const op = 0.45 + Math.abs((rx - 0.5)) * 0.14 + Math.abs((ry - 0.5)) * 0.06;
-    distortLayer.style.opacity = op;
-    
-    // Apply 3D rotation effect
-    glass.style.transform = `perspective(800px) rotateX(${(ry - 0.5) * 2}deg) rotateY(${(0.5 - rx) * 2}deg)`;
+  // Parallax effect for wallpaper based on mouse movement
+  let mouseX = 0;
+  let mouseY = 0;
+  let currentX = 0;
+  let currentY = 0;
+
+  document.addEventListener('mousemove', (e) => {
+    mouseX = (e.clientX / window.innerWidth - 0.5) * 20;
+    mouseY = (e.clientY / window.innerHeight - 0.5) * 10;
   });
 
-  // Slower animation for touch devices (performance optimization)
-  if ('ontouchstart' in window) {
-    t = 0;
+  function animateParallax() {
+    // Smooth interpolation
+    currentX += (mouseX - currentX) * 0.05;
+    currentY += (mouseY - currentY) * 0.05;
     
-    function slowAnimate() {
-      t += 0.005;
-      const bf1 = 0.005 + Math.sin(t * 0.5) * 0.001;
-      const bf2 = 0.009 + Math.cos(t * 0.4) * 0.002;
-      
-      if (turb) {
-        turb.setAttribute('baseFrequency', bf1 + ' ' + bf2);
-      }
-      
-      if (turbSmall) {
-        const smallBf1 = 0.012 + Math.sin(t * 0.7) * 0.002;
-        const smallBf2 = 0.018 + Math.cos(t * 0.5) * 0.002;
-        turbSmall.setAttribute('baseFrequency', smallBf1 + ' ' + smallBf2);
-      }
-      
-      setTimeout(() => requestAnimationFrame(slowAnimate), 100);
+    const waves = document.querySelectorAll('.wave');
+    waves.forEach((wave, index) => {
+      const factor = (index + 1) * 0.3;
+      wave.style.transform = `translateX(${currentX * factor}px) translateY(${currentY * factor}px)`;
+    });
+    
+    const gradient = document.querySelector('.wallpaper-gradient');
+    if (gradient) {
+      gradient.style.transform = `translate(${currentX * 0.5}px, ${currentY * 0.5}px)`;
     }
     
-    requestAnimationFrame(slowAnimate);
+    requestAnimationFrame(animateParallax);
   }
+
+  requestAnimationFrame(animateParallax);
+
+  // Reduce motion for users who prefer it
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  
+  if (prefersReducedMotion.matches) {
+    // Disable or slow down animations
+    document.querySelectorAll('.wave').forEach(wave => {
+      wave.style.animationDuration = '60s';
+    });
+  }
+
+  // Touch device optimization
+  if ('ontouchstart' in window) {
+    // Slower animations for better performance on mobile
+    document.querySelectorAll('.wave').forEach(wave => {
+      wave.style.animationDuration = '40s';
+    });
+  }
+
 })();
