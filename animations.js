@@ -37,9 +37,17 @@
   let currentX = 0;
   let currentY = 0;
 
+  // Track global mouse position for window glow effect
+  let globalMouseX = 0;
+  let globalMouseY = 0;
+
   document.addEventListener('mousemove', (e) => {
     mouseX = (e.clientX / window.innerWidth - 0.5) * 20;
     mouseY = (e.clientY / window.innerHeight - 0.5) * 10;
+    
+    // Store global mouse position for window glow tracking
+    globalMouseX = e.clientX;
+    globalMouseY = e.clientY;
   });
 
   function animateParallax() {
@@ -62,6 +70,67 @@
   }
 
   requestAnimationFrame(animateParallax);
+
+  // ==================== WINDOW GLOW MOUSE TRACKING ====================
+  // Smooth glow position tracking for each window
+  const windowGlowState = new Map();
+
+  function updateWindowGlow() {
+    const windows = document.querySelectorAll('.window:not(.maximized):not(.minimized)');
+    
+    windows.forEach(windowEl => {
+      // Get or create state for this window
+      let state = windowGlowState.get(windowEl);
+      if (!state) {
+        state = { currentX: 50, currentY: 50, targetX: 50, targetY: 50 };
+        windowGlowState.set(windowEl, state);
+      }
+      
+      const rect = windowEl.getBoundingClientRect();
+      
+      // Check if mouse is near or over the window (with some padding for the glow)
+      const padding = 100;
+      const isNear = globalMouseX >= rect.left - padding && 
+                     globalMouseX <= rect.right + padding &&
+                     globalMouseY >= rect.top - padding && 
+                     globalMouseY <= rect.bottom + padding;
+      
+      if (isNear) {
+        // Calculate mouse position as percentage relative to window
+        state.targetX = ((globalMouseX - rect.left) / rect.width) * 100;
+        state.targetY = ((globalMouseY - rect.top) / rect.height) * 100;
+        
+        // Clamp values but allow some overflow for edge effects
+        state.targetX = Math.max(-20, Math.min(120, state.targetX));
+        state.targetY = Math.max(-20, Math.min(120, state.targetY));
+      } else {
+        // Slowly return to center when mouse is far away
+        state.targetX = 50;
+        state.targetY = 50;
+      }
+      
+      // Smooth interpolation for glow position
+      const smoothFactor = isNear ? 0.15 : 0.05;
+      state.currentX += (state.targetX - state.currentX) * smoothFactor;
+      state.currentY += (state.targetY - state.currentY) * smoothFactor;
+      
+      // Apply the glow position via CSS custom properties
+      windowEl.style.setProperty('--glow-x', `${state.currentX}%`);
+      windowEl.style.setProperty('--glow-y', `${state.currentY}%`);
+    });
+    
+    // Clean up state for removed windows
+    windowGlowState.forEach((state, windowEl) => {
+      if (!document.body.contains(windowEl)) {
+        windowGlowState.delete(windowEl);
+      }
+    });
+    
+    requestAnimationFrame(updateWindowGlow);
+  }
+
+  // Start window glow animation
+  requestAnimationFrame(updateWindowGlow);
 
   // Reduce motion for users who prefer it
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');

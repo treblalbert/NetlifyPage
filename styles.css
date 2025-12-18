@@ -910,7 +910,7 @@ body.light-theme {
   overflow: visible;
 }
 
-/* Animated Backlight Glow Effect */
+/* Animated Backlight Glow Effect - Mouse Reactive */
 .window::before {
   content: "";
   position: absolute;
@@ -924,17 +924,47 @@ body.light-theme {
   margin: 0 auto;
   transform: scale(0.9);
   filter: blur(40px);
-  background: linear-gradient(270deg, #0fffc1, #7e0fff, #ff6b6b, #0fffc1);
-  background-size: 400% 400%;
+  background: 
+    radial-gradient(
+      ellipse 120% 120% at var(--glow-x, 50%) var(--glow-y, 50%),
+      rgba(255, 255, 255, 0.25) 0%,
+      transparent 50%
+    ),
+    linear-gradient(270deg, #0fffc1, #7e0fff, #ff6b6b, #0fffc1);
+  background-size: 100% 100%, 400% 400%;
   animation: windowGlow 8s ease infinite;
   border-radius: 20px;
   opacity: 0.6;
 }
 
+/* Spotlight highlight layer that follows mouse */
+.window::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  border-radius: 12px;
+  background: radial-gradient(
+    circle 200px at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(255, 255, 255, 0.06) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.window:hover::after {
+  opacity: 1;
+}
+
 @keyframes windowGlow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% { background-position: 50% 50%, 0% 50%; }
+  50% { background-position: 50% 50%, 100% 50%; }
+  100% { background-position: 50% 50%, 0% 50%; }
 }
 
 .window.maximized {
@@ -946,6 +976,10 @@ body.light-theme {
 }
 
 .window.maximized::before {
+  display: none;
+}
+
+.window.maximized::after {
   display: none;
 }
 
@@ -962,6 +996,14 @@ body.light-theme {
 .light-theme .window::before {
   opacity: 0.4;
   filter: blur(50px);
+}
+
+.light-theme .window::after {
+  background: radial-gradient(
+    circle 200px at var(--glow-x, 50%) var(--glow-y, 50%),
+    rgba(100, 150, 255, 0.1) 0%,
+    transparent 60%
+  );
 }
 
 /* Window Title Bar */
