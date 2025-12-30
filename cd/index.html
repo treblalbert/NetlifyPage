@@ -140,8 +140,74 @@
             z-index: 0;
         }
 
+        /* ==================== PASSWORD PAGE ==================== */
+        #passwordPage {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            background: var(--black);
+        }
+
+        .password-input-container {
+            margin-bottom: 2rem;
+        }
+
+        .password-input {
+            width: 300px;
+            padding: 1rem 1.5rem;
+            font-family: 'Josefin Sans', sans-serif;
+            font-size: 1.2rem;
+            background: rgba(26, 26, 26, 0.9);
+            border: 2px solid var(--gold);
+            color: var(--gold-light);
+            text-align: center;
+            letter-spacing: 0.2rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .password-input::placeholder {
+            color: var(--gold-dark);
+            opacity: 0.5;
+        }
+
+        .password-input:focus {
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .password-input.error {
+            border-color: #ff4444;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+
+        .password-error-msg {
+            color: #ff6666;
+            font-size: 1rem;
+            margin-top: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .password-error-msg.visible {
+            opacity: 1;
+        }
+
         /* ==================== START PAGE ==================== */
         #startPage {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -1098,6 +1164,41 @@
         </div>
     </div>
 
+    <!-- PASSWORD PAGE -->
+    <div id="passwordPage">
+        <div class="welcome-text">ACCÉS RESTRINGIT</div>
+        
+        <div class="deco-divider">
+            <svg viewBox="0 0 300 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <line x1="0" y1="15" x2="100" y2="15" stroke="#D4AF37" stroke-width="2"/>
+                <line x1="200" y1="15" x2="300" y2="15" stroke="#D4AF37" stroke-width="2"/>
+                <polygon points="150,5 160,15 150,25 140,15" fill="#D4AF37"/>
+                <circle cx="120" cy="15" r="3" fill="#D4AF37"/>
+                <circle cx="180" cy="15" r="3" fill="#D4AF37"/>
+            </svg>
+        </div>
+        
+        <div class="logo-container">
+            <img src="cd.png" alt="Operación Hormiguero de la Suerte" onerror="this.style.display='none'">
+        </div>
+
+        <div class="password-input-container">
+            <input type="password" 
+                   id="passwordInput" 
+                   class="password-input" 
+                   placeholder="Contrasenya..."
+                   onkeypress="if(event.key === 'Enter') checkPassword()">
+        </div>
+
+        <button class="start-btn" onclick="checkPassword()">ENTRAR</button>
+        
+        <div style="margin-top: 2rem;">
+            <button class="start-btn" onclick="playTrailer()" style="font-size: 1.5rem; padding: 1rem 3rem;">🎬 TRAILER</button>
+        </div>
+
+        <p class="password-error-msg" id="passwordError">Contrasenya incorrecta!</p>
+    </div>
+
     <!-- START PAGE -->
     <div id="startPage">
         <div class="welcome-text">BENVINGUTS</div>
@@ -1173,10 +1274,10 @@
             <div class="help-section">
                 <h3>Música</h3>
                 <ul>
-                    <li><span class="key-badge">1</span> - Intro (musica1.mp3)</li>
-                    <li><span class="key-badge">2</span> - Tema Principal (musica2.mp3)</li>
-                    <li><span class="key-badge">3</span> - Tema Curt (musica3.mp3)</li>
-                    <li><span class="key-badge">4</span> - Intriga (musica4.mp3)</li>
+                    <li><span class="key-badge">1</span> - Tema Principal (musica1.mp3)</li>
+                    <li><span class="key-badge">2</span> - Tema D'intriga (musica2.mp3)</li>
+                    <li><span class="key-badge">3</span> - Aplausos (musica3.mp3)</li>
+                    <li><span class="key-badge">4</span> - Abucheos (musica4.mp3)</li>
                 </ul>
             </div>
 
@@ -1189,6 +1290,7 @@
                     <li><span class="key-badge">R</span> - Publicitat 4 (publi4.jpg)</li>
                     <li><span class="key-badge">T</span> - Publicitat 5 (publi5.jpg)</li>
                     <li><span class="key-badge">Y</span> - Publicitat 6 (publi6.jpg)</li>
+                    <li><span class="key-badge">P</span> - Publicitat aleatòria (1-6)</li>
                 </ul>
             </div>
 
@@ -1313,6 +1415,51 @@
         let scores = {};
         let currentMedia = null;
         let selectedSong = null;
+        let passwordAttempts = 0;
+        const SECRET_PASSWORD = 'pingus1234*';
+
+        // Play trailer from password page
+        function playTrailer() {
+            const overlay = document.getElementById('mediaOverlay');
+            const video = document.getElementById('videoPlayer');
+            const image = document.getElementById('imageViewer');
+            
+            image.style.display = 'none';
+            video.style.display = 'block';
+            video.src = 'trailer.mp4';
+            overlay.classList.add('active');
+            video.play();
+            currentMedia = 'video';
+        }
+
+        // Check password
+        function checkPassword() {
+            const input = document.getElementById('passwordInput');
+            const errorMsg = document.getElementById('passwordError');
+            const attemptsMsg = document.getElementById('passwordAttempts');
+            
+            passwordAttempts++;
+            
+            if (input.value === SECRET_PASSWORD) {
+                input.classList.remove('error');
+                input.classList.add('success');
+                
+                // Celebrate!
+                setTimeout(() => {
+                    document.getElementById('passwordPage').style.display = 'none';
+                    document.getElementById('startPage').style.display = 'flex';
+                }, 500);
+            } else {
+                input.classList.add('error');
+                errorMsg.textContent = '🚫 Contrasenya incorrecta!';
+                errorMsg.classList.add('visible');
+                
+                setTimeout(() => {
+                    input.classList.remove('error');
+                    errorMsg.classList.remove('visible');
+                }, 2000);
+            }
+        }
 
         // Initialize
         function init() {
@@ -1692,6 +1839,7 @@
                 if (key === 'r') showImage('publi4.jpg');
                 if (key === 't') showImage('publi5.jpg');
                 if (key === 'y') showImage('publi6.jpg');
+                if (key === 'p') showImage('publi' + (Math.floor(Math.random() * 6) + 1) + '.jpg');
             });
         }
 
