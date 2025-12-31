@@ -140,8 +140,8 @@
             z-index: 0;
         }
 
-        /* ==================== PASSWORD PAGE ==================== */
-        #passwordPage {
+        /* ==================== ENTRY PAGE (sense contrasenya) ==================== */
+        #entryPage {
             position: fixed;
             top: 0;
             left: 0;
@@ -153,56 +153,6 @@
             align-items: center;
             z-index: 200;
             background: var(--black);
-        }
-
-        .password-input-container {
-            margin-bottom: 2rem;
-        }
-
-        .password-input {
-            width: 300px;
-            padding: 1rem 1.5rem;
-            font-family: 'Josefin Sans', sans-serif;
-            font-size: 1.2rem;
-            background: rgba(26, 26, 26, 0.9);
-            border: 2px solid var(--gold);
-            color: var(--gold-light);
-            text-align: center;
-            letter-spacing: 0.2rem;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .password-input::placeholder {
-            color: var(--gold-dark);
-            opacity: 0.5;
-        }
-
-        .password-input:focus {
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-        }
-
-        .password-input.error {
-            border-color: #ff4444;
-            animation: shake 0.5s ease;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-10px); }
-            40%, 80% { transform: translateX(10px); }
-        }
-
-        .password-error-msg {
-            color: #ff6666;
-            font-size: 1rem;
-            margin-top: 1.5rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .password-error-msg.visible {
-            opacity: 1;
         }
 
         /* ==================== START PAGE ==================== */
@@ -1164,9 +1114,9 @@
         </div>
     </div>
 
-    <!-- PASSWORD PAGE -->
-    <div id="passwordPage">
-        <div class="welcome-text">ACCÉS RESTRINGIT</div>
+    <!-- ENTRY PAGE (sense contrasenya) -->
+    <div id="entryPage">
+        <div class="welcome-text">BENVINGUTS</div>
         
         <div class="deco-divider">
             <svg viewBox="0 0 300 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1179,24 +1129,16 @@
         </div>
         
         <div class="logo-container">
-            <img src="cd.png" alt="Operación Hormiguero de la Suerte" onerror="this.style.display='none'">
+            <!-- LOGO ENTRADA: logo_entrada.png -->
+            <img src="logo_entrada.png" alt="Operación Hormiguero de la Suerte" onerror="this.style.display='none'">
         </div>
 
-        <div class="password-input-container">
-            <input type="password" 
-                   id="passwordInput" 
-                   class="password-input" 
-                   placeholder="Contrasenya..."
-                   onkeypress="if(event.key === 'Enter') checkPassword()">
-        </div>
-
-        <button class="start-btn" onclick="checkPassword()">ENTRAR</button>
+        <button class="start-btn" onclick="enterApp()">ENTRAR</button>
         
-        <div style="margin-top: 2rem;">
+        <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
             <button class="start-btn" onclick="playTrailer()" style="font-size: 1.5rem; padding: 1rem 3rem;">🎬 TRAILER</button>
+            <button class="start-btn" onclick="playPresentacio()" style="font-size: 1.5rem; padding: 1rem 3rem;">📺 PRESENTACIÓ</button>
         </div>
-
-        <p class="password-error-msg" id="passwordError">Contrasenya incorrecta!</p>
     </div>
 
     <!-- START PAGE -->
@@ -1214,7 +1156,8 @@
         </div>
         
         <div class="logo-container">
-            <img src="cd.png" alt="Operación Hormiguero de la Suerte" onerror="this.style.display='none'">
+            <!-- LOGO INTERIOR: logo.png -->
+            <img src="logo.png" alt="Operación Hormiguero de la Suerte" onerror="this.style.display='none'">
         </div>
         
         <button class="start-btn" onclick="startGame()">START</button>
@@ -1223,7 +1166,8 @@
     <!-- MAIN PAGE -->
     <div id="mainPage">
         <div class="header">
-            <img src="cd.png" alt="Logo" class="header-logo" onerror="this.style.display='none'">
+            <!-- LOGO INTERIOR: logo.png -->
+            <img src="logo.png" alt="Logo" class="header-logo" onerror="this.style.display='none'">
             <h1 class="title">OPERACIÓN HORMIGUERO DE LA SUERTE</h1>
         </div>
 
@@ -1415,10 +1359,8 @@
         let scores = {};
         let currentMedia = null;
         let selectedSong = null;
-        let passwordAttempts = 0;
-        const SECRET_PASSWORD = 'pingus1234*';
 
-        // Play trailer from password page
+        // Play trailer from entry page (intro.mp4)
         function playTrailer() {
             const overlay = document.getElementById('mediaOverlay');
             const video = document.getElementById('videoPlayer');
@@ -1426,39 +1368,32 @@
             
             image.style.display = 'none';
             video.style.display = 'block';
-            video.src = 'trailer.mp4';
+            // TRAILER: intro.mp4
+            video.src = 'intro.mp4';
             overlay.classList.add('active');
             video.play();
             currentMedia = 'video';
         }
 
-        // Check password
-        function checkPassword() {
-            const input = document.getElementById('passwordInput');
-            const errorMsg = document.getElementById('passwordError');
-            const attemptsMsg = document.getElementById('passwordAttempts');
+        // Play presentació from entry page (invitacio.mp4)
+        function playPresentacio() {
+            const overlay = document.getElementById('mediaOverlay');
+            const video = document.getElementById('videoPlayer');
+            const image = document.getElementById('imageViewer');
             
-            passwordAttempts++;
-            
-            if (input.value === SECRET_PASSWORD) {
-                input.classList.remove('error');
-                input.classList.add('success');
-                
-                // Celebrate!
-                setTimeout(() => {
-                    document.getElementById('passwordPage').style.display = 'none';
-                    document.getElementById('startPage').style.display = 'flex';
-                }, 500);
-            } else {
-                input.classList.add('error');
-                errorMsg.textContent = '🚫 Contrasenya incorrecta!';
-                errorMsg.classList.add('visible');
-                
-                setTimeout(() => {
-                    input.classList.remove('error');
-                    errorMsg.classList.remove('visible');
-                }, 2000);
-            }
+            image.style.display = 'none';
+            video.style.display = 'block';
+            // PRESENTACIÓ: invitacio.mp4
+            video.src = 'invitacio.mp4';
+            overlay.classList.add('active');
+            video.play();
+            currentMedia = 'video';
+        }
+
+        // Enter app (sense contrasenya)
+        function enterApp() {
+            document.getElementById('entryPage').style.display = 'none';
+            document.getElementById('startPage').style.display = 'flex';
         }
 
         // Initialize
