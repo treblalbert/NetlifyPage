@@ -1360,7 +1360,7 @@
         let currentMedia = null;
         let selectedSong = null;
 
-        // Play trailer from entry page (intro.mp4)
+        // Play trailer from entry page (invitacio.mp4)
         function playTrailer() {
             const overlay = document.getElementById('mediaOverlay');
             const video = document.getElementById('videoPlayer');
@@ -1368,14 +1368,14 @@
             
             image.style.display = 'none';
             video.style.display = 'block';
-            // TRAILER: intro.mp4
-            video.src = 'intro.mp4';
+            // TRAILER: invitacio.mp4
+            video.src = 'invitacio.mp4';
             overlay.classList.add('active');
             video.play();
             currentMedia = 'video';
         }
 
-        // Play presentació from entry page (invitacio.mp4)
+        // Play presentació from entry page (intro.mp4)
         function playPresentacio() {
             const overlay = document.getElementById('mediaOverlay');
             const video = document.getElementById('videoPlayer');
@@ -1383,8 +1383,8 @@
             
             image.style.display = 'none';
             video.style.display = 'block';
-            // PRESENTACIÓ: invitacio.mp4
-            video.src = 'invitacio.mp4';
+            // PRESENTACIÓ: intro.mp4
+            video.src = 'intro.mp4';
             overlay.classList.add('active');
             video.play();
             currentMedia = 'video';
