@@ -3,265 +3,214 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pingus Archive | Official</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>PINGUS ARCHIVE 🐧</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #050505;
-            --surface: #121212;
-            --accent: #00f2ff;
-            --glass: rgba(255, 255, 255, 0.05);
-            --text: #ffffff;
-        }
-
-        * { box-sizing: border-box; }
-
         body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg);
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 242, 255, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(0, 242, 255, 0.05) 0%, transparent 20%);
-            color: var(--text);
+            background: #111;
+            color: white;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
-            line-height: 1.6;
+            padding: 0;
         }
 
-        /* HEADER */
+        /* HEADER AMB CANYA */
         header {
-            height: 40vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            padding: 40px 20px;
             text-align: center;
-            background: linear-gradient(to bottom, transparent, var(--bg));
+            background: linear-gradient(135deg, #ff0055 0%, #7000ff 100%);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
 
         h1 {
-            font-size: clamp(3rem, 10vw, 5rem);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5rem;
             margin: 0;
-            font-weight: 700;
+            text-transform: uppercase;
             letter-spacing: -2px;
-            background: linear-gradient(to right, #fff, var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.3));
+            text-shadow: 3px 3px 0px #000;
         }
 
-        .counter {
-            background: var(--glass);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            border: 1px solid rgba(255,255,255,0.1);
-            color: var(--accent);
+        .stats {
             margin-top: 10px;
+            font-weight: 600;
+            background: rgba(0,0,0,0.3);
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.9rem;
         }
 
-        /* GALLERY GRID */
+        /* EL "FEED" ESTIL INSTA/TIKTOK */
         .container {
-            max-width: 1400px;
-            margin: -50px auto 100px;
-            padding: 0 20px;
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 15px;
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
         }
 
-        /* CARD DESIGN */
         .card {
-            background: var(--surface);
-            border-radius: 24px;
+            background: #222;
+            border-radius: 12px;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            border: 2px solid #333;
         }
 
         .card:hover {
-            transform: scale(1.03) translateY(-10px);
-            border-color: var(--accent);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 242, 255, 0.1);
+            transform: scale(1.02);
+            border-color: #ff0055;
         }
 
-        .media-wrapper {
-            aspect-ratio: 16 / 10;
-            overflow: hidden;
+        .media-container {
             position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1; /* Tot quadrat com a l'Insta, queda més net */
             background: #000;
         }
 
-        .media-wrapper img, .media-wrapper video {
+        .media-container img, .media-container video {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.5s ease;
         }
 
-        .card:hover .media-wrapper img { transform: scale(1.1); }
-
-        .play-hint {
+        /* Etiqueta de vídeo */
+        .video-badge {
             position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.5);
-            width: 50px; height: 50px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; transition: 0.3s;
-            pointer-events: none;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 1.2rem;
         }
 
-        .card:hover .play-hint { opacity: 1; }
-
-        .content-info {
-            padding: 20px;
-            background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));
+        .info {
+            padding: 12px;
         }
 
-        .content-info h3 {
-            margin: 0; font-size: 1.25rem; font-weight: 600;
+        .info h3 {
+            margin: 0;
+            font-size: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .footer-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 15px;
+        .info .date {
             font-size: 0.8rem;
-            color: #777;
+            color: #888;
+            margin-top: 5px;
+            display: block;
         }
 
-        .date-badge {
-            background: rgba(255,255,255,0.05);
-            padding: 4px 10px;
-            border-radius: 8px;
-            color: #ccc;
-        }
-
-        /* LIGHTBOX / MODAL */
-        #lightbox {
+        /* MODAL PER VEURE-HO GRAN */
+        #modal {
             display: none;
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top:0; left:0; width:100%; height:100%;
             background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(10px);
-            z-index: 10000;
+            z-index: 999;
             justify-content: center;
             align-items: center;
-            padding: 40px;
         }
 
-        #lightbox-content {
-            max-width: 100%;
+        #modal-content {
+            max-width: 95%;
             max-height: 90vh;
-            border-radius: 15px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
         }
 
-        .close-view {
+        .close {
             position: absolute;
-            top: 30px; right: 30px;
-            font-size: 35px; color: white; cursor: pointer;
-            width: 50px; height: 50px;
-            background: var(--glass);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
+            top: 20px; right: 20px;
+            font-size: 40px; color: white; cursor: pointer;
+            z-index: 1000;
         }
 
-        /* SCROLLBAR */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-
+        /* Per mòbils, que es vegi 2 columnes */
+        @media (max-width: 500px) {
+            .grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            h1 { font-size: 2rem; }
+            .info h3 { font-size: 0.8rem; }
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>PINGUS ARCHIVE</h1>
-    <div class="counter" id="item-count">0 ELEMENTS</div>
+    <h1>PINGUS 🐧</h1>
+    <div class="stats" id="total">0 RECORDS</div>
 </header>
 
 <div class="container">
-    <div class="grid" id="gallery">
-        </div>
+    <div class="grid" id="gallery"></div>
 </div>
 
-<div id="lightbox" onclick="closeLightbox()">
-    <span class="close-view">&times;</span>
-    <div id="inner-content" onclick="event.stopPropagation()"></div>
+<div id="modal" onclick="tancar()">
+    <span class="close">&times;</span>
+    <div id="modal-content" onclick="event.stopPropagation()"></div>
 </div>
 
 <script>
-    function parseDate(d) {
+    // Funció per convertir la data DD-MM-AAAA
+    function formatData(d) {
         const p = d.split('-');
-        return new Date(p[2], p[1] - 1, p[0]);
+        return new Date(p[2], p[1]-1, p[0]);
     }
 
-    async function init() {
-        try {
-            const res = await fetch('dades.json');
-            let data = await res.json();
-            
-            // Update counter
-            document.getElementById('item-count').innerText = `${data.length} RECORDS`;
+    async function carregar() {
+        const res = await fetch('dades.json');
+        let dades = await res.json();
+        
+        document.getElementById('total').innerText = dades.length + " MOMENTS";
 
-            // Sort dates
-            data.sort((a, b) => parseDate(b.data) - parseDate(a.data));
+        // Ordenar per data (novetats primer)
+        dades.sort((a,b) => formatData(b.data) - formatData(a.data));
 
-            const gallery = document.getElementById('gallery');
-            gallery.innerHTML = data.map(item => {
-                const isVid = item.tipus === 'video' || item.arxiu.match(/\.(mp4|mov|webm)$/i);
-                
-                return `
-                <div class="card" onclick="openLightbox('${item.arxiu}', '${isVid ? 'v' : 'i'}')">
-                    <div class="media-wrapper">
-                        ${isVid 
-                            ? `<div class="play-hint">▶</div><video src="${item.arxiu}" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>` 
+        const gallery = document.getElementById('gallery');
+        gallery.innerHTML = dades.map(item => {
+            const esVideo = item.tipus === 'video' || item.arxiu.match(/\.(mp4|mov|webm)$/i);
+            return `
+                <div class="card" onclick="obrir('${item.arxiu}', '${esVideo ? 'v' : 'i'}')">
+                    <div class="media-container">
+                        ${esVideo ? '<div class="video-badge">▶️</div>' : ''}
+                        ${esVideo 
+                            ? `<video src="${item.arxiu}" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>` 
                             : `<img src="${item.arxiu}" loading="lazy">`
                         }
                     </div>
-                    <div class="content-info">
+                    <div class="info">
                         <h3>${item.titol}</h3>
-                        <div class="footer-card">
-                            <span class="date-badge">${item.data}</span>
-                            <span style="text-transform: uppercase; letter-spacing: 1px;">${isVid ? '🎬 Video' : '📸 Foto'}</span>
-                        </div>
+                        <span class="date">${item.data}</span>
                     </div>
                 </div>
-                `;
-            }).join('');
-
-        } catch (e) {
-            console.error(e);
-        }
+            `;
+        }).join('');
     }
 
-    function openLightbox(url, type) {
-        const lb = document.getElementById('lightbox');
-        const inner = document.getElementById('inner-content');
-        lb.style.display = 'flex';
-        
-        if(type === 'v') {
-            inner.innerHTML = `<video src="${url}" controls autoplay id="lightbox-content"></video>`;
-        } else {
-            inner.innerHTML = `<img src="${url}" id="lightbox-content">`;
-        }
+    function obrir(url, tipus) {
+        const m = document.getElementById('modal');
+        const c = document.getElementById('modal-content');
+        m.style.display = 'flex';
+        c.innerHTML = tipus === 'v' 
+            ? `<video src="${url}" controls autoplay style="max-width:100%; max-height:85vh;"></video>`
+            : `<img src="${url}" style="max-width:100%; max-height:85vh;">`;
     }
 
-    function closeLightbox() {
-        const lb = document.getElementById('lightbox');
-        document.getElementById('inner-content').innerHTML = '';
-        lb.style.display = 'none';
+    function tancar() {
+        document.getElementById('modal').style.display = 'none';
+        document.getElementById('modal-content').innerHTML = '';
     }
 
-    init();
+    carregar();
 </script>
 
 </body>
