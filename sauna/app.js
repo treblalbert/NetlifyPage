@@ -20,6 +20,11 @@ let insulationPanelsCount = 0;
 
 let updateTimeout = null;
 
+// Measurement system
+let measurementsEnabled = false;
+let measurementLabels = [];
+let measurementGroup = null;
+
 // Insulation colors
 const insulationColors = {
     rockwool: 0xFFD700,
@@ -617,6 +622,11 @@ function generateSauna(keepCamera = false) {
 
     // Show window hole size discrepancies
     showWindowHoleSizes();
+    
+    // Regenerate measurements if enabled
+    if (measurementsEnabled) {
+        generateMeasurements();
+    }
 
     orbitTarget.set(0, saunaHeight / 2, 0);
     
@@ -1628,9 +1638,281 @@ function resetCamera() {
     document.querySelector('.view-btn').classList.add('active');
 }
 
+// ===== Measurement System =====
+function toggleMeasurements() {
+    measurementsEnabled = !measurementsEnabled;
+    const btn = document.getElementById('measureBtn');
+    btn.classList.toggle('active', measurementsEnabled);
+    
+    if (measurementsEnabled) {
+        generateMeasurements();
+    } else {
+        clearMeasurements();
+    }
+}
+
+function clearMeasurements() {
+    if (measurementGroup) {
+        scene.remove(measurementGroup);
+        measurementGroup.traverse((child) => {
+            if (child.geometry) child.geometry.dispose();
+            if (child.material) {
+                if (child.material.map) child.material.map.dispose();
+                child.material.dispose();
+            }
+        });
+        measurementGroup = null;
+    }
+    measurementLabels = [];
+}
+
+function createTextSprite(text, fontSize = 48, color = '#ffffff', bgColor = 'rgba(44, 36, 22, 0.85)') {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    
+    // Set canvas size based on text
+    context.font = `bold ${fontSize}px Arial`;
+    const metrics = context.measureText(text);
+    const textWidth = metrics.width;
+    const textHeight = fontSize;
+    
+    const padding = 12;
+    canvas.width = textWidth + padding * 2;
+    canvas.height = textHeight + padding * 2;
+    
+    // Background
+    context.fillStyle = bgColor;
+    context.roundRect(0, 0, canvas.width, canvas.height, 6);
+    context.fill();
+    
+    // Border
+    context.strokeStyle = 'rgba(212, 165, 116, 0.6)';
+    context.lineWidth = 2;
+    context.roundRect(0, 0, canvas.width, canvas.height, 6);
+    context.stroke();
+    
+    // Text
+    context.font = `bold ${fontSize}px Arial`;
+    context.fillStyle = color;
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText(text, canvas.width / 2, canvas.height / 2);
+    
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.minFilter = THREE.LinearFilter;
+    
+    const spriteMaterial = new THREE.SpriteMaterial({ 
+        map: texture,
+        transparent: true,
+        depthTest: false,
+        depthWrite: false
+    });
+    
+    const sprite = new THREE.Sprite(spriteMaterial);
+    
+    // Scale sprite based on canvas aspect ratio
+    const aspectRatio = canvas.width / canvas.height;
+    const baseScale = 0.15;
+    sprite.scale.set(baseScale * aspectRatio, baseScale, 1);
+    
+    return sprite;
+}
+
+function generateMeasurements() {
+    clearMeasurements();
+    
+    measurementGroup = new THREE.Group();
+    scene.add(measurementGroup);
+    
+    const saunaWidth = parseFloat(document.getElementById('width').value) || 2.5;
+    const saunaLength = parseFloat(document.getElementById('length').value) || 3;
+    const saunaHeight = parseFloat(document.getElementById('height').value) || 2.2;
+    const plankWidth = (parseFloat(document.getElementById('plankWidth').value) || 10) / 100;
+    const plankThickness = (parseFloat(document.getElementById('plankThickness').value) || 2) / 100;
+    const roofType = document.getElementById('roofType').value;
+    const roofHeight = parseFloat(document.getElementById('roofHeight').value) || 0.6;
+    const roofDirection = document.getElementById('roofDirection').value || 'left-right';
+    
+    const doorWidth = parseFloat(document.getElementById('doorWidth').value) || 0.8;
+    const doorHeight = parseFloat(document.getElementById('doorHeight').value) || 1.9;
+    const doorWall = document.getElementById('doorWall').value;
+    const doorPosition = (parseFloat(document.getElementById('doorPosition').value) || 50) / 100;
+    
+    const gap = 0.002;
+    
+    const windows = {
+        front: getWindowConfig('Front'),
+        back: getWindowConfig('Back'),
+        left: getWindowConfig('Left'),
+        right: getWindowConfig('Right')
+    };
+    
+    // Calculate wall heights for shed roofs
+    const wallHeights = calculateWallHeights(saunaWidth, saunaLength, saunaHeight, roofHeight, roofType, roofDirection);
+    
+    // Generate measurements for each wall
+    generateWallMeasurements('front', saunaWidth, wallHeights.front, saunaLength, plankWidth, plankThickness, gap,
+        doorWall === 'front' ? { width: doorWidth, height: doorHeight, position: doorPosition } : null,
+        windows.front);
+    
+    generateWallMeasurements('back', saunaWidth, wallHeights.back, saunaLength, plankWidth, plankThickness, gap,
+        doorWall === 'back' ? { width: doorWidth, height: doorHeight, position: doorPosition } : null,
+        windows.back);
+    
+    generateWallMeasurements('left', saunaLength, wallHeights.left, saunaWidth, plankWidth, plankThickness, gap,
+        doorWall === 'left' ? { width: doorWidth, height: doorHeight, position: doorPosition } : null,
+        windows.left);
+    
+    generateWallMeasurements('right', saunaLength, wallHeights.right, saunaWidth, plankWidth, plankThickness, gap,
+        doorWall === 'right' ? { width: doorWidth, height: doorHeight, position: doorPosition } : null,
+        windows.right);
+    
+    // Add overall dimension labels
+    addOverallDimensions(saunaWidth, saunaLength, saunaHeight, roofHeight, roofType);
+}
+
+function generateWallMeasurements(side, wallWidth, wallHeight, depth, plankWidth, plankThickness, gap, door, window) {
+    const planksNeeded = Math.ceil(wallHeight / (plankWidth + gap));
+    const labelOffset = 0.08; // Offset from wall surface
+    
+    for (let i = 0; i < planksNeeded; i++) {
+        const y = i * (plankWidth + gap) + plankWidth / 2;
+        if (y > wallHeight) break;
+        
+        const plankBottom = y - plankWidth / 2;
+        const plankTop = y + plankWidth / 2;
+        
+        let segments = [{ start: 0, end: wallWidth }];
+        
+        if (door) {
+            const doorCenter = wallWidth * door.position;
+            const doorLeft = doorCenter - door.width / 2;
+            const doorRight = doorCenter + door.width / 2;
+            if (plankTop <= door.height) {
+                segments = cutSegment(segments, doorLeft, doorRight);
+            }
+        }
+        
+        if (window) {
+            const winCenter = wallWidth * window.position;
+            const winLeft = winCenter - window.width / 2;
+            const winRight = winCenter + window.width / 2;
+            const winBottom = window.y;
+            const winTop = window.y + window.height;
+            if (plankBottom < winTop && plankTop > winBottom) {
+                segments = cutSegment(segments, winLeft, winRight);
+            }
+        }
+        
+        // Create labels for each segment
+        segments.forEach((seg, segIndex) => {
+            const segWidth = seg.end - seg.start;
+            if (segWidth < 0.05) return;
+            
+            const lengthCm = Math.round(segWidth * 100);
+            const centerX = seg.start + segWidth / 2 - wallWidth / 2;
+            
+            // Create label showing length
+            const label = createTextSprite(`${lengthCm}cm`, 36);
+            
+            // Position based on wall side
+            switch(side) {
+                case 'front':
+                    label.position.set(centerX, y, -depth/2 - labelOffset);
+                    break;
+                case 'back':
+                    label.position.set(-centerX, y, depth/2 + labelOffset);
+                    break;
+                case 'left':
+                    label.position.set(-depth/2 - labelOffset, y, -centerX);
+                    break;
+                case 'right':
+                    label.position.set(depth/2 + labelOffset, y, centerX);
+                    break;
+            }
+            
+            // Store wall info for visibility culling
+            label.userData = { wall: side, row: i, segment: segIndex };
+            measurementLabels.push(label);
+            measurementGroup.add(label);
+        });
+    }
+}
+
+function addOverallDimensions(width, length, height, roofHeight, roofType) {
+    const offset = 0.5;
+    
+    // Width dimension (bottom, front)
+    const widthLabel = createTextSprite(`Width: ${(width * 100).toFixed(0)}cm`, 42, '#4ade80', 'rgba(0, 50, 0, 0.85)');
+    widthLabel.position.set(0, -0.15, -length/2 - offset);
+    widthLabel.userData = { type: 'dimension', axis: 'width' };
+    measurementLabels.push(widthLabel);
+    measurementGroup.add(widthLabel);
+    
+    // Length dimension (bottom, side)
+    const lengthLabel = createTextSprite(`Length: ${(length * 100).toFixed(0)}cm`, 42, '#4ade80', 'rgba(0, 50, 0, 0.85)');
+    lengthLabel.position.set(-width/2 - offset, -0.15, 0);
+    lengthLabel.userData = { type: 'dimension', axis: 'length' };
+    measurementLabels.push(lengthLabel);
+    measurementGroup.add(lengthLabel);
+    
+    // Height dimension (corner)
+    const totalHeight = roofType === 'flat' ? height : height + roofHeight;
+    const heightLabel = createTextSprite(`Height: ${(height * 100).toFixed(0)}cm`, 42, '#4ade80', 'rgba(0, 50, 0, 0.85)');
+    heightLabel.position.set(-width/2 - offset, height/2, -length/2 - offset);
+    heightLabel.userData = { type: 'dimension', axis: 'height' };
+    measurementLabels.push(heightLabel);
+    measurementGroup.add(heightLabel);
+    
+    // Roof height if applicable
+    if (roofType !== 'flat') {
+        const roofLabel = createTextSprite(`Roof: ${(roofHeight * 100).toFixed(0)}cm`, 42, '#f59e0b', 'rgba(50, 30, 0, 0.85)');
+        roofLabel.position.set(0, height + roofHeight/2, -length/2 - offset);
+        roofLabel.userData = { type: 'dimension', axis: 'roof' };
+        measurementLabels.push(roofLabel);
+        measurementGroup.add(roofLabel);
+    }
+}
+
+function updateMeasurementVisibility() {
+    if (!measurementsEnabled || !measurementGroup) return;
+    
+    const cameraDir = new THREE.Vector3();
+    camera.getWorldDirection(cameraDir);
+    
+    // Wall normals
+    const wallNormals = {
+        front: new THREE.Vector3(0, 0, -1),
+        back: new THREE.Vector3(0, 0, 1),
+        left: new THREE.Vector3(-1, 0, 0),
+        right: new THREE.Vector3(1, 0, 0)
+    };
+    
+    measurementLabels.forEach(label => {
+        if (label.userData.type === 'dimension') {
+            // Always show dimension labels
+            label.visible = true;
+            return;
+        }
+        
+        const wall = label.userData.wall;
+        if (wall && wallNormals[wall]) {
+            // Show label if camera is facing the wall (dot product < 0 means facing)
+            const dot = cameraDir.dot(wallNormals[wall]);
+            label.visible = dot < 0.1; // Show if mostly facing the wall
+        }
+    });
+}
+
 // ===== Animation Loop =====
 function animate() {
     requestAnimationFrame(animate);
+    
+    // Update measurement visibility based on camera angle
+    if (measurementsEnabled) {
+        updateMeasurementVisibility();
+    }
+    
     renderer.render(scene, camera);
 }
 
