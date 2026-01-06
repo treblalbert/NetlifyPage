@@ -3,256 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pingus Archive</title>
+    <title>Pingus Archive | Official</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        /* CONFIGURACIÓ VISUAL */
         :root {
-            --bg: #0f0f0f;
-            --card-bg: #1a1a1a;
-            --text-principal: #ffffff;
-            --text-secundari: #aaaaaa;
-            --accent: #00d1ff; /* Blau Pingüí */
+            --bg: #050505;
+            --surface: #121212;
+            --accent: #00f2ff;
+            --glass: rgba(255, 255, 255, 0.05);
+            --text: #ffffff;
         }
+
+        * { box-sizing: border-box; }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Outfit', sans-serif;
             background-color: var(--bg);
-            color: var(--text-principal);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 242, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 242, 255, 0.05) 0%, transparent 20%);
+            color: var(--text);
             margin: 0;
-            padding: 0;
+            line-height: 1.6;
         }
 
+        /* HEADER */
         header {
+            height: 40vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
-            padding: 60px 20px;
-            background: linear-gradient(to bottom, #1a1a1a, #0f0f0f);
+            background: linear-gradient(to bottom, transparent, var(--bg));
         }
 
         h1 {
+            font-size: clamp(3rem, 10vw, 5rem);
             margin: 0;
-            font-size: 3rem;
-            letter-spacing: -1px;
+            font-weight: 700;
+            letter-spacing: -2px;
+            background: linear-gradient(to right, #fff, var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.3));
+        }
+
+        .counter {
+            background: var(--glass);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255,255,255,0.1);
             color: var(--accent);
-            text-transform: uppercase;
-        }
-
-        p.subtitle {
-            color: var(--text-secundari);
             margin-top: 10px;
-            font-size: 1.1rem;
         }
 
-        /* QUADRÍCULA DE CONTINGUT */
+        /* GALLERY GRID */
         .container {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 20px;
+            max-width: 1400px;
+            margin: -50px auto 100px;
+            padding: 0 20px;
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
         }
 
-        /* TARGETES */
+        /* CARD DESIGN */
         .card {
-            background: var(--card-bg);
-            border-radius: 15px;
+            background: var(--surface);
+            border-radius: 24px;
             overflow: hidden;
-            transition: all 0.3s ease;
-            border: 1px solid #333;
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            border-color: var(--accent);
-            box-shadow: 0 10px 30px rgba(0, 209, 255, 0.2);
-        }
-
-        .media-box {
-            width: 100%;
-            height: 220px;
-            background: #000;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
         }
 
-        .media-box img, .media-box video {
+        .card:hover {
+            transform: scale(1.03) translateY(-10px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 242, 255, 0.1);
+        }
+
+        .media-wrapper {
+            aspect-ratio: 16 / 10;
+            overflow: hidden;
+            position: relative;
+            background: #000;
+        }
+
+        .media-wrapper img, .media-wrapper video {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            cursor: pointer;
+            transition: transform 0.5s ease;
         }
 
-        .card-info {
+        .card:hover .media-wrapper img { transform: scale(1.1); }
+
+        .play-hint {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.5);
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: 0.3s;
+            pointer-events: none;
+        }
+
+        .card:hover .play-hint { opacity: 1; }
+
+        .content-info {
             padding: 20px;
+            background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));
         }
 
-        .card-info h3 {
-            margin: 0 0 10px 0;
-            font-size: 1.2rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .content-info h3 {
+            margin: 0; font-size: 1.25rem; font-weight: 600;
         }
 
-        .card-info .meta {
+        .footer-card {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.85rem;
-            color: var(--text-secundari);
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #777;
         }
 
-        .tag {
-            background: #333;
-            padding: 4px 8px;
-            border-radius: 5px;
-            text-transform: uppercase;
-            font-weight: bold;
-            font-size: 0.7rem;
+        .date-badge {
+            background: rgba(255,255,255,0.05);
+            padding: 4px 10px;
+            border-radius: 8px;
+            color: #ccc;
         }
 
-        /* VISUALITZADOR (MODAL) */
-        #modal {
+        /* LIGHTBOX / MODAL */
+        #lightbox {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95);
-            z-index: 9999;
+            backdrop-filter: blur(10px);
+            z-index: 10000;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 40px;
         }
 
-        #modal-content {
-            max-width: 90%;
-            max-height: 90%;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        #lightbox-content {
+            max-width: 100%;
+            max-height: 90vh;
+            border-radius: 15px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
         }
 
-        #close-btn {
+        .close-view {
             position: absolute;
-            top: 20px;
-            right: 30px;
-            font-size: 40px;
-            color: white;
-            cursor: pointer;
-            line-height: 1;
+            top: 30px; right: 30px;
+            font-size: 35px; color: white; cursor: pointer;
+            width: 50px; height: 50px;
+            background: var(--glass);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        /* RESPONSIVE */
-        @media (max-width: 600px) {
-            h1 { font-size: 2rem; }
-            .grid { grid-template-columns: 1fr; }
-        }
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Pingus Archive</h1>
-    <p class="subtitle">Subtitol innecessari que el titol ja ho diu tot</p>
+    <h1>PINGUS ARCHIVE</h1>
+    <div class="counter" id="item-count">0 ELEMENTS</div>
 </header>
 
 <div class="container">
-    <div class="grid" id="main-gallery">
+    <div class="grid" id="gallery">
         </div>
 </div>
 
-<div id="modal">
-    <span id="close-btn">&times;</span>
-    <div id="modal-content"></div>
+<div id="lightbox" onclick="closeLightbox()">
+    <span class="close-view">&times;</span>
+    <div id="inner-content" onclick="event.stopPropagation()"></div>
 </div>
 
 <script>
-    // 1. Funció per processar la data DD-MM-AAAA
-    function parseCatDate(dateStr) {
-        const parts = dateStr.split('-');
-        // Crear objecte: Any, Mes (0-11), Dia
-        return new Date(parts[2], parts[1] - 1, parts[0]);
+    function parseDate(d) {
+        const p = d.split('-');
+        return new Date(p[2], p[1] - 1, p[0]);
     }
 
-    async function loadGallery() {
-        const gallery = document.getElementById('main-gallery');
-        
+    async function init() {
         try {
-            const response = await fetch('dades.json');
-            if (!response.ok) throw new Error('No es troba el fitxer dades.json');
+            const res = await fetch('dades.json');
+            let data = await res.json();
             
-            let data = await response.json();
+            // Update counter
+            document.getElementById('item-count').innerText = `${data.length} RECORDS`;
 
-            // 2. Ordenar per data (descendent: més nou primer)
-            data.sort((a, b) => parseCatDate(b.data) - parseCatDate(a.data));
+            // Sort dates
+            data.sort((a, b) => parseDate(b.data) - parseDate(a.data));
 
-            data.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'card';
-
-                // Detectar si és vídeo o imatge
-                const isVideo = item.tipus.toLowerCase() === 'video' || item.arxiu.match(/\.(mp4|webm|mov)$/i);
+            const gallery = document.getElementById('gallery');
+            gallery.innerHTML = data.map(item => {
+                const isVid = item.tipus === 'video' || item.arxiu.match(/\.(mp4|mov|webm)$/i);
                 
-                let mediaElem;
-                if (isVideo) {
-                    mediaElem = `
-                        <video src="${item.arxiu}" muted loop onmouseover="this.play()" onmouseout="this.pause()" onclick="openFull('${item.arxiu}', 'video')">
-                        </video>`;
-                } else {
-                    mediaElem = `<img src="${item.arxiu}" loading="lazy" onclick="openFull('${item.arxiu}', 'img')">`;
-                }
-
-                card.innerHTML = `
-                    <div class="media-box">
-                        ${mediaElem}
+                return `
+                <div class="card" onclick="openLightbox('${item.arxiu}', '${isVid ? 'v' : 'i'}')">
+                    <div class="media-wrapper">
+                        ${isVid 
+                            ? `<div class="play-hint">▶</div><video src="${item.arxiu}" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>` 
+                            : `<img src="${item.arxiu}" loading="lazy">`
+                        }
                     </div>
-                    <div class="card-info">
+                    <div class="content-info">
                         <h3>${item.titol}</h3>
-                        <div class="meta">
-                            <span>📅 ${item.data}</span>
-                            <span class="tag">${item.tipus}</span>
+                        <div class="footer-card">
+                            <span class="date-badge">${item.data}</span>
+                            <span style="text-transform: uppercase; letter-spacing: 1px;">${isVid ? '🎬 Video' : '📸 Foto'}</span>
                         </div>
                     </div>
+                </div>
                 `;
-                gallery.appendChild(card);
-            });
+            }).join('');
 
-        } catch (err) {
-            gallery.innerHTML = `<p style="color:red">Error carrgant l'arxiu: ${err.message}. Recorda que necessites el fitxer dades.json a la mateixa carpeta.</p>`;
+        } catch (e) {
+            console.error(e);
         }
     }
 
-    // 3. Funció per obrir en gran
-    function openFull(url, type) {
-        const modal = document.getElementById('modal');
-        const content = document.getElementById('modal-content');
-        modal.style.display = 'flex';
+    function openLightbox(url, type) {
+        const lb = document.getElementById('lightbox');
+        const inner = document.getElementById('inner-content');
+        lb.style.display = 'flex';
         
-        if (type === 'video') {
-            content.innerHTML = `<video src="${url}" controls autoplay style="width:100%; max-height:85vh;"></video>`;
+        if(type === 'v') {
+            inner.innerHTML = `<video src="${url}" controls autoplay id="lightbox-content"></video>`;
         } else {
-            content.innerHTML = `<img src="${url}" style="max-width:100%; max-height:85vh; object-fit:contain;">`;
+            inner.innerHTML = `<img src="${url}" id="lightbox-content">`;
         }
     }
 
-    // Tancar modal
-    document.getElementById('close-btn').onclick = () => {
-        document.getElementById('modal').style.display = 'none';
-        document.getElementById('modal-content').innerHTML = '';
-    };
+    function closeLightbox() {
+        const lb = document.getElementById('lightbox');
+        document.getElementById('inner-content').innerHTML = '';
+        lb.style.display = 'none';
+    }
 
-    // Tancar modal si es clica fora del contingut
-    window.onclick = (event) => {
-        if (event.target == document.getElementById('modal')) {
-            document.getElementById('close-btn').onclick();
-        }
-    };
-
-    // Iniciar
-    loadGallery();
+    init();
 </script>
 
 </body>
