@@ -5,131 +5,254 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pingus Archive</title>
     <style>
+        /* CONFIGURACIÓ VISUAL */
         :root {
-            --bg: #121212;
-            --card-bg: #1e1e1e;
-            --text: #e0e0e0;
-            --accent: #00adb5;
+            --bg: #0f0f0f;
+            --card-bg: #1a1a1a;
+            --text-principal: #ffffff;
+            --text-secundari: #aaaaaa;
+            --accent: #00d1ff; /* Blau Pingüí */
         }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
-        header { text-align: center; padding: 40px 0; }
-        h1 { color: var(--accent); font-size: 2.5rem; text-transform: uppercase; letter-spacing: 2px; }
-        
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-principal);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(to bottom, #1a1a1a, #0f0f0f);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 3rem;
+            letter-spacing: -1px;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+
+        p.subtitle {
+            color: var(--text-secundari);
+            margin-top: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* QUADRÍCULA DE CONTINGUT */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
+            gap: 25px;
         }
-        
+
+        /* TARGETES */
         .card {
             background: var(--card-bg);
-            border-radius: 12px;
+            border-radius: 15px;
             overflow: hidden;
-            transition: transform 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            border: 1px solid #333;
         }
-        .card:hover { transform: translateY(-5px); }
-        
-        .media-container {
+
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(0, 209, 255, 0.2);
+        }
+
+        .media-box {
             width: 100%;
-            height: 200px;
+            height: 220px;
             background: #000;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
-        
-        img, video { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
-        
-        .info { padding: 15px; }
-        .info h3 { margin: 0 0 10px 0; font-size: 1.1rem; }
-        .info span { font-size: 0.85rem; color: #888; }
 
-        /* Estils per obrir en gran (Modal) */
+        .media-box img, .media-box video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .card-info {
+            padding: 20px;
+        }
+
+        .card-info h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-info .meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-secundari);
+        }
+
+        .tag {
+            background: #333;
+            padding: 4px 8px;
+            border-radius: 5px;
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 0.7rem;
+        }
+
+        /* VISUALITZADOR (MODAL) */
         #modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
+            background: rgba(0,0,0,0.95);
+            z-index: 9999;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
+            padding: 20px;
         }
-        #modal-content { max-width: 90%; max-height: 80%; }
-        #close { position: absolute; top: 20px; right: 30px; font-size: 40px; color: white; cursor: pointer; }
+
+        #modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        #close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>🐧 Pingus Archive</h1>
+    <h1>Pingus Archive</h1>
+    <p class="subtitle">La col·lecció oficial dels millors moments.</p>
 </header>
 
-<div class="grid" id="gallery">
-    </div>
+<div class="container">
+    <div class="grid" id="main-gallery">
+        </div>
+</div>
 
 <div id="modal">
-    <span id="close">&times;</span>
+    <span id="close-btn">&times;</span>
     <div id="modal-content"></div>
 </div>
 
 <script>
-    async function carregarGaleria() {
+    // 1. Funció per processar la data DD-MM-AAAA
+    function parseCatDate(dateStr) {
+        const parts = dateStr.split('-');
+        // Crear objecte: Any, Mes (0-11), Dia
+        return new Date(parts[2], parts[1] - 1, parts[0]);
+    }
+
+    async function loadGallery() {
+        const gallery = document.getElementById('main-gallery');
+        
         try {
             const response = await fetch('dades.json');
-            let dades = await response.json();
+            if (!response.ok) throw new Error('No es troba el fitxer dades.json');
+            
+            let data = await response.json();
 
-            // Ordenar per data (descendent: més nou primer)
-            dades.sort((a, b) => new Date(b.data) - new Date(a.data));
+            // 2. Ordenar per data (descendent: més nou primer)
+            data.sort((a, b) => parseCatDate(b.data) - parseCatDate(a.data));
 
-            const gallery = document.getElementById('gallery');
-
-            dades.forEach(item => {
+            data.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'card';
 
-                let mediaHTML = '';
-                if (item.tipus === 'imatge') {
-                    mediaHTML = `<img src="${item.arxiu}" onclick="obrirGran('${item.arxiu}', 'imatge')">`;
+                // Detectar si és vídeo o imatge
+                const isVideo = item.tipus.toLowerCase() === 'video' || item.arxiu.match(/\.(mp4|webm|mov)$/i);
+                
+                let mediaElem;
+                if (isVideo) {
+                    mediaElem = `
+                        <video src="${item.arxiu}" muted loop onmouseover="this.play()" onmouseout="this.pause()" onclick="openFull('${item.arxiu}', 'video')">
+                        </video>`;
                 } else {
-                    mediaHTML = `<video src="${item.arxiu}" muted onmouseover="this.play()" onmouseout="this.pause()" onclick="obrirGran('${item.arxiu}', 'video')"></video>`;
+                    mediaElem = `<img src="${item.arxiu}" loading="lazy" onclick="openFull('${item.arxiu}', 'img')">`;
                 }
 
                 card.innerHTML = `
-                    <div class="media-container">${mediaHTML}</div>
-                    <div class="info">
+                    <div class="media-box">
+                        ${mediaElem}
+                    </div>
+                    <div class="card-info">
                         <h3>${item.titol}</h3>
-                        <span>📅 ${new Date(item.data).toLocaleDateString('ca-ES')}</span>
+                        <div class="meta">
+                            <span>📅 ${item.data}</span>
+                            <span class="tag">${item.tipus}</span>
+                        </div>
                     </div>
                 `;
                 gallery.appendChild(card);
             });
-        } catch (error) {
-            console.error("Error carregant el fitxer JSON:", error);
+
+        } catch (err) {
+            gallery.innerHTML = `<p style="color:red">Error carrgant l'arxiu: ${err.message}. Recorda que necessites el fitxer dades.json a la mateixa carpeta.</p>`;
         }
     }
 
-    function obrirGran(url, tipus) {
+    // 3. Funció per obrir en gran
+    function openFull(url, type) {
         const modal = document.getElementById('modal');
-        const container = document.getElementById('modal-content');
+        const content = document.getElementById('modal-content');
         modal.style.display = 'flex';
         
-        if (tipus === 'imatge') {
-            container.innerHTML = `<img src="${url}" style="max-width:100%; max-height:85vh; object-fit:contain;">`;
+        if (type === 'video') {
+            content.innerHTML = `<video src="${url}" controls autoplay style="width:100%; max-height:85vh;"></video>`;
         } else {
-            container.innerHTML = `<video src="${url}" controls autoplay style="max-width:100%; max-height:85vh;"></video>`;
+            content.innerHTML = `<img src="${url}" style="max-width:100%; max-height:85vh; object-fit:contain;">`;
         }
     }
 
-    document.getElementById('close').onclick = () => {
+    // Tancar modal
+    document.getElementById('close-btn').onclick = () => {
         document.getElementById('modal').style.display = 'none';
-        document.getElementById('modal-content').innerHTML = ''; // Atura el vídeo en tancar
+        document.getElementById('modal-content').innerHTML = '';
     };
 
-    carregarGaleria();
+    // Tancar modal si es clica fora del contingut
+    window.onclick = (event) => {
+        if (event.target == document.getElementById('modal')) {
+            document.getElementById('close-btn').onclick();
+        }
+    };
+
+    // Iniciar
+    loadGallery();
 </script>
 
 </body>
