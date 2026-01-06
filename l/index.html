@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🇱🇺 Luxemburg Guide - Gener 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0d1117;
+            --bg-card: #161b22;
+            --bg-card-hover: #1f2937;
+            --accent-gold: #d4a574;
+            --accent-copper: #c9a87c;
+            --accent-emerald: #34d399;
+            --accent-blue: #60a5fa;
+            --accent-rose: #f472b6;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --border: #30363d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .hero {
+            background: linear-gradient(135deg, #1a1f35 0%, #0d1117 50%, #1a2f1a 100%);
+            padding: 3rem 1.5rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4a574' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .flag {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-copper));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+
+        .dates {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .dates span {
+            color: var(--accent-emerald);
+        }
+
+        /* Navigation */
+        .nav {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .nav-btn {
+            flex-shrink: 0;
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 50px;
+            background: var(--bg-dark);
+            color: var(--text-secondary);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        /* Info Banner */
+        .info-banner {
+            background: linear-gradient(135deg, #1e3a2f 0%, #1a2f1a 100%);
+            border: 1px solid #2d5a4a;
+            border-radius: 16px;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .info-banner .icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .info-banner h3 {
+            color: var(--accent-emerald);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .info-banner p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Day Tabs */
+        .day-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .day-tab {
+            flex: 1;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg-card);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .day-tab:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .day-tab.active {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-copper));
+            border-color: transparent;
+        }
+
+        .day-tab.active * {
+            color: var(--bg-dark) !important;
+        }
+
+        .day-tab .day-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+
+        .day-tab .day-date {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.2rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--accent-gold);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .card-icon.culture { background: linear-gradient(135deg, #7c3aed, #a855f7); }
+        .card-icon.architecture { background: linear-gradient(135deg, #0891b2, #06b6d4); }
+        .card-icon.food { background: linear-gradient(135deg, #ea580c, #f97316); }
+        .card-icon.bar { background: linear-gradient(135deg, #be185d, #ec4899); }
+        .card-icon.view { background: linear-gradient(135deg, #059669, #10b981); }
+        .card-icon.tip { background: linear-gradient(135deg, #d97706, #fbbf24); }
+
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.2rem;
+        }
+
+        .card-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .card-body {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            padding: 0.3rem 0.7rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .tag.free { background: #064e3b; color: #34d399; }
+        .tag.paid { background: #7c2d12; color: #fb923c; }
+        .tag.unesco { background: #312e81; color: #a5b4fc; }
+        .tag.local { background: #4a1d54; color: #e879f9; }
+        .tag.time { background: #1e3a5f; color: #7dd3fc; }
+
+        .map-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .map-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Food Section */
+        .food-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .food-item:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .food-emoji {
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .food-info h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 0.2rem;
+        }
+
+        .food-info p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .food-price {
+            margin-left: auto;
+            color: var(--accent-gold);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Restaurant Cards */
+        .restaurant-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .restaurant-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.8rem;
+        }
+
+        .restaurant-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+
+        .restaurant-type {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .restaurant-rating {
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+            padding: 0.3rem 0.6rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .restaurant-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Bar Section */
+        .bar-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .bar-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .bar-card:hover {
+            border-color: var(--accent-rose);
+        }
+
+        .bar-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .bar-icon {
+            font-size: 1.5rem;
+        }
+
+        .bar-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+
+        .bar-zone {
+            font-size: 0.75rem;
+            color: var(--accent-rose);
+            background: rgba(244, 114, 182, 0.15);
+            padding: 0.2rem 0.6rem;
+            border-radius: 50px;
+            margin-left: auto;
+        }
+
+        .bar-desc {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Practical Info */
+        .info-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .info-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.2rem;
+        }
+
+        .info-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            color: var(--accent-gold);
+            margin-bottom: 0.8rem;
+        }
+
+        .info-card p, .info-card li {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-card li::before {
+            content: '→ ';
+            color: var(--accent-emerald);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent-gold), var(--accent-emerald), var(--accent-blue));
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -1.75rem;
+            top: 0.3rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-gold);
+            border: 3px solid var(--bg-dark);
+        }
+
+        .timeline-time {
+            font-size: 0.8rem;
+            color: var(--accent-gold);
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .timeline-content h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .timeline-content p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Hidden day content */
+        .day-content {
+            display: none;
+        }
+
+        .day-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+
+        .footer .heart {
+            color: var(--accent-rose);
+        }
+
+        /* Scroll to top */
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 1.5rem;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--accent-gold);
+            color: var(--bg-dark);
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 165, 116, 0.3);
+            z-index: 1000;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            h1 { font-size: 2rem; }
+            .card { padding: 1rem; }
+            .day-tab { padding: 0.8rem 0.5rem; }
+            .day-tab .day-name { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero -->
+    <header class="hero">
+        <div class="hero-content">
+            <div class="flag">🇱🇺</div>
+            <h1>Luxemburg</h1>
+            <p class="dates"><span>9 - 11 gener 2026</span> · Escapada cultural</p>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <button class="nav-btn active" data-section="itinerari">📅 Itinerari</button>
+        <button class="nav-btn" data-section="cultura">🏛️ Cultura</button>
+        <button class="nav-btn" data-section="menjar">🍽️ Menjar</button>
+        <button class="nav-btn" data-section="bars">🍷 Bars</button>
+        <button class="nav-btn" data-section="info">ℹ️ Info</button>
+    </nav>
+
+    <main class="container">
+        <!-- Info Banner -->
+        <div class="info-banner">
+            <span class="icon">🎉</span>
+            <div>
+                <h3>Transport GRATIS!</h3>
+                <p>Tot el transport públic de Luxemburg és gratuït: tram, bus i tren. Només cal pujar i viatjar!</p>
+            </div>
+        </div>
+
+        <!-- SECTION: Itinerari -->
+        <section class="section active" id="itinerari">
+            <div class="section-header">
+                <h2>📅 El vostre itinerari</h2>
+                <p>3 dies per descobrir la ciutat</p>
+            </div>
+
+            <!-- Day Tabs -->
+            <div class="day-tabs">
+                <div class="day-tab active" data-day="1">
+                    <div class="day-name">Dia 1</div>
+                    <div class="day-date">Dv. 9 gen</div>
+                </div>
+                <div class="day-tab" data-day="2">
+                    <div class="day-name">Dia 2</div>
+                    <div class="day-date">Ds. 10 gen</div>
+                </div>
+                <div class="day-tab" data-day="3">
+                    <div class="day-name">Dia 3</div>
+                    <div class="day-date">Dg. 11 gen</div>
+                </div>
+            </div>
+
+            <!-- Day 1 -->
+            <div class="day-content active" id="day1">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-time">🌅 Matí</div>
+                        <div class="timeline-content">
+                            <h4>Old Town + Place Guillaume II</h4>
+                            <p>Comenceu pel centre històric UNESCO. Passegeu pels carrers medievals fins a la plaça principal.</p>
+                            <a href="https://www.google.com/maps/search/Place+Guillaume+II+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">⛪ Migdia</div>
+                        <div class="timeline-content">
+                            <h4>Catedral Notre-Dame</h4>
+                            <p>Arquitectura gòtica del s.XVII amb elements renaixentistes. Entrada gratuïta!</p>
+                            <a href="https://www.google.com/maps/search/Notre+Dame+Cathedral+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">🍽️ Dinar</div>
+                        <div class="timeline-content">
+                            <h4>Restaurant Um Dierfgen</h4>
+                            <p>Proveu el plat nacional: Judd mat Gaardebounen (porc fumat amb mongetes).</p>
+                            <a href="https://www.google.com/maps/search/Restaurant+Um+Dierfgen+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">🏰 Tarda</div>
+                        <div class="timeline-content">
+                            <h4>Palau Gran Ducal + Chemin de la Corniche</h4>
+                            <p>El "balcó més bonic d'Europa" amb vistes espectaculars a la vall.</p>
+                            <a href="https://www.google.com/maps/search/Chemin+de+la+Corniche+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">🌃 Vespre</div>
+                        <div class="timeline-content">
+                            <h4>Grund - Terrasses i soparet</h4>
+                            <p>Baixeu al barri del Grund per sopar i gaudir de l'ambient dels pubs.</p>
+                            <a href="https://www.google.com/maps/search/Grund+Luxembourg+City" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day 2 -->
+            <div class="day-content" id="day2">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-time">🌅 Matí</div>
+                        <div class="timeline-content">
+                            <h4>Bock Casemates</h4>
+                            <p>Túnels subterranis UNESCO de les antigues fortificacions. ~1h de visita.</p>
+                            <div class="card-tags" style="margin: 0.5rem 0;">
+                                <span class="tag paid">~8€</span>
+                                <span class="tag unesco">UNESCO</span>
+                            </div>
+                            <a href="https://www.google.com/maps/search/Bock+Casemates+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">🛗 Migdia</div>
+                        <div class="timeline-content">
+                            <h4>Ascensor Panoràmic Pfaffenthal</h4>
+                            <p>Ascensor de vidre gratuït amb vistes increïbles de 71m d'altura!</p>
+                            <div class="card-tags" style="margin: 0.5rem 0;">
+                                <span class="tag free">Gratis</span>
+                                <span class="tag time">30 segons</span>
+                            </div>
+                            <a href="https://www.google.com/maps/search/Pfaffenthal+Panoramic+Elevator+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">🎨 Tarda</div>
+                        <div class="timeline-content">
+                            <h4>MUDAM - Museu d'Art Modern</h4>
+                            <p>Dissenyat per I.M. Pei. Dimecres 18-20h entrada gratuïta!</p>
+                            <div class="card-tags" style="margin: 0.5rem 0;">
+                                <span class="tag paid">8€</span>
+                                <span class="tag time">Tancat dilluns</span>
+                            </div>
+                            <a href="https://www.google.com/maps/search/MUDAM+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">🌆 Capvespre</div>
+                        <div class="timeline-content">
+                            <h4>Pont Adolphe + Place de la Constitution</h4>
+                            <p>Vistes panoràmiques amb la "Gëlle Fra" (Dama Daurada), monument icònic.</p>
+                            <a href="https://www.google.com/maps/search/Pont+Adolphe+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">🍻 Nit</div>
+                        <div class="timeline-content">
+                            <h4>Rives de Clausen</h4>
+                            <p>Antiga zona cervesera reconvertida en zona de bars i restaurants moderns.</p>
+                            <a href="https://www.google.com/maps/search/Rives+de+Clausen+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Day 3 -->
+            <div class="day-content" id="day3">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-time">☕ Matí</div>
+                        <div class="timeline-content">
+                            <h4>Esmorzar a Place d'Armes</h4>
+                            <p>La plaça més animada amb terrasses sota els til·lers.</p>
+                            <a href="https://www.google.com/maps/search/Place+d'Armes+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">🏛️ Migdia</div>
+                        <div class="timeline-content">
+                            <h4>Philharmonie Luxembourg</h4>
+                            <p>Arquitectura contemporània impressionant amb 823 columnes blanques.</p>
+                            <a href="https://www.google.com/maps/search/Philharmonie+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">🏰 Tarda</div>
+                        <div class="timeline-content">
+                            <h4>Kirchberg - Districte Europeu</h4>
+                            <p>Arquitectura moderna, institucions UE, perfecte per passejar.</p>
+                            <a href="https://www.google.com/maps/search/Kirchberg+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-time">🛫 Tornada</div>
+                        <div class="timeline-content">
+                            <h4>Últimes compres i tornada</h4>
+                            <p>Compreu Quetschentaart (pastís de prunes) per portar!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: Cultura -->
+        <section class="section" id="cultura">
+            <div class="section-header">
+                <h2>🏛️ Cultura & Arquitectura</h2>
+                <p>Els imprescindibles per vosaltres</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon unesco">🏰</div>
+                    <div>
+                        <div class="card-title">Old Town (Ville Haute)</div>
+                        <div class="card-subtitle">Centre històric</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    Patrimoni Mundial UNESCO des de 1994. Carrers medievals empedrats, fortificacions i vistes espectaculars a les valls del Alzette i Pétrusse.
+                </div>
+                <div class="card-tags">
+                    <span class="tag free">Gratis</span>
+                    <span class="tag unesco">UNESCO</span>
+                </div>
+                <a href="https://www.google.com/maps/search/Luxembourg+Old+Town+Ville+Haute" target="_blank" class="map-btn">📍 Obrir Maps</a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon architecture">⛪</div>
+                    <div>
+                        <div class="card-title">Catedral Notre-Dame</div>
+                        <div class="card-subtitle">Segle XVII</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    L'única catedral de Luxemburg. Barreja d'estils gòtic, renaixentista i barroc. Conté la cripta dels Grans Ducs i vitralls impressionants.
+                </div>
+                <div class="card-tags">
+                    <span class="tag free">Gratis</span>
+                    <span class="tag time">8:00-18:00</span>
+                </div>
+                <a href="https://www.google.com/maps/search/Notre+Dame+Cathedral+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon culture">🕳️</div>
+                    <div>
+                        <div class="card-title">Bock Casemates</div>
+                        <div class="card-subtitle">Túnels subterranis</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    17km de galeries excavades a la roca, part de l'antiga fortalesa "Gibraltar del Nord". Refugi antiaeri durant la 2a Guerra Mundial.
+                </div>
+                <div class="card-tags">
+                    <span class="tag paid">~8€</span>
+                    <span class="tag unesco">UNESCO</span>
+                    <span class="tag time">~1h visita</span>
+                </div>
+                <a href="https://www.google.com/maps/search/Bock+Casemates+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon architecture">👑</div>
+                    <div>
+                        <div class="card-title">Palau Gran Ducal</div>
+                        <div class="card-subtitle">Renaixement flamenc</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    Residència oficial del Gran Duc. Façana del segle XVI amb detalls impressionants. Visites interiors només a l'estiu, però l'exterior és espectacular.
+                </div>
+                <div class="card-tags">
+                    <span class="tag free">Exterior gratis</span>
+                </div>
+                <a href="https://www.google.com/maps/search/Palais+Grand+Ducal+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon culture">🎨</div>
+                    <div>
+                        <div class="card-title">MUDAM</div>
+                        <div class="card-subtitle">Art contemporani</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    Dissenyat per I.M. Pei (arquitecte del Louvre). Edifici espectacular amb vistes al Fort Thüngen. Col·lecció d'art modern i contemporani.
+                </div>
+                <div class="card-tags">
+                    <span class="tag paid">8€</span>
+                    <span class="tag time">Dc 18-20h gratis!</span>
+                </div>
+                <a href="https://www.google.com/maps/search/MUDAM+Luxembourg+Kirchberg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon view">🌉</div>
+                    <div>
+                        <div class="card-title">Chemin de la Corniche</div>
+                        <div class="card-subtitle">"El balcó més bonic d'Europa"</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    Passejada panoràmica al llarg de les antigues muralles del s.XVII. Vistes espectaculars sobre el Grund, l'Abadia de Neumünster i la vall de l'Alzette.
+                </div>
+                <div class="card-tags">
+                    <span class="tag free">Gratis</span>
+                    <span class="tag time">Perfecte al capvespre</span>
+                </div>
+                <a href="https://www.google.com/maps/search/Chemin+de+la+Corniche+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon architecture">🎵</div>
+                    <div>
+                        <div class="card-title">Philharmonie</div>
+                        <div class="card-subtitle">Arquitectura contemporània</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    Dissenyada per Christian de Portzamparc. 823 columnes blanques creen una "carcassa" transparent. Una de les millors acústiques d'Europa.
+                </div>
+                <div class="card-tags">
+                    <span class="tag free">Exterior gratis</span>
+                </div>
+                <a href="https://www.google.com/maps/search/Philharmonie+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon view">🛗</div>
+                    <div>
+                        <div class="card-title">Ascensor Panoràmic Pfaffenthal</div>
+                        <div class="card-subtitle">71 metres d'altura</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    Ascensor de vidre que connecta el centre amb la vall. Vistes increïbles de la ciutat i el riu Alzette. Trajecte de només 30 segons però espectacular!
+                </div>
+                <div class="card-tags">
+                    <span class="tag free">Gratis</span>
+                    <span class="tag time">5:45-01:00</span>
+                </div>
+                <a href="https://www.google.com/maps/search/Pfaffenthal+Panoramic+Elevator+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+            </div>
+        </section>
+
+        <!-- SECTION: Menjar -->
+        <section class="section" id="menjar">
+            <div class="section-header">
+                <h2>🍽️ Gastronomia</h2>
+                <p>Plats tradicionals i restaurants recomanats</p>
+            </div>
+
+            <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 1rem; color: var(--accent-gold);">🥘 Plats típics a provar</h3>
+
+            <div class="food-item">
+                <span class="food-emoji">🐷</span>
+                <div class="food-info">
+                    <h4>Judd mat Gaardebounen</h4>
+                    <p>Porc fumat amb mongetes en salsa cremosa. El PLAT NACIONAL!</p>
+                </div>
+                <span class="food-price">~18-25€</span>
+            </div>
+
+            <div class="food-item">
+                <span class="food-emoji">🥣</span>
+                <div class="food-info">
+                    <h4>Bouneschlupp</h4>
+                    <p>Sopa de mongetes verdes amb patates i bacon fumat.</p>
+                </div>
+                <span class="food-price">~8-12€</span>
+            </div>
+
+            <div class="food-item">
+                <span class="food-emoji">🥔</span>
+                <div class="food-info">
+                    <h4>Gromperekichelcher</h4>
+                    <p>Bunyols de patata cruixents amb all i julivert. Street food!</p>
+                </div>
+                <span class="food-price">~5-8€</span>
+            </div>
+
+            <div class="food-item">
+                <span class="food-emoji">🐟</span>
+                <div class="food-info">
+                    <h4>F'rell am Rèisleck</h4>
+                    <p>Truita cuinada amb vi Riesling, nata i herbes.</p>
+                </div>
+                <span class="food-price">~20-26€</span>
+            </div>
+
+            <div class="food-item">
+                <span class="food-emoji">🧀</span>
+                <div class="food-info">
+                    <h4>Kachkéis</h4>
+                    <p>Formatge fos luxemburguès, perfecte per untar.</p>
+                </div>
+                <span class="food-price">~6-10€</span>
+            </div>
+
+            <div class="food-item">
+                <span class="food-emoji">🥧</span>
+                <div class="food-info">
+                    <h4>Quetschentaart</h4>
+                    <p>Pastís de prunes tradicional. IMPRESCINDIBLE!</p>
+                </div>
+                <span class="food-price">~4-6€</span>
+            </div>
+
+            <h3 style="font-family: 'Playfair Display', serif; margin: 2rem 0 1rem; color: var(--accent-gold);">🍴 Restaurants recomanats</h3>
+
+            <div class="restaurant-card">
+                <div class="restaurant-header">
+                    <div>
+                        <div class="restaurant-name">Um Dierfgen</div>
+                        <div class="restaurant-type">Cuina luxemburguesa tradicional</div>
+                    </div>
+                    <div class="restaurant-rating">⭐ Top</div>
+                </div>
+                <div class="restaurant-desc">
+                    El lloc per excel·lència per provar Judd mat Gaardebounen i altres clàssics. Ambient acollidor i autèntic.
+                </div>
+                <a href="https://www.google.com/maps/search/Restaurant+Um+Dierfgen+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+            </div>
+
+            <div class="restaurant-card">
+                <div class="restaurant-header">
+                    <div>
+                        <div class="restaurant-name">Mousel's Cantine</div>
+                        <div class="restaurant-type">Brasserie tradicional</div>
+                    </div>
+                    <div class="restaurant-rating">⭐ Local</div>
+                </div>
+                <div class="restaurant-desc">
+                    A Rives de Clausen. Plats luxemburguesos casolans amb cervesa local Mousel.
+                </div>
+                <a href="https://www.google.com/maps/search/Mousel's+Cantine+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+            </div>
+
+            <div class="restaurant-card">
+                <div class="restaurant-header">
+                    <div>
+                        <div class="restaurant-name">Am Tiirmschen</div>
+                        <div class="restaurant-type">Cuina tradicional</div>
+                    </div>
+                    <div class="restaurant-rating">⭐ Autèntic</div>
+                </div>
+                <div class="restaurant-desc">
+                    Restaurant amb encant en una torre antiga. Receptes tradicionals en un entorn històric.
+                </div>
+                <a href="https://www.google.com/maps/search/Am+Tiirmschen+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+            </div>
+
+            <div class="restaurant-card">
+                <div class="restaurant-header">
+                    <div>
+                        <div class="restaurant-name">Le Sud</div>
+                        <div class="restaurant-type">Cuina francesa-mediterrània</div>
+                    </div>
+                    <div class="restaurant-rating">⭐ Vistes</div>
+                </div>
+                <div class="restaurant-desc">
+                    A Rives de Clausen. Terrassa amb vistes panoràmiques, cuina elegant. Ideal per un sopar especial.
+                </div>
+                <a href="https://www.google.com/maps/search/Restaurant+Le+Sud+Clausen+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+            </div>
+
+            <div class="restaurant-card">
+                <div class="restaurant-header">
+                    <div>
+                        <div class="restaurant-name">Brasserie Guillaume</div>
+                        <div class="restaurant-type">Brasserie al centre</div>
+                    </div>
+                    <div class="restaurant-rating">⭐ Terrassa</div>
+                </div>
+                <div class="restaurant-desc">
+                    A Place Guillaume II. Perfecte per esmorzar o dinar amb vistes a la plaça principal.
+                </div>
+                <a href="https://www.google.com/maps/search/Brasserie+Guillaume+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+            </div>
+
+            <div class="restaurant-card">
+                <div class="restaurant-header">
+                    <div>
+                        <div class="restaurant-name">Mosconi</div>
+                        <div class="restaurant-type">Italià d'alt nivell</div>
+                    </div>
+                    <div class="restaurant-rating">⭐ Michelin</div>
+                </div>
+                <div class="restaurant-desc">
+                    Al Grund. Cuina italiana refinada en un entorn elegant. Per si voleu una nit més especial.
+                </div>
+                <a href="https://www.google.com/maps/search/Mosconi+Restaurant+Luxembourg+Grund" target="_blank" class="map-btn">📍 Obrir Maps</a>
+            </div>
+        </section>
+
+        <!-- SECTION: Bars -->
+        <section class="section" id="bars">
+            <div class="section-header">
+                <h2>🍷 Bars & Terrasses</h2>
+                <p>Per gaudir sense passar-se</p>
+            </div>
+
+            <div class="info-banner" style="background: linear-gradient(135deg, #3b1a4a 0%, #2d1a3a 100%); border-color: #5b3a6a;">
+                <span class="icon">📍</span>
+                <div>
+                    <h3 style="color: var(--accent-rose);">Les 2 zones de bars</h3>
+                    <p><strong>Grund:</strong> Més tranquil, terrasses amb encant, pubs acollidors.<br>
+                    <strong>Rives de Clausen:</strong> Més animat, bars moderns en antigues cerveseries.</p>
+                </div>
+            </div>
+
+            <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 1rem; color: var(--accent-rose);">🍺 Grund - Ambient relaxat</h3>
+
+            <div class="bar-grid">
+                <div class="bar-card">
+                    <div class="bar-header">
+                        <span class="bar-icon">🎹</span>
+                        <span class="bar-name">Café des Artistes</span>
+                        <span class="bar-zone">Grund</span>
+                    </div>
+                    <div class="bar-desc">
+                        Piano bar únic! Música en directe amb pianista i gent cantant. Ambient retro i autèntic, com viatjar en el temps.
+                    </div>
+                    <a href="https://www.google.com/maps/search/Cafe+des+Artistes+Grund+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                </div>
+
+                <div class="bar-card">
+                    <div class="bar-header">
+                        <span class="bar-icon">🍺</span>
+                        <span class="bar-name">Scott's Pub</span>
+                        <span class="bar-zone">Grund</span>
+                    </div>
+                    <div class="bar-desc">
+                        Pub clàssic al costat del riu des de 1985. Bones hamburgueses, cerveses i ambient acollidor. Un clàssic!
+                    </div>
+                    <a href="https://www.google.com/maps/search/Scott's+Pub+Grund+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                </div>
+
+                <div class="bar-card">
+                    <div class="bar-header">
+                        <span class="bar-icon">🎸</span>
+                        <span class="bar-name">Liquid Bar</span>
+                        <span class="bar-zone">Grund</span>
+                    </div>
+                    <div class="bar-desc">
+                        Selecció impressionant de cerveses, ambient relaxat i música en directe alguns dies. Jocs de taula disponibles!
+                    </div>
+                    <a href="https://www.google.com/maps/search/Liquid+Bar+Grund+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                </div>
+
+                <div class="bar-card">
+                    <div class="bar-header">
+                        <span class="bar-icon">☘️</span>
+                        <span class="bar-name">The Pyg Irish Bar</span>
+                        <span class="bar-zone">Grund</span>
+                    </div>
+                    <div class="bar-desc">
+                        Pub irlandès amb terrassa al riu. Ambient càlid, bones pintas i menjar de pub sòlid.
+                    </div>
+                    <a href="https://www.google.com/maps/search/Pyg+Irish+Bar+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                </div>
+            </div>
+
+            <h3 style="font-family: 'Playfair Display', serif; margin: 2rem 0 1rem; color: var(--accent-rose);">🍷 Rives de Clausen - Més modern</h3>
+
+            <div class="bar-grid">
+                <div class="bar-card">
+                    <div class="bar-header">
+                        <span class="bar-icon">🏭</span>
+                        <span class="bar-name">Big Beer Company</span>
+                        <span class="bar-zone">Clausen</span>
+                    </div>
+                    <div class="bar-desc">
+                        Cerveseria en una fàbrica de 500 anys. Cerveses artesanes, ambient de brewpub i menjar bàvar.
+                    </div>
+                    <a href="https://www.google.com/maps/search/Big+Beer+Company+Rives+de+Clausen+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                </div>
+
+                <div class="bar-card">
+                    <div class="bar-header">
+                        <span class="bar-icon">🌅</span>
+                        <span class="bar-name">Um Plateau</span>
+                        <span class="bar-zone">Clausen</span>
+                    </div>
+                    <div class="bar-desc">
+                        Terrassa amb calefacció, bona carta de vins i plats per compartir. Perfecte per l'hivern!
+                    </div>
+                    <a href="https://www.google.com/maps/search/Um+Plateau+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                </div>
+
+                <div class="bar-card">
+                    <div class="bar-header">
+                        <span class="bar-icon">🍸</span>
+                        <span class="bar-name">Ikki</span>
+                        <span class="bar-zone">Clausen</span>
+                    </div>
+                    <div class="bar-desc">
+                        Restaurant-bar amb vistes al riu Alzette. Còctels creatius i ambient estilós però relaxat.
+                    </div>
+                    <a href="https://www.google.com/maps/search/Ikki+Rives+de+Clausen+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                </div>
+
+                <div class="bar-card">
+                    <div class="bar-header">
+                        <span class="bar-icon">✨</span>
+                        <span class="bar-name">Hitch</span>
+                        <span class="bar-zone">Centre</span>
+                    </div>
+                    <div class="bar-desc">
+                        Bar-bistro elegant però accessible. Còctels excel·lents i bons plats. Ideal per començar la nit.
+                    </div>
+                    <a href="https://www.google.com/maps/search/Hitch+Luxembourg+bar" target="_blank" class="map-btn">📍 Obrir Maps</a>
+                </div>
+            </div>
+
+            <h3 style="font-family: 'Playfair Display', serif; margin: 2rem 0 1rem; color: var(--accent-rose);">🍾 Vi local</h3>
+
+            <div class="bar-card">
+                <div class="bar-header">
+                    <span class="bar-icon">🍇</span>
+                    <span class="bar-name">Vinoteca</span>
+                    <span class="bar-zone">Centre</span>
+                </div>
+                <div class="bar-desc">
+                    Bar de vins dirigit per un dels millors sommeliers del país. Especialitat en vins de la Vall de la Mosela luxemburguesa (Riesling, Auxerrois, Pinot). Terrassa panoràmica i taules de formatges.
+                </div>
+                <a href="https://www.google.com/maps/search/Vinoteca+Luxembourg" target="_blank" class="map-btn">📍 Obrir Maps</a>
+            </div>
+        </section>
+
+        <!-- SECTION: Info -->
+        <section class="section" id="info">
+            <div class="section-header">
+                <h2>ℹ️ Informació pràctica</h2>
+                <p>Tot el que necessiteu saber</p>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>🚇 Transport</h3>
+                    <ul>
+                        <li><strong>Tot GRATIS!</strong> Bus, tram i tren</li>
+                        <li>Tram: Connecta centre amb Kirchberg</li>
+                        <li>Funicular Pfaffenthal-Kirchberg</li>
+                        <li>Ascensors panoràmics (gratis)</li>
+                        <li>App: mobiliteit.lu per horaris</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3>💰 Pressupost estimat</h3>
+                    <ul>
+                        <li>Esmorzar: 8-15€</li>
+                        <li>Dinar: 15-25€</li>
+                        <li>Sopar: 25-40€</li>
+                        <li>Cervesa/Vi: 4-8€</li>
+                        <li>Còctel: 10-15€</li>
+                        <li>Museus: 0-10€</li>
+                    </ul>
+                    <p style="margin-top: 0.5rem; color: var(--accent-gold);">💡 Luxemburg és car! Calculeu ~80-120€/dia per persona</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>🗣️ Idiomes</h3>
+                    <ul>
+                        <li>Luxemburguès (oficial)</li>
+                        <li>Francès (molt parlat)</li>
+                        <li>Alemany (molt parlat)</li>
+                        <li>Anglès (tothom l'entén)</li>
+                    </ul>
+                    <p style="margin-top: 0.5rem;">💡 Amb anglès o francès us en sortireu perfectament!</p>
+                </div>
+
+                <div class="info-card">
+                    <h3>⏰ Horaris útils</h3>
+                    <ul>
+                        <li>Botigues: 10:00-18:00 (dg tancat)</li>
+                        <li>Restaurants: 12:00-14:00 / 19:00-22:00</li>
+                        <li>Bars: fins 01:00 (cap de setmana fins 03:00)</li>
+                        <li>Museus: 10:00-18:00 (dilluns tancat)</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3>📱 Apps útils</h3>
+                    <ul>
+                        <li><strong>mobiliteit.lu</strong> - Transport públic</li>
+                        <li><strong>Google Maps</strong> - Navegació</li>
+                        <li><strong>Luxembourg City App</strong> - Guia oficial</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3>🌡️ El temps (gener)</h3>
+                    <ul>
+                        <li>Temperatura: 0-5°C</li>
+                        <li>Possible pluja o neu</li>
+                        <li>Es fa fosc ~17:00</li>
+                        <li>Porteu roba d'abric!</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3>🆘 Emergències</h3>
+                    <ul>
+                        <li><strong>112</strong> - Emergències generals</li>
+                        <li><strong>113</strong> - Policia</li>
+                        <li>Hospitals: Centre Hospitalier</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3>💡 Consells locals</h3>
+                    <ul>
+                        <li>Propines: No obligatòries (arrodonir és suficient)</li>
+                        <li>Aigua de l'aixeta: Excel·lent i segura</li>
+                        <li>WiFi: Gratis a molts llocs (CityWifi)</li>
+                        <li>Enchufes: Tipus F (com Espanya)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Fet amb <span class="heart">♥</span> per al vostre viatge</p>
+        <p style="margin-top: 0.3rem;">Luxemburg · Gener 2026</p>
+    </footer>
+
+    <!-- Scroll to top button -->
+    <button class="scroll-top" id="scrollTop">↑</button>
+
+    <script>
+        // Navigation
+        const navBtns = document.querySelectorAll('.nav-btn');
+        const sections = document.querySelectorAll('.section');
+
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetSection = btn.dataset.section;
+                
+                navBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                sections.forEach(s => s.classList.remove('active'));
+                document.getElementById(targetSection).classList.add('active');
+                
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // Day tabs
+        const dayTabs = document.querySelectorAll('.day-tab');
+        const dayContents = document.querySelectorAll('.day-content');
+
+        dayTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetDay = tab.dataset.day;
+                
+                dayTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                dayContents.forEach(c => c.classList.remove('active'));
+                document.getElementById('day' + targetDay).classList.add('active');
+            });
+        });
+
+        // Scroll to top
+        const scrollTopBtn = document.getElementById('scrollTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Add touch feedback for mobile
+        document.querySelectorAll('.card, .bar-card, .restaurant-card, .food-item').forEach(el => {
+            el.addEventListener('touchstart', () => el.style.transform = 'scale(0.98)');
+            el.addEventListener('touchend', () => el.style.transform = '');
+        });
+    </script>
+</body>
+</html>
