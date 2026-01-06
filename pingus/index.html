@@ -4,75 +4,91 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PINGUS ARCHIVE 🐧</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            background: #111;
+            background: #0a0a0a;
             color: white;
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
+            overflow-x: hidden;
         }
 
-        /* HEADER AMB CANYA */
+        /* ANIMACIÓ DEL GRADIENT */
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* HEADER AMB GRADIENT ANIMAT */
         header {
-            padding: 40px 20px;
+            padding: 60px 20px;
             text-align: center;
-            background: linear-gradient(135deg, #ff0055 0%, #7000ff 100%);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            /* Gradient amb 3 colors per a més moviment */
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientMove 10s ease infinite;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
         }
 
         h1 {
             font-family: 'Montserrat', sans-serif;
-            font-size: 3.5rem;
+            font-size: clamp(2.5rem, 10vw, 4.5rem);
             margin: 0;
             text-transform: uppercase;
-            letter-spacing: -2px;
-            text-shadow: 3px 3px 0px #000;
+            letter-spacing: -3px;
+            color: white;
+            text-shadow: 4px 4px 0px rgba(0,0,0,0.2);
         }
 
         .stats {
-            margin-top: 10px;
+            margin-top: 15px;
             font-weight: 600;
-            background: rgba(0,0,0,0.3);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
             display: inline-block;
-            padding: 5px 15px;
+            padding: 8px 20px;
             border-radius: 50px;
             font-size: 0.9rem;
+            border: 1px solid rgba(255,255,255,0.3);
         }
 
-        /* EL "FEED" ESTIL INSTA/TIKTOK */
+        /* EL FEED */
         .container {
-            max-width: 1100px;
-            margin: 30px auto;
+            max-width: 1200px;
+            margin: 40px auto;
             padding: 0 15px;
         }
 
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
+            gap: 20px;
         }
 
         .card {
-            background: #222;
-            border-radius: 12px;
+            background: #1a1a1a;
+            border-radius: 16px;
             overflow: hidden;
             position: relative;
             cursor: pointer;
-            transition: transform 0.2s ease;
-            border: 2px solid #333;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 1px solid #333;
         }
 
         .card:hover {
-            transform: scale(1.02);
-            border-color: #ff0055;
+            transform: scale(1.03);
+            border-color: #e73c7e;
+            box-shadow: 0 10px 20px rgba(231, 60, 126, 0.2);
         }
 
         .media-container {
             position: relative;
             width: 100%;
-            aspect-ratio: 1 / 1; /* Tot quadrat com a l'Insta, queda més net */
+            aspect-ratio: 1 / 1;
             background: #000;
         }
 
@@ -82,43 +98,46 @@
             object-fit: cover;
         }
 
-        /* Etiqueta de vídeo */
         .video-badge {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.7);
-            padding: 5px;
-            border-radius: 5px;
-            font-size: 1.2rem;
+            top: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            padding: 6px;
+            border-radius: 8px;
+            font-size: 1rem;
+            z-index: 2;
         }
 
         .info {
-            padding: 12px;
+            padding: 15px;
+            background: #1a1a1a;
         }
 
         .info h3 {
             margin: 0;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
         .info .date {
-            font-size: 0.8rem;
-            color: #888;
-            margin-top: 5px;
+            font-size: 0.85rem;
+            color: #777;
+            margin-top: 6px;
             display: block;
         }
 
-        /* MODAL PER VEURE-HO GRAN */
+        /* MODAL */
         #modal {
             display: none;
             position: fixed;
             top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 999;
+            background: rgba(0,0,0,0.98);
+            z-index: 9999;
             justify-content: center;
             align-items: center;
         }
@@ -126,28 +145,32 @@
         #modal-content {
             max-width: 95%;
             max-height: 90vh;
+            border-radius: 10px;
+            box-shadow: 0 0 40px rgba(0,0,0,1);
         }
 
         .close {
             position: absolute;
-            top: 20px; right: 20px;
-            font-size: 40px; color: white; cursor: pointer;
-            z-index: 1000;
+            top: 20px; right: 25px;
+            font-size: 45px; color: white; cursor: pointer;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
-        /* Per mòbils, que es vegi 2 columnes */
-        @media (max-width: 500px) {
-            .grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-            h1 { font-size: 2rem; }
-            .info h3 { font-size: 0.8rem; }
+        /* MOBILE OPTIMIZATION */
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            h1 { font-size: 2.2rem; letter-spacing: -1px; }
+            .info { padding: 10px; }
+            .info h3 { font-size: 0.9rem; }
+            header { padding: 40px 10px; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>PINGUS 🐧</h1>
-    <div class="stats" id="total">0 RECORDS</div>
+    <h1>PINGUS ARCHIVE</h1>
+    <div class="stats" id="total">CARREGANT MOMENTS...</div>
 </header>
 
 <div class="container">
@@ -160,40 +183,42 @@
 </div>
 
 <script>
-    // Funció per convertir la data DD-MM-AAAA
     function formatData(d) {
         const p = d.split('-');
         return new Date(p[2], p[1]-1, p[0]);
     }
 
     async function carregar() {
-        const res = await fetch('dades.json');
-        let dades = await res.json();
-        
-        document.getElementById('total').innerText = dades.length + " MOMENTS";
+        try {
+            const res = await fetch('dades.json');
+            let dades = await res.json();
+            
+            document.getElementById('total').innerText = "🔥 " + dades.length + " MOMENTS ÚNICS";
 
-        // Ordenar per data (novetats primer)
-        dades.sort((a,b) => formatData(b.data) - formatData(a.data));
+            dades.sort((a,b) => formatData(b.data) - formatData(a.data));
 
-        const gallery = document.getElementById('gallery');
-        gallery.innerHTML = dades.map(item => {
-            const esVideo = item.tipus === 'video' || item.arxiu.match(/\.(mp4|mov|webm)$/i);
-            return `
-                <div class="card" onclick="obrir('${item.arxiu}', '${esVideo ? 'v' : 'i'}')">
-                    <div class="media-container">
-                        ${esVideo ? '<div class="video-badge">▶️</div>' : ''}
-                        ${esVideo 
-                            ? `<video src="${item.arxiu}" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>` 
-                            : `<img src="${item.arxiu}" loading="lazy">`
-                        }
+            const gallery = document.getElementById('gallery');
+            gallery.innerHTML = dades.map(item => {
+                const esVideo = item.tipus === 'video' || item.arxiu.match(/\.(mp4|mov|webm)$/i);
+                return `
+                    <div class="card" onclick="obrir('${item.arxiu}', '${esVideo ? 'v' : 'i'}')">
+                        <div class="media-container">
+                            ${esVideo ? '<div class="video-badge">▶️</div>' : ''}
+                            ${esVideo 
+                                ? `<video src="${item.arxiu}" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>` 
+                                : `<img src="${item.arxiu}" loading="lazy">`
+                            }
+                        </div>
+                        <div class="info">
+                            <h3>${item.titol}</h3>
+                            <span class="date">📅 ${item.data}</span>
+                        </div>
                     </div>
-                    <div class="info">
-                        <h3>${item.titol}</h3>
-                        <span class="date">${item.data}</span>
-                    </div>
-                </div>
-            `;
-        }).join('');
+                `;
+            }).join('');
+        } catch (e) {
+            document.getElementById('total').innerText = "ERROR CARREGANT DADES.JSON";
+        }
     }
 
     function obrir(url, tipus) {
