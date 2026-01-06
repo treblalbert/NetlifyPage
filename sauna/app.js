@@ -615,6 +615,9 @@ function generateSauna(keepCamera = false) {
     document.getElementById('insulationPanels').textContent = insulationPanelsCount;
     document.getElementById('totalPlanks').textContent = wallPlanksCount + innerWallPlanksCount + roofPlanksCount + floorPlanksCount + gablePlanksCount;
 
+    // Show window hole size discrepancies
+    showWindowHoleSizes();
+
     orbitTarget.set(0, saunaHeight / 2, 0);
     
     if (!keepCamera) {
@@ -710,37 +713,144 @@ function generateInsulation(width, height, length, plankThickness, wallGap, type
     const insulationThickness = wallGap - 0.01;
     const offset = plankThickness + wallGap / 2;
 
-    // Front insulation
-    if (!doorFront || doorFront.height < height) {
-        const frontPanel = createInsulationPanel(width - plankThickness * 2, height, insulationThickness, type);
-        frontPanel.position.set(0, height / 2, -length / 2 + offset);
-        saunaGroup.add(frontPanel);
-        insulationPanelsCount++;
-    }
+    // Front wall insulation with holes
+    generateWallInsulation('front', width - plankThickness * 2, height, insulationThickness, 
+        0, height / 2, -length / 2 + offset,
+        doorFront, windows.front, type);
 
-    // Back insulation
-    if (!doorBack || doorBack.height < height) {
-        const backPanel = createInsulationPanel(width - plankThickness * 2, height, insulationThickness, type);
-        backPanel.position.set(0, height / 2, length / 2 - offset);
-        saunaGroup.add(backPanel);
-        insulationPanelsCount++;
-    }
+    // Back wall insulation with holes
+    generateWallInsulation('back', width - plankThickness * 2, height, insulationThickness,
+        0, height / 2, length / 2 - offset,
+        doorBack, windows.back, type);
 
-    // Left insulation
-    if (!doorLeft || doorLeft.height < height) {
-        const leftPanel = createInsulationPanel(insulationThickness, height, length - plankThickness * 2, type);
-        leftPanel.position.set(-width / 2 + offset, height / 2, 0);
-        saunaGroup.add(leftPanel);
-        insulationPanelsCount++;
-    }
+    // Left wall insulation with holes
+    generateWallInsulation('left', length - plankThickness * 2, height, insulationThickness,
+        -width / 2 + offset, height / 2, 0,
+        doorLeft, windows.left, type);
 
-    // Right insulation
-    if (!doorRight || doorRight.height < height) {
-        const rightPanel = createInsulationPanel(insulationThickness, height, length - plankThickness * 2, type);
-        rightPanel.position.set(width / 2 - offset, height / 2, 0);
-        saunaGroup.add(rightPanel);
-        insulationPanelsCount++;
+    // Right wall insulation with holes
+    generateWallInsulation('right', length - plankThickness * 2, height, insulationThickness,
+        width / 2 - offset, height / 2, 0,
+        doorRight, windows.right, type);
+}
+
+function generateWallInsulation(side, panelWidth, panelHeight, thickness, posX, posY, posZ, door, window, type) {
+    // Collect all holes (door and window)
+    const holes = [];
+    
+    if (door) {
+        holes.push({
+            left: panelWidth * door.position - door.width / 2,
+            right: panelWidth * door.position + door.width / 2,
+            bottom: 0,
+            top: door.height
+        });
     }
+    
+    if (window) {
+        holes.push({
+            left: panelWidth * window.position - window.width / 2,
+            right: panelWidth * window.position + window.width / 2,
+            bottom: window.y,
+            top: window.y + window.height
+        });
+    }
+    
+    if (holes.length === 0) {
+        // No holes, create full panel
+        const panel = createInsulationPanel(
+            side === 'left' || side === 'right' ? thickness : panelWidth,
+            panelHeight,
+            side === 'left' || side === 'right' ? panelWidth : thickness,
+            type
+        );
+        panel.position.set(posX, posY, posZ);
+        saunaGroup.add(panel);
+        insulationPanelsCount++;
+        return;
+    }
+    
+    // Create insulation panels around the holes
+    // We'll create panels for: left of hole, right of hole, above hole, below hole
+    
+    holes.forEach(hole => {
+        const holeLeft = Math.max(0, hole.left);
+        const holeRight = Math.min(panelWidth, hole.right);
+        const holeBottom = Math.max(0, hole.bottom);
+        const holeTop = Math.min(panelHeight, hole.top);
+        
+        // Left panel (from wall start to hole left)
+        if (holeLeft > 0.05) {
+            const leftPanelWidth = holeLeft;
+            const panel = createInsulationPanel(
+                side === 'left' || side === 'right' ? thickness : leftPanelWidth,
+                panelHeight,
+                side === 'left' || side === 'right' ? leftPanelWidth : thickness,
+                type
+            );
+            const offsetX = side === 'left' || side === 'right' ? 0 : (-panelWidth/2 + leftPanelWidth/2);
+            const offsetZ = side === 'left' || side === 'right' ? (-panelWidth/2 + leftPanelWidth/2) : 0;
+            panel.position.set(posX + offsetX, posY, posZ + offsetZ);
+            saunaGroup.add(panel);
+            insulationPanelsCount++;
+        }
+        
+        // Right panel (from hole right to wall end)
+        if (panelWidth - holeRight > 0.05) {
+            const rightPanelWidth = panelWidth - holeRight;
+            const panel = createInsulationPanel(
+                side === 'left' || side === 'right' ? thickness : rightPanelWidth,
+                panelHeight,
+                side === 'left' || side === 'right' ? rightPanelWidth : thickness,
+                type
+            );
+            const offsetX = side === 'left' || side === 'right' ? 0 : (panelWidth/2 - rightPanelWidth/2);
+            const offsetZ = side === 'left' || side === 'right' ? (panelWidth/2 - rightPanelWidth/2) : 0;
+            panel.position.set(posX + offsetX, posY, posZ + offsetZ);
+            saunaGroup.add(panel);
+            insulationPanelsCount++;
+        }
+        
+        // Top panel (above the hole, between hole edges)
+        if (panelHeight - holeTop > 0.05) {
+            const topPanelHeight = panelHeight - holeTop;
+            const topPanelWidth = holeRight - holeLeft;
+            if (topPanelWidth > 0.05) {
+                const panel = createInsulationPanel(
+                    side === 'left' || side === 'right' ? thickness : topPanelWidth,
+                    topPanelHeight,
+                    side === 'left' || side === 'right' ? topPanelWidth : thickness,
+                    type
+                );
+                const holeCenter = (holeLeft + holeRight) / 2 - panelWidth / 2;
+                const offsetX = side === 'left' || side === 'right' ? 0 : holeCenter;
+                const offsetZ = side === 'left' || side === 'right' ? holeCenter : 0;
+                panel.position.set(posX + offsetX, holeTop + topPanelHeight/2, posZ + offsetZ);
+                saunaGroup.add(panel);
+                insulationPanelsCount++;
+            }
+        }
+        
+        // Bottom panel (below the hole, between hole edges) - only for windows, not doors
+        if (holeBottom > 0.05) {
+            const bottomPanelHeight = holeBottom;
+            const bottomPanelWidth = holeRight - holeLeft;
+            if (bottomPanelWidth > 0.05) {
+                const panel = createInsulationPanel(
+                    side === 'left' || side === 'right' ? thickness : bottomPanelWidth,
+                    bottomPanelHeight,
+                    side === 'left' || side === 'right' ? bottomPanelWidth : thickness,
+                    type
+                );
+                const holeCenter = (holeLeft + holeRight) / 2 - panelWidth / 2;
+                const offsetX = side === 'left' || side === 'right' ? 0 : holeCenter;
+                const offsetZ = side === 'left' || side === 'right' ? holeCenter : 0;
+                panel.position.set(posX + offsetX, bottomPanelHeight/2, posZ + offsetZ);
+                saunaGroup.add(panel);
+                insulationPanelsCount++;
+            }
+        }
+    });
 }
 
 // ===== Window Config =====
@@ -753,6 +863,157 @@ function getWindowConfig(side) {
         y: parseFloat(document.getElementById('window' + side + 'Y').value) || 1.2,
         position: (parseFloat(document.getElementById('window' + side + 'X').value) || 50) / 100
     };
+}
+
+// ===== Calculate Actual Window Hole =====
+function calculateActualWindowHole(wallWidth, wallHeight, plankWidth, gap, window) {
+    if (!window) return null;
+    
+    const winCenter = wallWidth * window.position;
+    const winLeft = winCenter - window.width / 2;
+    const winRight = winCenter + window.width / 2;
+    const winBottom = window.y;
+    const winTop = window.y + window.height;
+    
+    // Find the actual plank boundaries that create the hole
+    let actualLeft = null;
+    let actualRight = null;
+    let actualBottom = null;
+    let actualTop = null;
+    
+    const planksNeeded = Math.ceil(wallHeight / (plankWidth + gap));
+    
+    for (let i = 0; i < planksNeeded; i++) {
+        const y = i * (plankWidth + gap) + plankWidth / 2;
+        if (y > wallHeight) break;
+        
+        const plankBottom = y - plankWidth / 2;
+        const plankTop = y + plankWidth / 2;
+        
+        // Check if this plank row intersects with the window
+        if (plankBottom < winTop && plankTop > winBottom) {
+            // This plank row has a hole for the window
+            if (actualBottom === null) {
+                actualBottom = plankBottom;
+            }
+            actualTop = plankTop;
+        }
+    }
+    
+    // For horizontal bounds, the cut is made exactly at window edges
+    // but we need to find what actual segments remain
+    actualLeft = winLeft;
+    actualRight = winRight;
+    
+    // The actual hole is where planks were cut
+    if (actualBottom === null || actualTop === null) {
+        return null; // No planks were cut
+    }
+    
+    return {
+        width: actualRight - actualLeft,
+        height: actualTop - actualBottom,
+        y: actualBottom,
+        centerX: (actualLeft + actualRight) / 2
+    };
+}
+
+// ===== Auto-Adapt Window to Match Actual Hole =====
+function autoAdaptWindow(side) {
+    const checkbox = document.getElementById('window' + side);
+    if (!checkbox || !checkbox.checked) {
+        alert('Please enable the window first.');
+        return;
+    }
+    
+    // Get current settings
+    const saunaWidth = parseFloat(document.getElementById('width').value) || 2.5;
+    const saunaLength = parseFloat(document.getElementById('length').value) || 3;
+    const saunaHeight = parseFloat(document.getElementById('height').value) || 2.2;
+    const plankWidth = (parseFloat(document.getElementById('plankWidth').value) || 10) / 100;
+    const gap = 0.002;
+    
+    // Determine wall width based on side
+    let wallWidth;
+    if (side === 'Front' || side === 'Back') {
+        wallWidth = saunaWidth;
+    } else {
+        wallWidth = saunaLength;
+    }
+    
+    const window = getWindowConfig(side);
+    if (!window) return;
+    
+    // Calculate the actual hole
+    const actualHole = calculateActualWindowHole(wallWidth, saunaHeight, plankWidth, gap, window);
+    
+    if (!actualHole) {
+        alert('Could not calculate window hole. Make sure the window is within wall bounds.');
+        return;
+    }
+    
+    // Update window dimensions to match the actual hole
+    document.getElementById('window' + side + 'Width').value = actualHole.width.toFixed(3);
+    document.getElementById('window' + side + 'Height').value = actualHole.height.toFixed(3);
+    document.getElementById('window' + side + 'Y').value = actualHole.y.toFixed(3);
+    
+    // Update the actual size display
+    updateActualSizeDisplay(side, actualHole);
+    
+    // Regenerate
+    scheduleUpdate();
+}
+
+// ===== Update Actual Size Display =====
+function updateActualSizeDisplay(side, actualHole) {
+    const infoDiv = document.getElementById('window' + side + 'Actual');
+    if (infoDiv && actualHole) {
+        infoDiv.innerHTML = `✓ Adapted: ${(actualHole.width * 100).toFixed(1)}cm × ${(actualHole.height * 100).toFixed(1)}cm at ${(actualHole.y * 100).toFixed(1)}cm from floor`;
+        infoDiv.classList.add('visible');
+    }
+}
+
+// ===== Show Current Hole Size (called during generation) =====
+function showWindowHoleSizes() {
+    const sides = ['Front', 'Back', 'Left', 'Right'];
+    const saunaWidth = parseFloat(document.getElementById('width').value) || 2.5;
+    const saunaLength = parseFloat(document.getElementById('length').value) || 3;
+    const saunaHeight = parseFloat(document.getElementById('height').value) || 2.2;
+    const plankWidth = (parseFloat(document.getElementById('plankWidth').value) || 10) / 100;
+    const gap = 0.002;
+    
+    sides.forEach(side => {
+        const checkbox = document.getElementById('window' + side);
+        const infoDiv = document.getElementById('window' + side + 'Actual');
+        
+        if (!checkbox || !checkbox.checked || !infoDiv) {
+            if (infoDiv) infoDiv.classList.remove('visible');
+            return;
+        }
+        
+        let wallWidth;
+        if (side === 'Front' || side === 'Back') {
+            wallWidth = saunaWidth;
+        } else {
+            wallWidth = saunaLength;
+        }
+        
+        const window = getWindowConfig(side);
+        const actualHole = calculateActualWindowHole(wallWidth, saunaHeight, plankWidth, gap, window);
+        
+        if (actualHole) {
+            const widthDiff = Math.abs(actualHole.width - window.width);
+            const heightDiff = Math.abs(actualHole.height - window.height);
+            
+            if (widthDiff > 0.001 || heightDiff > 0.001) {
+                infoDiv.innerHTML = `⚠️ Actual hole: ${(actualHole.width * 100).toFixed(1)}cm × ${(actualHole.height * 100).toFixed(1)}cm (differs from window)`;
+                infoDiv.classList.add('visible');
+            } else {
+                infoDiv.innerHTML = `✓ Window matches hole: ${(actualHole.width * 100).toFixed(1)}cm × ${(actualHole.height * 100).toFixed(1)}cm`;
+                infoDiv.classList.add('visible');
+            }
+        }
+    });
 }
 
 // ===== Wall Generation =====

@@ -361,6 +361,41 @@ body::before {
     display: block;
 }
 
+/* ===== Adapt Button ===== */
+.adapt-btn {
+    width: 100%;
+    background: rgba(74, 222, 128, 0.15);
+    border: 1px solid rgba(74, 222, 128, 0.4);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: #4ade80;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 8px;
+}
+
+.adapt-btn:hover {
+    background: rgba(74, 222, 128, 0.25);
+    border-color: #4ade80;
+}
+
+.actual-size-info {
+    margin-top: 6px;
+    padding: 6px 8px;
+    background: rgba(212, 165, 116, 0.1);
+    border-radius: 4px;
+    font-size: 10px;
+    color: var(--amber);
+    display: none;
+}
+
+.actual-size-info.visible {
+    display: block;
+}
+
 /* ===== Stats Grid ===== */
 .stats-grid {
     display: grid;

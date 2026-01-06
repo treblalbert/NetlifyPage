@@ -195,6 +195,8 @@
                                     <div><span class="mini-label">From Floor (m)</span><input type="number" id="windowFrontY" class="mini-input" value="1.2" step="0.1"></div>
                                     <div><span class="mini-label">Position (%)</span><input type="number" id="windowFrontX" class="mini-input" value="50" min="10" max="90"></div>
                                 </div>
+                                <button class="adapt-btn" onclick="autoAdaptWindow('Front')">🔧 Auto-adapt to hole</button>
+                                <div class="actual-size-info" id="windowFrontActual"></div>
                             </div>
 
                             <div class="checkbox-group">
@@ -210,6 +212,8 @@
                                     <div><span class="mini-label">From Floor (m)</span><input type="number" id="windowBackY" class="mini-input" value="1.2" step="0.1"></div>
                                     <div><span class="mini-label">Position (%)</span><input type="number" id="windowBackX" class="mini-input" value="50" min="10" max="90"></div>
                                 </div>
+                                <button class="adapt-btn" onclick="autoAdaptWindow('Back')">🔧 Auto-adapt to hole</button>
+                                <div class="actual-size-info" id="windowBackActual"></div>
                             </div>
 
                             <div class="checkbox-group">
@@ -225,6 +229,8 @@
                                     <div><span class="mini-label">From Floor (m)</span><input type="number" id="windowLeftY" class="mini-input" value="1.2" step="0.1"></div>
                                     <div><span class="mini-label">Position (%)</span><input type="number" id="windowLeftX" class="mini-input" value="50" min="10" max="90"></div>
                                 </div>
+                                <button class="adapt-btn" onclick="autoAdaptWindow('Left')">🔧 Auto-adapt to hole</button>
+                                <div class="actual-size-info" id="windowLeftActual"></div>
                             </div>
 
                             <div class="checkbox-group">
@@ -240,6 +246,8 @@
                                     <div><span class="mini-label">From Floor (m)</span><input type="number" id="windowRightY" class="mini-input" value="1.2" step="0.1"></div>
                                     <div><span class="mini-label">Position (%)</span><input type="number" id="windowRightX" class="mini-input" value="50" min="10" max="90"></div>
                                 </div>
+                                <button class="adapt-btn" onclick="autoAdaptWindow('Right')">🔧 Auto-adapt to hole</button>
+                                <div class="actual-size-info" id="windowRightActual"></div>
                             </div>
                         </div>
                     </div>
