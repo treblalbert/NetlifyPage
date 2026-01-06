@@ -830,7 +830,7 @@
         <div class="contact-content">
           <h2>${trans.contact}</h2>
           <a href="mailto:albertadroer@gmail.com" class="contact-email">albertadroer@gmail.com</a>
-          <p style="margin-top:20px;opacity:0.6">© 2025 Albert Adroer Prats</p>
+          <p style="margin-top:20px;opacity:0.6">© 2026 Albert Adroer Prats</p>
         </div>
       `
     });
