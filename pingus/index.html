@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pingus Archive</title>
+    <style>
+        :root {
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --text: #e0e0e0;
+            --accent: #00adb5;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        header { text-align: center; padding: 40px 0; }
+        h1 { color: var(--accent); font-size: 2.5rem; text-transform: uppercase; letter-spacing: 2px; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .card:hover { transform: translateY(-5px); }
+        
+        .media-container {
+            width: 100%;
+            height: 200px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        img, video { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
+        
+        .info { padding: 15px; }
+        .info h3 { margin: 0 0 10px 0; font-size: 1.1rem; }
+        .info span { font-size: 0.85rem; color: #888; }
+
+        /* Estils per obrir en gran (Modal) */
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        #modal-content { max-width: 90%; max-height: 80%; }
+        #close { position: absolute; top: 20px; right: 30px; font-size: 40px; color: white; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🐧 Pingus Archive</h1>
+</header>
+
+<div class="grid" id="gallery">
+    </div>
+
+<div id="modal">
+    <span id="close">&times;</span>
+    <div id="modal-content"></div>
+</div>
+
+<script>
+    async function carregarGaleria() {
+        try {
+            const response = await fetch('dades.json');
+            let dades = await response.json();
+
+            // Ordenar per data (descendent: més nou primer)
+            dades.sort((a, b) => new Date(b.data) - new Date(a.data));
+
+            const gallery = document.getElementById('gallery');
+
+            dades.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+
+                let mediaHTML = '';
+                if (item.tipus === 'imatge') {
+                    mediaHTML = `<img src="${item.arxiu}" onclick="obrirGran('${item.arxiu}', 'imatge')">`;
+                } else {
+                    mediaHTML = `<video src="${item.arxiu}" muted onmouseover="this.play()" onmouseout="this.pause()" onclick="obrirGran('${item.arxiu}', 'video')"></video>`;
+                }
+
+                card.innerHTML = `
+                    <div class="media-container">${mediaHTML}</div>
+                    <div class="info">
+                        <h3>${item.titol}</h3>
+                        <span>📅 ${new Date(item.data).toLocaleDateString('ca-ES')}</span>
+                    </div>
+                `;
+                gallery.appendChild(card);
+            });
+        } catch (error) {
+            console.error("Error carregant el fitxer JSON:", error);
+        }
+    }
+
+    function obrirGran(url, tipus) {
+        const modal = document.getElementById('modal');
+        const container = document.getElementById('modal-content');
+        modal.style.display = 'flex';
+        
+        if (tipus === 'imatge') {
+            container.innerHTML = `<img src="${url}" style="max-width:100%; max-height:85vh; object-fit:contain;">`;
+        } else {
+            container.innerHTML = `<video src="${url}" controls autoplay style="max-width:100%; max-height:85vh;"></video>`;
+        }
+    }
+
+    document.getElementById('close').onclick = () => {
+        document.getElementById('modal').style.display = 'none';
+        document.getElementById('modal-content').innerHTML = ''; // Atura el vídeo en tancar
+    };
+
+    carregarGaleria();
+</script>
+
+</body>
+</html>
