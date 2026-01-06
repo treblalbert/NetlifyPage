@@ -325,7 +325,40 @@
                     <button class="view-btn measure-btn" id="measureBtn" onclick="toggleMeasurements()">📏 Measures</button>
                 </div>
             </div>
+            
+            <!-- Visibility & Export Controls -->
+            <div class="viewer-toolbar">
+                <div class="toolbar-section">
+                    <span class="toolbar-label">Show/Hide:</span>
+                    <button class="toggle-btn active" id="toggleFront" onclick="togglePartVisibility('front')">Front</button>
+                    <button class="toggle-btn active" id="toggleBack" onclick="togglePartVisibility('back')">Back</button>
+                    <button class="toggle-btn active" id="toggleLeft" onclick="togglePartVisibility('left')">Left</button>
+                    <button class="toggle-btn active" id="toggleRight" onclick="togglePartVisibility('right')">Right</button>
+                    <button class="toggle-btn active" id="toggleRoof" onclick="togglePartVisibility('roof')">Roof</button>
+                    <button class="toggle-btn active" id="toggleFloor" onclick="togglePartVisibility('floor')">Floor</button>
+                    <button class="toggle-btn active" id="toggleInsulation" onclick="togglePartVisibility('insulation')">Insulation</button>
+                </div>
+                <div class="toolbar-section">
+                    <span class="toolbar-label">Export:</span>
+                    <button class="export-btn" onclick="exportToOBJ()">📦 OBJ</button>
+                    <button class="export-btn" onclick="exportBlueprint()">📐 Blueprint PDF</button>
+                    <button class="export-btn" id="materialsListBtn" onclick="toggleMaterialsList()">📋 Materials List</button>
+                </div>
+            </div>
+            
             <div id="canvas-container"></div>
+            
+            <!-- Materials List Panel -->
+            <div class="materials-panel" id="materialsPanel">
+                <div class="materials-header">
+                    <h3>📋 Materials List</h3>
+                    <button class="close-btn" onclick="toggleMaterialsList()">✕</button>
+                </div>
+                <div class="materials-content" id="materialsContent">
+                    <!-- Will be populated by JS -->
+                </div>
+            </div>
+            
             <div class="instructions">
                 <span>🖱️ Drag: Orbit</span>
                 <span>🖱️ Scroll: Zoom</span>

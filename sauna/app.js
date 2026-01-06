@@ -25,6 +25,61 @@ let measurementsEnabled = false;
 let measurementLabels = [];
 let measurementGroup = null;
 
+// Part visibility tracking
+let partVisibility = {
+    front: true,
+    back: true,
+    left: true,
+    right: true,
+    roof: true,
+    floor: true,
+    insulation: true
+};
+
+// Part groups for visibility toggling
+let partGroups = {
+    front: null,
+    back: null,
+    left: null,
+    right: null,
+    roof: null,
+    floor: null,
+    insulation: null
+};
+
+// Materials tracking for export
+let materialsUsed = {
+    walls: {},      // { "250x10x2": count }
+    roof: {},
+    floor: {},
+    gable: {}
+};
+
+// PBR Texture support
+/*
+ * TEXTURE FILES (place in same folder as index.html):
+ * 
+ * Option 1 - Full PBR Set:
+ *   - wood_color.jpg     (or .png) - Albedo/Diffuse map
+ *   - wood_normal.jpg    (or .png) - Normal map  
+ *   - wood_roughness.jpg (or .png) - Roughness map
+ *
+ * Option 2 - Color Only:
+ *   - wood_color.jpg     (or .png) - Just the color texture
+ *
+ * If no textures are found, procedural wood texture will be used.
+ */
+let pbrTextures = {
+    color: null,
+    normal: null,
+    roughness: null,
+    loaded: false,
+    useProceduralFallback: true
+};
+
+// LocalStorage key for auto-save
+const STORAGE_KEY = 'saunaBuilder_lastDesign';
+
 // Insulation colors
 const insulationColors = {
     rockwool: 0xFFD700,
@@ -82,6 +137,9 @@ function init() {
     saunaGroup = new THREE.Group();
     scene.add(saunaGroup);
 
+    // Initialize part groups
+    initPartGroups();
+
     // Event listeners
     renderer.domElement.addEventListener('mousedown', onMouseDown);
     renderer.domElement.addEventListener('mousemove', onMouseMove);
@@ -99,8 +157,121 @@ function init() {
     setupRealTimeUpdates();
     setupRoofDirectionToggle();
 
-    generateSauna();
-    animate();
+    // Try to load PBR textures
+    loadPBRTextures().then(() => {
+        // Try to load last saved design from localStorage
+        loadLastDesign();
+        
+        generateSauna();
+        animate();
+    });
+}
+
+function initPartGroups() {
+    Object.keys(partGroups).forEach(key => {
+        partGroups[key] = new THREE.Group();
+        partGroups[key].name = key;
+        saunaGroup.add(partGroups[key]);
+    });
+}
+
+// ===== PBR Texture Loading =====
+async function loadPBRTextures() {
+    const textureLoader = new THREE.TextureLoader();
+    const extensions = ['jpg', 'png', 'jpeg'];
+    
+    // Try to load color texture
+    for (const ext of extensions) {
+        try {
+            const colorTexture = await loadTextureAsync(textureLoader, `wood_color.${ext}`);
+            if (colorTexture) {
+                pbrTextures.color = colorTexture;
+                pbrTextures.color.wrapS = THREE.RepeatWrapping;
+                pbrTextures.color.wrapT = THREE.RepeatWrapping;
+                pbrTextures.useProceduralFallback = false;
+                console.log(`Loaded wood_color.${ext}`);
+                break;
+            }
+        } catch (e) {
+            // Continue trying other extensions
+        }
+    }
+    
+    // Try to load normal texture
+    for (const ext of extensions) {
+        try {
+            const normalTexture = await loadTextureAsync(textureLoader, `wood_normal.${ext}`);
+            if (normalTexture) {
+                pbrTextures.normal = normalTexture;
+                pbrTextures.normal.wrapS = THREE.RepeatWrapping;
+                pbrTextures.normal.wrapT = THREE.RepeatWrapping;
+                console.log(`Loaded wood_normal.${ext}`);
+                break;
+            }
+        } catch (e) {
+            // Continue trying other extensions
+        }
+    }
+    
+    // Try to load roughness texture
+    for (const ext of extensions) {
+        try {
+            const roughnessTexture = await loadTextureAsync(textureLoader, `wood_roughness.${ext}`);
+            if (roughnessTexture) {
+                pbrTextures.roughness = roughnessTexture;
+                pbrTextures.roughness.wrapS = THREE.RepeatWrapping;
+                pbrTextures.roughness.wrapT = THREE.RepeatWrapping;
+                console.log(`Loaded wood_roughness.${ext}`);
+                break;
+            }
+        } catch (e) {
+            // Continue trying other extensions
+        }
+    }
+    
+    pbrTextures.loaded = true;
+    
+    if (pbrTextures.useProceduralFallback) {
+        console.log('No external textures found. Using procedural wood texture.');
+        console.log('To use custom textures, place these files in the same folder:');
+        console.log('  - wood_color.jpg (required for custom texture)');
+        console.log('  - wood_normal.jpg (optional, for PBR)');
+        console.log('  - wood_roughness.jpg (optional, for PBR)');
+    }
+}
+
+function loadTextureAsync(loader, url) {
+    return new Promise((resolve, reject) => {
+        loader.load(
+            url,
+            (texture) => resolve(texture),
+            undefined,
+            (error) => reject(error)
+        );
+    });
+}
+
+// ===== Auto-save/load from localStorage =====
+function saveToLocalStorage() {
+    try {
+        const data = getDesignData();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (e) {
+        console.warn('Could not save to localStorage:', e);
+    }
+}
+
+function loadLastDesign() {
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            const data = JSON.parse(saved);
+            applyDesignData(data);
+            console.log('Loaded last design from localStorage');
+        }
+    } catch (e) {
+        console.warn('Could not load from localStorage:', e);
+    }
 }
 
 // ===== Camera Controls =====
@@ -248,6 +419,7 @@ function scheduleUpdate() {
     }
     updateTimeout = setTimeout(() => {
         generateSauna(true);
+        saveToLocalStorage(); // Auto-save on every change
     }, 50);
 }
 
@@ -328,20 +500,61 @@ function createWoodTexture(darker = false) {
     return texture;
 }
 
-function createPlank(width, height, depth, darker = false) {
+function createPlank(width, height, depth, darker = false, partType = 'walls') {
     const geometry = new THREE.BoxGeometry(width, height, depth);
-    const texture = createWoodTexture(darker);
-    texture.repeat.set(Math.max(width, depth) / 0.25, 1);
+    
+    let material;
+    
+    if (!pbrTextures.useProceduralFallback && pbrTextures.color) {
+        // Use loaded PBR textures
+        const colorTexture = pbrTextures.color.clone();
+        colorTexture.repeat.set(Math.max(width, depth) / 0.5, height / 0.1);
+        
+        const materialParams = {
+            map: colorTexture,
+            roughness: 0.8,
+            metalness: 0.0
+        };
+        
+        if (pbrTextures.normal) {
+            const normalTexture = pbrTextures.normal.clone();
+            normalTexture.repeat.set(Math.max(width, depth) / 0.5, height / 0.1);
+            materialParams.normalMap = normalTexture;
+            materialParams.normalScale = new THREE.Vector2(1, 1);
+        }
+        
+        if (pbrTextures.roughness) {
+            const roughnessTexture = pbrTextures.roughness.clone();
+            roughnessTexture.repeat.set(Math.max(width, depth) / 0.5, height / 0.1);
+            materialParams.roughnessMap = roughnessTexture;
+        }
+        
+        if (darker) {
+            materialParams.color = new THREE.Color(0.7, 0.6, 0.5);
+        }
+        
+        material = new THREE.MeshStandardMaterial(materialParams);
+    } else {
+        // Use procedural texture
+        const texture = createWoodTexture(darker);
+        texture.repeat.set(Math.max(width, depth) / 0.25, 1);
 
-    const material = new THREE.MeshStandardMaterial({
-        map: texture,
-        roughness: 0.8,
-        metalness: 0.0
-    });
+        material = new THREE.MeshStandardMaterial({
+            map: texture,
+            roughness: 0.8,
+            metalness: 0.0
+        });
+    }
 
     const mesh = new THREE.Mesh(geometry, material);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
+    
+    // Track material dimensions for export
+    const sizeKey = `${Math.round(Math.max(width, depth) * 1000)}x${Math.round(height * 1000)}x${Math.round(Math.min(width, depth) * 1000)}`;
+    if (!materialsUsed[partType]) materialsUsed[partType] = {};
+    materialsUsed[partType][sizeKey] = (materialsUsed[partType][sizeKey] || 0) + 1;
+    
     return mesh;
 }
 
@@ -508,16 +721,33 @@ function applyWindowConfig(side, config) {
 
 // ===== Main Generation =====
 function generateSauna(keepCamera = false) {
-    // Clear existing geometry
-    while (saunaGroup.children.length > 0) {
-        const child = saunaGroup.children[0];
-        if (child.geometry) child.geometry.dispose();
-        if (child.material) {
-            if (child.material.map) child.material.map.dispose();
-            child.material.dispose();
+    // Clear existing geometry from part groups
+    Object.keys(partGroups).forEach(key => {
+        if (partGroups[key]) {
+            while (partGroups[key].children.length > 0) {
+                const child = partGroups[key].children[0];
+                if (child.geometry) child.geometry.dispose();
+                if (child.material) {
+                    if (child.material.map) child.material.map.dispose();
+                    child.material.dispose();
+                }
+                partGroups[key].remove(child);
+            }
         }
-        saunaGroup.remove(child);
+    });
+    
+    // Clear the main sauna group and re-add part groups
+    while (saunaGroup.children.length > 0) {
+        saunaGroup.remove(saunaGroup.children[0]);
     }
+    initPartGroups();
+    
+    // Apply visibility states
+    Object.keys(partVisibility).forEach(key => {
+        if (partGroups[key]) {
+            partGroups[key].visible = partVisibility[key];
+        }
+    });
 
     // Reset counters
     wallPlanksCount = 0;
@@ -526,6 +756,14 @@ function generateSauna(keepCamera = false) {
     floorPlanksCount = 0;
     gablePlanksCount = 0;
     insulationPanelsCount = 0;
+    
+    // Reset materials tracking
+    materialsUsed = {
+        walls: {},
+        roof: {},
+        floor: {},
+        gable: {}
+    };
 
     // Get dimensions
     const saunaWidth = parseFloat(document.getElementById('width').value) || 2.5;
@@ -775,7 +1013,7 @@ function generateWallInsulation(side, panelWidth, panelHeight, thickness, posX, 
             type
         );
         panel.position.set(posX, posY, posZ);
-        saunaGroup.add(panel);
+        partGroups.insulation.add(panel);
         insulationPanelsCount++;
         return;
     }
@@ -801,7 +1039,7 @@ function generateWallInsulation(side, panelWidth, panelHeight, thickness, posX, 
             const offsetX = side === 'left' || side === 'right' ? 0 : (-panelWidth/2 + leftPanelWidth/2);
             const offsetZ = side === 'left' || side === 'right' ? (-panelWidth/2 + leftPanelWidth/2) : 0;
             panel.position.set(posX + offsetX, posY, posZ + offsetZ);
-            saunaGroup.add(panel);
+            partGroups.insulation.add(panel);
             insulationPanelsCount++;
         }
         
@@ -817,7 +1055,7 @@ function generateWallInsulation(side, panelWidth, panelHeight, thickness, posX, 
             const offsetX = side === 'left' || side === 'right' ? 0 : (panelWidth/2 - rightPanelWidth/2);
             const offsetZ = side === 'left' || side === 'right' ? (panelWidth/2 - rightPanelWidth/2) : 0;
             panel.position.set(posX + offsetX, posY, posZ + offsetZ);
-            saunaGroup.add(panel);
+            partGroups.insulation.add(panel);
             insulationPanelsCount++;
         }
         
@@ -836,7 +1074,7 @@ function generateWallInsulation(side, panelWidth, panelHeight, thickness, posX, 
                 const offsetX = side === 'left' || side === 'right' ? 0 : holeCenter;
                 const offsetZ = side === 'left' || side === 'right' ? holeCenter : 0;
                 panel.position.set(posX + offsetX, holeTop + topPanelHeight/2, posZ + offsetZ);
-                saunaGroup.add(panel);
+                partGroups.insulation.add(panel);
                 insulationPanelsCount++;
             }
         }
@@ -856,7 +1094,7 @@ function generateWallInsulation(side, panelWidth, panelHeight, thickness, posX, 
                 const offsetX = side === 'left' || side === 'right' ? 0 : holeCenter;
                 const offsetZ = side === 'left' || side === 'right' ? holeCenter : 0;
                 panel.position.set(posX + offsetX, bottomPanelHeight/2, posZ + offsetZ);
-                saunaGroup.add(panel);
+                partGroups.insulation.add(panel);
                 insulationPanelsCount++;
             }
         }
@@ -1069,7 +1307,7 @@ function generateWall(side, wallWidth, wallHeight, depth, plankWidth, plankThick
             const segWidth = seg.end - seg.start;
             if (segWidth < 0.05) return;
 
-            const plank = createPlank(segWidth, plankWidth, plankThickness, isInner);
+            const plank = createPlank(segWidth, plankWidth, plankThickness, isInner, 'walls');
             const centerX = seg.start + segWidth / 2 - wallWidth / 2;
 
             switch(side) {
@@ -1088,7 +1326,14 @@ function generateWall(side, wallWidth, wallHeight, depth, plankWidth, plankThick
                     plank.position.set(depth/2 - offsetAmount, y, centerX);
                     break;
             }
-            saunaGroup.add(plank);
+            
+            // Add to correct part group
+            if (partGroups[side]) {
+                partGroups[side].add(plank);
+            } else {
+                saunaGroup.add(plank);
+            }
+            
             if (isInner) {
                 innerWallPlanksCount++;
             } else {
@@ -1196,9 +1441,9 @@ function generateFloor(width, length, plankWidth, plankThickness, gap) {
         const x = -width/2 + i * (plankWidth + gap) + plankWidth/2;
         if (x > width/2) break;
 
-        const plank = createPlank(plankWidth, plankThickness, length);
+        const plank = createPlank(plankWidth, plankThickness, length, false, 'floor');
         plank.position.set(x, plankThickness/2, 0);
-        saunaGroup.add(plank);
+        partGroups.floor.add(plank);
         floorPlanksCount++;
     }
 }
@@ -1230,9 +1475,9 @@ function generateFlatRoof(width, length, height, overhang, plankWidth, plankThic
         const x = -roofWidth/2 + i * (plankWidth + gap) + plankWidth/2;
         if (x > roofWidth/2) break;
 
-        const plank = createPlank(plankWidth, plankThickness, roofLength, true);
+        const plank = createPlank(plankWidth, plankThickness, roofLength, true, 'roof');
         plank.position.set(x, height + plankThickness/2, 0);
-        saunaGroup.add(plank);
+        partGroups.roof.add(plank);
         roofPlanksCount++;
     }
 }
@@ -1264,7 +1509,7 @@ function generateGableRoof(width, length, height, roofHeight, overhang, plankWid
             const z = -halfLength + dist * Math.cos(angleFB) + (plankWidth/2) * Math.sin(angleFB);
             const y = height + dist * Math.sin(angleFB) + (plankThickness/2) * Math.cos(angleFB);
             plank.position.set(0, y, z);
-            saunaGroup.add(plank);
+            partGroups.roof.add(plank);
             roofPlanksCount++;
         }
 
@@ -1278,7 +1523,7 @@ function generateGableRoof(width, length, height, roofHeight, overhang, plankWid
             const z = halfLength - dist * Math.cos(angleFB) - (plankWidth/2) * Math.sin(angleFB);
             const y = height + dist * Math.sin(angleFB) + (plankThickness/2) * Math.cos(angleFB);
             plank.position.set(0, y, z);
-            saunaGroup.add(plank);
+            partGroups.roof.add(plank);
             roofPlanksCount++;
         }
 
@@ -1297,7 +1542,7 @@ function generateGableRoof(width, length, height, roofHeight, overhang, plankWid
             const x = -halfWidth + dist * Math.cos(angle) + (plankWidth/2) * Math.sin(angle);
             const y = height + dist * Math.sin(angle) + (plankThickness/2) * Math.cos(angle);
             plank.position.set(x, y, 0);
-            saunaGroup.add(plank);
+            partGroups.roof.add(plank);
             roofPlanksCount++;
         }
 
@@ -1310,7 +1555,7 @@ function generateGableRoof(width, length, height, roofHeight, overhang, plankWid
             const x = halfWidth - dist * Math.cos(angle) - (plankWidth/2) * Math.sin(angle);
             const y = height + dist * Math.sin(angle) + (plankThickness/2) * Math.cos(angle);
             plank.position.set(x, y, 0);
-            saunaGroup.add(plank);
+            partGroups.roof.add(plank);
             roofPlanksCount++;
         }
 
@@ -1331,7 +1576,7 @@ function generateGableEnd(width, height, roofHeight, plankWidth, plankThickness,
 
         const plank = createPlank(currentWidth, plankWidth, plankThickness);
         plank.position.set(0, y, zPos);
-        saunaGroup.add(plank);
+        partGroups.roof.add(plank);
         gablePlanksCount++;
     }
 }
@@ -1348,7 +1593,7 @@ function generateGableEndLR(length, height, roofHeight, plankWidth, plankThickne
 
         const plank = createPlank(plankThickness, plankWidth, currentLength);
         plank.position.set(xPos, y, 0);
-        saunaGroup.add(plank);
+        partGroups.roof.add(plank);
         gablePlanksCount++;
     }
 }
@@ -1384,7 +1629,7 @@ function generateShedRoof(width, length, height, roofHeight, overhang, plankWidt
                 const y = height + dist * Math.sin(angle) + (plankThickness/2) * Math.cos(angle);
                 plank.position.set(x, y, 0);
             }
-            saunaGroup.add(plank);
+            partGroups.roof.add(plank);
             roofPlanksCount++;
         }
 
@@ -1415,7 +1660,7 @@ function generateShedRoof(width, length, height, roofHeight, overhang, plankWidt
                 const y = height + dist * Math.sin(angle) + (plankThickness/2) * Math.cos(angle);
                 plank.position.set(0, y, z);
             }
-            saunaGroup.add(plank);
+            partGroups.roof.add(plank);
             roofPlanksCount++;
         }
 
@@ -1454,7 +1699,7 @@ function generateShedTriangle(width, length, height, roofHeight, plankWidth, pla
         const plank = createPlank(plankLength, plankWidth, plankThickness);
         const xPos = plankStartX + plankLength/2;
         plank.position.set(xPos, y, zPos);
-        saunaGroup.add(plank);
+        partGroups.roof.add(plank);
         gablePlanksCount++;
     }
 }
@@ -1488,7 +1733,7 @@ function generateShedTriangleLR(width, length, height, roofHeight, plankWidth, p
         const plank = createPlank(plankThickness, plankWidth, plankLen);
         const zPosCenter = plankStartZ + plankLen/2;
         plank.position.set(xPos, y, zPosCenter);
-        saunaGroup.add(plank);
+        partGroups.roof.add(plank);
         gablePlanksCount++;
     }
 }
@@ -1523,7 +1768,7 @@ function generateHipRoof(width, length, height, roofHeight, overhang, plankWidth
         const x = -halfWidth + dist * Math.cos(angleSide) + (plankWidth/2) * Math.sin(angleSide);
         const y = height + dist * Math.sin(angleSide) + (plankThickness/2) * Math.cos(angleSide);
         plank.position.set(x, y, 0);
-        saunaGroup.add(plank);
+        partGroups.roof.add(plank);
         roofPlanksCount++;
     }
 
@@ -1541,7 +1786,7 @@ function generateHipRoof(width, length, height, roofHeight, overhang, plankWidth
         const x = halfWidth - dist * Math.cos(angleSide) - (plankWidth/2) * Math.sin(angleSide);
         const y = height + dist * Math.sin(angleSide) + (plankThickness/2) * Math.cos(angleSide);
         plank.position.set(x, y, 0);
-        saunaGroup.add(plank);
+        partGroups.roof.add(plank);
         roofPlanksCount++;
     }
 
@@ -1560,7 +1805,7 @@ function generateHipRoof(width, length, height, roofHeight, overhang, plankWidth
         const z = -halfLength + dist * Math.cos(angleEnd) + (plankWidth/2) * Math.sin(angleEnd);
         const y = height + dist * Math.sin(angleEnd) + (plankThickness/2) * Math.cos(angleEnd);
         plank.position.set(0, y, z);
-        saunaGroup.add(plank);
+        partGroups.roof.add(plank);
         roofPlanksCount++;
     }
 
@@ -1578,7 +1823,7 @@ function generateHipRoof(width, length, height, roofHeight, overhang, plankWidth
         const z = halfLength - dist * Math.cos(angleEnd) - (plankWidth/2) * Math.sin(angleEnd);
         const y = height + dist * Math.sin(angleEnd) + (plankThickness/2) * Math.cos(angleEnd);
         plank.position.set(0, y, z);
-        saunaGroup.add(plank);
+        partGroups.roof.add(plank);
         roofPlanksCount++;
     }
 }
@@ -1902,6 +2147,317 @@ function updateMeasurementVisibility() {
             label.visible = dot < 0.1; // Show if mostly facing the wall
         }
     });
+}
+
+// ===== Part Visibility Toggle =====
+function togglePartVisibility(part) {
+    partVisibility[part] = !partVisibility[part];
+    
+    const btn = document.getElementById('toggle' + part.charAt(0).toUpperCase() + part.slice(1));
+    if (btn) {
+        btn.classList.toggle('active', partVisibility[part]);
+    }
+    
+    if (partGroups[part]) {
+        partGroups[part].visible = partVisibility[part];
+    }
+}
+
+// ===== Materials List =====
+function toggleMaterialsList() {
+    const panel = document.getElementById('materialsPanel');
+    panel.classList.toggle('visible');
+    
+    if (panel.classList.contains('visible')) {
+        updateMaterialsList();
+    }
+}
+
+function updateMaterialsList() {
+    const content = document.getElementById('materialsContent');
+    
+    // Aggregate all materials
+    const allMaterials = {};
+    let totalPlanks = 0;
+    
+    Object.keys(materialsUsed).forEach(category => {
+        Object.keys(materialsUsed[category]).forEach(size => {
+            if (!allMaterials[size]) {
+                allMaterials[size] = { count: 0, categories: [] };
+            }
+            allMaterials[size].count += materialsUsed[category][size];
+            allMaterials[size].categories.push(category);
+            totalPlanks += materialsUsed[category][size];
+        });
+    });
+    
+    // Sort by count (most used first)
+    const sortedSizes = Object.keys(allMaterials).sort((a, b) => allMaterials[b].count - allMaterials[a].count);
+    
+    let html = '<div class="materials-section">';
+    html += '<div class="materials-section-title">Plank Sizes (Length × Width × Thickness mm)</div>';
+    
+    sortedSizes.forEach(size => {
+        const dims = size.split('x').map(d => parseInt(d));
+        const displaySize = `${dims[0]} × ${dims[1]} × ${dims[2]} mm`;
+        html += `<div class="material-item">
+            <span class="material-size">${displaySize}</span>
+            <span class="material-count">${allMaterials[size].count}</span>
+        </div>`;
+    });
+    
+    html += '</div>';
+    
+    // Add total
+    html += `<div class="materials-total">
+        <span>Total Planks</span>
+        <span class="material-count">${totalPlanks}</span>
+    </div>`;
+    
+    content.innerHTML = html;
+}
+
+// ===== Export to OBJ =====
+function exportToOBJ() {
+    let objContent = '# Sauna Builder OBJ Export\n';
+    objContent += '# Generated by Sauna Builder\n\n';
+    
+    let vertexOffset = 0;
+    
+    saunaGroup.traverse((child) => {
+        if (child.isMesh && child.geometry) {
+            const geometry = child.geometry;
+            const position = child.position;
+            const rotation = child.rotation;
+            const scale = child.scale;
+            
+            // Create transformation matrix
+            const matrix = new THREE.Matrix4();
+            matrix.compose(position, new THREE.Quaternion().setFromEuler(rotation), scale);
+            
+            const positionAttribute = geometry.getAttribute('position');
+            const normalAttribute = geometry.getAttribute('normal');
+            
+            // Export vertices
+            for (let i = 0; i < positionAttribute.count; i++) {
+                const vertex = new THREE.Vector3(
+                    positionAttribute.getX(i),
+                    positionAttribute.getY(i),
+                    positionAttribute.getZ(i)
+                );
+                vertex.applyMatrix4(matrix);
+                objContent += `v ${vertex.x.toFixed(6)} ${vertex.y.toFixed(6)} ${vertex.z.toFixed(6)}\n`;
+            }
+            
+            // Export normals
+            if (normalAttribute) {
+                const normalMatrix = new THREE.Matrix3().getNormalMatrix(matrix);
+                for (let i = 0; i < normalAttribute.count; i++) {
+                    const normal = new THREE.Vector3(
+                        normalAttribute.getX(i),
+                        normalAttribute.getY(i),
+                        normalAttribute.getZ(i)
+                    );
+                    normal.applyMatrix3(normalMatrix).normalize();
+                    objContent += `vn ${normal.x.toFixed(6)} ${normal.y.toFixed(6)} ${normal.z.toFixed(6)}\n`;
+                }
+            }
+            
+            // Export faces
+            const index = geometry.getIndex();
+            if (index) {
+                for (let i = 0; i < index.count; i += 3) {
+                    const a = index.getX(i) + 1 + vertexOffset;
+                    const b = index.getX(i + 1) + 1 + vertexOffset;
+                    const c = index.getX(i + 2) + 1 + vertexOffset;
+                    objContent += `f ${a}//${a} ${b}//${b} ${c}//${c}\n`;
+                }
+            } else {
+                for (let i = 0; i < positionAttribute.count; i += 3) {
+                    const a = i + 1 + vertexOffset;
+                    const b = i + 2 + vertexOffset;
+                    const c = i + 3 + vertexOffset;
+                    objContent += `f ${a}//${a} ${b}//${b} ${c}//${c}\n`;
+                }
+            }
+            
+            vertexOffset += positionAttribute.count;
+        }
+    });
+    
+    // Download OBJ file
+    const blob = new Blob([objContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'sauna-model.obj';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+// ===== Export Blueprint PDF =====
+function exportBlueprint() {
+    // Create a canvas for the blueprint
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = 1200;
+    canvas.height = 1600;
+    
+    // Get current dimensions
+    const saunaWidth = parseFloat(document.getElementById('width').value) || 2.5;
+    const saunaLength = parseFloat(document.getElementById('length').value) || 3;
+    const saunaHeight = parseFloat(document.getElementById('height').value) || 2.2;
+    const roofType = document.getElementById('roofType').value;
+    const roofHeight = parseFloat(document.getElementById('roofHeight').value) || 0.6;
+    const plankWidth = parseFloat(document.getElementById('plankWidth').value) || 10;
+    const plankThickness = parseFloat(document.getElementById('plankThickness').value) || 2;
+    
+    // Background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Header
+    ctx.fillStyle = '#2C2416';
+    ctx.fillRect(0, 0, canvas.width, 80);
+    ctx.fillStyle = '#D4A574';
+    ctx.font = 'bold 32px Arial';
+    ctx.fillText('SAUNA BUILDER - BLUEPRINT', 40, 52);
+    
+    // Date
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '14px Arial';
+    ctx.fillText(new Date().toLocaleDateString(), canvas.width - 150, 52);
+    
+    // Dimensions section
+    let y = 120;
+    ctx.fillStyle = '#2C2416';
+    ctx.font = 'bold 20px Arial';
+    ctx.fillText('DIMENSIONS', 40, y);
+    
+    y += 35;
+    ctx.font = '16px Arial';
+    ctx.fillText(`Width: ${(saunaWidth * 100).toFixed(0)} cm`, 40, y);
+    ctx.fillText(`Length: ${(saunaLength * 100).toFixed(0)} cm`, 250, y);
+    ctx.fillText(`Height: ${(saunaHeight * 100).toFixed(0)} cm`, 460, y);
+    
+    y += 25;
+    ctx.fillText(`Roof Type: ${roofType.charAt(0).toUpperCase() + roofType.slice(1)}`, 40, y);
+    if (roofType !== 'flat') {
+        ctx.fillText(`Roof Height: ${(roofHeight * 100).toFixed(0)} cm`, 250, y);
+    }
+    
+    y += 25;
+    ctx.fillText(`Plank: ${plankWidth} × ${plankThickness} cm`, 40, y);
+    
+    // Draw floor plan
+    y += 50;
+    ctx.fillStyle = '#2C2416';
+    ctx.font = 'bold 20px Arial';
+    ctx.fillText('FLOOR PLAN (Top View)', 40, y);
+    
+    const planScale = 150; // pixels per meter
+    const planX = 100;
+    const planY = y + 30;
+    
+    ctx.strokeStyle = '#5D4037';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(planX, planY, saunaWidth * planScale, saunaLength * planScale);
+    
+    // Add dimensions to floor plan
+    ctx.fillStyle = '#2C2416';
+    ctx.font = '14px Arial';
+    ctx.fillText(`${(saunaWidth * 100).toFixed(0)} cm`, planX + (saunaWidth * planScale) / 2 - 25, planY - 10);
+    
+    ctx.save();
+    ctx.translate(planX - 15, planY + (saunaLength * planScale) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText(`${(saunaLength * 100).toFixed(0)} cm`, -25, 0);
+    ctx.restore();
+    
+    // Draw front elevation
+    y = planY + saunaLength * planScale + 80;
+    ctx.fillStyle = '#2C2416';
+    ctx.font = 'bold 20px Arial';
+    ctx.fillText('FRONT ELEVATION', 40, y);
+    
+    const elevY = y + 30;
+    ctx.strokeStyle = '#5D4037';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(planX, elevY, saunaWidth * planScale, saunaHeight * planScale);
+    
+    // Draw roof on elevation
+    if (roofType === 'gable') {
+        ctx.beginPath();
+        ctx.moveTo(planX, elevY);
+        ctx.lineTo(planX + (saunaWidth * planScale) / 2, elevY - roofHeight * planScale);
+        ctx.lineTo(planX + saunaWidth * planScale, elevY);
+        ctx.stroke();
+    } else if (roofType === 'shed') {
+        ctx.beginPath();
+        ctx.moveTo(planX, elevY);
+        ctx.lineTo(planX + saunaWidth * planScale, elevY - roofHeight * planScale);
+        ctx.stroke();
+    }
+    
+    // Materials list section
+    y = elevY + saunaHeight * planScale + 80;
+    ctx.fillStyle = '#2C2416';
+    ctx.font = 'bold 20px Arial';
+    ctx.fillText('MATERIALS LIST', 40, y);
+    
+    y += 35;
+    ctx.font = 'bold 14px Arial';
+    ctx.fillText('Size (L × W × T mm)', 40, y);
+    ctx.fillText('Quantity', 350, y);
+    
+    // Aggregate materials
+    const allMaterials = {};
+    let totalPlanks = 0;
+    Object.keys(materialsUsed).forEach(category => {
+        Object.keys(materialsUsed[category]).forEach(size => {
+            if (!allMaterials[size]) allMaterials[size] = 0;
+            allMaterials[size] += materialsUsed[category][size];
+            totalPlanks += materialsUsed[category][size];
+        });
+    });
+    
+    const sortedSizes = Object.keys(allMaterials).sort((a, b) => allMaterials[b] - allMaterials[a]);
+    
+    ctx.font = '14px Arial';
+    y += 25;
+    sortedSizes.forEach(size => {
+        const dims = size.split('x').map(d => parseInt(d));
+        ctx.fillText(`${dims[0]} × ${dims[1]} × ${dims[2]}`, 40, y);
+        ctx.fillText(`${allMaterials[size]}`, 350, y);
+        y += 22;
+        
+        if (y > canvas.height - 100) return; // Prevent overflow
+    });
+    
+    // Total
+    y += 10;
+    ctx.font = 'bold 16px Arial';
+    ctx.fillStyle = '#D4A574';
+    ctx.fillRect(35, y - 18, 350, 28);
+    ctx.fillStyle = '#2C2416';
+    ctx.fillText('TOTAL PLANKS', 45, y);
+    ctx.fillText(`${totalPlanks}`, 350, y);
+    
+    // Footer
+    ctx.fillStyle = '#888888';
+    ctx.font = '12px Arial';
+    ctx.fillText('Generated by Sauna Builder', 40, canvas.height - 30);
+    
+    // Convert to PDF-like image and download
+    const dataUrl = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = 'sauna-blueprint.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
 
 // ===== Animation Loop =====
