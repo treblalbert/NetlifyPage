@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LENIMKI | Item Manager</title>
+    <style>
+        body { font-family: 'Courier New', Courier, monospace; background: #1a1a1a; color: #00ff00; padding: 20px; }
+        .container { max-width: 800px; margin: auto; border: 1px solid #333; padding: 20px; background: #222; }
+        h1 { text-align: center; border-bottom: 2px solid #00ff00; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #444; padding: 10px; text-align: left; }
+        th { background: #333; }
+        input, select, button { background: #111; color: #00ff00; border: 1px solid #00ff00; padding: 5px; }
+        .controls { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn-del { color: #ff4444; border-color: #ff4444; cursor: pointer; }
+        .btn-save { background: #00ff00; color: #000; font-weight: bold; cursor: pointer; float: right; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>LENIMKI_DATABASE_V1.0</h1>
+    
+    <div class="controls">
+        <input type="number" id="itemId" placeholder="ID">
+        <input type="text" id="itemName" placeholder="Item Name">
+        <select id="itemType">
+            <option value="Food">Food</option>
+            <option value="Misc">Misc</option>
+            <option value="Weapon">Weapon</option>
+        </select>
+        <button onclick="addItem()">+ ADD ITEM</button>
+    </div>
+
+    <table id="itemTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+
+    <br>
+    <button class="btn-save" onclick="downloadJSON()">💾 SAVE & DOWNLOAD JSON</button>
+</div>
+
+<script>
+    let items = [];
+
+    // Load initial data from your local json file
+    fetch('items.json')
+        .then(response => response.json())
+        .then(data => {
+            items = data;
+            renderTable();
+        })
+        .catch(err => console.log("Note: Create an items.json file in this folder first!"));
+
+    function renderTable() {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        // Sort items by ID automatically
+        items.sort((a, b) => a.id - b.id);
+        
+        items.forEach((item, index) => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${item.id}</td>
+                    <td>${item.name}</td>
+                    <td>${item.type}</td>
+                    <td><button class="btn-del" onclick="removeItem(${index})">REMOVE</button></td>
+                </tr>
+            `;
+        });
+    }
+
+    function addItem() {
+        const id = document.getElementById('itemId').value;
+        const name = document.getElementById('itemName').value;
+        const type = document.getElementById('itemType').value;
+
+        if(id && name) {
+            items.push({ id: parseInt(id), name, type });
+            renderTable();
+            // Reset fields
+            document.getElementById('itemId').value = '';
+            document.getElementById('itemName').value = '';
+        }
+    }
+
+    function removeItem(index) {
+        items.splice(index, 1);
+        renderTable();
+    }
+
+    function downloadJSON() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(items, null, 2));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", "items.json");
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+    }
+</script>
+
+</body>
+</html>
