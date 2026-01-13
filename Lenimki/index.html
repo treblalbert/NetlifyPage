@@ -5,18 +5,18 @@
     <title>LENIMKI | Item Manager</title>
     <style>
         body { font-family: 'Courier New', Courier, monospace; background: #1a1a1a; color: #00ff00; padding: 20px; }
-        .container { max-width: 900px; margin: auto; border: 1px solid #333; padding: 20px; background: #222; box-shadow: 0 0 15px rgba(0,255,0,0.1); }
+        .container { max-width: 950px; margin: auto; border: 1px solid #333; padding: 20px; background: #222; box-shadow: 0 0 15px rgba(0,255,0,0.1); }
         h1 { text-align: center; border-bottom: 2px solid #00ff00; padding-bottom: 10px; letter-spacing: 5px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #111; }
         th, td { border: 1px solid #333; padding: 12px; text-align: left; }
         th { background: #2c2c2c; color: #fff; }
         tr:hover { background: #1a1a1a; }
         input, select, button { background: #000; color: #00ff00; border: 1px solid #00ff00; padding: 8px; font-family: inherit; }
-        .controls { margin-bottom: 20px; display: flex; gap: 10px; background: #2c2c2c; padding: 15px; border-radius: 4px; }
+        .controls { margin-bottom: 20px; display: flex; gap: 10px; background: #2c2c2c; padding: 15px; border-radius: 4px; align-items: center; }
         .btn-del { color: #ff4444; border-color: #ff4444; cursor: pointer; }
-        .btn-del:hover { background: #ff4444; color: #fff; }
         .btn-save { background: #00ff00; color: #000; font-weight: bold; cursor: pointer; padding: 15px; width: 100%; margin-top: 20px; font-size: 1.1em; }
         .status-msg { color: #888; font-size: 0.8em; margin-top: 5px; }
+        .larks-val { color: #ffd700; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -27,12 +27,13 @@
     <div class="controls">
         <input type="number" id="itemId" placeholder="ID" style="width: 60px;">
         <input type="text" id="itemName" placeholder="Item Name" style="flex-grow: 1;">
+        <input type="number" id="itemPrice" placeholder="Larks" style="width: 80px;">
         <select id="itemType">
             <option value="Food">Food</option>
             <option value="Misc">Misc</option>
             <option value="Weapon">Weapon</option>
         </select>
-        <button onclick="addItem()">+ ADD TO LIST</button>
+        <button onclick="addItem()">+ ADD ITEM</button>
     </div>
 
     <table id="itemTable">
@@ -41,11 +42,11 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Type</th>
+                <th>Price (Larks)</th>
                 <th>Action</th>
             </tr>
         </thead>
-        <tbody id="tableBody">
-            </tbody>
+        <tbody id="tableBody"></tbody>
     </table>
 
     <button class="btn-save" onclick="downloadJSON()">💾 EXPORT UPDATED ITEMS.JSON</button>
@@ -55,18 +56,16 @@
 <script>
     let items = [];
 
-    // AUTOMATIC LOAD ON STARTUP
     async function loadData() {
         const status = document.getElementById('status');
         try {
             const response = await fetch('items.json');
-            if (!response.ok) throw new Error("File not found");
+            if (!response.ok) throw new Error();
             items = await response.json();
-            status.innerText = "System: items.json loaded successfully.";
+            status.innerText = "System: items.json loaded.";
             renderTable();
         } catch (err) {
-            status.innerHTML = "System Error: <span style='color:red'>Browser blocked local file access or items.json missing.</span><br>Use a 'Live Server' or VS Code to view.";
-            console.error(err);
+            status.innerHTML = "<span style='color:red'>Error: Could not find items.json or browser blocked access.</span>";
         }
     }
 
@@ -81,6 +80,7 @@
                     <td><strong>${item.id}</strong></td>
                     <td>${item.name}</td>
                     <td><span style="color: ${getTypeColor(item.type)}">${item.type}</span></td>
+                    <td class="larks-val">Ł ${item.price || 0}</td>
                     <td><button class="btn-del" onclick="removeItem(${index})">REMOVE</button></td>
                 </tr>
             `;
@@ -96,21 +96,21 @@
     function addItem() {
         const id = document.getElementById('itemId').value;
         const name = document.getElementById('itemName').value;
+        const price = document.getElementById('itemPrice').value;
         const type = document.getElementById('itemType').value;
 
-        if(id && name) {
-            items.push({ id: parseInt(id), name, type });
+        if(id && name && price) {
+            items.push({ id: parseInt(id), name, type, price: parseInt(price) });
             renderTable();
             document.getElementById('itemId').value = '';
             document.getElementById('itemName').value = '';
+            document.getElementById('itemPrice').value = '';
         }
     }
 
     function removeItem(index) {
-        if(confirm("Delete this item?")) {
-            items.splice(index, 1);
-            renderTable();
-        }
+        items.splice(index, 1);
+        renderTable();
     }
 
     function downloadJSON() {
@@ -121,12 +121,9 @@
         document.body.appendChild(downloadAnchorNode);
         downloadAnchorNode.click();
         downloadAnchorNode.remove();
-        document.getElementById('status').innerText = "System: File exported. Replace your old items.json with the download.";
     }
 
-    // Initialize
     loadData();
 </script>
-
 </body>
 </html>
