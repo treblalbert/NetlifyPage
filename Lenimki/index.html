@@ -12,7 +12,7 @@
         th { background: #2c2c2c; color: #fff; }
         tr:hover { background: #1a1a1a; }
         
-        /* Weapon Row Styling */
+        /* Interactive Weapon Rows */
         .weapon-row { cursor: pointer; border-left: 3px solid transparent; transition: 0.2s; }
         .weapon-row:hover { background: #2c1a1a !important; border-left: 3px solid #ff4444; }
         
@@ -45,6 +45,7 @@
         <select id="itemType">
             <option value="Food">Food</option>
             <option value="Misc">Misc</option>
+            <option value="Ammo">Ammo</option>
             <option value="Weapon">Weapon</option>
         </select>
         <button onclick="addItem()">+ ADD ITEM</button>
@@ -52,7 +53,7 @@
 
     <div class="search-bar">
         <span>[SEARCH_QUERY]></span>
-        <input type="text" id="searchInput" placeholder="Type to filter..." onkeyup="renderTable()">
+        <input type="text" id="searchInput" placeholder="Search by name, ID, or type..." onkeyup="renderTable()">
     </div>
 
     <table id="itemTable">
@@ -84,7 +85,7 @@
             status.innerText = "System: items.json loaded.";
             renderTable();
         } catch (err) {
-            status.innerHTML = "<span style='color:red'>Error: Could not find items.json.</span>";
+            status.innerHTML = "<span style='color:red'>Error: Could not find items.json. Ensure it is in the same folder.</span>";
         }
     }
 
@@ -93,6 +94,7 @@
         const filter = document.getElementById('searchInput').value.toLowerCase();
         tbody.innerHTML = '';
         
+        // Ensure strictly numerical ID sorting
         items.sort((a, b) => a.id - b.id);
         
         items.forEach((item) => {
@@ -102,34 +104,32 @@
                 item.type.toLowerCase().includes(filter);
 
             if (matchesFilter) {
-                const hasStats = item.type === 'Weapon' && item.stats;
-                const rowId = `row-${item.id}`;
+                // Expansion is strictly for the 'Weapon' type with stats
+                const canExpand = item.type === 'Weapon' && item.stats;
                 
-                // Main Row
                 const tr = document.createElement('tr');
-                if (hasStats) {
+                if (canExpand) {
                     tr.className = 'weapon-row';
                     tr.onclick = () => toggleStats(item.id);
                 }
                 
                 tr.innerHTML = `
                     <td><strong>${item.id}</strong></td>
-                    <td>${item.name} ${hasStats ? '<span style="font-size:0.7em; color:#666; margin-left:10px;">[CLICK TO EXPAND]</span>' : ''}</td>
+                    <td>${item.name} ${canExpand ? '<span style="font-size:0.7em; color:#666; margin-left:10px;">[+VIEW STATS]</span>' : ''}</td>
                     <td><span style="color: ${getTypeColor(item.type)}">${item.type}</span></td>
                     <td class="larks-val">Ł ${item.price || 0}</td>
                     <td><button class="btn-del" onclick="event.stopPropagation(); removeItem(${item.id})">REMOVE</button></td>
                 `;
                 tbody.appendChild(tr);
 
-                // Stats Row (Hidden by default)
-                if (hasStats) {
+                if (canExpand) {
                     const statsTr = document.createElement('tr');
                     statsTr.id = `stats-${item.id}`;
                     statsTr.style.display = 'none';
                     statsTr.innerHTML = `
                         <td colspan="5" class="stats-panel">
                             <div class="stats-grid">
-                                <div class="stat-item"><span class="stat-label">AMMO TYPE (ID)</span><span class="stat-val">${item.stats.ammo} (#${item.stats.ammoId})</span></div>
+                                <div class="stat-item"><span class="stat-label">AMMO (ID)</span><span class="stat-val">${item.stats.ammo} (#${item.stats.ammoId})</span></div>
                                 <div class="stat-item"><span class="stat-label">FIRE RATE</span><span class="stat-val">${item.stats.fireRate}s</span></div>
                                 <div class="stat-item"><span class="stat-label">DAMAGE</span><span class="stat-val">${item.stats.damage}/100</span></div>
                                 <div class="stat-item"><span class="stat-label">RANGE</span><span class="stat-val">${item.stats.range}m</span></div>
@@ -152,9 +152,13 @@
     }
 
     function getTypeColor(type) {
-        if (type === 'Weapon') return '#ff4444';
-        if (type === 'Food') return '#44ff44';
-        return '#4444ff';
+        switch(type) {
+            case 'Weapon': return '#ff4444'; // Red
+            case 'Food': return '#44ff44';   // Green
+            case 'Ammo': return '#ffd700';   // Gold
+            case 'Misc': return '#4444ff';   // Blue
+            default: return '#ffffff';
+        }
     }
 
     function addItem() {

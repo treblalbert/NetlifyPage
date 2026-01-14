@@ -29,13 +29,7 @@
     "price": 250,
     "stats": { "ammo": "9x18mm", "ammoId": 25, "fireRate": 0.4, "damage": 25, "range": 50, "spread": 2.5, "pellets": 1 }
   },
-  { 
-    "id": 25, 
-    "name": "9x18mm Magazine", 
-    "type": "Weapon", 
-    "price": 25,
-    "stats": { "ammo": "9x18mm", "ammoId": 25, "fireRate": 0, "damage": 0, "range": 0, "spread": 0, "pellets": 0 }
-  },
+  { "id": 25, "name": "9x18mm Magazine", "type": "Ammo", "price": 25 },
   { 
     "id": 26, 
     "name": "AK-74M", 
@@ -43,13 +37,7 @@
     "price": 750,
     "stats": { "ammo": "5.45x39mm", "ammoId": 27, "fireRate": 0.1, "damage": 38, "range": 400, "spread": 1.2, "pellets": 1 }
   },
-  { 
-    "id": 27, 
-    "name": "5.45x39mm Ammo Box", 
-    "type": "Weapon", 
-    "price": 45,
-    "stats": { "ammo": "5.45x39mm", "ammoId": 27, "fireRate": 0, "damage": 0, "range": 0, "spread": 0, "pellets": 0 }
-  },
+  { "id": 27, "name": "5.45x39mm Ammo Box", "type": "Ammo", "price": 45 },
   { 
     "id": 28, 
     "name": "Sawed-off Shotgun (Obrez)", 
@@ -57,13 +45,7 @@
     "price": 180,
     "stats": { "ammo": "12g Buckshot", "ammoId": 29, "fireRate": 0.8, "damage": 15, "range": 15, "spread": 12.0, "pellets": 8 }
   },
-  { 
-    "id": 29, 
-    "name": "12g Buckshot Shells", 
-    "type": "Weapon", 
-    "price": 15,
-    "stats": { "ammo": "12g Buckshot", "ammoId": 29, "fireRate": 0, "damage": 0, "range": 0, "spread": 0, "pellets": 0 }
-  },
+  { "id": 29, "name": "12g Buckshot Shells", "type": "Ammo", "price": 15 },
   { 
     "id": 30, 
     "name": "F-1 Lemon Grenade", 
