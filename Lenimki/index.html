@@ -5,32 +5,33 @@
     <title>LENIMKI | Item Manager</title>
     <style>
         body { font-family: 'Courier New', Courier, monospace; background: #1a1a1a; color: #00ff00; padding: 20px; }
-        .container { max-width: 950px; margin: auto; border: 1px solid #333; padding: 20px; background: #222; box-shadow: 0 0 15px rgba(0,255,0,0.1); }
+        .container { max-width: 1000px; margin: auto; border: 1px solid #333; padding: 20px; background: #222; box-shadow: 0 0 15px rgba(0,255,0,0.1); }
         h1 { text-align: center; border-bottom: 2px solid #00ff00; padding-bottom: 10px; letter-spacing: 5px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #111; }
         th, td { border: 1px solid #333; padding: 12px; text-align: left; }
         th { background: #2c2c2c; color: #fff; }
-        tr:hover { background: #1a1a1a; }
         
-        /* Interactive Weapon Rows */
-        .weapon-row { cursor: pointer; border-left: 3px solid transparent; transition: 0.2s; }
-        .weapon-row:hover { background: #2c1a1a !important; border-left: 3px solid #ff4444; }
-        
-        /* Expansion Panel */
-        .stats-panel { background: #000 !important; border: 1px dashed #ff4444; padding: 10px; }
+        /* Expandable Row Styles */
+        .expandable { cursor: pointer; transition: 0.2s; border-left: 3px solid transparent; }
+        .expandable:hover { background: #222 !important; border-left: 3px solid #00ff00; }
+        .weapon-row:hover { border-left-color: #ff4444; }
+        .food-row:hover { border-left-color: #44ff44; }
+
+        .details-panel { background: #000 !important; border: 1px dashed #444; padding: 10px; }
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px; }
         .stat-item { font-size: 0.85em; }
-        .stat-label { color: #888; display: block; font-size: 0.75em; }
-        .stat-val { color: #ff4444; font-weight: bold; }
+        .stat-label { color: #888; display: block; font-size: 0.75em; text-transform: uppercase; }
+        .stat-val { font-weight: bold; }
+        .val-weapon { color: #ff4444; }
+        .val-food { color: #44ff44; }
 
         input, select, button { background: #000; color: #00ff00; border: 1px solid #00ff00; padding: 8px; font-family: inherit; }
-        .controls { margin-bottom: 10px; display: flex; gap: 10px; background: #2c2c2c; padding: 15px; border-radius: 4px; align-items: center; }
+        .controls { margin-bottom: 10px; display: flex; gap: 8px; background: #2c2c2c; padding: 15px; border-radius: 4px; flex-wrap: wrap; }
         .search-bar { margin-bottom: 20px; display: flex; gap: 10px; background: #111; padding: 10px; border: 1px solid #00ff00; align-items: center; }
         .search-bar input { flex-grow: 1; border: none; outline: none; font-size: 1.1em; }
         .btn-del { color: #ff4444; border-color: #ff4444; cursor: pointer; }
         .btn-save { background: #00ff00; color: #000; font-weight: bold; cursor: pointer; padding: 15px; width: 100%; margin-top: 20px; font-size: 1.1em; }
         .status-msg { color: #888; font-size: 0.8em; margin-top: 5px; }
-        .larks-val { color: #ffd700; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -39,9 +40,10 @@
     <h1>LENIMKI_DB_LOADER</h1>
     
     <div class="controls">
-        <input type="number" id="itemId" placeholder="ID" style="width: 60px;">
+        <input type="number" id="itemId" placeholder="ID" style="width: 50px;">
         <input type="text" id="itemName" placeholder="Item Name" style="flex-grow: 1;">
-        <input type="number" id="itemPrice" placeholder="Larks" style="width: 80px;">
+        <input type="number" id="itemPrice" placeholder="Larks" style="width: 70px;">
+        <input type="text" id="itemWeight" placeholder="0.00KG" style="width: 80px;">
         <select id="itemType">
             <option value="Food">Food</option>
             <option value="Misc">Misc</option>
@@ -53,7 +55,7 @@
 
     <div class="search-bar">
         <span>[SEARCH_QUERY]></span>
-        <input type="text" id="searchInput" placeholder="Search by name, ID, or type..." onkeyup="renderTable()">
+        <input type="text" id="searchInput" placeholder="Search data..." onkeyup="renderTable()">
     </div>
 
     <table id="itemTable">
@@ -62,6 +64,7 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Type</th>
+                <th>Weight</th>
                 <th>Price (Larks)</th>
                 <th>Action</th>
             </tr>
@@ -80,12 +83,11 @@
         const status = document.getElementById('status');
         try {
             const response = await fetch('items.json');
-            if (!response.ok) throw new Error();
             items = await response.json();
             status.innerText = "System: items.json loaded.";
             renderTable();
         } catch (err) {
-            status.innerHTML = "<span style='color:red'>Error: Could not find items.json. Ensure it is in the same folder.</span>";
+            status.innerHTML = "<span style='color:red'>Error: Could not find items.json.</span>";
         }
     }
 
@@ -94,70 +96,74 @@
         const filter = document.getElementById('searchInput').value.toLowerCase();
         tbody.innerHTML = '';
         
-        // Ensure strictly numerical ID sorting
         items.sort((a, b) => a.id - b.id);
         
         items.forEach((item) => {
-            const matchesFilter = 
-                item.name.toLowerCase().includes(filter) || 
-                item.id.toString().includes(filter) || 
-                item.type.toLowerCase().includes(filter);
+            if (!item.name.toLowerCase().includes(filter) && !item.type.toLowerCase().includes(filter)) return;
 
-            if (matchesFilter) {
-                // Expansion is strictly for the 'Weapon' type with stats
-                const canExpand = item.type === 'Weapon' && item.stats;
-                
-                const tr = document.createElement('tr');
-                if (canExpand) {
-                    tr.className = 'weapon-row';
-                    tr.onclick = () => toggleStats(item.id);
-                }
-                
-                tr.innerHTML = `
-                    <td><strong>${item.id}</strong></td>
-                    <td>${item.name} ${canExpand ? '<span style="font-size:0.7em; color:#666; margin-left:10px;">[+VIEW STATS]</span>' : ''}</td>
-                    <td><span style="color: ${getTypeColor(item.type)}">${item.type}</span></td>
-                    <td class="larks-val">Ł ${item.price || 0}</td>
-                    <td><button class="btn-del" onclick="event.stopPropagation(); removeItem(${item.id})">REMOVE</button></td>
-                `;
-                tbody.appendChild(tr);
+            const isWeapon = item.type === 'Weapon' && item.stats;
+            const isFood = item.type === 'Food' && item.consumable;
+            const expandableClass = (isWeapon || isFood) ? 'expandable ' + (isWeapon ? 'weapon-row' : 'food-row') : '';
 
-                if (canExpand) {
-                    const statsTr = document.createElement('tr');
-                    statsTr.id = `stats-${item.id}`;
-                    statsTr.style.display = 'none';
-                    statsTr.innerHTML = `
-                        <td colspan="5" class="stats-panel">
-                            <div class="stats-grid">
-                                <div class="stat-item"><span class="stat-label">AMMO (ID)</span><span class="stat-val">${item.stats.ammo} (#${item.stats.ammoId})</span></div>
-                                <div class="stat-item"><span class="stat-label">FIRE RATE</span><span class="stat-val">${item.stats.fireRate}s</span></div>
-                                <div class="stat-item"><span class="stat-label">DAMAGE</span><span class="stat-val">${item.stats.damage}/100</span></div>
-                                <div class="stat-item"><span class="stat-label">RANGE</span><span class="stat-val">${item.stats.range}m</span></div>
-                                <div class="stat-item"><span class="stat-label">SPREAD</span><span class="stat-val">${item.stats.spread}°</span></div>
-                                <div class="stat-item"><span class="stat-label">PELLETS</span><span class="stat-val">${item.stats.pellets}</span></div>
-                            </div>
-                        </td>
-                    `;
-                    tbody.appendChild(statsTr);
+            const tr = document.createElement('tr');
+            if (expandableClass) {
+                tr.className = expandableClass;
+                tr.onclick = () => toggleDetails(item.id);
+            }
+            
+            tr.innerHTML = `
+                <td><strong>${item.id}</strong></td>
+                <td>${item.name} ${(isWeapon || isFood) ? '<span style="font-size:0.7em; color:#666; margin-left:8px;">[DETAILS]</span>' : ''}</td>
+                <td><span style="color: ${getTypeColor(item.type)}">${item.type}</span></td>
+                <td style="color:#aaa">${item.weight || '0.00KG'}</td>
+                <td style="color:#ffd700">Ł ${item.price || 0}</td>
+                <td><button class="btn-del" onclick="event.stopPropagation(); removeItem(${item.id})">DEL</button></td>
+            `;
+            tbody.appendChild(tr);
+
+            if (isWeapon || isFood) {
+                const detailsTr = document.createElement('tr');
+                detailsTr.id = `details-${item.id}`;
+                detailsTr.style.display = 'none';
+                
+                let innerContent = '';
+                if (isWeapon) {
+                    innerContent = `
+                        <div class="stats-grid">
+                            <div class="stat-item"><span class="stat-label">Ammo Type (ID)</span><span class="stat-val val-weapon">${item.stats.ammo} (#${item.stats.ammoId})</span></div>
+                            <div class="stat-item"><span class="stat-label">Fire Rate</span><span class="stat-val val-weapon">${item.stats.fireRate}s</span></div>
+                            <div class="stat-item"><span class="stat-label">Damage</span><span class="stat-val val-weapon">${item.stats.damage}/100</span></div>
+                            <div class="stat-item"><span class="stat-label">Range</span><span class="stat-val val-weapon">${item.stats.range}m</span></div>
+                            <div class="stat-item"><span class="stat-label">Spread</span><span class="stat-val val-weapon">${item.stats.spread}°</span></div>
+                            <div class="stat-item"><span class="stat-label">Pellets</span><span class="stat-val val-weapon">${item.stats.pellets}</span></div>
+                        </div>`;
+                } else {
+                    innerContent = `
+                        <div class="stats-grid">
+                            <div class="stat-item"><span class="stat-label">Hunger Restore</span><span class="stat-val val-food">+${item.consumable.hunger}/100</span></div>
+                            <div class="stat-item"><span class="stat-label">Stamina Boost</span><span class="stat-val val-food">+${item.consumable.stamina}/100</span></div>
+                            <div class="stat-item"><span class="stat-label">Health Regen</span><span class="stat-val val-food">+${item.consumable.health}/100</span></div>
+                        </div>`;
                 }
+
+                detailsTr.innerHTML = `<td colspan="6" class="details-panel">${innerContent}</td>`;
+                tbody.appendChild(detailsTr);
             }
         });
     }
 
-    function toggleStats(id) {
-        const statsRow = document.getElementById(`stats-${id}`);
-        if (statsRow) {
-            statsRow.style.display = statsRow.style.display === 'none' ? 'table-row' : 'none';
-        }
+    function toggleDetails(id) {
+        const row = document.getElementById(`details-${id}`);
+        row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
     }
 
     function getTypeColor(type) {
         switch(type) {
-            case 'Weapon': return '#ff4444'; // Red
-            case 'Food': return '#44ff44';   // Green
-            case 'Ammo': return '#ffd700';   // Gold
-            case 'Misc': return '#4444ff';   // Blue
-            default: return '#ffffff';
+            case 'Weapon': return '#ff4444';
+            case 'Food': return '#44ff44';
+            case 'Ammo': return '#ffd700';
+            case 'Misc': return '#4444ff';
+            default: return '#fff';
         }
     }
 
@@ -165,14 +171,19 @@
         const id = document.getElementById('itemId').value;
         const name = document.getElementById('itemName').value;
         const price = document.getElementById('itemPrice').value;
+        const weight = document.getElementById('itemWeight').value || "0.00KG";
         const type = document.getElementById('itemType').value;
 
         if(id && name && price) {
-            items.push({ id: parseInt(id), name, type, price: parseInt(price) });
+            items.push({ 
+                id: parseInt(id), 
+                name, 
+                type, 
+                price: parseInt(price), 
+                weight: weight.toUpperCase().includes('KG') ? weight.toUpperCase() : weight + "KG" 
+            });
             renderTable();
-            document.getElementById('itemId').value = '';
-            document.getElementById('itemName').value = '';
-            document.getElementById('itemPrice').value = '';
+            ['itemId', 'itemName', 'itemPrice', 'itemWeight'].forEach(f => document.getElementById(f).value = '');
         }
     }
 
