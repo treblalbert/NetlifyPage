@@ -19,14 +19,32 @@
   { "id": 18, "name": "Sewing Kit", "type": "Misc", "price": 12 },
   { "id": 19, "name": "Geiger Counter", "type": "Misc", "price": 150 },
   { "id": 20, "name": "Gas Mask Filter", "type": "Misc", "price": 30 },
-  { "id": 21, "name": "Makarov PM", "type": "Weapon", "price": 250 },
-  { "id": 22, "name": "9x18mm Magazine", "type": "Weapon", "price": 25 },
-  { "id": 23, "name": "AK-74M", "type": "Weapon", "price": 750 },
-  { "id": 24, "name": "5.45x39mm Ammo Box", "type": "Weapon", "price": 45 },
-  { "id": 25, "name": "Sawed-off Shotgun (Obrez)", "type": "Weapon", "price": 180 },
-  { "id": 26, "name": "12g Buckshot Shells", "type": "Weapon", "price": 15 },
-  { "id": 27, "name": "F-1 Lemon Grenade", "type": "Weapon", "price": 60 },
-  { "id": 28, "name": "Kitchen Knife", "type": "Misc", "price": 10 },
-  { "id": 29, "name": "Firefighter's Axe", "type": "Misc", "price": 45 },
-  { "id": 30, "name": "Crowbar", "type": "Misc", "price": 20 }
+  { "id": 21, "name": "Kitchen Knife", "type": "Misc", "price": 10 },
+  { "id": 22, "name": "Firefighter's Axe", "type": "Misc", "price": 45 },
+  { "id": 23, "name": "Crowbar", "type": "Misc", "price": 20 },
+  { 
+    "id": 24, 
+    "name": "Makarov PM", 
+    "type": "Weapon", 
+    "price": 250,
+    "stats": { "ammo": "9x18mm", "ammoId": 22, "fireRate": 0.4, "damage": 25, "range": 50, "spread": 2.5, "pellets": 1 }
+  },
+  { "id": 25, "name": "9x18mm Magazine", "type": "Weapon", "price": 25 },
+  { 
+    "id": 26, 
+    "name": "AK-74M", 
+    "type": "Weapon", 
+    "price": 750,
+    "stats": { "ammo": "5.45x39mm", "ammoId": 27, "fireRate": 0.1, "damage": 38, "range": 400, "spread": 1.2, "pellets": 1 }
+  },
+  { "id": 27, "name": "5.45x39mm Ammo Box", "type": "Weapon", "price": 45 },
+  { 
+    "id": 28, 
+    "name": "Sawed-off Shotgun (Obrez)", 
+    "type": "Weapon", 
+    "price": 180,
+    "stats": { "ammo": "12g Buckshot", "ammoId": 29, "fireRate": 0.8, "damage": 15, "range": 15, "spread": 12.0, "pellets": 8 }
+  },
+  { "id": 29, "name": "12g Buckshot Shells", "type": "Weapon", "price": 15 },
+  { "id": 30, "name": "F-1 Lemon Grenade", "type": "Weapon", "price": 60 }
 ]
