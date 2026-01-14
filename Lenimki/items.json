@@ -1,60 +1,97 @@
 [
-  { "id": 1, "name": "Tushonka (Canned Beef)", "type": "Food", "price": 4, "weight": "0.50KG", "consumable": { "hunger": 45, "stamina": 10, "health": 5 } },
-  { "id": 2, "name": "Condensed Milk", "type": "Food", "price": 3, "weight": "0.40KG", "consumable": { "hunger": 30, "stamina": 25, "health": 2 } },
-  { "id": 3, "name": "Buckwheat Bag (Grechka)", "type": "Food", "price": 2, "weight": "1.00KG", "consumable": { "hunger": 60, "stamina": 5, "health": 8 } },
-  { "id": 4, "name": "Black Bread", "type": "Food", "price": 1, "weight": "0.60KG", "consumable": { "hunger": 25, "stamina": 5, "health": 2 } },
-  { "id": 5, "name": "Sprats in Oil", "type": "Food", "price": 5, "weight": "0.25KG", "consumable": { "hunger": 35, "stamina": 15, "health": 4 } },
-  { "id": 6, "name": "Plastic Bottle of Water (1.5L)", "type": "Food", "price": 2, "weight": "1.50KG", "consumable": { "hunger": 10, "stamina": 20, "health": 1 } },
-  { "id": 7, "name": "Metal Canteen", "type": "Food", "price": 15, "weight": "0.80KG", "consumable": { "hunger": 5, "stamina": 15, "health": 1 } },
-  { "id": 8, "name": "Instant Coffee", "type": "Food", "price": 1, "weight": "0.02KG", "consumable": { "hunger": 2, "stamina": 50, "health": 0 } },
-  { "id": 9, "name": "Vodka Bottle", "type": "Food", "price": 12, "weight": "0.90KG", "consumable": { "hunger": 5, "stamina": -10, "health": 10 } },
-  { "id": 10, "name": "Salt", "type": "Food", "price": 1, "weight": "0.50KG", "consumable": { "hunger": 0, "stamina": -5, "health": -2 } },
-  { "id": 11, "name": "Box of Matches", "type": "Misc", "price": 1, "weight": "0.02KG" },
-  { "id": 12, "name": "Gasoline Lighter", "type": "Misc", "price": 10, "weight": "0.05KG" },
-  { "id": 13, "name": "Flashlight", "type": "Misc", "price": 25, "weight": "0.35KG" },
-  { "id": 14, "name": "AA Batteries", "type": "Misc", "price": 5, "weight": "0.05KG" },
-  { "id": 15, "name": "Duct Tape", "type": "Misc", "price": 8, "weight": "0.15KG" },
-  { "id": 16, "name": "Scrap Metal", "type": "Misc", "price": 2, "weight": "2.50KG" },
-  { "id": 17, "name": "Rags", "type": "Misc", "price": 1, "weight": "0.10KG" },
-  { "id": 18, "name": "Sewing Kit", "type": "Misc", "price": 12, "weight": "0.15KG" },
-  { "id": 19, "name": "Geiger Counter", "type": "Misc", "price": 150, "weight": "0.45KG" },
-  { "id": 20, "name": "Gas Mask Filter", "type": "Misc", "price": 30, "weight": "0.25KG" },
-  { "id": 21, "name": "Kitchen Knife", "type": "Misc", "price": 10, "weight": "0.30KG" },
-  { "id": 22, "name": "Firefighter's Axe", "type": "Misc", "price": 45, "weight": "2.50KG" },
-  { "id": 23, "name": "Crowbar", "type": "Misc", "price": 20, "weight": "3.20KG" },
-  { "id": 24, "name": "9x18mm Magazine", "type": "Ammo", "price": 25, "weight": "0.15KG" },
-  { "id": 25, "name": "5.45x39mm Ammo Box", "type": "Ammo", "price": 45, "weight": "0.60KG" },
-  { "id": 26, "name": "12g Buckshot Shells", "type": "Ammo", "price": 15, "weight": "0.40KG" },
-  { 
-    "id": 27, 
-    "name": "Makarov PM", 
-    "type": "Weapon", 
-    "price": 250, 
-    "weight": "0.81KG",
-    "stats": { "ammo": "9x18mm", "ammoId": 24, "fireRate": 0.4, "damage": 25, "range": 50, "spread": 2.5, "pellets": 1 }
+  {
+    "id": 1,
+    "name": "Tushonka (Canned Beef)",
+    "type": "Food",
+    "price": 4,
+    "weight": "0.50KG",
+    "consumable": { "hunger": 45, "stamina": 10, "health": 5 }
   },
-  { 
-    "id": 28, 
-    "name": "AK-74M", 
-    "type": "Weapon", 
-    "price": 750, 
-    "weight": "3.60KG",
-    "stats": { "ammo": "5.45x39mm", "ammoId": 25, "fireRate": 0.1, "damage": 38, "range": 400, "spread": 1.2, "pellets": 1 }
+  {
+    "id": 2,
+    "name": "Condensed Milk (Sgushyonka)",
+    "type": "Food",
+    "price": 3,
+    "weight": "0.40KG",
+    "consumable": { "hunger": 30, "stamina": 25, "health": 2 }
   },
-  { 
-    "id": 29, 
-    "name": "Obrez Shotgun", 
-    "type": "Weapon", 
-    "price": 180, 
-    "weight": "1.80KG",
-    "stats": { "ammo": "12g Buckshot", "ammoId": 26, "fireRate": 0.8, "damage": 15, "range": 15, "spread": 12.0, "pellets": 8 }
-  },
-  { 
-    "id": 30, 
-    "name": "F-1 Grenade", 
-    "type": "Weapon", 
-    "price": 60, 
+  {
+    "id": 3,
+    "name": "Black Bread (Chyorny Khleb)",
+    "type": "Food",
+    "price": 1,
     "weight": "0.60KG",
-    "stats": { "ammo": "Explosive", "ammoId": 30, "fireRate": 3.5, "damage": 100, "range": 10, "spread": 360, "pellets": 1 }
+    "consumable": { "hunger": 25, "stamina": 5, "health": 2 }
+  },
+  {
+    "id": 4,
+    "name": "Sausage (Kolbasa)",
+    "type": "Food",
+    "price": 5,
+    "weight": "0.50KG",
+    "consumable": { "hunger": 40, "stamina": 12, "health": 4 }
+  },
+  {
+    "id": 5,
+    "name": "Sprats in Oil (Shproty)",
+    "type": "Food",
+    "price": 5,
+    "weight": "0.25KG",
+    "consumable": { "hunger": 35, "stamina": 15, "health": 4 }
+  },
+  { "id": 6, "name": "Box of Matches", "type": "Misc", "price": 1, "weight": "0.02KG" },
+  { "id": 7, "name": "Gasoline Lighter", "type": "Misc", "price": 10, "weight": "0.05KG" },
+  { "id": 8, "name": "Flashlight (Metal Signal)", "type": "Misc", "price": 25, "weight": "0.35KG" },
+  { "id": 9, "name": "AA Batteries", "type": "Misc", "price": 5, "weight": "0.05KG" },
+  { "id": 10, "name": "Duct Tape (Blue Izolenta)", "type": "Misc", "price": 8, "weight": "0.15KG" },
+  { "id": 11, "name": "Scrap Metal", "type": "Misc", "price": 2, "weight": "2.50KG" },
+  { "id": 12, "name": "Rags", "type": "Misc", "price": 1, "weight": "0.10KG" },
+  { "id": 13, "name": "Sewing Kit", "type": "Misc", "price": 12, "weight": "0.15KG" },
+  { "id": 14, "name": "Geiger Counter", "type": "Misc", "price": 150, "weight": "0.45KG" },
+  { "id": 15, "name": "Gas Mask Filter", "type": "Misc", "price": 30, "weight": "0.25KG" },
+  { "id": 16, "name": "9x18mm Ammo Box", "type": "Ammo", "price": 20, "weight": "0.25KG" },
+  { "id": 17, "name": "5.45x39mm Ammo Box", "type": "Ammo", "price": 45, "weight": "0.60KG" },
+  { "id": 18, "name": "12/70 Buckshot Shells", "type": "Ammo", "price": 15, "weight": "0.40KG" },
+  { "id": 19, "name": "20ga Slug Shells", "type": "Ammo", "price": 25, "weight": "0.35KG" },
+  { "id": 20, "name": "7.62x54mmR Ammo Box", "type": "Ammo", "price": 60, "weight": "0.75KG" },
+  {
+    "id": 21,
+    "name": "Makarov PM",
+    "type": "Weapon",
+    "price": 250,
+    "weight": "0.81KG",
+    "stats": { "ammo": "9x18mm", "ammoId": 16, "fireRate": 0.4, "damage": 25, "range": 50, "spread": 2.5, "pellets": 1 }
+  },
+  {
+    "id": 22,
+    "name": "AK-74M",
+    "type": "Weapon",
+    "price": 750,
+    "weight": "3.60KG",
+    "stats": { "ammo": "5.45x39mm", "ammoId": 17, "fireRate": 0.1, "damage": 38, "range": 400, "spread": 1.2, "pellets": 1 }
+  },
+  {
+    "id": 23,
+    "name": "IZh-43 Shotgun",
+    "type": "Weapon",
+    "price": 320,
+    "weight": "3.20KG",
+    "stats": { "ammo": "12/70 Buckshot", "ammoId": 18, "fireRate": 0.5, "damage": 12, "range": 25, "spread": 10.0, "pellets": 8 }
+  },
+  {
+    "id": 24,
+    "name": "MTs 20-01 Shotgun",
+    "type": "Weapon",
+    "price": 410,
+    "weight": "2.80KG",
+    "stats": { "ammo": "20ga Slug", "ammoId": 19, "fireRate": 1.5, "damage": 75, "range": 80, "spread": 1.5, "pellets": 1 }
+  },
+  {
+    "id": 25,
+    "name": "SVD Sniper Rifle",
+    "type": "Weapon",
+    "price": 1200,
+    "weight": "4.30KG",
+    "stats": { "ammo": "7.62x54mmR", "ammoId": 20, "fireRate": 1.2, "damage": 95, "range": 800, "spread": 0.1, "pellets": 1 }
   }
 ]
