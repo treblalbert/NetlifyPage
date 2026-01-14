@@ -11,22 +11,22 @@
         th, td { border: 1px solid #333; padding: 12px; text-align: left; }
         th { background: #2c2c2c; color: #fff; }
         tr:hover { background: #1a1a1a; }
-        input, select, button { background: #000; color: #00ff00; border: 1px solid #00ff00; padding: 8px; font-family: inherit; }
         
-        .controls { margin-bottom: 10px; display: flex; gap: 10px; background: #2c2c2c; padding: 15px; border-radius: 4px; align-items: center; }
+        /* Weapon Row Styling */
+        .weapon-row { cursor: pointer; border-left: 3px solid transparent; transition: 0.2s; }
+        .weapon-row:hover { background: #2c1a1a !important; border-left: 3px solid #ff4444; }
         
-        /* NEW SEARCH BAR STYLING */
-        .search-bar { 
-            margin-bottom: 20px; 
-            display: flex; 
-            gap: 10px; 
-            background: #111; 
-            padding: 10px; 
-            border: 1px solid #00ff00; 
-            align-items: center;
-        }
-        .search-bar input { flex-grow: 1; border: none; outline: none; font-size: 1.1em; }
+        /* Expansion Panel */
+        .stats-panel { background: #000 !important; border: 1px dashed #ff4444; padding: 10px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px; }
+        .stat-item { font-size: 0.85em; }
+        .stat-label { color: #888; display: block; font-size: 0.75em; }
+        .stat-val { color: #ff4444; font-weight: bold; }
 
+        input, select, button { background: #000; color: #00ff00; border: 1px solid #00ff00; padding: 8px; font-family: inherit; }
+        .controls { margin-bottom: 10px; display: flex; gap: 10px; background: #2c2c2c; padding: 15px; border-radius: 4px; align-items: center; }
+        .search-bar { margin-bottom: 20px; display: flex; gap: 10px; background: #111; padding: 10px; border: 1px solid #00ff00; align-items: center; }
+        .search-bar input { flex-grow: 1; border: none; outline: none; font-size: 1.1em; }
         .btn-del { color: #ff4444; border-color: #ff4444; cursor: pointer; }
         .btn-save { background: #00ff00; color: #000; font-weight: bold; cursor: pointer; padding: 15px; width: 100%; margin-top: 20px; font-size: 1.1em; }
         .status-msg { color: #888; font-size: 0.8em; margin-top: 5px; }
@@ -52,7 +52,7 @@
 
     <div class="search-bar">
         <span>[SEARCH_QUERY]></span>
-        <input type="text" id="searchInput" placeholder="Type to filter by Name, ID, or Type..." onkeyup="renderTable()">
+        <input type="text" id="searchInput" placeholder="Type to filter..." onkeyup="renderTable()">
     </div>
 
     <table id="itemTable">
@@ -84,7 +84,7 @@
             status.innerText = "System: items.json loaded.";
             renderTable();
         } catch (err) {
-            status.innerHTML = "<span style='color:red'>Error: Could not find items.json or browser blocked access.</span>";
+            status.innerHTML = "<span style='color:red'>Error: Could not find items.json.</span>";
         }
     }
 
@@ -93,28 +93,62 @@
         const filter = document.getElementById('searchInput').value.toLowerCase();
         tbody.innerHTML = '';
         
-        // Sorting logic remains the same
         items.sort((a, b) => a.id - b.id);
         
-        items.forEach((item, index) => {
-            // Check if item matches search criteria
+        items.forEach((item) => {
             const matchesFilter = 
                 item.name.toLowerCase().includes(filter) || 
                 item.id.toString().includes(filter) || 
                 item.type.toLowerCase().includes(filter);
 
             if (matchesFilter) {
-                tbody.innerHTML += `
-                    <tr>
-                        <td><strong>${item.id}</strong></td>
-                        <td>${item.name}</td>
-                        <td><span style="color: ${getTypeColor(item.type)}">${item.type}</span></td>
-                        <td class="larks-val">Ł ${item.price || 0}</td>
-                        <td><button class="btn-del" onclick="removeItem(${index})">REMOVE</button></td>
-                    </tr>
+                const hasStats = item.type === 'Weapon' && item.stats;
+                const rowId = `row-${item.id}`;
+                
+                // Main Row
+                const tr = document.createElement('tr');
+                if (hasStats) {
+                    tr.className = 'weapon-row';
+                    tr.onclick = () => toggleStats(item.id);
+                }
+                
+                tr.innerHTML = `
+                    <td><strong>${item.id}</strong></td>
+                    <td>${item.name} ${hasStats ? '<span style="font-size:0.7em; color:#666; margin-left:10px;">[CLICK TO EXPAND]</span>' : ''}</td>
+                    <td><span style="color: ${getTypeColor(item.type)}">${item.type}</span></td>
+                    <td class="larks-val">Ł ${item.price || 0}</td>
+                    <td><button class="btn-del" onclick="event.stopPropagation(); removeItem(${item.id})">REMOVE</button></td>
                 `;
+                tbody.appendChild(tr);
+
+                // Stats Row (Hidden by default)
+                if (hasStats) {
+                    const statsTr = document.createElement('tr');
+                    statsTr.id = `stats-${item.id}`;
+                    statsTr.style.display = 'none';
+                    statsTr.innerHTML = `
+                        <td colspan="5" class="stats-panel">
+                            <div class="stats-grid">
+                                <div class="stat-item"><span class="stat-label">AMMO TYPE (ID)</span><span class="stat-val">${item.stats.ammo} (#${item.stats.ammoId})</span></div>
+                                <div class="stat-item"><span class="stat-label">FIRE RATE</span><span class="stat-val">${item.stats.fireRate}s</span></div>
+                                <div class="stat-item"><span class="stat-label">DAMAGE</span><span class="stat-val">${item.stats.damage}/100</span></div>
+                                <div class="stat-item"><span class="stat-label">RANGE</span><span class="stat-val">${item.stats.range}m</span></div>
+                                <div class="stat-item"><span class="stat-label">SPREAD</span><span class="stat-val">${item.stats.spread}°</span></div>
+                                <div class="stat-item"><span class="stat-label">PELLETS</span><span class="stat-val">${item.stats.pellets}</span></div>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(statsTr);
+                }
             }
         });
+    }
+
+    function toggleStats(id) {
+        const statsRow = document.getElementById(`stats-${id}`);
+        if (statsRow) {
+            statsRow.style.display = statsRow.style.display === 'none' ? 'table-row' : 'none';
+        }
     }
 
     function getTypeColor(type) {
@@ -138,11 +172,8 @@
         }
     }
 
-    function removeItem(index) {
-        // Find the actual item in the 'items' array even when filtered
-        const row = event.target.closest('tr');
-        const idToRemove = parseInt(row.querySelector('td strong').innerText);
-        items = items.filter(item => item.id !== idToRemove);
+    function removeItem(id) {
+        items = items.filter(item => item.id !== id);
         renderTable();
     }
 
