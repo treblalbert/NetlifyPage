@@ -2,168 +2,242 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>LENIMKI | Item Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LENIMKI | Management Portal</title>
     <style>
-        body { font-family: 'Courier New', Courier, monospace; background: #1a1a1a; color: #00ff00; padding: 20px; }
-        .container { max-width: 1000px; margin: auto; border: 1px solid #333; padding: 20px; background: #222; box-shadow: 0 0 15px rgba(0,255,0,0.1); }
-        h1 { text-align: center; border-bottom: 2px solid #00ff00; padding-bottom: 10px; letter-spacing: 5px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #111; }
-        th, td { border: 1px solid #333; padding: 12px; text-align: left; }
-        th { background: #2c2c2c; color: #fff; }
-        
-        .expandable { cursor: pointer; transition: 0.2s; border-left: 3px solid transparent; }
-        .expandable:hover { background: #222 !important; border-left: 3px solid #00ff00; }
-        .weapon-row:hover { border-left-color: #ff4444; }
-        .food-row:hover { border-left-color: #44ff44; }
+        /* Modern Professional Theme */
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
 
-        .details-panel { background: #000 !important; border: 1px dashed #444; padding: 10px; }
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px; }
-        .stat-item { font-size: 0.85em; }
-        .stat-label { color: #888; display: block; font-size: 0.75em; text-transform: uppercase; }
-        .stat-val { font-weight: bold; }
-        .val-weapon { color: #ff4444; }
-        .val-food { color: #44ff44; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
 
-        input, select, button { background: #000; color: #00ff00; border: 1px solid #00ff00; padding: 8px; font-family: inherit; }
-        .controls { margin-bottom: 10px; display: flex; gap: 8px; background: #2c2c2c; padding: 15px; border-radius: 4px; flex-wrap: wrap; }
-        .search-bar { margin-bottom: 20px; display: flex; gap: 10px; background: #111; padding: 10px; border: 1px solid #00ff00; align-items: center; }
-        .search-bar input { flex-grow: 1; border: none; outline: none; font-size: 1.1em; }
-        .btn-del { color: #ff4444; border-color: #ff4444; cursor: pointer; }
-        .btn-save { background: #00ff00; color: #000; font-weight: bold; cursor: pointer; padding: 15px; width: 100%; margin-top: 20px; font-size: 1.1em; }
-        .status-msg { color: #888; font-size: 0.8em; margin-top: 5px; }
+        .dashboard-container {
+            width: 100%;
+            max-width: 1100px;
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        /* Tabs Navigation */
+        .tabs-header {
+            display: flex;
+            background: #f1f5f9;
+            border-bottom: 1px solid var(--border);
+            padding: 0 20px;
+        }
+
+        .tab-btn {
+            padding: 16px 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
+        }
+
+        .tab-btn:hover { color: var(--primary); }
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content { display: none; padding: 30px; }
+        .tab-content.active { display: block; }
+
+        /* General Styles */
+        h1 { font-size: 1.5rem; margin-top: 0; color: var(--text-main); }
+        h2 { font-size: 1.1rem; color: var(--primary); margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+
+        /* Item Manager Styling */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        input, select {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        button.action-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        button.action-btn:hover { background: var(--primary-hover); }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th { text-align: left; padding: 12px; background: #f8fafc; border-bottom: 2px solid var(--border); color: var(--text-muted); }
+        td { padding: 12px; border-bottom: 1px solid var(--border); }
+        tr:hover { background: #fdfdfd; }
+
+        /* Keyboard Controls Styling */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .key-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .key-cap {
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 6px 12px;
+            min-width: 40px;
+            text-align: center;
+            font-weight: 700;
+            box-shadow: 0 3px 0 #94a3b8;
+            margin-right: 15px;
+            font-size: 0.85rem;
+        }
+
+        .key-desc { font-size: 0.95rem; color: var(--text-main); }
+        .key-desc small { color: var(--text-muted); display: block; margin-top: 2px; }
+
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>LENIMKI_DB_LOADER</h1>
-    
-    <div class="controls">
-        <input type="number" id="itemId" placeholder="ID" style="width: 50px;">
-        <input type="text" id="itemName" placeholder="Item Name" style="flex-grow: 1;">
-        <input type="number" id="itemPrice" placeholder="Larks" style="width: 70px;">
-        <input type="text" id="itemWeight" placeholder="0.00KG" style="width: 80px;">
-        <select id="itemType">
-            <option value="Food">Food</option>
-            <option value="Misc">Misc</option>
-            <option value="Ammo">Ammo</option>
-            <option value="Weapon">Weapon</option>
-        </select>
-        <button onclick="addItem()">+ ADD ITEM</button>
+<div class="dashboard-container">
+    <div class="tabs-header">
+        <button class="tab-btn active" onclick="openTab(event, 'database')">Item Database</button>
+        <button class="tab-btn" onclick="openTab(event, 'controls')">Game Controls</button>
     </div>
 
-    <div class="search-bar">
-        <span>[SEARCH_QUERY]></span>
-        <input type="text" id="searchInput" placeholder="Search data..." onkeyup="renderTable()">
+    <div id="database" class="tab-content active">
+        <h1>LENIMKI Item Manager</h1>
+        <div class="form-grid">
+            <input type="number" id="itemId" placeholder="Item ID">
+            <input type="text" id="itemName" placeholder="Item Name">
+            <input type="number" id="itemPrice" placeholder="Price">
+            <input type="text" id="itemWeight" placeholder="Weight (e.g. 5.00KG)">
+            <select id="itemType">
+                <option value="Weapon">Weapon</option>
+                <option value="Healing">Healing</option>
+                <option value="Utility">Utility</option>
+                <option value="Quest">Quest</option>
+            </select>
+            <button class="action-btn" onclick="addItem()">Add Item</button>
+            <button class="action-btn" style="background:#64748b" onclick="downloadJSON()">Export JSON</button>
+        </div>
+
+        <table id="itemTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Price</th>
+                    <th>Weight</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                </tbody>
+        </table>
     </div>
 
-    <table id="itemTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Type</th>
-                <th>Weight</th>
-                <th>Price (Larks)</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody"></tbody>
-    </table>
-
-    <button class="btn-save" onclick="downloadJSON()">💾 EXPORT UPDATED ITEMS.JSON</button>
-    <div id="status" class="status-msg">System: Ready</div>
+    <div id="controls" class="tab-content">
+        <h1>Operational Controls</h1>
+        <div class="controls-grid">
+            <div>
+                <h2>Movement</h2>
+                <div class="key-row"><div class="key-cap">W A S D</div><div class="key-desc">Movement</div></div>
+                <div class="key-row"><div class="key-cap">SHIFT</div><div class="key-desc">Run / Sprint</div></div>
+                <div class="key-row"><div class="key-cap">SPACE</div><div class="key-desc">Jump</div></div>
+                <div class="key-row"><div class="key-cap">CTRL</div><div class="key-desc">Crouch <small>(Scroll Mouse Wheel to adjust height)</small></div></div>
+                <div class="key-row"><div class="key-cap">Q / E</div><div class="key-desc">Lean Left / Right</div></div>
+            </div>
+            <div>
+                <h2>Combat & Utility</h2>
+                <div class="key-row"><div class="key-cap">LMB / RMB</div><div class="key-desc">Shoot / Aim Down Sights</div></div>
+                <div class="key-row"><div class="key-cap">1</div><div class="key-desc">Secondary Weapon</div></div>
+                <div class="key-row"><div class="key-cap">2 , 3</div><div class="key-desc">Main Weapons</div></div>
+                <div class="key-row"><div class="key-cap">H</div><div class="key-desc">Holster Weapon</div></div>
+                <div class="key-row"><div class="key-cap">F</div><div class="key-desc">Interact / Use</div></div>
+                <div class="key-row"><div class="key-cap">TAB</div><div class="key-desc">Inventory</div></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
+    // TAB SYSTEM
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].classList.remove("active");
+        }
+        tablinks = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].classList.remove("active");
+        }
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+
+    // ORIGINAL DATABASE LOGIC
     let items = [];
 
-    async function loadData() {
-        const status = document.getElementById('status');
-        try {
-            const response = await fetch('items.json');
-            items = await response.json();
-            status.innerText = "System: items.json loaded.";
-            renderTable();
-        } catch (err) {
-            status.innerHTML = "<span style='color:red'>Error: Could not find items.json.</span>";
-        }
-    }
-
     function renderTable() {
-        const tbody = document.getElementById('tableBody');
-        const filter = document.getElementById('searchInput').value.toLowerCase();
+        const tbody = document.querySelector('#itemTable tbody');
         tbody.innerHTML = '';
-        
-        items.sort((a, b) => a.id - b.id);
-        
-        items.forEach((item) => {
-            if (!item.name.toLowerCase().includes(filter) && !item.type.toLowerCase().includes(filter)) return;
-
-            const isWeapon = item.type === 'Weapon' && item.stats;
-            const isFood = item.type === 'Food' && item.consumable;
-            const expandableClass = (isWeapon || isFood) ? 'expandable ' + (isWeapon ? 'weapon-row' : 'food-row') : '';
-
-            const tr = document.createElement('tr');
-            if (expandableClass) {
-                tr.className = expandableClass;
-                tr.onclick = () => toggleDetails(item.id);
-            }
-            
-            tr.innerHTML = `
-                <td><strong>${item.id}</strong></td>
-                <td>${item.name} ${(isWeapon || isFood) ? '<span style="font-size:0.7em; color:#666; margin-left:8px;">[DETAILS]</span>' : ''}</td>
-                <td><span style="color: ${getTypeColor(item.type)}">${item.type}</span></td>
-                <td style="color:#aaa">${item.weight || '0.00KG'}</td>
-                <td style="color:#ffd700">Ł ${item.price || 0}</td>
-                <td><button class="btn-del" onclick="event.stopPropagation(); removeItem(${item.id})">DEL</button></td>
-            `;
-            tbody.appendChild(tr);
-
-            if (isWeapon || isFood) {
-                const detailsTr = document.createElement('tr');
-                detailsTr.id = `details-${item.id}`;
-                detailsTr.style.display = 'none';
-                
-                let innerContent = '';
-                if (isWeapon) {
-                    innerContent = `
-                        <div class="stats-grid">
-                            <div class="stat-item"><span class="stat-label">Ammo Type (ID)</span><span class="stat-val val-weapon">${item.stats.ammo} (#${item.stats.ammoId})</span></div>
-                            <div class="stat-item"><span class="stat-label">Fire Rate</span><span class="stat-val val-weapon">${item.stats.fireRate}s</span></div>
-                            <div class="stat-item"><span class="stat-label">Damage</span><span class="stat-val val-weapon">${item.stats.damage}/100</span></div>
-                            <div class="stat-item"><span class="stat-label">Range</span><span class="stat-val val-weapon">${item.stats.range}m</span></div>
-                            <div class="stat-item"><span class="stat-label">Spread</span><span class="stat-val val-weapon">${item.stats.spread}°</span></div>
-                            <div class="stat-item"><span class="stat-label">Pellets</span><span class="stat-val val-weapon">${item.stats.pellets}</span></div>
-                        </div>`;
-                } else {
-                    innerContent = `
-                        <div class="stats-grid">
-                            <div class="stat-item"><span class="stat-label">Hunger Restore</span><span class="stat-val val-food">+${item.consumable.hunger}/100</span></div>
-                            <div class="stat-item"><span class="stat-label">Stamina Boost</span><span class="stat-val val-food">+${item.consumable.stamina}/100</span></div>
-                            <div class="stat-item"><span class="stat-label">Health Regen</span><span class="stat-val val-food">+${item.consumable.health}/100</span></div>
-                        </div>`;
-                }
-
-                detailsTr.innerHTML = `<td colspan="6" class="details-panel">${innerContent}</td>`;
-                tbody.appendChild(detailsTr);
-            }
+        items.forEach(item => {
+            const row = `<tr>
+                <td>${item.id}</td>
+                <td>${item.name}</td>
+                <td>${item.type}</td>
+                <td>$${item.price}</td>
+                <td>${item.weight}</td>
+                <td><button onclick="removeItem(${item.id})" style="color:red; border:none; background:none; cursor:pointer;">Delete</button></td>
+            </tr>`;
+            tbody.innerHTML += row;
         });
-    }
-
-    function toggleDetails(id) {
-        const row = document.getElementById(`details-${id}`);
-        row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
-    }
-
-    function getTypeColor(type) {
-        switch(type) {
-            case 'Weapon': return '#ff4444';
-            case 'Food': return '#44ff44';
-            case 'Ammo': return '#ffd700';
-            case 'Misc': return '#4444ff';
-            default: return '#fff';
-        }
     }
 
     function addItem() {
@@ -200,8 +274,7 @@
         downloadAnchorNode.click();
         downloadAnchorNode.remove();
     }
-
-    loadData();
 </script>
+
 </body>
 </html>
