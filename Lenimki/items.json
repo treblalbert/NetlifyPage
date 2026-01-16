@@ -5,7 +5,8 @@
     "type": "Food",
     "price": 4,
     "weight": "0.50KG",
-    "consumable": { "hunger": 45, "stamina": 10, "health": 5 }
+    "consumable": { "hunger": 45, "stamina": 10, "health": 5 },
+    "implemented": true
   },
   {
     "id": 2,
@@ -13,15 +14,17 @@
     "type": "Food",
     "price": 3,
     "weight": "0.40KG",
-    "consumable": { "hunger": 30, "stamina": 25, "health": 2 }
+    "consumable": { "hunger": 30, "stamina": 25, "health": 2 },
+    "implemented": true
   },
   {
     "id": 3,
-    "name": "Black Bread (Chyorny Khleb)",
+    "name": "Bread",
     "type": "Food",
     "price": 1,
     "weight": "0.60KG",
-    "consumable": { "hunger": 25, "stamina": 5, "health": 2 }
+    "consumable": { "hunger": 25, "stamina": 5, "health": 2 },
+    "implemented": true
   },
   {
     "id": 4,
@@ -49,8 +52,8 @@
   { "id": 13, "name": "Sewing Kit", "type": "Misc", "price": 12, "weight": "0.15KG" },
   { "id": 14, "name": "Geiger Counter", "type": "Misc", "price": 150, "weight": "0.45KG" },
   { "id": 15, "name": "Gas Mask Filter", "type": "Misc", "price": 30, "weight": "0.25KG" },
-  { "id": 16, "name": "9x18mm Ammo Box", "type": "Ammo", "price": 20, "weight": "0.25KG" },
-  { "id": 17, "name": "5.45x39mm Ammo Box", "type": "Ammo", "price": 45, "weight": "0.60KG" },
+  { "id": 16, "name": "9x18mm Ammo Box", "type": "Ammo", "price": 20, "weight": "0.25KG", "implemented": true },
+  { "id": 17, "name": "5.45x39mm Ammo Box", "type": "Ammo", "price": 45, "weight": "0.60KG", "implemented": true },
   { "id": 18, "name": "12/70 Buckshot Shells", "type": "Ammo", "price": 15, "weight": "0.40KG" },
   { "id": 19, "name": "20ga Slug Shells", "type": "Ammo", "price": 25, "weight": "0.35KG" },
   { "id": 20, "name": "7.62x54mmR Ammo Box", "type": "Ammo", "price": 60, "weight": "0.75KG" },
@@ -60,7 +63,8 @@
     "type": "Weapon",
     "price": 250,
     "weight": "0.81KG",
-    "stats": { "ammo": "9x18mm", "ammoId": 16, "fireRate": 0.4, "damage": 25, "range": 50, "spread": 2.5, "pellets": 1 }
+    "stats": { "ammo": "9x18mm", "ammoId": 16, "fireRate": 0.4, "damage": 25, "range": 50, "spread": 2.5, "pellets": 1 },
+    "implemented": true
   },
   {
     "id": 22,
@@ -68,7 +72,8 @@
     "type": "Weapon",
     "price": 750,
     "weight": "3.60KG",
-    "stats": { "ammo": "5.45x39mm", "ammoId": 17, "fireRate": 0.1, "damage": 38, "range": 400, "spread": 1.2, "pellets": 1 }
+    "stats": { "ammo": "5.45x39mm", "ammoId": 17, "fireRate": 0.1, "damage": 38, "range": 400, "spread": 1.2, "pellets": 1 },
+    "implemented": true
   },
   {
     "id": 23,

@@ -66,7 +66,7 @@
         /* Database Styles */
         .controls { 
             display: flex; gap: 10px; margin-bottom: 20px; 
-            background: #f8fafc; padding: 15px; border-radius: 8px; flex-wrap: wrap;
+            background: #f8fafc; padding: 15px; border-radius: 8px; flex-wrap: wrap; align-items: center;
         }
         
         .search-bar { 
@@ -88,6 +88,10 @@
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th { text-align: left; padding: 12px; background: #f8fafc; border-bottom: 2px solid var(--border); color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; }
         td { padding: 12px; border-bottom: 1px solid var(--border); }
+
+        .status-tag { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
+        .tag-yes { background: #dcfce7; color: #166534; }
+        .tag-no { background: #fee2e2; color: #991b1b; }
 
         /* Detail Panels - Exact Logic from Original */
         .expandable { cursor: pointer; }
@@ -133,6 +137,9 @@
                 <option value="Ammo">Ammo</option>
                 <option value="Weapon">Weapon</option>
             </select>
+            <label style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px;">
+                <input type="checkbox" id="itemImplemented"> Implemented
+            </label>
             <button class="btn-add" onclick="addItem()">+ ADD ITEM</button>
         </div>
 
@@ -149,6 +156,7 @@
                     <th>Type</th>
                     <th>Weight</th>
                     <th>Price (Larks)</th>
+                    <th>Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -231,12 +239,15 @@
                 tr.onclick = () => toggleDetails(item.id);
             }
             
+            const statusLabel = item.implemented ? '<span class="status-tag tag-yes">Implemented</span>' : '<span class="status-tag tag-no">Pending</span>';
+
             tr.innerHTML = `
                 <td><strong>${item.id}</strong></td>
                 <td>${item.name} ${(isWeapon || isFood) ? '<span style="font-size:0.7em; color:var(--text-muted); margin-left:8px;">[DETAILS]</span>' : ''}</td>
                 <td><span style="color: ${getTypeColor(item.type)}; font-weight: 600;">${item.type}</span></td>
                 <td style="color:var(--text-muted)">${item.weight || '0.00KG'}</td>
                 <td style="color:#b45309; font-weight: 500;">Ł ${item.price || 0}</td>
+                <td>${statusLabel}</td>
                 <td><button onclick="event.stopPropagation(); removeItem(${item.id})" style="color:red; border:none; background:none; cursor:pointer; font-weight:bold;">DEL</button></td>
             `;
             tbody.appendChild(tr);
@@ -267,7 +278,7 @@
                         </div>`;
                 }
 
-                detailsTr.innerHTML = `<td colspan="6" class="details-panel">${innerContent}</td>`;
+                detailsTr.innerHTML = `<td colspan="7" class="details-panel">${innerContent}</td>`;
                 tbody.appendChild(detailsTr);
             }
         });
@@ -294,6 +305,7 @@
         const price = document.getElementById('itemPrice').value;
         const weight = document.getElementById('itemWeight').value || "0.00KG";
         const type = document.getElementById('itemType').value;
+        const implemented = document.getElementById('itemImplemented').checked;
 
         if(id && name && price) {
             items.push({ 
@@ -301,10 +313,12 @@
                 name, 
                 type, 
                 price: parseInt(price), 
-                weight: weight.toUpperCase().includes('KG') ? weight.toUpperCase() : weight + "KG" 
+                weight: weight.toUpperCase().includes('KG') ? weight.toUpperCase() : weight + "KG",
+                implemented: implemented
             });
             renderTable();
             ['itemId', 'itemName', 'itemPrice', 'itemWeight'].forEach(f => document.getElementById(f).value = '');
+            document.getElementById('itemImplemented').checked = false;
         }
     }
 
