@@ -64,11 +64,6 @@
         .tab-content.active { display: block; }
 
         /* Database Styles */
-        .controls { 
-            display: flex; gap: 10px; margin-bottom: 20px; 
-            background: #f8fafc; padding: 15px; border-radius: 8px; flex-wrap: wrap; align-items: center;
-        }
-        
         .search-bar { 
             margin-bottom: 20px; padding: 12px; border: 1px solid var(--border); 
             border-radius: 8px; display: flex; align-items: center; gap: 10px;
@@ -82,7 +77,6 @@
             font-family: inherit;
         }
 
-        .btn-add { background: var(--primary); color: white; border: none; cursor: pointer; font-weight: bold; }
         .btn-save { background: #0f172a; color: white; width: 100%; padding: 15px; margin-top: 20px; cursor: pointer; font-weight: bold; border: none; border-radius: 8px; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
@@ -124,25 +118,8 @@
     </div>
 
     <div id="database" class="tab-content active">
-        <h1 style="font-size: 1.25rem; margin-bottom: 20px;">LENIMKI Database Loader</h1>
+        <h1 style="font-size: 1.25rem; margin-bottom: 20px;">LENIMKI Database Portal</h1>
         
-        <div class="controls">
-            <input type="number" id="itemId" placeholder="ID" style="width: 60px;">
-            <input type="text" id="itemName" placeholder="Item Name" style="flex-grow: 1;">
-            <input type="number" id="itemPrice" placeholder="Larks" style="width: 80px;">
-            <input type="text" id="itemWeight" placeholder="0.00KG" style="width: 100px;">
-            <select id="itemType">
-                <option value="Food">Food</option>
-                <option value="Misc">Misc</option>
-                <option value="Ammo">Ammo</option>
-                <option value="Weapon">Weapon</option>
-            </select>
-            <label style="font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 5px;">
-                <input type="checkbox" id="itemImplemented"> Implemented
-            </label>
-            <button class="btn-add" onclick="addItem()">+ ADD ITEM</button>
-        </div>
-
         <div class="search-bar">
             <span style="color: var(--text-muted)">SEARCH:</span>
             <input type="text" id="searchInput" placeholder="Search by name or type..." onkeyup="renderTable()">
@@ -157,13 +134,12 @@
                     <th>Weight</th>
                     <th>Price (Larks)</th>
                     <th>Status</th>
-                    <th>Action</th>
                 </tr>
             </thead>
             <tbody id="tableBody"></tbody>
         </table>
 
-        <button class="btn-save" onclick="downloadJSON()">💾 EXPORT UPDATED ITEMS.JSON</button>
+        <button class="btn-save" onclick="downloadJSON()">💾 EXPORT TO JSON</button>
         <div id="status" class="status-msg">System: Initializing...</div>
     </div>
 
@@ -204,7 +180,7 @@
         evt.currentTarget.classList.add("active");
     }
 
-    // ORIGINAL DATA HANDLING
+    // DATA HANDLING
     let items = [];
 
     async function loadData() {
@@ -248,11 +224,9 @@
                 <td style="color:var(--text-muted)">${item.weight || '0.00KG'}</td>
                 <td style="color:#b45309; font-weight: 500;">Ł ${item.price || 0}</td>
                 <td>${statusLabel}</td>
-                <td><button onclick="event.stopPropagation(); removeItem(${item.id})" style="color:red; border:none; background:none; cursor:pointer; font-weight:bold;">DEL</button></td>
             `;
             tbody.appendChild(tr);
 
-            // Re-adding the Full Stats Panels
             if (isWeapon || isFood) {
                 const detailsTr = document.createElement('tr');
                 detailsTr.id = `details-${item.id}`;
@@ -278,7 +252,7 @@
                         </div>`;
                 }
 
-                detailsTr.innerHTML = `<td colspan="7" class="details-panel">${innerContent}</td>`;
+                detailsTr.innerHTML = `<td colspan="6" class="details-panel">${innerContent}</td>`;
                 tbody.appendChild(detailsTr);
             }
         });
@@ -297,34 +271,6 @@
             case 'Misc': return '#2563eb';
             default: return '#1e293b';
         }
-    }
-
-    function addItem() {
-        const id = document.getElementById('itemId').value;
-        const name = document.getElementById('itemName').value;
-        const price = document.getElementById('itemPrice').value;
-        const weight = document.getElementById('itemWeight').value || "0.00KG";
-        const type = document.getElementById('itemType').value;
-        const implemented = document.getElementById('itemImplemented').checked;
-
-        if(id && name && price) {
-            items.push({ 
-                id: parseInt(id), 
-                name, 
-                type, 
-                price: parseInt(price), 
-                weight: weight.toUpperCase().includes('KG') ? weight.toUpperCase() : weight + "KG",
-                implemented: implemented
-            });
-            renderTable();
-            ['itemId', 'itemName', 'itemPrice', 'itemWeight'].forEach(f => document.getElementById(f).value = '');
-            document.getElementById('itemImplemented').checked = false;
-        }
-    }
-
-    function removeItem(id) {
-        items = items.filter(item => item.id !== id);
-        renderTable();
     }
 
     function downloadJSON() {
