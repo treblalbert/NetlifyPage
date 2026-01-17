@@ -32,7 +32,8 @@
     "type": "Food",
     "price": 5,
     "weight": "0.50KG",
-    "consumable": { "hunger": 40, "stamina": 12, "health": 4 }
+    "consumable": { "hunger": 40, "stamina": 12, "health": 4 },
+    "implemented": true
   },
   {
     "id": 5,
@@ -40,7 +41,8 @@
     "type": "Food",
     "price": 5,
     "weight": "0.25KG",
-    "consumable": { "hunger": 35, "stamina": 15, "health": 4 }
+    "consumable": { "hunger": 35, "stamina": 15, "health": 4 },
+    "implemented": true
   },
   { "id": 6, "name": "Box of Matches", "type": "Misc", "price": 1, "weight": "0.02KG" },
   { "id": 7, "name": "Gasoline Lighter", "type": "Misc", "price": 10, "weight": "0.05KG" },
