@@ -44,7 +44,7 @@
     "consumable": { "hunger": 35, "stamina": 15, "health": 4 },
     "implemented": true
   },
-  { "id": 6, "name": "Box of Matches", "type": "Misc", "price": 1, "weight": "0.02KG" },
+  { "id": 6, "name": "Box of Matches", "type": "Misc", "price": 1, "weight": "0.02KG", "implemented": true },
   { "id": 7, "name": "Gasoline Lighter", "type": "Misc", "price": 10, "weight": "0.05KG" },
   { "id": 8, "name": "Flashlight (Metal Signal)", "type": "Misc", "price": 25, "weight": "0.35KG" },
   { "id": 9, "name": "AA Batteries", "type": "Misc", "price": 5, "weight": "0.05KG" },
