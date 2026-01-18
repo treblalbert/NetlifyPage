@@ -45,7 +45,7 @@
     "implemented": true
   },
   { "id": 6, "name": "Box of Matches", "type": "Misc", "price": 1, "weight": "0.02KG", "implemented": true },
-  { "id": 7, "name": "Gasoline Lighter", "type": "Misc", "price": 10, "weight": "0.05KG" },
+  { "id": 7, "name": "Gasoline Lighter", "type": "Misc", "price": 10, "weight": "0.05KG", "implemented": true },
   { "id": 8, "name": "Flashlight (Metal Signal)", "type": "Misc", "price": 25, "weight": "0.35KG" },
   { "id": 9, "name": "AA Batteries", "type": "Misc", "price": 5, "weight": "0.05KG" },
   { "id": 10, "name": "Duct Tape (Blue Izolenta)", "type": "Misc", "price": 8, "weight": "0.15KG" },
