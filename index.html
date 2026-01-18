@@ -1,148 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>AlbertOS - Desktop</title>
-<link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Albert Adroer Prats | Portfolio</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --accent: #38bdf8;
+            --text: #f1f5f9;
+            --text-dim: #94a3b8;
+        }
 
-<!-- inline SVG filters -->
-<svg style="position:absolute;width:0;height:0;pointer-events:none" aria-hidden="true" focusable="false">
-  <defs>
-    <filter id="liquid" x="-20%" y="-20%" width="140%" height="140%">
-      <feTurbulence id="turb" baseFrequency="0.006 0.01" numOctaves="2" seed="5" stitchTiles="stitch" type="fractalNoise"/>
-      <feColorMatrix type="saturate" values="0.8"/>
-      <feDisplacementMap in="SourceGraphic" in2="turb" scale="6" xChannelSelector="R" yChannelSelector="G"/>
-    </filter>
-    <filter id="liquid-small" x="-30%" y="-30%" width="160%" height="160%">
-      <feTurbulence id="turb-small" baseFrequency="0.015 0.02" numOctaves="1" seed="7" stitchTiles="stitch" type="fractalNoise"/>
-      <feDisplacementMap in="SourceGraphic" in2="turb-small" scale="3" xChannelSelector="R" yChannelSelector="G"/>
-    </filter>
-  </defs>
-</svg>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            background: radial-gradient(circle at top right, #1e293b, #0f172a);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--accent);
+            margin-bottom: 1rem;
+            object-fit: cover;
+        }
+
+        h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .subtitle { color: var(--accent); font-weight: 600; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
+
+        section { margin-bottom: 4rem; }
+        h2 { 
+            font-size: 1.5rem; 
+            margin-bottom: 1.5rem; 
+            border-left: 4px solid var(--accent);
+            padding-left: 1rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .project-icon { width: 40px; height: 40px; border-radius: 8px; }
+        .project-title { font-weight: bold; font-size: 1.2rem; }
+        
+        .btn-group { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
+        
+        .btn {
+            text-decoration: none;
+            color: var(--text);
+            background: rgba(56, 189, 248, 0.15);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid var(--accent);
+            transition: 0.2s;
+        }
+
+        .btn:hover { background: var(--accent); color: var(--bg); }
+
+        .social-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .social-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: var(--text);
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            transition: 0.2s;
+        }
+
+        .social-item:hover { border-color: var(--accent); background: rgba(255,255,255,0.1); }
+        .social-item img { width: 24px; height: 24px; }
+
+        .instructions {
+            background: rgba(0,0,0,0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            color: var(--text-dim);
+        }
+
+        footer { text-align: center; color: var(--text-dim); margin-top: 4rem; padding-bottom: 2rem; }
+        p { margin-bottom: 1rem; }
+    </style>
 </head>
-
 <body>
-  <!-- Boot Screen -->
-  <div class="boot-screen" id="bootScreen">
-    <div class="boot-content">
-      <div class="boot-logo">
-        <p class="boot-brand">Albert</p>
-        <p class="boot-name">OS<span>2026</span></p>
-        <p class="boot-edition">Portfolio Edition</p>
-      </div>
-      <div class="boot-loader">
-        <div class="boot-box"></div>
-        <div class="boot-box"></div>
-        <div class="boot-box"></div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Animated Wave Wallpaper -->
-  <div class="wallpaper">
-    <div class="wave-container">
-      <div class="wave wave-1"></div>
-      <div class="wave wave-2"></div>
-      <div class="wave wave-3"></div>
-      <div class="wave wave-4"></div>
-    </div>
-    <div class="wallpaper-gradient"></div>
-  </div>
+<div class="container">
+    <header>
+        <img src="resources/Albert.jpg" alt="Albert Adroer Prats" class="avatar">
+        <h1>Albert Adroer Prats</h1>
+        <p class="subtitle">Software guy</p>
+    </header>
 
-  <!-- Desktop Area -->
-  <div class="desktop" id="desktop">
-    <!-- Desktop Icons will be generated by JS -->
-  </div>
-
-  <!-- Taskbar -->
-  <div class="taskbar" id="taskbar">
-    <button class="start-button" id="startButton">
-      <div class="start-icon">
-        <span></span><span></span><span></span><span></span>
-      </div>
-      <span class="start-text" data-i18n="start">Start</span>
-    </button>
-    
-    <div class="taskbar-apps" id="taskbarApps">
-      <!-- Active windows will appear here -->
-    </div>
-    
-    <div class="system-tray">
-      <div class="tray-icons">
-        <button class="tray-btn" id="langBtn" title="Language">
-          <span id="currentLang">EN</span>
-        </button>
-        <button class="tray-btn" id="themeBtn" title="Toggle Theme">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 2.26 5.403 5.403 0 01-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
-        </button>
-      </div>
-      <div class="datetime" id="datetime">
-        <div class="time" id="time">00:00</div>
-        <div class="date" id="date">Mon, Jan 1</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Start Menu -->
-  <div class="start-menu" id="startMenu">
-    <div class="start-menu-header">
-      <img src="resources/Albert.jpg" alt="Albert" class="start-avatar">
-      <div class="start-user-info">
-        <span class="start-username">Albert Adroer Prats</span>
-        <span class="start-title" data-i18n="gameDevTitle">Game Developer</span>
-      </div>
-    </div>
-    <div class="start-menu-content">
-      <div class="start-section">
-        <div class="start-section-title" data-i18n="pinnedApps">Pinned Apps</div>
-        <div class="start-apps" id="startApps">
-          <!-- Apps will be generated by JS -->
+    <section id="about">
+        <h2>About Me</h2>
+        <div class="card">
+            <p>I'm a 27-year-old game developer and data analyst from Barcelona. You'll always find me working on a random videogame prototype, tho I'm currently full time working on a post-soviet survival game named 'Lenimki'.</p>
+            
+            <p>My background in Unity development has given me hands-on experience building complete games, from prototypes to published titles. My first commercial release, <em>Bald Ball</em>, is available on Steam, and I regularly share smaller experiments on itch.io. I'm currently working on new gameplay prototypes and developing personal software tools.</p>
+            
+            <p>I studied data analytics at Ironhack, where I built Python and AI-based tools to streamline analysis workflows. As part of my final project, I designed and analyzed a dataset generated from gameplay interactions, which helped solidify my interest in combining creativity with analytical thinking. I continue to grow as a data analyst by experimenting with diverse datasets and refining my ability to turn raw information into meaningful insights.</p>
+            
+            <p>When I'm not coding, I enjoy music production, oil painting, bouldering, and hiking.</p>
         </div>
-      </div>
-      <div class="start-section">
-        <div class="start-section-title" data-i18n="allApps">All Apps</div>
-        <div class="start-all-apps" id="startAllApps">
-          <!-- All apps list -->
+    </section>
+
+    <section id="projects">
+        <h2>Projects</h2>
+        
+        <div class="card">
+            <div class="project-header">
+                <img src="resources/baldball.png" class="project-icon" alt="Bald Ball">
+                <span class="project-title">Bald Ball</span>
+            </div>
+            <p>A physics-based challenge exploring unique gameplay mechanics. My first commercial release on Steam.</p>
+            <div class="btn-group">
+                <a href="https://albertfreeman.org/bald-ball/" class="btn" target="_blank">Visit Site</a>
+            </div>
         </div>
-      </div>
-    </div>
-    <div class="start-menu-footer">
-      <button class="start-footer-btn" id="settingsBtn">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.488.488 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-        <span data-i18n="settings">Settings</span>
-      </button>
-      <button class="start-footer-btn" id="aboutBtn">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-        <span data-i18n="aboutMe">About Me</span>
-      </button>
-    </div>
-  </div>
 
-  <!-- Language Menu -->
-  <div class="context-menu lang-menu" id="langMenu">
-    <button class="context-item" data-lang="en">English</button>
-    <button class="context-item" data-lang="es">Español</button>
-    <button class="context-item" data-lang="ca">Català</button>
-  </div>
+        <div class="card">
+            <div class="project-header">
+                <img src="resources/excel.png" class="project-icon" alt="Excel Editor">
+                <span class="project-title">Albert AI Excel Editor</span>
+            </div>
+            <p>Advanced Excel editor with OpenAI integration. Features powerful filters, an AI chat interface for data queries, and automatic modifications with unlimited undo.</p>
+            <div class="btn-group">
+                <a href="resources/AlbertAIExcelEditor.zip" class="btn">Download Alpha</a>
+                <a href="https://github.com/treblalbert/Albert-AI-Excel-Editor" class="btn" target="_blank">Source Code</a>
+            </div>
+        </div>
 
-  <!-- Desktop Context Menu -->
-  <div class="context-menu" id="contextMenu">
-    <button class="context-item" id="ctxRefresh" data-i18n="refresh">Refresh</button>
-    <div class="context-divider"></div>
-    <button class="context-item" id="ctxArrangeIcons" data-i18n="arrangeIcons">Arrange Icons</button>
-    <button class="context-item" id="ctxResetPositions" data-i18n="resetPositions">Reset Positions</button>
-    <div class="context-divider"></div>
-    <button class="context-item" id="ctxToggleTheme" data-i18n="toggleTheme">Toggle Theme</button>
-  </div>
+        <div class="card">
+            <div class="project-header">
+                <img src="resources/ATCF.png" class="project-icon" alt="Twitter Filter">
+                <span class="project-title">X/Twitter Filter</span>
+            </div>
+            <p>Browser extension to take full control of your feed by filtering tweets based on country, specific users, and keywords.</p>
+            <div class="instructions">
+                <strong>Manual Install:</strong> Download from GitHub > Enable "Developer mode" in extensions > "Load unpacked".
+            </div>
+            <div class="btn-group">
+                <a href="https://github.com/treblalbert/Albert-X-Twitter-Filter" class="btn" target="_blank">Source Code</a>
+            </div>
+        </div>
 
-  <!-- Windows Container -->
-  <div class="windows-container" id="windowsContainer">
-    <!-- Windows will be generated dynamically -->
-  </div>
+        <div class="card">
+            <div class="project-header">
+                <img src="resources/pdf.png" class="project-icon" alt="PDF Reader">
+                <span class="project-title">Albert The Wrench PDF Reader</span>
+            </div>
+            <p>Feature-rich, customizable PDF viewer built with Python, offering intuitive navigation and powerful document management.</p>
+            <div class="btn-group">
+                <a href="Albert The Wrench PDF Reader.exe" class="btn">Download .exe</a>
+                <a href="https://github.com/treblalbert/Albert-s-PDF-Viewer" class="btn" target="_blank">Source Code</a>
+            </div>
+        </div>
+    </section>
 
-  <script src="translations.js"></script>
-  <script src="app.js"></script>
-  <script src="animations.js"></script>
+    <section id="links">
+        <h2>Connect</h2>
+        <div class="social-links">
+            <a href="https://github.com/treblalbert" class="social-item" target="_blank">
+                <img src="resources/github-icon.png" alt="GitHub">
+                <span>GitHub</span>
+            </a>
+            <a href="https://albertfreeman.itch.io/" class="social-item" target="_blank">
+                <img src="resources/itch-icon.png" alt="Itch.io">
+                <span>Itch.io</span>
+            </a>
+            <a href="mailto:albertadroer@gmail.com" class="social-item">
+                <img src="resources/contact.png" alt="Email">
+                <span>Email</span>
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 Albert Adroer Prats</p>
+    </footer>
+</div>
+
 </body>
 </html>

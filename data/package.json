@@ -1,8 +1,0 @@
-{
-  "name": "data-analytics-dictionary",
-  "version": "1.0.0",
-  "description": "Data Analytics Definitive Dictionary with AI Chat",
-  "dependencies": {
-    "node-fetch": "^2.6.7"
-  }
-}
