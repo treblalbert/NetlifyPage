@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LENIMKI | Management Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #f59e0b;
+            --primary-hover: #d97706;
+            --bg-body: #0c0c0c;
+            --bg-card: #161616;
+            --bg-elevated: #1f1f1f;
+            --text-main: #e5e5e5;
+            --text-muted: #737373;
+            --border: #2a2a2a;
+            --weapon-red: #ef4444;
+            --food-green: #22c55e;
+            --ammo-amber: #f59e0b;
+            --misc-blue: #3b82f6;
+            --accent-glow: rgba(245, 158, 11, 0.15);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--bg-body);
+            background-image: 
+                radial-gradient(ellipse at 20% 0%, rgba(245, 158, 11, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(239, 68, 68, 0.05) 0%, transparent 50%);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .tabs-header {
+            display: flex;
+            background: var(--bg-elevated);
+            border-bottom: 1px solid var(--border);
+            padding: 0 20px;
+            gap: 5px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 18px 28px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover { color: var(--text-main); }
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: linear-gradient(to top, var(--accent-glow), transparent);
+        }
+
+        .tab-content { display: none; padding: 30px; }
+        .tab-content.active { display: block; }
+
+        h1 { 
+            font-size: 1.5rem; 
+            margin-bottom: 8px; 
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--primary);
+        }
+        h1 span { color: var(--text-main); font-weight: 400; }
+
+        .subtitle {
+            color: var(--text-muted); 
+            font-size: 0.85rem; 
+            margin-bottom: 25px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .search-bar { 
+            margin-bottom: 20px; 
+            padding: 14px 18px; 
+            border: 1px solid var(--border); 
+            border-radius: 10px; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px;
+            background: var(--bg-elevated);
+            transition: border-color 0.2s;
+        }
+        .search-bar:focus-within { border-color: var(--primary); }
+        .search-bar input { 
+            border: none; 
+            outline: none; 
+            width: 100%; 
+            font-size: 1rem; 
+            background: transparent;
+            color: var(--text-main);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .search-bar input::placeholder { color: var(--text-muted); }
+
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 18px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg-elevated);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover { border-color: var(--text-muted); color: var(--text-main); }
+        .filter-btn.active { border-color: var(--primary); color: var(--primary); background: var(--accent-glow); }
+
+        .btn-add {
+            padding: 10px 20px;
+            border: 2px dashed var(--primary);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--primary);
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin-left: auto;
+        }
+        .btn-add:hover { background: var(--accent-glow); }
+
+        input, select, button { 
+            padding: 10px 14px; 
+            border: 1px solid var(--border); 
+            border-radius: 8px; 
+            font-family: inherit;
+            background: var(--bg-elevated);
+            color: var(--text-main);
+        }
+        input:focus, select:focus { outline: none; border-color: var(--primary); }
+
+        .action-buttons { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+            margin-top: 25px; 
+        }
+        
+        .btn-save-pi { 
+            background: linear-gradient(135deg, #22c55e, #16a34a); 
+            color: white; 
+            padding: 16px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            border: none; 
+            border-radius: 10px; 
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-save-pi:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(34, 197, 94, 0.3); }
+        
+        .btn-export { 
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8); 
+            color: white; 
+            padding: 16px; 
+            cursor: pointer; 
+            font-weight: 700; 
+            border: none; 
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-export:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { 
+            text-align: left; 
+            padding: 14px 16px; 
+            background: var(--bg-elevated); 
+            border-bottom: 2px solid var(--border); 
+            color: var(--text-muted); 
+            font-size: 0.75rem; 
+            text-transform: uppercase; 
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 1px;
+        }
+        td { 
+            padding: 14px 16px; 
+            border-bottom: 1px solid var(--border); 
+            transition: background 0.2s;
+        }
+        tr:hover td { background: var(--bg-elevated); }
+
+        .editable { 
+            cursor: text; 
+            border-radius: 4px;
+            padding: 4px 8px;
+            margin: -4px -8px;
+            transition: all 0.2s;
+        }
+        .editable:hover { background: rgba(245, 158, 11, 0.1); }
+        .editable:focus { 
+            outline: none; 
+            background: rgba(245, 158, 11, 0.15); 
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+
+        .status-tag { 
+            padding: 6px 12px; 
+            border-radius: 6px; 
+            font-size: 0.7rem; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.5px;
+        }
+        .tag-yes { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .tag-no { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+
+        .expand-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            padding: 0;
+        }
+        .expand-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .expand-btn.expanded { background: var(--primary); border-color: var(--primary); color: var(--bg-body); }
+
+        .details-row { display: none; }
+        .details-row.visible { display: table-row; }
+        .details-row td {
+            background: var(--bg-elevated) !important;
+            padding: 0;
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .details-panel { 
+            padding: 25px;
+        }
+
+        .stats-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
+            gap: 15px; 
+        }
+        .stat-item { 
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 15px;
+            transition: border-color 0.2s;
+        }
+        .stat-item:hover { border-color: var(--text-muted); }
+        .stat-label { 
+            font-size: 0.65rem; 
+            text-transform: uppercase; 
+            color: var(--text-muted); 
+            margin-bottom: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 1px;
+        }
+        .stat-val { 
+            font-weight: 700; 
+            font-size: 1.1rem; 
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .stat-val.editable-stat {
+            background: transparent;
+            border: none;
+            color: inherit;
+            font-weight: 700;
+            font-size: 1.1rem;
+            font-family: 'JetBrains Mono', monospace;
+            width: 100%;
+            padding: 0;
+        }
+        .stat-val.editable-stat:focus { outline: none; color: var(--primary); }
+        .val-weapon { color: var(--weapon-red); }
+        .val-food { color: var(--food-green); }
+        .val-ammo { color: var(--ammo-amber); }
+
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.2s;
+        }
+        .delete-btn:hover { background: rgba(239, 68, 68, 0.2); }
+
+        /* Controls Tab */
+        .controls-container { display: flex; flex-direction: column; gap: 30px; }
+        .controls-section {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+        }
+        .controls-section h2 {
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 0 20px 0;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .controls-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 12px; 
+        }
+        .key-row { 
+            display: flex; 
+            align-items: center; 
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 15px;
+            transition: border-color 0.2s;
+        }
+        .key-row:hover { border-color: var(--text-muted); }
+        .key-cap { 
+            background: var(--bg-body); 
+            border: 1px solid var(--border); 
+            border-radius: 6px; 
+            padding: 8px 14px; 
+            min-width: 60px; 
+            text-align: center; 
+            font-weight: 700; 
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--primary);
+            margin-right: 15px;
+            box-shadow: 0 2px 0 var(--border);
+        }
+        .key-desc { 
+            color: var(--text-main); 
+            font-size: 0.9rem;
+            flex: 1;
+        }
+        .key-delete {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 5px;
+            opacity: 0;
+            transition: opacity 0.2s, color 0.2s;
+        }
+        .key-row:hover .key-delete { opacity: 1; }
+        .key-delete:hover { color: #ef4444; }
+
+        .add-control-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .add-control-row input {
+            flex: 1;
+        }
+        .add-control-row input:first-child {
+            max-width: 120px;
+        }
+        .btn-add-control {
+            background: var(--primary);
+            border: none;
+            color: var(--bg-body);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .btn-add-control:hover { background: var(--primary-hover); }
+
+        /* To Do / Kanban */
+        .kanban-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            min-height: 500px;
+        }
+        .kanban-column {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .kanban-header {
+            padding: 18px 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .kanban-header .count {
+            background: var(--bg-card);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .column-todo .kanban-header { color: var(--ammo-amber); border-bottom-color: rgba(245, 158, 11, 0.3); }
+        .column-doing .kanban-header { color: var(--misc-blue); border-bottom-color: rgba(59, 130, 246, 0.3); }
+        .column-done .kanban-header { color: var(--food-green); border-bottom-color: rgba(34, 197, 94, 0.3); }
+
+        .kanban-cards {
+            flex: 1;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            min-height: 200px;
+        }
+        .kanban-cards.drag-over {
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .kanban-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 15px;
+            cursor: grab;
+            transition: all 0.2s;
+        }
+        .kanban-card:hover { 
+            border-color: var(--text-muted); 
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .kanban-card.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+        .kanban-card-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+        .kanban-card-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+        .kanban-card-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+        .kanban-card-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.2s;
+        }
+        .kanban-card-btn:hover { border-color: var(--text-main); color: var(--text-main); }
+        .kanban-card-btn.delete:hover { border-color: #ef4444; color: #ef4444; }
+
+        .add-card-form {
+            padding: 15px;
+            border-top: 1px solid var(--border);
+        }
+        .add-card-form input,
+        .add-card-form textarea {
+            width: 100%;
+            margin-bottom: 10px;
+            background: var(--bg-card);
+        }
+        .add-card-form textarea {
+            resize: vertical;
+            min-height: 60px;
+            font-family: inherit;
+        }
+        .btn-add-card {
+            width: 100%;
+            background: transparent;
+            border: 2px dashed var(--border);
+            color: var(--text-muted);
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .btn-add-card:hover { border-color: var(--primary); color: var(--primary); }
+
+        .status-msg { 
+            margin-top: 20px; 
+            font-size: 0.85rem; 
+            color: var(--text-muted); 
+            font-family: 'JetBrains Mono', monospace; 
+            padding: 15px 18px; 
+            background: var(--bg-elevated); 
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.visible { display: flex; }
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal h2 {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--primary);
+            margin: 0 0 20px 0;
+            font-size: 1.2rem;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.5px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+        }
+        .btn-modal-save {
+            flex: 1;
+            background: var(--primary);
+            border: none;
+            color: var(--bg-body);
+            padding: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-modal-cancel {
+            flex: 1;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+
+        .type-specific-fields { display: none; }
+        .type-specific-fields.visible { display: block; }
+
+        @media (max-width: 900px) {
+            .kanban-container { grid-template-columns: 1fr; }
+            .action-buttons { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <div class="tabs-header">
+        <button class="tab-btn active" onclick="openTab(event, 'database')">📦 Database</button>
+        <button class="tab-btn" onclick="openTab(event, 'controls')">🎮 Controls</button>
+        <button class="tab-btn" onclick="openTab(event, 'todo')">📋 To Do</button>
+    </div>
+
+    <!-- DATABASE TAB -->
+    <div id="database" class="tab-content active">
+        <h1>LENIMKI <span>Database Portal</span></h1>
+        <p class="subtitle">// Click cells to edit • Expand rows for detailed stats</p>
+        
+        <div class="search-bar">
+            <span style="color: var(--primary); font-family: 'JetBrains Mono', monospace;">▸</span>
+            <input type="text" id="searchInput" placeholder="Search items..." onkeyup="renderTable()">
+        </div>
+
+        <div class="toolbar">
+            <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+            <button class="filter-btn" onclick="setFilter('Food', this)">Food</button>
+            <button class="filter-btn" onclick="setFilter('Weapon', this)">Weapons</button>
+            <button class="filter-btn" onclick="setFilter('Ammo', this)">Ammo</button>
+            <button class="filter-btn" onclick="setFilter('Misc', this)">Misc</button>
+            <button class="btn-add" onclick="openAddItemModal()">+ Add Item</button>
+        </div>
+
+        <table id="itemTable">
+            <thead>
+                <tr>
+                    <th style="width: 50px;"></th>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Weight</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+
+        <div id="status" class="status-msg">▸ System initializing...</div>
+
+        <div class="action-buttons">
+            <button class="btn-save-pi" onclick="saveAllToPi()">⬆ Save to Raspberry Pi</button>
+            <button class="btn-export" onclick="downloadJSON()">⬇ Export Backup</button>
+        </div>
+    </div>
+
+    <!-- CONTROLS TAB -->
+    <div id="controls" class="tab-content">
+        <h1>GAME <span>Controls Reference</span></h1>
+        <p class="subtitle">// Player input bindings • Click to edit</p>
+        
+        <div class="controls-container" id="controlsContainer"></div>
+
+        <div class="action-buttons" style="margin-top: 30px;">
+            <button class="btn-save-pi" onclick="saveAllToPi()">⬆ Save Controls to Pi</button>
+            <button class="btn-export" onclick="downloadControlsJSON()">⬇ Export Controls</button>
+        </div>
+    </div>
+
+    <!-- TO DO TAB -->
+    <div id="todo" class="tab-content">
+        <h1>PROJECT <span>Task Board</span></h1>
+        <p class="subtitle">// Drag cards between columns • Track your progress</p>
+        
+        <div class="kanban-container">
+            <div class="kanban-column column-todo">
+                <div class="kanban-header">
+                    To Do <span class="count" id="count-todo">0</span>
+                </div>
+                <div class="kanban-cards" id="cards-todo" 
+                     ondragover="handleDragOver(event)" 
+                     ondrop="handleDrop(event, 'todo')"
+                     ondragleave="handleDragLeave(event)"></div>
+                <div class="add-card-form">
+                    <input type="text" id="new-card-title-todo" placeholder="Card title...">
+                    <textarea id="new-card-desc-todo" placeholder="Description (optional)..."></textarea>
+                    <button class="btn-add-card" onclick="addCard('todo')">+ Add Card</button>
+                </div>
+            </div>
+
+            <div class="kanban-column column-doing">
+                <div class="kanban-header">
+                    Doing <span class="count" id="count-doing">0</span>
+                </div>
+                <div class="kanban-cards" id="cards-doing"
+                     ondragover="handleDragOver(event)" 
+                     ondrop="handleDrop(event, 'doing')"
+                     ondragleave="handleDragLeave(event)"></div>
+                <div class="add-card-form">
+                    <input type="text" id="new-card-title-doing" placeholder="Card title...">
+                    <textarea id="new-card-desc-doing" placeholder="Description (optional)..."></textarea>
+                    <button class="btn-add-card" onclick="addCard('doing')">+ Add Card</button>
+                </div>
+            </div>
+
+            <div class="kanban-column column-done">
+                <div class="kanban-header">
+                    Done <span class="count" id="count-done">0</span>
+                </div>
+                <div class="kanban-cards" id="cards-done"
+                     ondragover="handleDragOver(event)" 
+                     ondrop="handleDrop(event, 'done')"
+                     ondragleave="handleDragLeave(event)"></div>
+                <div class="add-card-form">
+                    <input type="text" id="new-card-title-done" placeholder="Card title...">
+                    <textarea id="new-card-desc-done" placeholder="Description (optional)..."></textarea>
+                    <button class="btn-add-card" onclick="addCard('done')">+ Add Card</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons" style="margin-top: 30px;">
+            <button class="btn-save-pi" onclick="saveAllToPi()">⬆ Save Tasks to Pi</button>
+            <button class="btn-export" onclick="downloadTodosJSON()">⬇ Export Tasks</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Item Modal -->
+<div class="modal-overlay" id="addItemModal">
+    <div class="modal">
+        <h2>+ Add New Item</h2>
+        
+        <div class="form-group">
+            <label>Item Name</label>
+            <input type="text" id="newItemName" placeholder="e.g., Vodka Bottle">
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Type</label>
+                <select id="newItemType" onchange="toggleTypeFields()">
+                    <option value="Food">Food</option>
+                    <option value="Weapon">Weapon</option>
+                    <option value="Ammo">Ammo</option>
+                    <option value="Misc">Misc</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Price (Larks)</label>
+                <input type="number" id="newItemPrice" placeholder="0">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Weight</label>
+            <input type="text" id="newItemWeight" placeholder="e.g., 0.50KG">
+        </div>
+
+        <!-- Food-specific fields -->
+        <div class="type-specific-fields" id="foodFields">
+            <h3 style="color: var(--food-green); font-size: 0.85rem; margin: 20px 0 15px; font-family: 'JetBrains Mono', monospace;">CONSUMABLE STATS</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Hunger Restore</label>
+                    <input type="number" id="newFoodHunger" placeholder="0" min="0" max="100">
+                </div>
+                <div class="form-group">
+                    <label>Stamina Restore</label>
+                    <input type="number" id="newFoodStamina" placeholder="0" min="0" max="100">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Health Restore</label>
+                <input type="number" id="newFoodHealth" placeholder="0" min="0" max="100">
+            </div>
+        </div>
+
+        <!-- Weapon-specific fields -->
+        <div class="type-specific-fields" id="weaponFields">
+            <h3 style="color: var(--weapon-red); font-size: 0.85rem; margin: 20px 0 15px; font-family: 'JetBrains Mono', monospace;">WEAPON STATS</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Ammo Type</label>
+                    <input type="text" id="newWeaponAmmo" placeholder="e.g., 9x18mm">
+                </div>
+                <div class="form-group">
+                    <label>Ammo ID (Reference)</label>
+                    <input type="number" id="newWeaponAmmoId" placeholder="0">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Magazine Size</label>
+                    <input type="number" id="newWeaponMagSize" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label>Fire Rate (s)</label>
+                    <input type="number" id="newWeaponFireRate" placeholder="0" step="0.01">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Damage</label>
+                    <input type="number" id="newWeaponDamage" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label>Range (m)</label>
+                    <input type="number" id="newWeaponRange" placeholder="0">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Spread</label>
+                    <input type="number" id="newWeaponSpread" placeholder="0" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label>Pellets</label>
+                    <input type="number" id="newWeaponPellets" placeholder="1">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Reload Time (s)</label>
+                <input type="number" id="newWeaponReload" placeholder="0" step="0.1">
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn-modal-cancel" onclick="closeAddItemModal()">Cancel</button>
+            <button class="btn-modal-save" onclick="saveNewItem()">Add Item</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const PI_URL = 'http://192.168.1.223:3000';
+    let items = [];
+    let controls = {
+        movement: [
+            { key: 'W A S D', action: 'Movement' },
+            { key: 'SHIFT', action: 'Run / Sprint' },
+            { key: 'CTRL', action: 'Crouch' },
+            { key: 'SPACE', action: 'Jump' }
+        ],
+        combat: [
+            { key: 'LMB', action: 'Fire / Attack' },
+            { key: 'RMB', action: 'Aim Down Sights' },
+            { key: 'R', action: 'Reload' },
+            { key: '1-4', action: 'Weapon Slots' }
+        ],
+        ui: [
+            { key: 'TAB', action: 'Inventory' },
+            { key: 'M', action: 'Map' },
+            { key: 'ESC', action: 'Pause Menu' },
+            { key: 'F', action: 'Interact' }
+        ]
+    };
+    let todos = {
+        todo: [],
+        doing: [],
+        done: []
+    };
+    let currentFilter = 'all';
+    let expandedRows = new Set();
+    let draggedCard = null;
+
+    // Tab switching
+    function openTab(evt, tabName) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabName).classList.add('active');
+        evt.currentTarget.classList.add('active');
+    }
+
+    // Filter buttons
+    function setFilter(filter, btn) {
+        currentFilter = filter;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderTable();
+    }
+
+    // Load all data
+    async function loadData() {
+        const status = document.getElementById('status');
+        try {
+            const [itemsRes, controlsRes, todosRes] = await Promise.all([
+                fetch(`${PI_URL}/items.json`).catch(() => null),
+                fetch(`${PI_URL}/controls.json`).catch(() => null),
+                fetch(`${PI_URL}/todos.json`).catch(() => null)
+            ]);
+
+            if (itemsRes && itemsRes.ok) {
+                items = await itemsRes.json();
+            }
+            if (controlsRes && controlsRes.ok) {
+                controls = await controlsRes.json();
+            }
+            if (todosRes && todosRes.ok) {
+                todos = await todosRes.json();
+            }
+
+            status.innerHTML = "▸ <span style='color:#22c55e'>Connected to Raspberry Pi</span> — Data loaded successfully";
+            renderTable();
+            renderControls();
+            renderTodos();
+        } catch (err) {
+            status.innerHTML = "▸ <span style='color:#ef4444'>Error:</span> Could not connect to Pi server at " + PI_URL;
+        }
+    }
+
+    // Render items table
+    function renderTable() {
+        const tbody = document.getElementById('tableBody');
+        const filter = document.getElementById('searchInput').value.toLowerCase();
+        tbody.innerHTML = '';
+        
+        items.sort((a, b) => a.id - b.id);
+        
+        items.forEach((item) => {
+            if (!item.name.toLowerCase().includes(filter) && !item.type.toLowerCase().includes(filter)) return;
+            if (currentFilter !== 'all' && item.type !== currentFilter) return;
+
+            const hasDetails = (item.type === 'Weapon' && item.stats) || (item.type === 'Food' && item.consumable);
+            const isExpanded = expandedRows.has(item.id);
+            const statusLabel = item.implemented 
+                ? '<span class="status-tag tag-yes">Done</span>' 
+                : '<span class="status-tag tag-no">Pending</span>';
+
+            // Main row
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>
+                    ${hasDetails ? `<button class="expand-btn ${isExpanded ? 'expanded' : ''}" onclick="toggleExpand(${item.id})">${isExpanded ? '−' : '+'}</button>` : ''}
+                </td>
+                <td><strong style="color: var(--text-muted);">#${item.id}</strong></td>
+                <td><span class="editable" contenteditable="true" onblur="updateData(${item.id}, 'name', this.innerText)">${item.name}</span></td>
+                <td><span style="color: ${getTypeColor(item.type)}; font-weight: 600;">${item.type}</span></td>
+                <td><span class="editable" contenteditable="true" onblur="updateData(${item.id}, 'weight', this.innerText)">${item.weight || '0.00KG'}</span></td>
+                <td><span class="editable" style="color: var(--ammo-amber);" contenteditable="true" onblur="updateData(${item.id}, 'price', this.innerText)">${item.price || 0} ₺</span></td>
+                <td style="cursor:pointer" onclick="toggleImplemented(${item.id})">${statusLabel}</td>
+            `;
+            tbody.appendChild(tr);
+
+            // Details row
+            if (hasDetails) {
+                const detailsTr = document.createElement('tr');
+                detailsTr.className = `details-row ${isExpanded ? 'visible' : ''}`;
+                detailsTr.innerHTML = `<td colspan="7">${renderDetailsPanel(item)}</td>`;
+                tbody.appendChild(detailsTr);
+            }
+        });
+    }
+
+    function renderDetailsPanel(item) {
+        if (item.type === 'Food' && item.consumable) {
+            return `
+                <div class="details-panel">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Hunger Restore</div>
+                            <input class="stat-val val-food editable-stat" type="number" value="${item.consumable.hunger || 0}" 
+                                   onchange="updateConsumable(${item.id}, 'hunger', this.value)" min="0" max="100"> <span style="color:var(--text-muted)">/100</span>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Stamina Restore</div>
+                            <input class="stat-val val-food editable-stat" type="number" value="${item.consumable.stamina || 0}" 
+                                   onchange="updateConsumable(${item.id}, 'stamina', this.value)" min="0" max="100"> <span style="color:var(--text-muted)">/100</span>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Health Restore</div>
+                            <input class="stat-val val-food editable-stat" type="number" value="${item.consumable.health || 0}" 
+                                   onchange="updateConsumable(${item.id}, 'health', this.value)" min="0" max="100"> <span style="color:var(--text-muted)">/100</span>
+                        </div>
+                    </div>
+                    <button class="delete-btn" onclick="deleteItem(${item.id})">🗑 Delete Item</button>
+                </div>
+            `;
+        } else if (item.type === 'Weapon' && item.stats) {
+            return `
+                <div class="details-panel">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">Ammo Type</div>
+                            <input class="stat-val val-weapon editable-stat" type="text" value="${item.stats.ammo || 'N/A'}" 
+                                   onchange="updateStats(${item.id}, 'ammo', this.value)" style="color: var(--weapon-red);">
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Ammo ID</div>
+                            <input class="stat-val val-weapon editable-stat" type="number" value="${item.stats.ammoId || 0}" 
+                                   onchange="updateStats(${item.id}, 'ammoId', this.value)">
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Magazine Size</div>
+                            <input class="stat-val val-weapon editable-stat" type="number" value="${item.stats.magSize || 0}" 
+                                   onchange="updateStats(${item.id}, 'magSize', this.value)">
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Fire Rate (s)</div>
+                            <input class="stat-val val-weapon editable-stat" type="number" step="0.01" value="${item.stats.fireRate || 0}" 
+                                   onchange="updateStats(${item.id}, 'fireRate', this.value)">
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Damage</div>
+                            <input class="stat-val val-weapon editable-stat" type="number" value="${item.stats.damage || 0}" 
+                                   onchange="updateStats(${item.id}, 'damage', this.value)">
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Range (m)</div>
+                            <input class="stat-val val-weapon editable-stat" type="number" value="${item.stats.range || 0}" 
+                                   onchange="updateStats(${item.id}, 'range', this.value)">
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Spread</div>
+                            <input class="stat-val val-weapon editable-stat" type="number" step="0.1" value="${item.stats.spread || 0}" 
+                                   onchange="updateStats(${item.id}, 'spread', this.value)">
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Pellets</div>
+                            <input class="stat-val val-weapon editable-stat" type="number" value="${item.stats.pellets || 1}" 
+                                   onchange="updateStats(${item.id}, 'pellets', this.value)">
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">Reload Time (s)</div>
+                            <input class="stat-val val-weapon editable-stat" type="number" step="0.1" value="${item.stats.reloadTime || 0}" 
+                                   onchange="updateStats(${item.id}, 'reloadTime', this.value)">
+                        </div>
+                    </div>
+                    <button class="delete-btn" onclick="deleteItem(${item.id})">🗑 Delete Item</button>
+                </div>
+            `;
+        }
+        return '';
+    }
+
+    function toggleExpand(id) {
+        if (expandedRows.has(id)) {
+            expandedRows.delete(id);
+        } else {
+            expandedRows.add(id);
+        }
+        renderTable();
+    }
+
+    function updateData(id, field, value) {
+        const item = items.find(i => i.id === id);
+        if (item) {
+            if (field === 'price') {
+                item[field] = parseInt(value.replace(/[^0-9]/g, '')) || 0;
+            } else {
+                item[field] = value;
+            }
+        }
+    }
+
+    function updateConsumable(id, field, value) {
+        const item = items.find(i => i.id === id);
+        if (item && item.consumable) {
+            item.consumable[field] = parseInt(value) || 0;
+        }
+    }
+
+    function updateStats(id, field, value) {
+        const item = items.find(i => i.id === id);
+        if (item && item.stats) {
+            if (field === 'ammo') {
+                item.stats[field] = value;
+            } else {
+                item.stats[field] = parseFloat(value) || 0;
+            }
+        }
+    }
+
+    function toggleImplemented(id) {
+        const item = items.find(i => i.id === id);
+        if (item) {
+            item.implemented = !item.implemented;
+            renderTable();
+        }
+    }
+
+    function deleteItem(id) {
+        if (confirm('Delete this item?')) {
+            items = items.filter(i => i.id !== id);
+            expandedRows.delete(id);
+            renderTable();
+        }
+    }
+
+    function getTypeColor(type) {
+        switch(type) {
+            case 'Weapon': return 'var(--weapon-red)';
+            case 'Food': return 'var(--food-green)';
+            case 'Ammo': return 'var(--ammo-amber)';
+            case 'Misc': return 'var(--misc-blue)';
+            default: return 'var(--text-main)';
+        }
+    }
+
+    // Add Item Modal
+    function openAddItemModal() {
+        document.getElementById('addItemModal').classList.add('visible');
+        toggleTypeFields();
+    }
+
+    function closeAddItemModal() {
+        document.getElementById('addItemModal').classList.remove('visible');
+        // Clear form
+        document.getElementById('newItemName').value = '';
+        document.getElementById('newItemPrice').value = '';
+        document.getElementById('newItemWeight').value = '';
+    }
+
+    function toggleTypeFields() {
+        const type = document.getElementById('newItemType').value;
+        document.getElementById('foodFields').classList.toggle('visible', type === 'Food');
+        document.getElementById('weaponFields').classList.toggle('visible', type === 'Weapon');
+    }
+
+    function saveNewItem() {
+        const name = document.getElementById('newItemName').value.trim();
+        const type = document.getElementById('newItemType').value;
+        const price = parseInt(document.getElementById('newItemPrice').value) || 0;
+        const weight = document.getElementById('newItemWeight').value.trim() || '0.00KG';
+
+        if (!name) {
+            alert('Please enter an item name');
+            return;
+        }
+
+        const newId = Math.max(...items.map(i => i.id), 0) + 1;
+        const newItem = {
+            id: newId,
+            name,
+            type,
+            price,
+            weight,
+            implemented: false
+        };
+
+        if (type === 'Food') {
+            newItem.consumable = {
+                hunger: parseInt(document.getElementById('newFoodHunger').value) || 0,
+                stamina: parseInt(document.getElementById('newFoodStamina').value) || 0,
+                health: parseInt(document.getElementById('newFoodHealth').value) || 0
+            };
+        } else if (type === 'Weapon') {
+            newItem.stats = {
+                ammo: document.getElementById('newWeaponAmmo').value || '',
+                ammoId: parseInt(document.getElementById('newWeaponAmmoId').value) || 0,
+                magSize: parseInt(document.getElementById('newWeaponMagSize').value) || 0,
+                fireRate: parseFloat(document.getElementById('newWeaponFireRate').value) || 0,
+                damage: parseInt(document.getElementById('newWeaponDamage').value) || 0,
+                range: parseInt(document.getElementById('newWeaponRange').value) || 0,
+                spread: parseFloat(document.getElementById('newWeaponSpread').value) || 0,
+                pellets: parseInt(document.getElementById('newWeaponPellets').value) || 1,
+                reloadTime: parseFloat(document.getElementById('newWeaponReload').value) || 0
+            };
+        }
+
+        items.push(newItem);
+        closeAddItemModal();
+        renderTable();
+    }
+
+    // Controls Tab
+    function renderControls() {
+        const container = document.getElementById('controlsContainer');
+        container.innerHTML = '';
+
+        const sections = [
+            { key: 'movement', title: 'Movement' },
+            { key: 'combat', title: 'Combat' },
+            { key: 'ui', title: 'Interface' }
+        ];
+
+        sections.forEach(section => {
+            const sectionEl = document.createElement('div');
+            sectionEl.className = 'controls-section';
+            sectionEl.innerHTML = `
+                <h2>${section.title}</h2>
+                <div class="controls-grid" id="controls-${section.key}">
+                    ${(controls[section.key] || []).map((ctrl, idx) => `
+                        <div class="key-row">
+                            <div class="key-cap" contenteditable="true" onblur="updateControl('${section.key}', ${idx}, 'key', this.innerText)">${ctrl.key}</div>
+                            <div class="key-desc" contenteditable="true" onblur="updateControl('${section.key}', ${idx}, 'action', this.innerText)">${ctrl.action}</div>
+                            <button class="key-delete" onclick="deleteControl('${section.key}', ${idx})">✕</button>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="add-control-row">
+                    <input type="text" id="new-key-${section.key}" placeholder="Key">
+                    <input type="text" id="new-action-${section.key}" placeholder="Action description">
+                    <button class="btn-add-control" onclick="addControl('${section.key}')">+ Add</button>
+                </div>
+            `;
+            container.appendChild(sectionEl);
+        });
+    }
+
+    function updateControl(section, idx, field, value) {
+        if (controls[section] && controls[section][idx]) {
+            controls[section][idx][field] = value.trim();
+        }
+    }
+
+    function deleteControl(section, idx) {
+        if (controls[section]) {
+            controls[section].splice(idx, 1);
+            renderControls();
+        }
+    }
+
+    function addControl(section) {
+        const keyInput = document.getElementById(`new-key-${section}`);
+        const actionInput = document.getElementById(`new-action-${section}`);
+        const key = keyInput.value.trim();
+        const action = actionInput.value.trim();
+
+        if (key && action) {
+            if (!controls[section]) controls[section] = [];
+            controls[section].push({ key, action });
+            keyInput.value = '';
+            actionInput.value = '';
+            renderControls();
+        }
+    }
+
+    // Kanban / To Do
+    function renderTodos() {
+        ['todo', 'doing', 'done'].forEach(column => {
+            const container = document.getElementById(`cards-${column}`);
+            const cards = todos[column] || [];
+            
+            container.innerHTML = cards.map((card, idx) => `
+                <div class="kanban-card" draggable="true" 
+                     ondragstart="handleDragStart(event, '${column}', ${idx})"
+                     ondragend="handleDragEnd(event)">
+                    <div class="kanban-card-title" contenteditable="true" 
+                         onblur="updateCard('${column}', ${idx}, 'title', this.innerText)">${card.title}</div>
+                    ${card.description ? `<div class="kanban-card-desc" contenteditable="true" 
+                         onblur="updateCard('${column}', ${idx}, 'description', this.innerText)">${card.description}</div>` : ''}
+                    <div class="kanban-card-actions">
+                        ${column !== 'todo' ? `<button class="kanban-card-btn" onclick="moveCard('${column}', ${idx}, 'left')">← Move</button>` : ''}
+                        ${column !== 'done' ? `<button class="kanban-card-btn" onclick="moveCard('${column}', ${idx}, 'right')">Move →</button>` : ''}
+                        <button class="kanban-card-btn delete" onclick="deleteCard('${column}', ${idx})">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById(`count-${column}`).textContent = cards.length;
+        });
+    }
+
+    function addCard(column) {
+        const titleInput = document.getElementById(`new-card-title-${column}`);
+        const descInput = document.getElementById(`new-card-desc-${column}`);
+        const title = titleInput.value.trim();
+        const description = descInput.value.trim();
+
+        if (title) {
+            if (!todos[column]) todos[column] = [];
+            todos[column].push({ title, description, createdAt: Date.now() });
+            titleInput.value = '';
+            descInput.value = '';
+            renderTodos();
+        }
+    }
+
+    function updateCard(column, idx, field, value) {
+        if (todos[column] && todos[column][idx]) {
+            todos[column][idx][field] = value.trim();
+        }
+    }
+
+    function deleteCard(column, idx) {
+        if (todos[column]) {
+            todos[column].splice(idx, 1);
+            renderTodos();
+        }
+    }
+
+    function moveCard(fromColumn, idx, direction) {
+        const columns = ['todo', 'doing', 'done'];
+        const fromIdx = columns.indexOf(fromColumn);
+        const toIdx = direction === 'left' ? fromIdx - 1 : fromIdx + 1;
+        
+        if (toIdx >= 0 && toIdx < columns.length) {
+            const toColumn = columns[toIdx];
+            const card = todos[fromColumn].splice(idx, 1)[0];
+            if (!todos[toColumn]) todos[toColumn] = [];
+            todos[toColumn].push(card);
+            renderTodos();
+        }
+    }
+
+    // Drag and drop
+    function handleDragStart(e, column, idx) {
+        draggedCard = { column, idx };
+        e.target.classList.add('dragging');
+    }
+
+    function handleDragEnd(e) {
+        e.target.classList.remove('dragging');
+        document.querySelectorAll('.kanban-cards').forEach(c => c.classList.remove('drag-over'));
+    }
+
+    function handleDragOver(e) {
+        e.preventDefault();
+        e.currentTarget.classList.add('drag-over');
+    }
+
+    function handleDragLeave(e) {
+        e.currentTarget.classList.remove('drag-over');
+    }
+
+    function handleDrop(e, toColumn) {
+        e.preventDefault();
+        e.currentTarget.classList.remove('drag-over');
+        
+        if (draggedCard && draggedCard.column !== toColumn) {
+            const card = todos[draggedCard.column].splice(draggedCard.idx, 1)[0];
+            if (!todos[toColumn]) todos[toColumn] = [];
+            todos[toColumn].push(card);
+            renderTodos();
+        }
+        draggedCard = null;
+    }
+
+    // Save functions
+    async function saveAllToPi() {
+        const status = document.getElementById('status');
+        status.innerHTML = "▸ Saving all data to Raspberry Pi...";
+        
+        try {
+            const results = await Promise.all([
+                fetch(`${PI_URL}/save`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'items', data: items })
+                }),
+                fetch(`${PI_URL}/save`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'controls', data: controls })
+                }),
+                fetch(`${PI_URL}/save`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: 'todos', data: todos })
+                })
+            ]);
+
+            if (results.every(r => r.ok)) {
+                status.innerHTML = "▸ <span style='color:#22c55e'>SUCCESS!</span> All data saved to Raspberry Pi";
+            } else {
+                throw new Error("Some saves failed");
+            }
+        } catch (err) {
+            status.innerHTML = "▸ <span style='color:#ef4444'>Error:</span> Failed to save. Is server.js running?";
+        }
+    }
+
+    // Export functions
+    function downloadJSON() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(items, null, 2));
+        const a = document.createElement('a');
+        a.href = dataStr;
+        a.download = "items_backup.json";
+        a.click();
+    }
+
+    function downloadControlsJSON() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(controls, null, 2));
+        const a = document.createElement('a');
+        a.href = dataStr;
+        a.download = "controls_backup.json";
+        a.click();
+    }
+
+    function downloadTodosJSON() {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(todos, null, 2));
+        const a = document.createElement('a');
+        a.href = dataStr;
+        a.download = "todos_backup.json";
+        a.click();
+    }
+
+    // Init
+    loadData();
+</script>
+</body>
+</html>
