@@ -628,7 +628,7 @@ const MemoriesApp = {
             <div class="memories-album-item" data-album="${album.id}">
                 <div class="memories-album-thumb">
                     ${album.thumbnail 
-                        ? `<img src="${serverUrl}${album.thumbnail}" alt="${album.name}" loading="lazy">`
+                        ? `<img src="${serverUrl}${album.thumbnail}" alt="${album.name}" loading="lazy" crossorigin="anonymous">`
                         : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                             <rect x="3" y="3" width="18" height="18" rx="2"/>
                             <circle cx="8.5" cy="8.5" r="1.5"/>
@@ -713,20 +713,22 @@ const MemoriesApp = {
         }
 
         const serverUrl = AlbyOS.getServerUrl();
+        console.log('[Memories] Rendering media, server:', serverUrl);
+        console.log('[Memories] Media items:', this.state.media);
 
         this.elements.content.innerHTML = `
             <div class="memories-grid">
                 ${this.state.media.map((item, index) => `
                     <div class="memories-grid-item" data-index="${index}">
                         ${item.type === 'video' 
-                            ? `<video src="${serverUrl}${item.thumbnail || item.path}" muted></video>
+                            ? `<video src="${serverUrl}${item.thumbnail || item.path}" muted crossorigin="anonymous" preload="metadata"></video>
                                <span class="video-indicator">
                                    <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
                                        <polygon points="5 3 19 12 5 21 5 3"/>
                                    </svg>
                                    ${item.duration || ''}
                                </span>`
-                            : `<img src="${serverUrl}${item.thumbnail || item.path}" alt="${item.name}" loading="lazy">`
+                            : `<img src="${serverUrl}${item.thumbnail || item.path}" alt="${item.name}" loading="lazy" crossorigin="anonymous" onerror="this.style.display='none'; console.error('Failed to load:', this.src)">`
                         }
                     </div>
                 `).join('')}
@@ -790,11 +792,11 @@ const MemoriesApp = {
 
         if (media.type === 'video') {
             this.elements.viewerMedia.innerHTML = `
-                <video src="${serverUrl}${media.path}" controls autoplay></video>
+                <video src="${serverUrl}${media.path}" controls autoplay crossorigin="anonymous"></video>
             `;
         } else {
             this.elements.viewerMedia.innerHTML = `
-                <img src="${serverUrl}${media.path}" alt="${media.name}">
+                <img src="${serverUrl}${media.path}" alt="${media.name}" crossorigin="anonymous">
             `;
         }
 
@@ -828,8 +830,8 @@ const SettingsApp = {
                     <h3>Server Configuration</h3>
                     <div class="settings-field">
                         <label>Raspberry Pi Server URL</label>
-                        <input type="text" id="server-url-input" value="${currentServer}" placeholder="http://192.168.1.x:3000">
-                        <small>Enter your Raspberry Pi's IP address and port</small>
+                        <input type="text" id="server-url-input" value="${currentServer}" placeholder="http://192.168.1.223:3001">
+                        <small>Default: http://192.168.1.223:3001 — Change to connect to a different server</small>
                     </div>
                     <button class="settings-btn" id="save-server-btn">Save & Test Connection</button>
                     <div id="connection-status"></div>

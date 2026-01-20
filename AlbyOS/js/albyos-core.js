@@ -6,7 +6,7 @@
 const AlbyOS = {
     // Configuration
     config: {
-        serverUrl: 'http://192.168.1.223:3001', // Raspberry Pi server URL - change this!
+        serverUrl: 'http://192.168.1.223:3001', // Default Raspberry Pi server URL
         bootDuration: 3000,
         version: '1.0.0'
     },
