@@ -5,209 +5,511 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Albert Adroer Prats | Portfolio</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
         :root {
-            --bg: #0f172a;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --accent: #38bdf8;
-            --text: #f1f5f9;
-            --text-dim: #94a3b8;
+            --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: rgba(0, 0, 0, 0.05);
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --accent: #0071e3;
+            --accent-hover: #0077ed;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
+
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background-color: var(--bg);
-            background: radial-gradient(circle at top right, #1e293b, #0f172a);
-            color: var(--text);
-            line-height: 1.6;
-            padding: 2rem 1rem;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f5f5f7 0%, #e8e8ed 50%, #d2d2d7 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.5;
+            overflow-x: hidden;
         }
 
+        /* Animated background orbs */
+        .bg-orbs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: linear-gradient(135deg, #a5b4fc, #818cf8);
+            top: -200px;
+            right: -200px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, #fda4af, #fb7185);
+            bottom: -150px;
+            left: -150px;
+            animation-delay: -7s;
+        }
+
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #6ee7b7, #34d399);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -14s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.05); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+
+        /* Navigation Hotbar */
+        .nav-hotbar {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            gap: 4px;
+            padding: 6px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 
+                0 4px 30px var(--glass-shadow),
+                0 1px 3px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .nav-btn {
+            padding: 10px 24px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-btn.active {
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--text-primary);
+            box-shadow: 
+                0 2px 10px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+        }
+
+        /* Main Container */
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
+            padding: 100px 24px 60px;
+            position: relative;
+            z-index: 1;
         }
 
+        /* Header - Always visible */
         header {
             text-align: center;
-            margin-bottom: 4rem;
+            margin-bottom: 48px;
         }
 
         .avatar {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
-            border: 3px solid var(--accent);
-            margin-bottom: 1rem;
             object-fit: cover;
+            margin-bottom: 16px;
+            box-shadow: 
+                0 4px 20px rgba(0, 0, 0, 0.1),
+                0 0 0 4px rgba(255, 255, 255, 0.8);
         }
 
-        h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
-        .subtitle { color: var(--accent); font-weight: 600; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; }
-
-        section { margin-bottom: 4rem; }
-        h2 { 
-            font-size: 1.5rem; 
-            margin-bottom: 1.5rem; 
-            border-left: 4px solid var(--accent);
-            padding-left: 1rem;
-        }
-
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .project-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
-        .project-icon { width: 40px; height: 40px; border-radius: 8px; }
-        .project-title { font-weight: bold; font-size: 1.2rem; }
-        
-        .btn-group { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
-        
-        .btn {
-            text-decoration: none;
-            color: var(--text);
-            background: rgba(56, 189, 248, 0.15);
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-size: 0.9rem;
+        h1 {
+            font-size: 2.5rem;
             font-weight: 600;
-            border: 1px solid var(--accent);
-            transition: 0.2s;
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
         }
 
-        .btn:hover { background: var(--accent); color: var(--bg); }
-
-        .social-links {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 400;
         }
 
-        .social-item {
+        /* Sections */
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            padding: 32px;
+            margin-bottom: 20px;
+            box-shadow: 
+                0 4px 30px var(--glass-shadow),
+                0 1px 3px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 8px 40px rgba(0, 0, 0, 0.08),
+                0 2px 6px rgba(0, 0, 0, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            letter-spacing: -0.01em;
+        }
+
+        /* About Section */
+        .about-text p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .about-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .about-text em {
+            color: var(--text-primary);
+            font-style: normal;
+            font-weight: 500;
+        }
+
+        /* Projects */
+        .project-card {
             display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-            color: var(--text);
-            background: var(--card-bg);
-            padding: 1rem;
-            border-radius: 10px;
-            border: 1px solid transparent;
-            transition: 0.2s;
+            gap: 20px;
+            align-items: flex-start;
         }
 
-        .social-item:hover { border-color: var(--accent); background: rgba(255,255,255,0.1); }
-        .social-item img { width: 24px; height: 24px; }
+        .project-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            object-fit: cover;
+            flex-shrink: 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .project-content {
+            flex: 1;
+        }
+
+        .project-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .project-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
 
         .instructions {
-            background: rgba(0,0,0,0.3);
-            padding: 1rem;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            margin-top: 1rem;
-            color: var(--text-dim);
+            background: rgba(0, 0, 0, 0.03);
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
         }
 
-        footer { text-align: center; color: var(--text-dim); margin-top: 4rem; padding-bottom: 2rem; }
-        p { margin-bottom: 1rem; }
+        .instructions strong {
+            color: var(--text-primary);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 980px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: var(--accent-hover);
+            transform: scale(1.02);
+        }
+
+        .btn-secondary {
+            background: rgba(0, 0, 0, 0.06);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        /* Connect / Social Links */
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .social-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 20px 24px;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .social-card:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .social-icon {
+            width: 32px;
+            height: 32px;
+            opacity: 0.8;
+        }
+
+        .social-label {
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-top: 60px;
+            padding-bottom: 40px;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .nav-hotbar {
+                top: 12px;
+                padding: 4px;
+            }
+
+            .nav-btn {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .glass-card {
+                padding: 24px;
+            }
+
+            .project-card {
+                flex-direction: column;
+            }
+
+            .project-icon {
+                width: 48px;
+                height: 48px;
+            }
+        }
     </style>
 </head>
 <body>
 
+<div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+</div>
+
+<!-- Navigation Hotbar -->
+<nav class="nav-hotbar">
+    <button class="nav-btn active" data-section="about">About</button>
+    <button class="nav-btn" data-section="projects">Projects</button>
+    <button class="nav-btn" data-section="connect">Connect</button>
+</nav>
+
 <div class="container">
+    <!-- Header -->
     <header>
         <img src="resources/Albert.jpg" alt="Albert Adroer Prats" class="avatar">
         <h1>Albert Adroer Prats</h1>
-        <p class="subtitle">Software guy</p>
+        <p class="subtitle">Software Developer</p>
     </header>
 
-    <section id="about">
-        <h2>About Me</h2>
-        <div class="card">
-            <p>I'm a 27-year-old game developer and data analyst from Barcelona. You'll always find me working on a random videogame prototype, tho I'm currently full time working on a post-soviet survival game named 'Lenimki'.</p>
-            
-            <p>My background in Unity development has given me hands-on experience building complete games, from prototypes to published titles. My first commercial release, <em>Bald Ball</em>, is available on Steam, and I regularly share smaller experiments on itch.io. I'm currently working on new gameplay prototypes and developing personal software tools.</p>
-            
-            <p>I studied data analytics at Ironhack, where I built Python and AI-based tools to streamline analysis workflows. As part of my final project, I designed and analyzed a dataset generated from gameplay interactions, which helped solidify my interest in combining creativity with analytical thinking. I continue to grow as a data analyst by experimenting with diverse datasets and refining my ability to turn raw information into meaningful insights.</p>
-            
-            <p>When I'm not coding, I enjoy music production, oil painting, bouldering, and hiking.</p>
+    <!-- About Section -->
+    <section id="about" class="section active">
+        <div class="glass-card">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-text">
+                <p>I'm a 27-year-old game developer and data analyst from Barcelona. You'll always find me working on a random videogame prototype, though I'm currently full time working on a post-soviet survival game named <em>Lenimki</em>.</p>
+                
+                <p>My background in Unity development has given me hands-on experience building complete games, from prototypes to published titles. My first commercial release, <em>Bald Ball</em>, is available on Steam, and I regularly share smaller experiments on itch.io.</p>
+                
+                <p>I studied data analytics at Ironhack, where I built Python and AI-based tools to streamline analysis workflows. As part of my final project, I designed and analyzed a dataset generated from gameplay interactions, which helped solidify my interest in combining creativity with analytical thinking.</p>
+                
+                <p>When I'm not coding, I enjoy music production, oil painting, bouldering, and hiking.</p>
+            </div>
         </div>
     </section>
 
-    <section id="projects">
-        <h2>Projects</h2>
-        
-        <div class="card">
-            <div class="project-header">
+    <!-- Projects Section -->
+    <section id="projects" class="section">
+        <div class="glass-card">
+            <div class="project-card">
                 <img src="resources/baldball.png" class="project-icon" alt="Bald Ball">
-                <span class="project-title">Bald Ball</span>
-            </div>
-            <p>A physics-based challenge exploring unique gameplay mechanics. My first commercial release on Steam.</p>
-            <div class="btn-group">
-                <a href="https://albertfreeman.org/bald-ball/" class="btn" target="_blank">Visit Site</a>
+                <div class="project-content">
+                    <h3 class="project-title">Bald Ball</h3>
+                    <p class="project-desc">A physics-based challenge exploring unique gameplay mechanics. My first commercial release on Steam.</p>
+                    <div class="btn-group">
+                        <a href="https://albertfreeman.org/bald-ball/" class="btn" target="_blank">Visit Site</a>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="card">
-            <div class="project-header">
+        <div class="glass-card">
+            <div class="project-card">
                 <img src="resources/excel.png" class="project-icon" alt="Excel Editor">
-                <span class="project-title">Albert AI Excel Editor</span>
-            </div>
-            <p>Advanced Excel editor with OpenAI integration. Features powerful filters, an AI chat interface for data queries, and automatic modifications with unlimited undo.</p>
-            <div class="btn-group">
-                <a href="resources/AlbertAIExcelEditor.zip" class="btn">Download Alpha</a>
-                <a href="https://github.com/treblalbert/Albert-AI-Excel-Editor" class="btn" target="_blank">Source Code</a>
+                <div class="project-content">
+                    <h3 class="project-title">Albert AI Excel Editor</h3>
+                    <p class="project-desc">Advanced Excel editor with OpenAI integration. Features powerful filters, an AI chat interface for data queries, and automatic modifications with unlimited undo.</p>
+                    <div class="btn-group">
+                        <a href="resources/AlbertAIExcelEditor.zip" class="btn">Download Alpha</a>
+                        <a href="https://github.com/treblalbert/Albert-AI-Excel-Editor" class="btn btn-secondary" target="_blank">Source Code</a>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="card">
-            <div class="project-header">
+        <div class="glass-card">
+            <div class="project-card">
                 <img src="resources/ATCF.png" class="project-icon" alt="Twitter Filter">
-                <span class="project-title">X/Twitter Filter</span>
-            </div>
-            <p>Browser extension to take full control of your feed by filtering tweets based on country, specific users, and keywords.</p>
-            <div class="instructions">
-                <strong>Manual Install:</strong> Download from GitHub > Enable "Developer mode" in extensions > "Load unpacked".
-            </div>
-            <div class="btn-group">
-                <a href="https://github.com/treblalbert/Albert-X-Twitter-Filter" class="btn" target="_blank">Source Code</a>
+                <div class="project-content">
+                    <h3 class="project-title">X/Twitter Filter</h3>
+                    <p class="project-desc">Browser extension to take full control of your feed by filtering tweets based on country, specific users, and keywords.</p>
+                    <div class="instructions">
+                        <strong>Manual Install:</strong> Download from GitHub → Enable "Developer mode" in extensions → "Load unpacked"
+                    </div>
+                    <div class="btn-group">
+                        <a href="https://github.com/treblalbert/Albert-X-Twitter-Filter" class="btn" target="_blank">Source Code</a>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="card">
-            <div class="project-header">
+        <div class="glass-card">
+            <div class="project-card">
                 <img src="resources/pdf.png" class="project-icon" alt="PDF Reader">
-                <span class="project-title">Albert The Wrench PDF Reader</span>
-            </div>
-            <p>Feature-rich, customizable PDF viewer built with Python, offering intuitive navigation and powerful document management.</p>
-            <div class="btn-group">
-                <a href="Albert The Wrench PDF Reader.exe" class="btn">Download .exe</a>
-                <a href="https://github.com/treblalbert/Albert-s-PDF-Viewer" class="btn" target="_blank">Source Code</a>
+                <div class="project-content">
+                    <h3 class="project-title">Albert The Wrench PDF Reader</h3>
+                    <p class="project-desc">Feature-rich, customizable PDF viewer built with Python, offering intuitive navigation and powerful document management.</p>
+                    <div class="btn-group">
+                        <a href="Albert The Wrench PDF Reader.exe" class="btn">Download .exe</a>
+                        <a href="https://github.com/treblalbert/Albert-s-PDF-Viewer" class="btn btn-secondary" target="_blank">Source Code</a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <section id="links">
-        <h2>Connect</h2>
-        <div class="social-links">
-            <a href="https://github.com/treblalbert" class="social-item" target="_blank">
-                <img src="resources/github-icon.png" alt="GitHub">
-                <span>GitHub</span>
-            </a>
-            <a href="https://albertfreeman.itch.io/" class="social-item" target="_blank">
-                <img src="resources/itch-icon.png" alt="Itch.io">
-                <span>Itch.io</span>
-            </a>
-            <a href="mailto:albertadroer@gmail.com" class="social-item">
-                <img src="resources/contact.png" alt="Email">
-                <span>Email</span>
-            </a>
+    <!-- Connect Section -->
+    <section id="connect" class="section">
+        <div class="glass-card">
+            <h2 class="section-title">Let's Connect</h2>
+            <div class="social-grid">
+                <a href="https://github.com/treblalbert" class="social-card" target="_blank">
+                    <img src="resources/github-icon.png" alt="GitHub" class="social-icon">
+                    <span class="social-label">GitHub</span>
+                </a>
+                <a href="https://albertfreeman.itch.io/" class="social-card" target="_blank">
+                    <img src="resources/itch-icon.png" alt="Itch.io" class="social-icon">
+                    <span class="social-label">Itch.io</span>
+                </a>
+                <a href="mailto:albertadroer@gmail.com" class="social-card">
+                    <img src="resources/contact.png" alt="Email" class="social-icon">
+                    <span class="social-label">Email</span>
+                </a>
+            </div>
         </div>
     </section>
 
@@ -215,6 +517,29 @@
         <p>© 2026 Albert Adroer Prats</p>
     </footer>
 </div>
+
+<script>
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const sections = document.querySelectorAll('.section');
+
+    navButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetSection = btn.dataset.section;
+
+            // Update active button
+            navButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Update active section
+            sections.forEach(section => {
+                section.classList.remove('active');
+                if (section.id === targetSection) {
+                    section.classList.add('active');
+                }
+            });
+        });
+    });
+</script>
 
 </body>
 </html>
