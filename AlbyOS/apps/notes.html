@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f5f7;
+            height: 100vh;
+            display: flex;
+        }
+        .sidebar {
+            width: 280px;
+            background: #e8e8ed;
+            border-right: 1px solid #d1d1d6;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar-header {
+            padding: 16px;
+            border-bottom: 1px solid #d1d1d6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .sidebar-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+        .new-note-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: #007aff;
+            color: white;
+            border-radius: 6px;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+        }
+        .new-note-btn:hover {
+            background: #0066d6;
+        }
+        .notes-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+        .note-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid #d1d1d6;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .note-item:hover {
+            background: #d8d8de;
+        }
+        .note-item.active {
+            background: #007aff;
+        }
+        .note-item.active .note-title,
+        .note-item.active .note-preview,
+        .note-item.active .note-date {
+            color: white;
+        }
+        .note-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .note-preview {
+            font-size: 12px;
+            color: #86868b;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-bottom: 4px;
+        }
+        .note-date {
+            font-size: 11px;
+            color: #aeaeb2;
+        }
+        .editor {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+        .editor-header {
+            padding: 12px 20px;
+            border-bottom: 1px solid #e5e5ea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .editor-date {
+            font-size: 12px;
+            color: #86868b;
+        }
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #ff3b30;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+        .delete-btn:hover {
+            background: rgba(255, 59, 48, 0.1);
+        }
+        .editor-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .title-input {
+            width: 100%;
+            border: none;
+            font-size: 28px;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 16px;
+            outline: none;
+            font-family: inherit;
+        }
+        .title-input::placeholder {
+            color: #c7c7cc;
+        }
+        .content-input {
+            width: 100%;
+            border: none;
+            font-size: 16px;
+            color: #1d1d1f;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+            min-height: 300px;
+        }
+        .content-input::placeholder {
+            color: #c7c7cc;
+        }
+        .empty-state {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #86868b;
+        }
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>📝 Notes</h2>
+            <button class="new-note-btn" onclick="createNote()">+</button>
+        </div>
+        <div class="notes-list" id="notesList"></div>
+    </div>
+    <div class="editor" id="editor">
+        <div class="empty-state">
+            <div class="empty-state-icon">📝</div>
+            <p>Select a note or create a new one</p>
+        </div>
+    </div>
+
+    <script>
+        let notes = JSON.parse(localStorage.getItem('albyos-notes') || '[]');
+        let currentNoteId = null;
+
+        function saveNotes() {
+            localStorage.setItem('albyos-notes', JSON.stringify(notes));
+        }
+
+        function formatDate(date) {
+            const d = new Date(date);
+            const now = new Date();
+            const diff = now - d;
+            
+            if (diff < 86400000 && d.getDate() === now.getDate()) {
+                return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+            } else if (diff < 604800000) {
+                return d.toLocaleDateString('en-US', { weekday: 'short' });
+            } else {
+                return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            }
+        }
+
+        function renderNotesList() {
+            const list = document.getElementById('notesList');
+            list.innerHTML = '';
+
+            const sortedNotes = [...notes].sort((a, b) => new Date(b.updated) - new Date(a.updated));
+
+            sortedNotes.forEach(note => {
+                const item = document.createElement('div');
+                item.className = `note-item ${note.id === currentNoteId ? 'active' : ''}`;
+                item.innerHTML = `
+                    <div class="note-title">${note.title || 'Untitled'}</div>
+                    <div class="note-preview">${note.content || 'No content'}</div>
+                    <div class="note-date">${formatDate(note.updated)}</div>
+                `;
+                item.onclick = () => selectNote(note.id);
+                list.appendChild(item);
+            });
+        }
+
+        function renderEditor() {
+            const editor = document.getElementById('editor');
+            
+            if (!currentNoteId) {
+                editor.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📝</div>
+                        <p>Select a note or create a new one</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const note = notes.find(n => n.id === currentNoteId);
+            if (!note) return;
+
+            editor.innerHTML = `
+                <div class="editor-header">
+                    <span class="editor-date">${new Date(note.updated).toLocaleDateString('en-US', { 
+                        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit'
+                    })}</span>
+                    <button class="delete-btn" onclick="deleteNote()">🗑️ Delete</button>
+                </div>
+                <div class="editor-content">
+                    <input type="text" class="title-input" placeholder="Title" value="${note.title}" oninput="updateNote('title', this.value)">
+                    <textarea class="content-input" placeholder="Start writing..." oninput="updateNote('content', this.value)">${note.content}</textarea>
+                </div>
+            `;
+        }
+
+        function createNote() {
+            const note = {
+                id: Date.now().toString(),
+                title: '',
+                content: '',
+                created: new Date().toISOString(),
+                updated: new Date().toISOString()
+            };
+            notes.unshift(note);
+            currentNoteId = note.id;
+            saveNotes();
+            renderNotesList();
+            renderEditor();
+            
+            // Focus title input
+            setTimeout(() => {
+                const titleInput = document.querySelector('.title-input');
+                if (titleInput) titleInput.focus();
+            }, 0);
+        }
+
+        function selectNote(id) {
+            currentNoteId = id;
+            renderNotesList();
+            renderEditor();
+        }
+
+        function updateNote(field, value) {
+            const note = notes.find(n => n.id === currentNoteId);
+            if (note) {
+                note[field] = value;
+                note.updated = new Date().toISOString();
+                saveNotes();
+                renderNotesList();
+            }
+        }
+
+        function deleteNote() {
+            if (!currentNoteId) return;
+            notes = notes.filter(n => n.id !== currentNoteId);
+            currentNoteId = notes.length > 0 ? notes[0].id : null;
+            saveNotes();
+            renderNotesList();
+            renderEditor();
+        }
+
+        // Initialize
+        renderNotesList();
+        renderEditor();
+
+        // Create a welcome note if empty
+        if (notes.length === 0) {
+            notes.push({
+                id: Date.now().toString(),
+                title: 'Welcome to Notes',
+                content: 'This is your notes app! Create new notes by clicking the + button. Your notes are automatically saved to your browser.',
+                created: new Date().toISOString(),
+                updated: new Date().toISOString()
+            });
+            saveNotes();
+            renderNotesList();
+        }
+    </script>
+</body>
+</html>

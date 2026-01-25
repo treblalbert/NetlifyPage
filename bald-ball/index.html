@@ -216,6 +216,53 @@
             border-radius: 8px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             border: 2px solid #316ac5;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .albert-picture img:hover {
+            transform: scale(1.03);
+        }
+
+        /* Lightbox styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .lightbox-close:hover {
+            color: #7db9e8;
         }
 
         .albert-description {
@@ -272,9 +319,15 @@
         /* Game features section */
         .features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
             margin-top: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .features {
+                grid-template-columns: 1fr;
+            }
         }
 
         .feature {
@@ -438,7 +491,7 @@
                 <h2>About Albert Freeman</h2>
                 <div class="about-albert">
                     <div class="albert-picture">
-                        <img src="albert.jpg" alt="Albert Freeman">
+                        <img src="albert.jpg" alt="Albert Freeman" onclick="openLightbox(this.src)">
                     </div>
                     <div class="albert-description">
                         <p>
@@ -467,8 +520,14 @@
             
             <!-- Copyright notice -->
             <div class="copyright">
-                © 2025 Albert Freeman - Bald Ball
+                © 2026 Albert Freeman - Bald Ball
             </div>
+        </div>
+
+        <!-- Lightbox -->
+        <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+            <span class="lightbox-close">&times;</span>
+            <img src="" alt="Albert Freeman" id="lightbox-img">
         </div>
     </div>
 
@@ -490,6 +549,28 @@
                     document.getElementById(tabId).classList.add('active');
                 });
             });
+        });
+
+        // Lightbox functionality
+        function openLightbox(src) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = src;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close lightbox with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
         });
     </script>
 </body>

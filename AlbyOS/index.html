@@ -6,113 +6,1281 @@
     <title>AlbyOS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="albyos.css">
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600&family=SF+Pro+Text:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.72);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --accent: #007aff;
+            --danger: #ff3b30;
+            --success: #34c759;
+            --warning: #ff9500;
+            --dock-bg: rgba(255, 255, 255, 0.65);
+            --window-header: rgba(246, 246, 246, 0.95);
+            --blur-amount: 20px;
+            --font-display: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-text: 'SF Pro Text', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-text);
+            overflow: hidden;
+            user-select: none;
+            background: #f5f5f7;
+        }
+
+        /* Desktop */
+        #desktop {
+            width: 100vw;
+            height: 100vh;
+            background-size: cover;
+            background-position: center;
+            background-color: #f5f5f7;
+            position: relative;
+            transition: background-image 0.5s ease;
+        }
+
+        /* Menu Bar */
+        #menubar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 28px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
+            border-bottom: 0.5px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+            z-index: 10000;
+        }
+
+        .menubar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .apple-logo {
+            font-size: 16px;
+            cursor: pointer;
+            opacity: 0.85;
+        }
+
+        .menu-item {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+
+        .menu-item:hover {
+            background: rgba(0, 0, 0, 0.08);
+        }
+
+        .menubar-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        .status-icon {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        #clock {
+            font-weight: 500;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Desktop Icons */
+        #desktop-icons {
+            position: absolute;
+            top: 40px;
+            right: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 8px;
+        }
+
+        .desktop-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 80px;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .desktop-icon:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .desktop-icon.selected {
+            background: rgba(0, 122, 255, 0.25);
+        }
+
+        .desktop-icon-img {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 6px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .desktop-icon-label {
+            font-size: 11px;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 76px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Dock */
+        #dock {
+            position: fixed;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--dock-bg);
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
+            border-radius: 22px;
+            padding: 6px 10px;
+            display: flex;
+            gap: 6px;
+            border: 0.5px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            z-index: 9999;
+        }
+
+        .dock-item {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            cursor: pointer;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        .dock-item:hover {
+            transform: scale(1.15) translateY(-8px);
+        }
+
+        .dock-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            width: 4px;
+            height: 4px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+        }
+
+        .dock-separator {
+            width: 1px;
+            background: rgba(0, 0, 0, 0.1);
+            margin: 8px 4px;
+        }
+
+        /* Windows */
+        .window {
+            position: absolute;
+            min-width: 400px;
+            min-height: 300px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 12px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2), 0 0 0 0.5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: windowOpen 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes windowOpen {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .window.closing {
+            animation: windowClose 0.2s ease forwards;
+        }
+
+        @keyframes windowClose {
+            to {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+        }
+
+        .window-header {
+            height: 52px;
+            background: var(--window-header);
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            cursor: grab;
+            flex-shrink: 0;
+        }
+
+        .window-header:active {
+            cursor: grabbing;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .window-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: filter 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: transparent;
+        }
+
+        .window-btn:hover {
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        .window-btn.close {
+            background: #ff5f57;
+        }
+
+        .window-btn.minimize {
+            background: #febc2e;
+        }
+
+        .window-btn.maximize {
+            background: #28c840;
+        }
+
+        .window-title {
+            flex: 1;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-right: 60px;
+        }
+
+        .window-content {
+            flex: 1;
+            overflow: auto;
+            background: white;
+        }
+
+        .window-content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .window-resize {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 16px;
+            height: 16px;
+            cursor: nwse-resize;
+        }
+
+        /* Settings Panel */
+        .settings-content {
+            padding: 24px;
+        }
+
+        .settings-section {
+            margin-bottom: 32px;
+        }
+
+        .settings-title {
+            font-family: var(--font-display);
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+
+        .settings-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .wallpaper-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .wallpaper-option {
+            aspect-ratio: 16/10;
+            border-radius: 8px;
+            cursor: pointer;
+            background-size: cover;
+            background-position: center;
+            border: 3px solid transparent;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .wallpaper-option:hover {
+            transform: scale(1.02);
+        }
+
+        .wallpaper-option.selected {
+            border-color: var(--accent);
+        }
+
+        .custom-wallpaper-upload {
+            aspect-ratio: 16/10;
+            border-radius: 8px;
+            border: 2px dashed rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+        }
+
+        .custom-wallpaper-upload:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .custom-wallpaper-upload span {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .custom-wallpaper-upload small {
+            font-size: 11px;
+        }
+
+        .server-config {
+            background: rgba(0, 0, 0, 0.03);
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        .server-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: var(--font-text);
+            margin-bottom: 12px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .server-input:focus {
+            border-color: var(--accent);
+        }
+
+        .server-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-secondary);
+        }
+
+        .status-dot.connected {
+            background: var(--success);
+        }
+
+        .status-dot.disconnected {
+            background: var(--danger);
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-family: var(--font-text);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0066d6;
+        }
+
+        .btn-secondary {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        /* App Grid in Launchpad */
+        .launchpad-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            z-index: 9998;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .launchpad-overlay.visible {
+            display: flex;
+        }
+
+        .launchpad-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 32px;
+            padding: 48px;
+            max-width: 1200px;
+        }
+
+        .launchpad-app {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .launchpad-app:hover {
+            transform: scale(1.1);
+        }
+
+        .launchpad-app-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin-bottom: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .launchpad-app-label {
+            font-size: 13px;
+            color: white;
+            text-align: center;
+            max-width: 90px;
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Context Menu */
+        .context-menu {
+            position: fixed;
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
+            border-radius: 8px;
+            padding: 4px;
+            min-width: 200px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 0.5px solid var(--glass-border);
+            z-index: 10001;
+            display: none;
+        }
+
+        .context-menu-item {
+            padding: 8px 12px;
+            font-size: 13px;
+            color: var(--text-primary);
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .context-menu-item:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .context-menu-separator {
+            height: 1px;
+            background: rgba(0, 0, 0, 0.1);
+            margin: 4px 8px;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 40px;
+            right: 16px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
+            border-radius: 12px;
+            padding: 12px 16px;
+            box-shadow: var(--glass-shadow);
+            border: 0.5px solid var(--glass-border);
+            z-index: 10002;
+            animation: slideIn 0.3s ease;
+            max-width: 320px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .notification-title {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .notification-body {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Hidden file input */
+        #wallpaper-upload {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <!-- Boot Screen -->
-    <div id="boot-screen" class="boot-screen">
-        <div class="boot-content">
-            <div class="boot-logo">
-                <svg viewBox="0 0 100 100" class="logo-svg">
-                    <defs>
-                        <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#00f5d4"/>
-                            <stop offset="50%" style="stop-color:#7b2cbf"/>
-                            <stop offset="100%" style="stop-color:#ff6b6b"/>
-                        </linearGradient>
-                    </defs>
-                    <circle cx="50" cy="50" r="45" fill="none" stroke="url(#logoGrad)" stroke-width="2" class="logo-circle"/>
-                    <text x="50" y="58" text-anchor="middle" fill="url(#logoGrad)" font-size="24" font-family="JetBrains Mono">A</text>
-                </svg>
-            </div>
-            <div class="boot-text">AlbyOS</div>
-            <div class="boot-progress">
-                <div class="boot-progress-bar"></div>
-            </div>
-            <div class="boot-status">Initializing system...</div>
-        </div>
-    </div>
-
     <!-- Desktop -->
-    <div id="desktop" class="desktop hidden">
-        <!-- Wallpaper with animated gradient -->
-        <div class="wallpaper"></div>
-        
+    <div id="desktop">
+        <!-- Menu Bar -->
+        <div id="menubar">
+            <div class="menubar-left">
+                <div class="apple-logo">🍎</div>
+                <div class="menu-item" id="menu-albyos">AlbyOS</div>
+                <div class="menu-item">File</div>
+                <div class="menu-item">Edit</div>
+                <div class="menu-item">View</div>
+                <div class="menu-item">Window</div>
+                <div class="menu-item">Help</div>
+            </div>
+            <div class="menubar-right">
+                <span class="status-icon">📶</span>
+                <span class="status-icon">🔋</span>
+                <span id="clock"></span>
+            </div>
+        </div>
+
         <!-- Desktop Icons Container -->
-        <div id="desktop-icons" class="desktop-icons">
-            <!-- Icons will be generated by JS -->
-        </div>
+        <div id="desktop-icons"></div>
 
-        <!-- Windows Container -->
-        <div id="windows-container" class="windows-container"></div>
-
-        <!-- Taskbar -->
-        <div id="taskbar" class="taskbar">
-            <div class="taskbar-start">
-                <button id="start-btn" class="start-btn">
-                    <svg viewBox="0 0 24 24" width="20" height="20">
-                        <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5"/>
-                        <text x="12" y="16" text-anchor="middle" fill="currentColor" font-size="10" font-family="JetBrains Mono">A</text>
-                    </svg>
-                    <span>Start</span>
-                </button>
+        <!-- Dock -->
+        <div id="dock">
+            <div class="dock-item" data-app="finder" title="Finder" style="background: linear-gradient(135deg, #5ac8fa 0%, #007aff 100%); border-radius: 12px;">
+                📁
             </div>
-            <div id="taskbar-apps" class="taskbar-apps">
-                <!-- Open app buttons will appear here -->
+            <div class="dock-item" data-app="launchpad" title="Launchpad" style="background: linear-gradient(135deg, #5856d6 0%, #af52de 100%); border-radius: 12px;">
+                🚀
             </div>
-            <div class="taskbar-tray">
-                <div class="tray-item" id="server-status" title="Server Status">
-                    <svg viewBox="0 0 24 24" width="16" height="16">
-                        <rect x="3" y="4" width="18" height="6" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/>
-                        <rect x="3" y="14" width="18" height="6" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/>
-                        <circle cx="7" cy="7" r="1.5" fill="currentColor" class="server-indicator"/>
-                        <circle cx="7" cy="17" r="1.5" fill="currentColor"/>
-                    </svg>
-                </div>
-                <div class="tray-time" id="tray-time"></div>
+            <div class="dock-separator"></div>
+            <div id="dock-apps"></div>
+            <div class="dock-separator"></div>
+            <div class="dock-item" data-app="settings" title="Settings" style="background: linear-gradient(135deg, #8e8e93 0%, #636366 100%); border-radius: 12px;">
+                ⚙️
             </div>
         </div>
 
-        <!-- Start Menu -->
-        <div id="start-menu" class="start-menu hidden">
-            <div class="start-menu-header">
-                <div class="user-info">
-                    <div class="user-avatar">A</div>
-                    <span>Albert</span>
-                </div>
-            </div>
-            <div class="start-menu-apps" id="start-menu-apps">
-                <!-- Apps will be listed here -->
-            </div>
-            <div class="start-menu-footer">
-                <button class="start-menu-btn" onclick="AlbyOS.shutdown()">
-                    <svg viewBox="0 0 24 24" width="16" height="16">
-                        <path d="M12 3v9M18.36 6.64a9 9 0 11-12.73 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                    Shutdown
-                </button>
-            </div>
+        <!-- Launchpad Overlay -->
+        <div class="launchpad-overlay" id="launchpad">
+            <div class="launchpad-grid" id="launchpad-grid"></div>
         </div>
 
         <!-- Context Menu -->
-        <div id="context-menu" class="context-menu hidden">
-            <div class="context-item" data-action="refresh">Refresh Desktop</div>
-            <div class="context-divider"></div>
-            <div class="context-item" data-action="settings">Display Settings</div>
-            <div class="context-item" data-action="about">About AlbyOS</div>
+        <div class="context-menu" id="context-menu">
+            <div class="context-menu-item" data-action="change-wallpaper">🖼️ Change Wallpaper</div>
+            <div class="context-menu-separator"></div>
+            <div class="context-menu-item" data-action="refresh-apps">🔄 Refresh Apps</div>
+            <div class="context-menu-item" data-action="settings">⚙️ System Settings</div>
         </div>
     </div>
 
-    <!-- App Templates (loaded dynamically) -->
-    <script src="albyos-core.js"></script>
-    <script src="albyos-window.js"></script>
-    <script src="albyos-apps.js"></script>
+    <!-- Hidden file input for wallpaper -->
+    <input type="file" id="wallpaper-upload" accept="image/*">
+
     <script>
+        // AlbyOS Core System
+        const AlbyOS = {
+            // Configuration
+            config: {
+                serverUrl: localStorage.getItem('albyos-server') || '',
+                wallpaper: localStorage.getItem('albyos-wallpaper') || '',
+                apps: []
+            },
+
+            // Window management
+            windows: [],
+            activeWindow: null,
+            zIndex: 100,
+
+            // Default wallpapers
+            defaultWallpapers: [
+                'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+                'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+                'linear-gradient(180deg, #2e3192 0%, #1bffff 100%)',
+                'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'
+            ],
+
+            // Default app icons based on name
+            appIcons: {
+                'calculator': { icon: '🧮', color: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%)' },
+                'notes': { icon: '📝', color: 'linear-gradient(135deg, #ffd93d 0%, #f9c74f 100%)' },
+                'weather': { icon: '🌤️', color: 'linear-gradient(135deg, #74b9ff 0%, #0984e3 100%)' },
+                'calendar': { icon: '📅', color: 'linear-gradient(135deg, #ff7675 0%, #d63031 100%)' },
+                'music': { icon: '🎵', color: 'linear-gradient(135deg, #fd79a8 0%, #e84393 100%)' },
+                'photos': { icon: '🖼️', color: 'linear-gradient(135deg, #fdcb6e 0%, #f39c12 100%)' },
+                'messages': { icon: '💬', color: 'linear-gradient(135deg, #55efc4 0%, #00b894 100%)' },
+                'mail': { icon: '✉️', color: 'linear-gradient(135deg, #74b9ff 0%, #0984e3 100%)' },
+                'browser': { icon: '🌐', color: 'linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%)' },
+                'terminal': { icon: '⬛', color: 'linear-gradient(135deg, #2d3436 0%, #000000 100%)' },
+                'clock': { icon: '🕐', color: 'linear-gradient(135deg, #636e72 0%, #2d3436 100%)' },
+                'default': { icon: '📱', color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }
+            },
+
+            // Initialize the OS
+            init() {
+                this.updateClock();
+                setInterval(() => this.updateClock(), 1000);
+                this.loadWallpaper();
+                this.setupEventListeners();
+                this.loadApps();
+                this.renderWallpaperOptions();
+            },
+
+            // Update clock
+            updateClock() {
+                const now = new Date();
+                const options = { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+                document.getElementById('clock').textContent = now.toLocaleDateString('en-US', options);
+            },
+
+            // Load wallpaper
+            loadWallpaper() {
+                const desktop = document.getElementById('desktop');
+                if (this.config.wallpaper) {
+                    if (this.config.wallpaper.startsWith('linear-gradient') || this.config.wallpaper.startsWith('#')) {
+                        desktop.style.background = this.config.wallpaper;
+                        desktop.style.backgroundImage = 'none';
+                    } else {
+                        desktop.style.backgroundImage = `url(${this.config.wallpaper})`;
+                        desktop.style.backgroundSize = 'cover';
+                    }
+                } else {
+                    desktop.style.background = this.defaultWallpapers[0];
+                }
+            },
+
+            // Set wallpaper
+            async setWallpaper(wallpaper, isCustom = false) {
+                this.config.wallpaper = wallpaper;
+                localStorage.setItem('albyos-wallpaper', wallpaper);
+                this.loadWallpaper();
+
+                // Save to server if configured and custom wallpaper
+                if (this.config.serverUrl && isCustom) {
+                    try {
+                        await fetch(`${this.config.serverUrl}/api/wallpaper`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ wallpaper })
+                        });
+                    } catch (e) {
+                        console.log('Could not save wallpaper to server');
+                    }
+                }
+
+                this.showNotification('Wallpaper Changed', 'Your new wallpaper has been applied.');
+            },
+
+            // Load apps from server
+            async loadApps() {
+                if (!this.config.serverUrl) {
+                    this.config.apps = this.getDefaultApps();
+                    this.renderApps();
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${this.config.serverUrl}/api/apps`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        this.config.apps = data.apps || [];
+                        this.renderApps();
+                        this.showNotification('Apps Loaded', `Found ${this.config.apps.length} apps from server.`);
+                    } else {
+                        throw new Error('Server error');
+                    }
+                } catch (e) {
+                    console.log('Could not load apps from server, using defaults');
+                    this.config.apps = this.getDefaultApps();
+                    this.renderApps();
+                }
+            },
+
+            // Get default apps when no server
+            getDefaultApps() {
+                return [
+                    { name: 'Welcome', file: 'welcome.html', icon: '👋' },
+                    { name: 'About AlbyOS', file: 'about.html', icon: 'ℹ️' }
+                ];
+            },
+
+            // Get app icon and color
+            getAppStyle(appName) {
+                const name = appName.toLowerCase();
+                for (const [key, value] of Object.entries(this.appIcons)) {
+                    if (name.includes(key)) {
+                        return value;
+                    }
+                }
+                return this.appIcons.default;
+            },
+
+            // Render apps
+            renderApps() {
+                const desktopIcons = document.getElementById('desktop-icons');
+                const dockApps = document.getElementById('dock-apps');
+                const launchpadGrid = document.getElementById('launchpad-grid');
+
+                desktopIcons.innerHTML = '';
+                dockApps.innerHTML = '';
+                launchpadGrid.innerHTML = '';
+
+                this.config.apps.forEach((app, index) => {
+                    const style = app.icon ? { icon: app.icon, color: app.color || this.appIcons.default.color } : this.getAppStyle(app.name);
+
+                    // Desktop icon
+                    const desktopIcon = document.createElement('div');
+                    desktopIcon.className = 'desktop-icon';
+                    desktopIcon.innerHTML = `
+                        <div class="desktop-icon-img" style="background: ${style.color}">${style.icon}</div>
+                        <div class="desktop-icon-label">${app.name}</div>
+                    `;
+                    desktopIcon.addEventListener('dblclick', () => this.openApp(app));
+                    desktopIcons.appendChild(desktopIcon);
+
+                    // Dock item (first 5 apps)
+                    if (index < 5) {
+                        const dockItem = document.createElement('div');
+                        dockItem.className = 'dock-item';
+                        dockItem.title = app.name;
+                        dockItem.style.background = style.color;
+                        dockItem.style.borderRadius = '12px';
+                        dockItem.textContent = style.icon;
+                        dockItem.addEventListener('click', () => this.openApp(app));
+                        dockApps.appendChild(dockItem);
+                    }
+
+                    // Launchpad item
+                    const launchpadApp = document.createElement('div');
+                    launchpadApp.className = 'launchpad-app';
+                    launchpadApp.innerHTML = `
+                        <div class="launchpad-app-icon" style="background: ${style.color}">${style.icon}</div>
+                        <div class="launchpad-app-label">${app.name}</div>
+                    `;
+                    launchpadApp.addEventListener('click', () => {
+                        this.closeLaunchpad();
+                        this.openApp(app);
+                    });
+                    launchpadGrid.appendChild(launchpadApp);
+                });
+            },
+
+            // Open app
+            openApp(app) {
+                const windowId = `window-${Date.now()}`;
+                const style = app.icon ? { icon: app.icon, color: app.color || this.appIcons.default.color } : this.getAppStyle(app.name);
+
+                const window = document.createElement('div');
+                window.className = 'window';
+                window.id = windowId;
+                window.style.left = `${100 + this.windows.length * 30}px`;
+                window.style.top = `${80 + this.windows.length * 30}px`;
+                window.style.width = '800px';
+                window.style.height = '600px';
+                window.style.zIndex = ++this.zIndex;
+
+                const appUrl = this.config.serverUrl ? `${this.config.serverUrl}/apps/${app.file}` : `apps/${app.file}`;
+
+                window.innerHTML = `
+                    <div class="window-header">
+                        <div class="window-controls">
+                            <div class="window-btn close" title="Close">×</div>
+                            <div class="window-btn minimize" title="Minimize">−</div>
+                            <div class="window-btn maximize" title="Maximize">+</div>
+                        </div>
+                        <div class="window-title">${style.icon} ${app.name}</div>
+                    </div>
+                    <div class="window-content">
+                        <div class="loading"><div class="spinner"></div></div>
+                    </div>
+                    <div class="window-resize"></div>
+                `;
+
+                document.getElementById('desktop').appendChild(window);
+                this.windows.push({ id: windowId, app });
+
+                // Load iframe
+                setTimeout(() => {
+                    const content = window.querySelector('.window-content');
+                    content.innerHTML = `<iframe src="${appUrl}" onload="this.style.opacity=1" style="opacity:0;transition:opacity 0.3s"></iframe>`;
+                }, 100);
+
+                // Window controls
+                this.setupWindowControls(window, windowId);
+            },
+
+            // Setup window controls
+            setupWindowControls(window, windowId) {
+                const header = window.querySelector('.window-header');
+                const closeBtn = window.querySelector('.window-btn.close');
+                const minimizeBtn = window.querySelector('.window-btn.minimize');
+                const maximizeBtn = window.querySelector('.window-btn.maximize');
+                const resizeHandle = window.querySelector('.window-resize');
+
+                // Drag
+                let isDragging = false;
+                let dragOffset = { x: 0, y: 0 };
+
+                header.addEventListener('mousedown', (e) => {
+                    if (e.target.classList.contains('window-btn')) return;
+                    isDragging = true;
+                    dragOffset = {
+                        x: e.clientX - window.offsetLeft,
+                        y: e.clientY - window.offsetTop
+                    };
+                    window.style.zIndex = ++this.zIndex;
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    if (!isDragging) return;
+                    window.style.left = `${e.clientX - dragOffset.x}px`;
+                    window.style.top = `${Math.max(28, e.clientY - dragOffset.y)}px`;
+                });
+
+                document.addEventListener('mouseup', () => isDragging = false);
+
+                // Close
+                closeBtn.addEventListener('click', () => {
+                    window.classList.add('closing');
+                    setTimeout(() => {
+                        window.remove();
+                        this.windows = this.windows.filter(w => w.id !== windowId);
+                    }, 200);
+                });
+
+                // Minimize
+                minimizeBtn.addEventListener('click', () => {
+                    window.style.display = 'none';
+                });
+
+                // Maximize
+                let isMaximized = false;
+                let prevBounds = {};
+
+                maximizeBtn.addEventListener('click', () => {
+                    if (!isMaximized) {
+                        prevBounds = {
+                            left: window.style.left,
+                            top: window.style.top,
+                            width: window.style.width,
+                            height: window.style.height
+                        };
+                        window.style.left = '0';
+                        window.style.top = '28px';
+                        window.style.width = '100vw';
+                        window.style.height = 'calc(100vh - 28px - 80px)';
+                        window.style.borderRadius = '0';
+                    } else {
+                        window.style.left = prevBounds.left;
+                        window.style.top = prevBounds.top;
+                        window.style.width = prevBounds.width;
+                        window.style.height = prevBounds.height;
+                        window.style.borderRadius = '12px';
+                    }
+                    isMaximized = !isMaximized;
+                });
+
+                // Resize
+                let isResizing = false;
+                let startSize = { width: 0, height: 0 };
+                let startPos = { x: 0, y: 0 };
+
+                resizeHandle.addEventListener('mousedown', (e) => {
+                    isResizing = true;
+                    startSize = {
+                        width: window.offsetWidth,
+                        height: window.offsetHeight
+                    };
+                    startPos = { x: e.clientX, y: e.clientY };
+                    e.preventDefault();
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    if (!isResizing) return;
+                    window.style.width = `${Math.max(400, startSize.width + e.clientX - startPos.x)}px`;
+                    window.style.height = `${Math.max(300, startSize.height + e.clientY - startPos.y)}px`;
+                });
+
+                document.addEventListener('mouseup', () => isResizing = false);
+
+                // Focus on click
+                window.addEventListener('mousedown', () => {
+                    window.style.zIndex = ++this.zIndex;
+                });
+            },
+
+            // Open settings
+            openSettings() {
+                const windowId = `window-settings-${Date.now()}`;
+                const window = document.createElement('div');
+                window.className = 'window';
+                window.id = windowId;
+                window.style.left = '200px';
+                window.style.top = '100px';
+                window.style.width = '700px';
+                window.style.height = '500px';
+                window.style.zIndex = ++this.zIndex;
+
+                window.innerHTML = `
+                    <div class="window-header">
+                        <div class="window-controls">
+                            <div class="window-btn close" title="Close">×</div>
+                            <div class="window-btn minimize" title="Minimize">−</div>
+                            <div class="window-btn maximize" title="Maximize">+</div>
+                        </div>
+                        <div class="window-title">⚙️ System Settings</div>
+                    </div>
+                    <div class="window-content">
+                        <div class="settings-content">
+                            <div class="settings-section">
+                                <div class="settings-title">Server Configuration</div>
+                                <div class="server-config">
+                                    <input type="text" class="server-input" id="server-url" 
+                                           placeholder="Enter your Raspberry Pi server URL (e.g., http://192.168.1.100:3000)" 
+                                           value="${this.config.serverUrl}">
+                                    <div style="display: flex; gap: 8px; align-items: center;">
+                                        <button class="btn btn-primary" id="save-server">Save & Connect</button>
+                                        <button class="btn btn-secondary" id="test-server">Test Connection</button>
+                                        <div class="server-status">
+                                            <div class="status-dot ${this.config.serverUrl ? 'connected' : 'disconnected'}" id="status-dot"></div>
+                                            <span id="status-text">${this.config.serverUrl ? 'Configured' : 'Not configured'}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="settings-section">
+                                <div class="settings-title">Wallpaper</div>
+                                <div class="settings-subtitle">Choose a wallpaper or upload your own</div>
+                                <div class="wallpaper-grid" id="wallpaper-grid"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="window-resize"></div>
+                `;
+
+                document.getElementById('desktop').appendChild(window);
+                this.windows.push({ id: windowId, app: { name: 'Settings' } });
+
+                // Render wallpaper options in settings
+                this.renderWallpaperOptions(window.querySelector('#wallpaper-grid'));
+
+                // Setup window controls
+                this.setupWindowControls(window, windowId);
+
+                // Server save button
+                window.querySelector('#save-server').addEventListener('click', () => {
+                    const url = window.querySelector('#server-url').value.trim();
+                    this.config.serverUrl = url;
+                    localStorage.setItem('albyos-server', url);
+                    this.loadApps();
+                    this.showNotification('Server Updated', 'Server configuration saved.');
+                });
+
+                // Test connection button
+                window.querySelector('#test-server').addEventListener('click', async () => {
+                    const url = window.querySelector('#server-url').value.trim();
+                    const statusDot = window.querySelector('#status-dot');
+                    const statusText = window.querySelector('#status-text');
+                    
+                    statusText.textContent = 'Testing...';
+                    
+                    try {
+                        const response = await fetch(`${url}/api/health`, { 
+                            method: 'GET',
+                            mode: 'cors'
+                        });
+                        if (response.ok) {
+                            statusDot.className = 'status-dot connected';
+                            statusText.textContent = 'Connected';
+                            this.showNotification('Connection Success', 'Successfully connected to server!');
+                        } else {
+                            throw new Error('Server error');
+                        }
+                    } catch (e) {
+                        statusDot.className = 'status-dot disconnected';
+                        statusText.textContent = 'Connection failed';
+                        this.showNotification('Connection Failed', 'Could not connect to server. Check the URL.');
+                    }
+                });
+            },
+
+            // Render wallpaper options
+            renderWallpaperOptions(container) {
+                if (!container) return;
+                
+                container.innerHTML = '';
+
+                // Default gradients
+                this.defaultWallpapers.forEach((wp, i) => {
+                    const option = document.createElement('div');
+                    option.className = `wallpaper-option ${this.config.wallpaper === wp ? 'selected' : ''}`;
+                    option.style.background = wp;
+                    option.addEventListener('click', () => {
+                        container.querySelectorAll('.wallpaper-option').forEach(el => el.classList.remove('selected'));
+                        option.classList.add('selected');
+                        this.setWallpaper(wp);
+                    });
+                    container.appendChild(option);
+                });
+
+                // Custom upload
+                const upload = document.createElement('div');
+                upload.className = 'custom-wallpaper-upload';
+                upload.innerHTML = '<span>+</span><small>Upload Image</small>';
+                upload.addEventListener('click', () => {
+                    document.getElementById('wallpaper-upload').click();
+                });
+                container.appendChild(upload);
+            },
+
+            // Open launchpad
+            openLaunchpad() {
+                document.getElementById('launchpad').classList.add('visible');
+            },
+
+            // Close launchpad
+            closeLaunchpad() {
+                document.getElementById('launchpad').classList.remove('visible');
+            },
+
+            // Show notification
+            showNotification(title, body) {
+                const existing = document.querySelector('.notification');
+                if (existing) existing.remove();
+
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.innerHTML = `
+                    <div class="notification-title">${title}</div>
+                    <div class="notification-body">${body}</div>
+                `;
+                document.body.appendChild(notification);
+
+                setTimeout(() => notification.remove(), 4000);
+            },
+
+            // Setup event listeners
+            setupEventListeners() {
+                // Dock items
+                document.querySelectorAll('.dock-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const app = item.dataset.app;
+                        if (app === 'settings') this.openSettings();
+                        else if (app === 'launchpad') this.openLaunchpad();
+                    });
+                });
+
+                // Launchpad close on background click
+                document.getElementById('launchpad').addEventListener('click', (e) => {
+                    if (e.target.id === 'launchpad') this.closeLaunchpad();
+                });
+
+                // Context menu
+                document.getElementById('desktop').addEventListener('contextmenu', (e) => {
+                    if (e.target.closest('.window') || e.target.closest('#dock')) return;
+                    e.preventDefault();
+                    const menu = document.getElementById('context-menu');
+                    menu.style.display = 'block';
+                    menu.style.left = `${e.clientX}px`;
+                    menu.style.top = `${e.clientY}px`;
+                });
+
+                document.addEventListener('click', () => {
+                    document.getElementById('context-menu').style.display = 'none';
+                });
+
+                document.querySelectorAll('.context-menu-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const action = item.dataset.action;
+                        if (action === 'change-wallpaper') this.openSettings();
+                        else if (action === 'settings') this.openSettings();
+                        else if (action === 'refresh-apps') this.loadApps();
+                    });
+                });
+
+                // Wallpaper upload
+                document.getElementById('wallpaper-upload').addEventListener('change', async (e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    // If server is configured, upload to server
+                    if (this.config.serverUrl) {
+                        const formData = new FormData();
+                        formData.append('wallpaper', file);
+
+                        try {
+                            const response = await fetch(`${this.config.serverUrl}/api/wallpaper/upload`, {
+                                method: 'POST',
+                                body: formData
+                            });
+                            const data = await response.json();
+                            if (data.url) {
+                                this.setWallpaper(data.url, true);
+                            }
+                        } catch (err) {
+                            // Fallback to local
+                            const reader = new FileReader();
+                            reader.onload = (ev) => this.setWallpaper(ev.target.result, true);
+                            reader.readAsDataURL(file);
+                        }
+                    } else {
+                        // Local storage (base64)
+                        const reader = new FileReader();
+                        reader.onload = (ev) => this.setWallpaper(ev.target.result, false);
+                        reader.readAsDataURL(file);
+                    }
+                });
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') this.closeLaunchpad();
+                });
+
+                // Menu bar AlbyOS click
+                document.getElementById('menu-albyos').addEventListener('click', () => {
+                    this.showNotification('AlbyOS v1.0', 'A beautiful, minimalistic operating system by Albert.');
+                });
+            }
+        };
+
         // Initialize AlbyOS
-        document.addEventListener('DOMContentLoaded', () => {
-            AlbyOS.init();
-        });
+        document.addEventListener('DOMContentLoaded', () => AlbyOS.init());
     </script>
 </body>
 </html>

@@ -43,55 +43,111 @@
         .orb {
             position: absolute;
             border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.5;
-            animation: float 20s ease-in-out infinite;
+            filter: blur(100px);
+            opacity: 0.4;
         }
 
         .orb-1 {
-            width: 600px;
-            height: 600px;
-            background: linear-gradient(135deg, #a5b4fc, #818cf8);
-            top: -200px;
+            width: 700px;
+            height: 700px;
+            background: linear-gradient(135deg, #c7d2fe, #a5b4fc);
+            top: -250px;
             right: -200px;
-            animation-delay: 0s;
+            animation: float1 25s ease-in-out infinite, pulse1 8s ease-in-out infinite;
         }
 
         .orb-2 {
-            width: 500px;
-            height: 500px;
-            background: linear-gradient(135deg, #fda4af, #fb7185);
-            bottom: -150px;
-            left: -150px;
-            animation-delay: -7s;
+            width: 600px;
+            height: 600px;
+            background: linear-gradient(135deg, #fecdd3, #fda4af);
+            bottom: -200px;
+            left: -200px;
+            animation: float2 30s ease-in-out infinite, pulse2 10s ease-in-out infinite;
         }
 
         .orb-3 {
-            width: 400px;
-            height: 400px;
-            background: linear-gradient(135deg, #6ee7b7, #34d399);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation-delay: -14s;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, #a7f3d0, #6ee7b7);
+            top: 40%;
+            left: 40%;
+            animation: float3 28s ease-in-out infinite, pulse3 9s ease-in-out infinite;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(30px, -30px) scale(1.05); }
-            66% { transform: translate(-20px, 20px) scale(0.95); }
+        .orb-4 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #fef08a, #fde047);
+            top: 20%;
+            left: -100px;
+            animation: float4 32s ease-in-out infinite, pulse1 11s ease-in-out infinite;
+        }
+
+        .orb-5 {
+            width: 450px;
+            height: 450px;
+            background: linear-gradient(135deg, #e9d5ff, #d8b4fe);
+            bottom: 30%;
+            right: -150px;
+            animation: float5 27s ease-in-out infinite, pulse2 7s ease-in-out infinite;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(80px, 40px); }
+            50% { transform: translate(40px, 80px); }
+            75% { transform: translate(-40px, 40px); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-60px, -80px); }
+            50% { transform: translate(60px, -40px); }
+            75% { transform: translate(80px, 60px); }
+        }
+
+        @keyframes float3 {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(100px, -60px); }
+            50% { transform: translate(-40px, -80px); }
+            75% { transform: translate(-80px, 40px); }
+        }
+
+        @keyframes float4 {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(60px, 100px); }
+            50% { transform: translate(120px, 40px); }
+            75% { transform: translate(40px, -40px); }
+        }
+
+        @keyframes float5 {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-80px, 60px); }
+            50% { transform: translate(-40px, -60px); }
+            75% { transform: translate(60px, -30px); }
+        }
+
+        @keyframes pulse1 {
+            0%, 100% { opacity: 0.35; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.1); }
+        }
+
+        @keyframes pulse2 {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.55; transform: scale(1.15); }
+        }
+
+        @keyframes pulse3 {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.45; transform: scale(1.08); }
         }
 
         /* Navigation Hotbar */
         .nav-hotbar {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            display: flex;
+            display: inline-flex;
             gap: 4px;
             padding: 6px;
+            margin-top: 24px;
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -133,7 +189,7 @@
         .container {
             max-width: 900px;
             margin: 0 auto;
-            padding: 100px 24px 60px;
+            padding: 60px 24px 60px;
             position: relative;
             z-index: 1;
         }
@@ -142,17 +198,6 @@
         header {
             text-align: center;
             margin-bottom: 48px;
-        }
-
-        .avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            margin-bottom: 16px;
-            box-shadow: 
-                0 4px 20px rgba(0, 0, 0, 0.1),
-                0 0 0 4px rgba(255, 255, 255, 0.8);
         }
 
         h1 {
@@ -353,6 +398,79 @@
             font-size: 15px;
         }
 
+        /* Inline Link */
+        .inline-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .inline-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Tooltip */
+        .tooltip-trigger {
+            color: var(--accent);
+            font-weight: 500;
+            cursor: pointer;
+            position: relative;
+            border-bottom: 1px dashed var(--accent);
+        }
+
+        .tooltip {
+            display: none;
+            position: absolute;
+            bottom: calc(100% + 12px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 340px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            z-index: 100;
+            text-align: left;
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 10px solid transparent;
+            border-top-color: rgba(255, 255, 255, 0.95);
+        }
+
+        .tooltip-trigger.active .tooltip {
+            display: block;
+            animation: tooltipFade 0.3s ease;
+        }
+
+        @keyframes tooltipFade {
+            from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .tooltip {
+                width: 280px;
+                left: 0;
+                transform: translateX(-20%);
+            }
+            .tooltip::after {
+                left: 25%;
+            }
+        }
+
         /* Footer */
         footer {
             text-align: center;
@@ -365,12 +483,11 @@
         /* Responsive */
         @media (max-width: 600px) {
             .nav-hotbar {
-                top: 12px;
                 padding: 4px;
             }
 
             .nav-btn {
-                padding: 8px 16px;
+                padding: 8px 14px;
                 font-size: 13px;
             }
 
@@ -399,21 +516,22 @@
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+    <div class="orb orb-5"></div>
 </div>
-
-<!-- Navigation Hotbar -->
-<nav class="nav-hotbar">
-    <button class="nav-btn active" data-section="about">About</button>
-    <button class="nav-btn" data-section="projects">Projects</button>
-    <button class="nav-btn" data-section="connect">Connect</button>
-</nav>
 
 <div class="container">
     <!-- Header -->
     <header>
-        <img src="resources/Albert.jpg" alt="Albert Adroer Prats" class="avatar">
         <h1>Albert Adroer Prats</h1>
-        <p class="subtitle">Software Developer</p>
+        <p class="subtitle">Software Guy</p>
+        
+        <!-- Navigation Hotbar -->
+        <nav class="nav-hotbar">
+            <button class="nav-btn active" data-section="about">About</button>
+            <button class="nav-btn" data-section="projects">Projects</button>
+            <button class="nav-btn" data-section="connect">Connect</button>
+        </nav>
     </header>
 
     <!-- About Section -->
@@ -421,11 +539,11 @@
         <div class="glass-card">
             <h2 class="section-title">About Me</h2>
             <div class="about-text">
-                <p>I'm a 27-year-old game developer and data analyst from Barcelona. You'll always find me working on a random videogame prototype, though I'm currently full time working on a post-soviet survival game named <em>Lenimki</em>.</p>
+                <p>I'm a 27-year-old game developer and data analyst from Barcelona. You'll always find me working on a random videogame prototype, though I'm currently full time working on a post-soviet survival game named <em>Permadeath</em>.</p>
                 
-                <p>My background in Unity development has given me hands-on experience building complete games, from prototypes to published titles. My first commercial release, <em>Bald Ball</em>, is available on Steam, and I regularly share smaller experiments on itch.io.</p>
+                <p>My background in Unity development has given me hands-on experience building complete games, from prototypes to published titles. My first commercial release, <a href="https://albertfreeman.org/bald-ball/" class="inline-link" target="_blank">Bald Ball</a>, is available on Steam, and I regularly share smaller experiments on itch.io.</p>
                 
-                <p>I studied data analytics at Ironhack, where I built Python and AI-based tools to streamline analysis workflows. As part of my final project, I designed and analyzed a dataset generated from gameplay interactions, which helped solidify my interest in combining creativity with analytical thinking.</p>
+                <p>I studied Data Analytics at Ironhack, where I specialized in building Python and AI-based desktop apps to automatize the process of generating visuals for data analytics. As part of my final project, I created a <span class="tooltip-trigger" onclick="toggleTooltip(this)">survivor-like<span class="tooltip">A survivor-like game is a fast-paced action genre where the player's primary goal is to stay alive as long as possible against overwhelming, ever-growing waves of enemies. Combat is usually automatic or semi-automatic, shifting the player's focus away from precise aiming and toward movement, positioning, and build choices.<br><br>These games are defined by a tight feedback loop: you defeat enemies → gain experience or resources → choose upgrades → become stronger → face even denser chaos. Power escalation is central. By the late game, the screen often becomes a storm of enemies, projectiles, and effects, with the player cutting through it like a walking catastrophe.</span></span> game, then I made everyone at school play it. From every playthrough I automatically extracted data to Supabase, which I then used to keep improving this small game. The experiment was successful, and in the end I mixed all my skills from game development to data analytics and the automatization of that whole process.</p>
                 
                 <p>When I'm not coding, I enjoy music production, oil painting, bouldering, and hiking.</p>
             </div>
@@ -522,6 +640,7 @@
     const navButtons = document.querySelectorAll('.nav-btn');
     const sections = document.querySelectorAll('.section');
 
+    // Navigation
     navButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             const targetSection = btn.dataset.section;
@@ -538,6 +657,40 @@
                 }
             });
         });
+    });
+
+    // Tooltip toggle
+    function toggleTooltip(element) {
+        // Close all other tooltips first
+        document.querySelectorAll('.tooltip-trigger').forEach(t => {
+            if (t !== element) t.classList.remove('active');
+        });
+        element.classList.toggle('active');
+    }
+
+    // Close tooltip when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.tooltip-trigger')) {
+            document.querySelectorAll('.tooltip-trigger').forEach(t => {
+                t.classList.remove('active');
+            });
+        }
+    });
+
+    // Bald Ball inline link - also switch to projects tab
+    document.querySelector('.inline-link')?.addEventListener('click', (e) => {
+        // Switch to projects tab
+        navButtons.forEach(b => b.classList.remove('active'));
+        document.querySelector('[data-section="projects"]').classList.add('active');
+        
+        sections.forEach(section => {
+            section.classList.remove('active');
+            if (section.id === 'projects') {
+                section.classList.add('active');
+            }
+        });
+        
+        // The link will still open in new tab due to target="_blank"
     });
 </script>
 
