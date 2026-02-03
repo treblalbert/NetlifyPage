@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Astrologia Dating Sim</title>
+    <title>Astrologia</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -16,14 +16,16 @@
         }
 
         :root {
-            --primary: #FF6B6B;
-            --primary-dark: #ee5a5a;
-            --secondary: #4ECDC4;
-            --accent: #FFE66D;
-            --dark: #2C2C54;
-            --light: #F7F7F7;
-            --gradient: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            --primary: #FE3C72;
+            --primary-dark: #E8315A;
+            --secondary: #FF6B6B;
+            --accent: #FFD166;
+            --dark: #1A1A2E;
+            --light: #FAFAFA;
+            --gradient: linear-gradient(135deg, #FE3C72 0%, #FF6B6B 50%, #FF8C42 100%);
             --card-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            --love-gradient: linear-gradient(90deg, #FF6B6B 0%, #FE3C72 50%, #FF3366 100%);
+            --kiss-gradient: linear-gradient(90deg, #FF69B4 0%, #FF1493 50%, #C71585 100%);
         }
 
         body {
@@ -43,7 +45,6 @@
             overflow: hidden;
         }
 
-        /* Screens */
         .screen {
             position: absolute;
             top: 0;
@@ -64,12 +65,6 @@
             background: var(--gradient);
             justify-content: center;
             align-items: center;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
 
         .splash-logo {
@@ -78,10 +73,9 @@
         }
 
         .splash-logo h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
         .splash-logo p {
@@ -94,8 +88,14 @@
             margin-bottom: 1rem;
         }
 
+        .splash-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
         .splash-btn {
-            margin-top: 3rem;
             padding: 1rem 3rem;
             background: white;
             color: var(--primary);
@@ -105,7 +105,13 @@
             font-weight: 600;
             cursor: pointer;
             box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .splash-btn.secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+            box-shadow: none;
         }
 
         .splash-btn:active {
@@ -114,18 +120,18 @@
 
         /* Profile Setup Screen */
         #profile-setup {
-            padding: 2rem 1.5rem;
+            padding: 1.5rem;
+            overflow-y: auto;
         }
 
         .setup-header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .setup-header h2 {
             color: var(--primary);
             font-size: 1.5rem;
-            margin-bottom: 0.5rem;
         }
 
         .setup-header p {
@@ -134,18 +140,17 @@
         }
 
         .photo-upload {
-            width: 150px;
-            height: 150px;
-            margin: 0 auto 2rem;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1rem;
             border-radius: 50%;
-            background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%);
+            background: #e0e0e0;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
             overflow: hidden;
             border: 4px solid var(--primary);
-            position: relative;
         }
 
         .photo-upload img {
@@ -160,38 +165,48 @@
         }
 
         .photo-upload .placeholder span {
-            font-size: 3rem;
+            font-size: 2.5rem;
         }
 
         .photo-upload .placeholder p {
-            font-size: 0.75rem;
-            margin-top: 0.5rem;
+            font-size: 0.7rem;
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
             font-weight: 500;
-            color: var(--dark);
+            font-size: 0.9rem;
         }
 
-        .form-group input {
+        .form-group input, .form-group textarea, .form-group select {
             width: 100%;
-            padding: 1rem;
+            padding: 0.8rem;
             border: 2px solid #e0e0e0;
             border-radius: 12px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-family: inherit;
-            transition: border-color 0.2s;
         }
 
-        .form-group input:focus {
+        .form-group input:focus, .form-group textarea:focus {
             outline: none;
             border-color: var(--primary);
+        }
+
+        .form-group textarea {
+            resize: none;
+            min-height: 70px;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 0.3rem;
+            color: #999;
+            font-size: 0.75rem;
         }
 
         .start-btn {
@@ -204,8 +219,7 @@
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 1rem;
-            transition: transform 0.2s, opacity 0.2s;
+            margin-top: 0.5rem;
         }
 
         .start-btn:disabled {
@@ -213,16 +227,34 @@
             cursor: not-allowed;
         }
 
-        .start-btn:not(:disabled):active {
-            transform: scale(0.98);
+        .photo-options {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 1rem;
         }
 
-        /* Main App Screen */
+        .photo-option-btn {
+            padding: 0.5rem 0.8rem;
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            background: white;
+            color: var(--primary);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .photo-option-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Main App */
         #main-app {
             background: #f0f0f0;
         }
 
-        /* Header */
         .app-header {
             background: white;
             padding: 1rem 1.5rem;
@@ -230,12 +262,10 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            position: relative;
-            z-index: 10;
         }
 
         .app-header h1 {
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -244,7 +274,7 @@
 
         .header-icons {
             display: flex;
-            gap: 1rem;
+            gap: 0.5rem;
         }
 
         .header-icon {
@@ -257,21 +287,14 @@
             align-items: center;
             cursor: pointer;
             font-size: 1.2rem;
-            transition: background 0.2s;
         }
 
-        .header-icon:active {
-            background: #e0e0e0;
-        }
-
-        /* Tab Navigation */
         .tab-nav {
             display: flex;
             background: white;
             padding: 0.5rem;
             margin: 0.5rem;
             border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
         .tab-btn {
@@ -280,12 +303,11 @@
             border: none;
             background: transparent;
             font-family: inherit;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
             color: #999;
             cursor: pointer;
             border-radius: 12px;
-            transition: all 0.2s;
         }
 
         .tab-btn.active {
@@ -293,7 +315,6 @@
             color: white;
         }
 
-        /* Content Area */
         .content-area {
             flex: 1;
             overflow: hidden;
@@ -320,10 +341,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
             position: relative;
-            padding: 0;
         }
 
         .card-container {
@@ -345,12 +363,10 @@
             overflow: hidden;
             cursor: grab;
             user-select: none;
-            transition: transform 0.1s ease-out;
         }
 
         .profile-card.dragging {
             cursor: grabbing;
-            transition: none;
         }
 
         .profile-card .photo-container {
@@ -420,10 +436,8 @@
             margin-top: 0.5rem;
             color: #666;
             font-size: 0.95rem;
-            line-height: 1.5;
         }
 
-        /* Swipe Indicators */
         .swipe-indicator {
             position: absolute;
             top: 50%;
@@ -433,7 +447,6 @@
             font-size: 1.5rem;
             font-weight: 700;
             opacity: 0;
-            transition: opacity 0.1s;
             pointer-events: none;
         }
 
@@ -451,13 +464,11 @@
             transform: translateY(-50%) rotate(-15deg);
         }
 
-        /* Action Buttons */
         .action-buttons {
             display: flex;
             justify-content: center;
             gap: 1.5rem;
             padding: 1rem;
-            background: transparent;
         }
 
         .action-btn {
@@ -470,7 +481,6 @@
             align-items: center;
             font-size: 1.5rem;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
@@ -478,25 +488,10 @@
             transform: scale(0.9);
         }
 
-        .action-btn.dislike {
-            background: white;
-            color: #f44336;
-        }
+        .action-btn.dislike { background: white; color: #f44336; }
+        .action-btn.superlike { background: white; color: #2196F3; width: 50px; height: 50px; font-size: 1.2rem; }
+        .action-btn.like { background: white; color: #4CAF50; }
 
-        .action-btn.superlike {
-            background: white;
-            color: #2196F3;
-            width: 50px;
-            height: 50px;
-            font-size: 1.2rem;
-        }
-
-        .action-btn.like {
-            background: white;
-            color: #4CAF50;
-        }
-
-        /* No More Profiles */
         .no-profiles {
             text-align: center;
             color: #999;
@@ -509,12 +504,7 @@
             margin-bottom: 1rem;
         }
 
-        .no-profiles h3 {
-            margin-bottom: 0.5rem;
-            color: var(--dark);
-        }
-
-        /* Matches Section */
+        /* Matches */
         #matches-content {
             overflow-y: auto;
         }
@@ -537,7 +527,7 @@
             overflow: hidden;
             box-shadow: 0 3px 15px rgba(0,0,0,0.1);
             cursor: pointer;
-            transition: transform 0.2s;
+            position: relative;
         }
 
         .match-card:active {
@@ -563,6 +553,32 @@
             color: #999;
         }
 
+        .match-card .love-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--gradient);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .match-card .date-btn {
+            position: absolute;
+            bottom: 60px;
+            right: 8px;
+            background: var(--kiss-gradient);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+        }
+
         .no-matches {
             text-align: center;
             color: #999;
@@ -575,7 +591,7 @@
             margin-bottom: 1rem;
         }
 
-        /* Chat Section */
+        /* Chats */
         #chats-content {
             overflow-y: auto;
         }
@@ -594,11 +610,6 @@
             background: white;
             border-radius: 15px;
             cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .chat-item:active {
-            background: #f5f5f5;
         }
 
         .chat-item img {
@@ -614,16 +625,10 @@
 
         .chat-item .chat-info h4 {
             font-size: 1rem;
-            margin-bottom: 0.2rem;
         }
 
         .chat-item .chat-info p {
             font-size: 0.85rem;
-            color: #999;
-        }
-
-        .chat-item .chat-time {
-            font-size: 0.75rem;
             color: #999;
         }
 
@@ -650,7 +655,6 @@
             gap: 1rem;
             padding: 1rem;
             background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
         .chat-header .back-btn {
@@ -668,11 +672,97 @@
             height: 45px;
             border-radius: 50%;
             object-fit: cover;
+            cursor: pointer;
         }
 
-        .chat-header h3 {
+        .chat-header-info {
             flex: 1;
+        }
+
+        .chat-header-info h3 {
             font-size: 1.1rem;
+        }
+
+        .chat-header-info .love-status {
+            font-size: 0.75rem;
+            color: var(--primary);
+        }
+
+        .love-meter-container {
+            padding: 0.5rem 1rem;
+            background: white;
+            border-bottom: 1px solid #eee;
+        }
+
+        .love-meter-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.3rem;
+        }
+
+        .love-meter-header span {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .love-meter-header .love-percentage {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .love-meter {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .love-meter-fill {
+            height: 100%;
+            background: var(--love-gradient);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .love-meter-goal {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #999;
+            margin-top: 0.3rem;
+        }
+
+        .points-indicator {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%) scale(0.5);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .points-indicator.positive {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .points-indicator.negative {
+            background: #f44336;
+            color: white;
+        }
+
+        .points-indicator.show {
+            opacity: 1;
+            transform: translateY(-50%) scale(1);
+        }
+
+        .love-meter-container {
+            position: relative;
         }
 
         .chat-messages {
@@ -702,6 +792,13 @@
             color: white;
             align-self: flex-end;
             border-bottom-right-radius: 5px;
+        }
+
+        .message.typing {
+            background: white;
+            align-self: flex-start;
+            color: #999;
+            font-style: italic;
         }
 
         .chat-input-area {
@@ -736,8 +833,591 @@
             cursor: pointer;
         }
 
-        /* Match Popup */
-        .match-popup {
+        .chat-input-area button:disabled {
+            opacity: 0.5;
+        }
+
+        /* Profile View Modal */
+        .profile-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .profile-modal.active {
+            display: block;
+        }
+
+        .profile-modal-content {
+            max-width: 430px;
+            margin: 0 auto;
+            background: var(--light);
+            min-height: 100%;
+        }
+
+        .profile-modal-header {
+            position: relative;
+            height: 400px;
+        }
+
+        .profile-modal-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-modal-header .close-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .profile-modal-header .photo-nav-modal {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+        }
+
+        .profile-modal-header .photo-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+        }
+
+        .profile-modal-header .photo-dot.active {
+            background: white;
+        }
+
+        .profile-modal-body {
+            padding: 1.5rem;
+        }
+
+        .profile-modal-body h2 {
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .profile-modal-body h2 span {
+            font-weight: 400;
+            color: #666;
+        }
+
+        .profile-modal-body .bio {
+            margin-top: 1rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .profile-modal-body .love-info {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 15px;
+        }
+
+        .profile-modal-body .love-info h4 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .profile-modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .profile-modal-actions button {
+            flex: 1;
+            padding: 1rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .profile-modal-actions .chat-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+        }
+
+        .profile-modal-actions .date-btn {
+            background: var(--kiss-gradient);
+            color: white;
+            border: none;
+        }
+
+        .profile-modal-actions .date-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Date Screen */
+        #date-screen {
+            background: #1a1a2e;
+        }
+
+        .date-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .date-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
+        }
+
+        .date-character {
+            position: absolute;
+            bottom: 200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px;
+            height: 350px;
+            z-index: 1;
+        }
+
+        .date-character img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .date-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(0,0,0,0.7);
+            z-index: 10;
+        }
+
+        .date-header .back-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .date-header-info {
+            flex: 1;
+            color: white;
+        }
+
+        .date-header-info h3 {
+            font-size: 1.1rem;
+        }
+
+        .date-header-info .date-status {
+            font-size: 0.75rem;
+            color: #FF69B4;
+        }
+
+        .kiss-meter-container {
+            padding: 0.5rem 1rem;
+            background: rgba(0,0,0,0.7);
+            z-index: 10;
+            position: relative;
+        }
+
+        .kiss-meter-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.3rem;
+        }
+
+        .kiss-meter-header span {
+            font-size: 0.8rem;
+            color: white;
+        }
+
+        .kiss-meter-header .kiss-percentage {
+            font-weight: 600;
+            color: #FF69B4;
+        }
+
+        .kiss-meter {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .kiss-meter-fill {
+            height: 100%;
+            background: var(--kiss-gradient);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .kiss-meter-goal {
+            text-align: center;
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.7);
+            margin-top: 0.3rem;
+        }
+
+        .date-chat-area {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 10;
+            max-height: 50%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .date-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 150px;
+        }
+
+        .date-input-area {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .date-input-area input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .date-input-area input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .date-input-area input:focus {
+            outline: none;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .date-input-area button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            background: var(--kiss-gradient);
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .tts-toggle {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .tts-toggle.active {
+            background: #4CAF50;
+        }
+
+        /* Editor Screen */
+        #editor-screen {
+            background: var(--light);
+            overflow-y: auto;
+        }
+
+        .editor-header {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            gap: 1rem;
+        }
+
+        .editor-header .back-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: var(--light);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .editor-header h2 {
+            flex: 1;
+            font-size: 1.2rem;
+        }
+
+        .editor-content {
+            padding: 1rem;
+        }
+
+        .editor-section {
+            background: white;
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .editor-section h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .profile-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .profile-list-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem;
+            background: var(--light);
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .profile-list-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile-list-item .info {
+            flex: 1;
+        }
+
+        .profile-list-item .info h4 {
+            font-size: 0.95rem;
+        }
+
+        .profile-list-item .info p {
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        .profile-list-item .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .profile-list-item .actions button {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .profile-list-item .actions .edit-btn {
+            background: #2196F3;
+            color: white;
+        }
+
+        .profile-list-item .actions .delete-btn {
+            background: #f44336;
+            color: white;
+        }
+
+        .add-profile-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        /* Profile Editor Form */
+        .editor-form {
+            display: none;
+        }
+
+        .editor-form.active {
+            display: block;
+        }
+
+        .mood-photos-section {
+            margin-top: 1rem;
+        }
+
+        .mood-photos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .mood-photo-item {
+            text-align: center;
+        }
+
+        .mood-photo-item label {
+            font-size: 0.7rem;
+            color: #666;
+        }
+
+        .mood-photo-item .mood-preview {
+            width: 100%;
+            aspect-ratio: 1;
+            background: #e0e0e0;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            overflow: hidden;
+            margin-top: 0.3rem;
+        }
+
+        .mood-photo-item .mood-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .mood-photo-item .mood-preview span {
+            font-size: 1.5rem;
+        }
+
+        .photos-manager {
+            margin-top: 1rem;
+        }
+
+        .photos-grid {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .photo-item {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-item .remove-photo {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #f44336;
+            color: white;
+            border: none;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+
+        .add-photo-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            background: #e0e0e0;
+            border: 2px dashed #999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 2rem;
+            color: #999;
+        }
+
+        .editor-form-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .editor-form-buttons button {
+            flex: 1;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .editor-form-buttons .save-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+        }
+
+        .editor-form-buttons .cancel-btn {
+            background: white;
+            color: #666;
+            border: 2px solid #e0e0e0;
+        }
+
+        /* Popups */
+        .match-popup, .date-popup, .kiss-popup {
             position: fixed;
             top: 0;
             left: 0;
@@ -748,32 +1428,32 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            animation: fadeIn 0.3s ease;
         }
 
-        .match-popup.active {
+        .match-popup.active, .date-popup.active, .kiss-popup.active {
             display: flex;
         }
 
-        .match-popup-content {
+        .popup-content {
             text-align: center;
             color: white;
             padding: 2rem;
         }
 
-        .match-popup h2 {
-            font-size: 2.5rem;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .popup-content h2 {
+            font-size: 2rem;
             margin-bottom: 1rem;
         }
 
-        .match-popup p {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            opacity: 0.8;
+        .popup-content .confetti {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .popup-content p {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
         }
 
         .match-photos {
@@ -803,38 +1483,33 @@
             50% { transform: scale(1.2); }
         }
 
-        .match-popup-btns {
+        .popup-buttons {
             display: flex;
             gap: 1rem;
             justify-content: center;
         }
 
-        .match-popup-btns button {
+        .popup-buttons button {
             padding: 1rem 2rem;
             border-radius: 25px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s;
         }
 
-        .match-popup-btns button:active {
-            transform: scale(0.95);
-        }
-
-        .match-popup-btns .send-msg {
+        .popup-buttons .primary-btn {
             background: var(--gradient);
             color: white;
             border: none;
         }
 
-        .match-popup-btns .keep-swiping {
+        .popup-buttons .secondary-btn {
             background: transparent;
             color: white;
             border: 2px solid white;
         }
 
-        /* Profile View */
+        /* Profile View (own) */
         #profile-view {
             background: var(--light);
         }
@@ -888,7 +1563,6 @@
 
         .profile-view-info .age {
             color: #666;
-            font-size: 1.1rem;
         }
 
         .profile-view-info .bio {
@@ -897,16 +1571,75 @@
             line-height: 1.6;
         }
 
-        /* Hidden file input */
-        #camera-input {
+        /* Webcam Modal */
+        .webcam-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            flex-direction: column;
+            padding: 1rem;
+        }
+
+        .webcam-modal.active {
+            display: flex;
+        }
+
+        .webcam-container {
+            width: 100%;
+            max-width: 350px;
+            aspect-ratio: 1;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .webcam-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1);
+        }
+
+        .webcam-container canvas {
             display: none;
         }
 
-        /* Responsive */
-        @media (min-height: 800px) {
-            .profile-card {
-                height: calc(100% - 7rem);
-            }
+        .webcam-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .webcam-btn {
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        .webcam-btn.capture {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .webcam-btn.cancel {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        /* Hidden inputs */
+        #camera-input, .hidden-input {
+            display: none;
         }
     </style>
 </head>
@@ -915,64 +1648,80 @@
         <!-- Splash Screen -->
         <div id="splash-screen" class="screen active">
             <div class="splash-logo">
-                <div class="logo-icon">🔮</div>
-                <h1>Astrologia</h1>
-                <p>Dating Sim</p>
+                <div class="logo-icon">🔥</div>
+                <h1>astrologia</h1>
+                <p>Troba la teva cita</p>
             </div>
-            <button class="splash-btn" onclick="showProfileSetup()">Comença</button>
+            <div class="splash-buttons">
+                <button class="splash-btn" onclick="showProfileSetup()">Comença</button>
+                <button class="splash-btn secondary" onclick="showEditor()">Editor de Perfils</button>
+            </div>
         </div>
 
         <!-- Profile Setup Screen -->
         <div id="profile-setup" class="screen">
             <div class="setup-header">
                 <h2>Crea el teu perfil</h2>
-                <p>Afegeix una foto i les teves dades</p>
+                <p>Afegeix les teves dades</p>
             </div>
-            
-            <div class="photo-upload" onclick="document.getElementById('camera-input').click()">
+
+            <div class="photo-upload" id="photo-upload-area">
                 <div class="placeholder" id="photo-placeholder">
                     <span>📷</span>
-                    <p>Toca per afegir foto</p>
+                    <p>Foto</p>
                 </div>
                 <img id="user-photo-preview" style="display: none;">
             </div>
-            <input type="file" id="camera-input" accept="image/*" capture="user" onchange="handlePhotoUpload(event)">
-            
+            <div class="photo-options">
+                <button type="button" class="photo-option-btn" onclick="openWebcam()">📸 Càmera</button>
+                <button type="button" class="photo-option-btn" onclick="document.getElementById('camera-input').click()">📁 Galeria</button>
+            </div>
+            <input type="file" id="camera-input" accept="image/*" onchange="handlePhotoUpload(event)">
+
             <div class="form-group">
-                <label for="user-name">Nom</label>
+                <label>Nom</label>
                 <input type="text" id="user-name" placeholder="Com et dius?" oninput="checkFormValidity()">
             </div>
-            
+
             <div class="form-group">
-                <label for="user-age">Edat</label>
+                <label>Edat</label>
                 <input type="number" id="user-age" placeholder="Quants anys tens?" min="18" max="99" oninput="checkFormValidity()">
             </div>
-            
-            <button class="start-btn" id="start-btn" disabled onclick="startApp()">Començar a buscar 💖</button>
+
+            <div class="form-group">
+                <label>Sobre tu</label>
+                <textarea id="user-bio" placeholder="Explica una mica sobre tu..." oninput="checkFormValidity()"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>OpenAI API Key</label>
+                <input type="password" id="api-key" placeholder="sk-..." oninput="checkFormValidity()">
+                <small>Necessària per al xat amb IA</small>
+            </div>
+
+            <button class="start-btn" id="start-btn" disabled onclick="startApp()">Començar 🔥</button>
         </div>
 
-        <!-- Main App Screen -->
+        <!-- Main App -->
         <div id="main-app" class="screen">
             <div class="app-header">
-                <h1>🔮 Astrologia</h1>
+                <h1>astrologia</h1>
                 <div class="header-icons">
+                    <div class="header-icon" onclick="showEditor()">⚙️</div>
                     <div class="header-icon" onclick="showProfileView()">👤</div>
                 </div>
             </div>
-            
+
             <div class="tab-nav">
                 <button class="tab-btn active" onclick="switchTab('swipe')">Descobrir</button>
                 <button class="tab-btn" onclick="switchTab('matches')">Matches</button>
                 <button class="tab-btn" onclick="switchTab('chats')">Xats</button>
             </div>
-            
+
             <div class="content-area">
-                <!-- Swipe Tab -->
                 <div id="swipe-content" class="tab-content active">
                     <div id="swipe-area">
-                        <div class="card-container" id="card-container">
-                            <!-- Cards will be inserted here -->
-                        </div>
+                        <div class="card-container" id="card-container"></div>
                         <div class="action-buttons">
                             <button class="action-btn dislike" onclick="swipeAction('left')">✕</button>
                             <button class="action-btn superlike" onclick="superLike()">⭐</button>
@@ -980,31 +1729,23 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- Matches Tab -->
+
                 <div id="matches-content" class="tab-content">
                     <div class="matches-section">
                         <h3>Els teus matches</h3>
-                        <div class="matches-grid" id="matches-grid">
-                            <!-- Matches will be inserted here -->
-                        </div>
+                        <div class="matches-grid" id="matches-grid"></div>
                         <div class="no-matches" id="no-matches">
                             <span>💔</span>
                             <h3>Encara no tens matches</h3>
-                            <p>Continua buscant per trobar algú especial!</p>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Chats Tab -->
+
                 <div id="chats-content" class="tab-content">
-                    <div class="chat-list" id="chat-list">
-                        <!-- Chats will be inserted here -->
-                    </div>
+                    <div class="chat-list" id="chat-list"></div>
                     <div class="no-chats" id="no-chats">
                         <span>💬</span>
                         <h3>Encara no tens xats</h3>
-                        <p>Fes match amb algú per començar a parlar!</p>
                     </div>
                 </div>
             </div>
@@ -1014,19 +1755,182 @@
         <div id="chat-screen" class="screen">
             <div class="chat-header">
                 <button class="back-btn" onclick="closeChat()">←</button>
-                <img id="chat-partner-photo" src="" alt="">
-                <h3 id="chat-partner-name"></h3>
+                <img id="chat-partner-photo" src="" alt="" onclick="showProfileModal(currentMatchForChat)">
+                <div class="chat-header-info">
+                    <h3 id="chat-partner-name"></h3>
+                    <p class="love-status" id="chat-love-status">Interès inicial</p>
+                </div>
             </div>
-            <div class="chat-messages" id="chat-messages">
-                <!-- Messages will be inserted here -->
+            <div class="love-meter-container">
+                <div class="love-meter-header">
+                    <span>❤️ Nivell d'amor</span>
+                    <span class="love-percentage" id="love-percentage">0%</span>
+                </div>
+                <div class="love-meter">
+                    <div class="love-meter-fill" id="love-meter-fill" style="width: 0%"></div>
+                </div>
+                <p class="love-meter-goal">Objectiu: Aconseguir una cita! 🎯</p>
             </div>
+            <div class="chat-messages" id="chat-messages"></div>
             <div class="chat-input-area">
                 <input type="text" id="chat-input" placeholder="Escriu un missatge...">
-                <button onclick="sendMessage()">➤</button>
+                <button id="send-btn" onclick="sendMessage()">➤</button>
             </div>
         </div>
 
-        <!-- Profile View -->
+        <!-- Date Screen -->
+        <div id="date-screen" class="screen">
+            <div class="date-background" id="date-background"></div>
+            <div class="date-character" id="date-character">
+                <img id="date-character-img" src="" alt="" onerror="this.onerror=null; handleDateImageError();">
+            </div>
+            <div class="date-header">
+                <button class="back-btn" onclick="closeDate()">←</button>
+                <div class="date-header-info">
+                    <h3 id="date-partner-name"></h3>
+                    <p class="date-status" id="date-status">Primera cita</p>
+                </div>
+            </div>
+            <div class="kiss-meter-container">
+                <div class="kiss-meter-header">
+                    <span>💋 Connexió</span>
+                    <span class="kiss-percentage" id="kiss-percentage">0%</span>
+                </div>
+                <div class="kiss-meter">
+                    <div class="kiss-meter-fill" id="kiss-meter-fill" style="width: 0%"></div>
+                </div>
+                <p class="kiss-meter-goal">Objectiu: Aconseguir un petó! 💋</p>
+            </div>
+            <div class="date-chat-area">
+                <div class="date-messages" id="date-messages"></div>
+                <div class="date-input-area">
+                    <button class="tts-toggle" id="tts-toggle" onclick="toggleTTS()">🔊</button>
+                    <input type="text" id="date-input" placeholder="Què li dius...">
+                    <button id="date-send-btn" onclick="sendDateMessage()">➤</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Editor Screen -->
+        <div id="editor-screen" class="screen">
+            <div class="editor-header">
+                <button class="back-btn" onclick="closeEditor()">←</button>
+                <h2>Editor de Perfils</h2>
+            </div>
+            <div class="editor-content">
+                <div class="editor-section" id="profiles-list-section">
+                    <h3>Perfils Existents</h3>
+                    <div class="profile-list" id="profiles-list"></div>
+                    <button class="add-profile-btn" onclick="showProfileForm()">+ Afegir Perfil</button>
+                </div>
+
+                <div class="editor-form" id="editor-form">
+                    <div class="editor-section">
+                        <h3 id="form-title">Nou Perfil</h3>
+
+                        <div class="form-group">
+                            <label>Nom</label>
+                            <input type="text" id="edit-name" placeholder="Nom del personatge">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Edat</label>
+                            <input type="text" id="edit-age" placeholder="Edat (o ?? si és secret)">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Descripció (Bio)</label>
+                            <textarea id="edit-bio" placeholder="Descripció que es mostra al perfil..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Personalitat (per la IA)</label>
+                            <textarea id="edit-personality" placeholder="Instruccions detallades de com ha d'actuar la IA..." style="min-height: 120px;"></textarea>
+                        </div>
+
+                        <div class="photos-manager">
+                            <label>Fotos del Perfil (Swipe)</label>
+                            <div class="photos-grid" id="edit-photos-grid">
+                                <div class="add-photo-btn" onclick="addProfilePhoto()">+</div>
+                            </div>
+                            <input type="file" class="hidden-input" id="profile-photo-input" accept="image/*" onchange="handleProfilePhoto(event)">
+                        </div>
+
+                        <div class="mood-photos-section">
+                            <label>Fotos per Mood (Cita)</label>
+                            <small>Fotos PNG transparents per cada estat emocional</small>
+                            <div class="mood-photos-grid">
+                                <div class="mood-photo-item">
+                                    <div class="mood-preview" onclick="selectMoodPhoto('angry')">
+                                        <img id="mood-angry-preview" style="display:none">
+                                        <span id="mood-angry-placeholder">😠</span>
+                                    </div>
+                                    <label>Enfadat</label>
+                                </div>
+                                <div class="mood-photo-item">
+                                    <div class="mood-preview" onclick="selectMoodPhoto('sad')">
+                                        <img id="mood-sad-preview" style="display:none">
+                                        <span id="mood-sad-placeholder">😢</span>
+                                    </div>
+                                    <label>Trist</label>
+                                </div>
+                                <div class="mood-photo-item">
+                                    <div class="mood-preview" onclick="selectMoodPhoto('neutral')">
+                                        <img id="mood-neutral-preview" style="display:none">
+                                        <span id="mood-neutral-placeholder">😐</span>
+                                    </div>
+                                    <label>Neutral</label>
+                                </div>
+                                <div class="mood-photo-item">
+                                    <div class="mood-preview" onclick="selectMoodPhoto('happy')">
+                                        <img id="mood-happy-preview" style="display:none">
+                                        <span id="mood-happy-placeholder">😊</span>
+                                    </div>
+                                    <label>Content</label>
+                                </div>
+                                <div class="mood-photo-item">
+                                    <div class="mood-preview" onclick="selectMoodPhoto('love')">
+                                        <img id="mood-love-preview" style="display:none">
+                                        <span id="mood-love-placeholder">😍</span>
+                                    </div>
+                                    <label>Enamorat</label>
+                                </div>
+                                <div class="mood-photo-item">
+                                    <div class="mood-preview" onclick="selectMoodPhoto('kiss')">
+                                        <img id="mood-kiss-preview" style="display:none">
+                                        <span id="mood-kiss-placeholder">😘</span>
+                                    </div>
+                                    <label>Petó</label>
+                                </div>
+                            </div>
+                            <input type="file" class="hidden-input" id="mood-photo-input" accept="image/*" onchange="handleMoodPhoto(event)">
+                        </div>
+
+                        <div class="editor-form-buttons">
+                            <button class="cancel-btn" onclick="cancelProfileEdit()">Cancel·lar</button>
+                            <button class="save-btn" onclick="saveProfile()">Guardar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="editor-section">
+                    <h3>Fons de Cita</h3>
+                    <div class="photos-grid" id="backgrounds-grid">
+                        <div class="add-photo-btn" onclick="document.getElementById('background-input').click()">+</div>
+                    </div>
+                    <input type="file" class="hidden-input" id="background-input" accept="image/*" onchange="handleBackgroundUpload(event)">
+                </div>
+
+                <div class="editor-section">
+                    <h3>Dades</h3>
+                    <button class="add-profile-btn" onclick="exportData()" style="background: #2196F3;">📤 Exportar Dades</button>
+                    <button class="add-profile-btn" onclick="document.getElementById('import-input').click()" style="background: #4CAF50; margin-top: 0.5rem;">📥 Importar Dades</button>
+                    <input type="file" class="hidden-input" id="import-input" accept=".json" onchange="importData(event)">
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile View (own) -->
         <div id="profile-view" class="screen">
             <div class="profile-view-header">
                 <button class="back-btn" onclick="closeProfileView()">←</button>
@@ -1038,106 +1942,328 @@
                 <div class="profile-view-info">
                     <h2 id="profile-view-name"></h2>
                     <p class="age" id="profile-view-age"></p>
+                    <p class="bio" id="profile-view-bio"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Modal -->
+        <div class="profile-modal" id="profile-modal">
+            <div class="profile-modal-content">
+                <div class="profile-modal-header">
+                    <img id="modal-photo" src="" alt="">
+                    <button class="close-btn" onclick="closeProfileModal()">✕</button>
+                    <div class="photo-nav-modal" id="modal-photo-nav"></div>
+                </div>
+                <div class="profile-modal-body">
+                    <h2><span id="modal-name"></span> <span id="modal-age"></span></h2>
+                    <p class="bio" id="modal-bio"></p>
+                    <div class="love-info">
+                        <h4>❤️ Nivell d'amor: <span id="modal-love">0%</span></h4>
+                        <div class="love-meter">
+                            <div class="love-meter-fill" id="modal-love-fill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="profile-modal-actions">
+                        <button class="chat-btn" onclick="openChatFromModal()">💬 Xatejar</button>
+                        <button class="date-btn" id="modal-date-btn" onclick="startDateFromModal()">💋 Cita</button>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Match Popup -->
         <div class="match-popup" id="match-popup">
-            <div class="match-popup-content">
-                <h2>It's a Match! 💖</h2>
+            <div class="popup-content">
+                <h2>It's a Match! 🔥</h2>
                 <p>Tu i <span id="match-name"></span> us agradeu mútuament</p>
                 <div class="match-photos">
-                    <img id="match-user-photo" src="" alt="Tu">
+                    <img id="match-user-photo" src="" alt="">
                     <span class="heart">❤️</span>
                     <img id="match-partner-photo" src="" alt="">
                 </div>
-                <div class="match-popup-btns">
-                    <button class="send-msg" onclick="sendMessageFromMatch()">Enviar missatge</button>
-                    <button class="keep-swiping" onclick="closeMatchPopup()">Seguir buscant</button>
+                <div class="popup-buttons">
+                    <button class="primary-btn" onclick="sendMessageFromMatch()">Enviar missatge</button>
+                    <button class="secondary-btn" onclick="closeMatchPopup()">Seguir buscant</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Date Ready Popup -->
+        <div class="date-popup" id="date-popup">
+            <div class="popup-content">
+                <div class="confetti">🎉🥳🎊</div>
+                <h2>Tens una cita!</h2>
+                <p id="date-message"></p>
+                <div class="popup-buttons">
+                    <button class="primary-btn" onclick="startDate()">Anar a la cita! 💋</button>
+                    <button class="secondary-btn" onclick="closeDatePopup()">Més tard</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kiss Popup -->
+        <div class="kiss-popup" id="kiss-popup">
+            <div class="popup-content">
+                <div class="confetti">💋💕💋</div>
+                <h2>HO HAS ACONSEGUIT!</h2>
+                <p id="kiss-message"></p>
+                <div class="popup-buttons">
+                    <button class="primary-btn" onclick="closeKissPopup()">Increïble! 🎉</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Webcam Modal -->
+        <div class="webcam-modal" id="webcam-modal">
+            <div class="webcam-container">
+                <video id="webcam-video" autoplay playsinline></video>
+                <canvas id="webcam-canvas"></canvas>
+            </div>
+            <div class="webcam-controls">
+                <button class="webcam-btn capture" onclick="capturePhoto()">📸 Capturar</button>
+                <button class="webcam-btn cancel" onclick="closeWebcam()">Cancel·lar</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Profile Data
-        const profiles = [
+        // Default profiles
+        const defaultProfiles = [
             {
                 id: 'alby',
                 name: 'Alby',
                 age: 27,
-                bio: "Guitarrista amateur buscant algú per fer rutes pel bosc mentre parlem de música. Si t'agrada el rock progressiu, potser som ànimes bessones. Avís: faré referència a lletres de cançons constantment. 🎸🌲",
-                photos: ['resources/Alby_date_1.jpg', 'resources/Alby_date_2.jpg', 'resources/Alby_date_3.jpg']
+                bio: "Guitarrista amateur buscant algú per fer rutes pel bosc mentre parlem de música. 🎸🌲",
+                photos: ['resources/Alby_date_1.png', 'resources/Alby_date_2.png', 'resources/Alby_date_3.png'],
+                moods: {
+                    angry: 'resources/moods/alby_angry.png',
+                    sad: 'resources/moods/alby_sad.png',
+                    neutral: 'resources/moods/alby_neutral.png',
+                    happy: 'resources/moods/alby_happy.png',
+                    love: 'resources/moods/alby_love.png',
+                    kiss: 'resources/moods/alby_kiss.png'
+                },
+                personality: `Ets l'Alby, 27 anys, guitarrista amateur apassionat per la música rock i les rutes pel bosc.
+                - Fas referències a lletres de cançons
+                - Ets romàntic i poètic
+                - T'encanta la natura i la música
+                - Si algú mostra interès en música, t'emociones`
             },
             {
                 id: 'lluc',
                 name: 'Lluc',
                 age: 24,
-                bio: "Tranqui, sense pressa per res. M'agrada el que m'agrada des de sempre i no penso canviar. Si vols fer un Minecraft o maratonar anime, ja tenim pla. La vida és massa curta per estressar-se. 🎮✨",
-                photos: ['resources/Lluc_date_1.jpg', 'resources/Lluc_date_2.jpg', 'resources/Lluc_date_3.jpg']
+                bio: "Tranqui, sense pressa. Si vols fer Minecraft o maratonar anime, ja tenim pla. 🎮✨",
+                photos: ['resources/Lluc_date_1.png', 'resources/Lluc_date_2.png', 'resources/Lluc_date_3.png'],
+                moods: {
+                    angry: 'resources/moods/lluc_angry.png',
+                    sad: 'resources/moods/lluc_sad.png',
+                    neutral: 'resources/moods/lluc_neutral.png',
+                    happy: 'resources/moods/lluc_happy.png',
+                    love: 'resources/moods/lluc_love.png',
+                    kiss: 'resources/moods/lluc_kiss.png'
+                },
+                personality: `Ets en Lluc, 24 anys, molt relaxat i gamer.
+                - Súper tranquil, res t'estressa
+                - Fan d'anime i Minecraft
+                - Parles de manera casual
+                - No t'agraden els drames`
             },
             {
                 id: 'marti',
                 name: 'Martí',
                 age: 27,
-                bio: "Profe de primària, m'encanta el que faig i connectar amb la gent. Quan no estic treballant, segurament estic jugant a FIFA o simplement passant l'estona. Busco algú relaxat, sense drames. ⚽🍃",
-                photos: ['resources/Marti_date_1.jpg', 'resources/Marti_date_2.jpg', 'resources/Marti_date_3.jpg']
+                bio: "Profe de primària, m'encanta connectar amb la gent. Fan del FIFA. ⚽🍃",
+                photos: ['resources/Marti_date_1.png', 'resources/Marti_date_2.png', 'resources/Marti_date_3.png'],
+                moods: {
+                    angry: 'resources/moods/marti_angry.png',
+                    sad: 'resources/moods/marti_sad.png',
+                    neutral: 'resources/moods/marti_neutral.png',
+                    happy: 'resources/moods/marti_happy.png',
+                    love: 'resources/moods/marti_love.png',
+                    kiss: 'resources/moods/marti_kiss.png'
+                },
+                personality: `Ets en Martí, 27 anys, professor de primària.
+                - Proper i amable
+                - Fan del futbol i FIFA
+                - Molt "bona gent", positiu
+                - Valores l'humor`
             },
             {
                 id: 'moma',
                 name: 'Moma',
                 age: '??',
-                bio: "Al gym de dilluns a divendres, cantant Katy Perry als auriculars. Tinc la meva rutina i m'encanta. Busco algú que sàpiga apreciar un bon pop i que no tingui por de ser ell mateix. Slay. 💅🏋️",
-                photos: ['resources/Moma_date_1.jpg', 'resources/Moma_date_2.jpg', 'resources/Moma_date_3.jpg']
+                bio: "Al gym cantant Katy Perry. Busco algú amb personalitat. Slay. 💅🏋️",
+                photos: ['resources/Moma_date_1.png', 'resources/Moma_date_2.png', 'resources/Moma_date_3.png'],
+                moods: {
+                    angry: 'resources/moods/moma_angry.png',
+                    sad: 'resources/moods/moma_sad.png',
+                    neutral: 'resources/moods/moma_neutral.png',
+                    happy: 'resources/moods/moma_happy.png',
+                    love: 'resources/moods/moma_love.png',
+                    kiss: 'resources/moods/moma_kiss.png'
+                },
+                personality: `Ets la Moma, edat misteriosa, confident i amb personalitat.
+                - "Slay queen" energy
+                - Fan del pop i el gym
+                - Utilitzes "slay", "periodt", "queen"
+                - Directa i divertida`
             }
         ];
 
         // App State
-        let userData = {
-            name: '',
-            age: '',
-            photo: ''
-        };
+        let profiles = [];
+        let backgrounds = [];
+        let userData = { name: '', age: '', photo: '', bio: '', apiKey: '' };
+        let webcamStream = null;
         let availableProfiles = [];
         let matches = [];
         let chats = {};
+        let loveMeters = {};
+        let kissMeters = {};
+        let dateAchieved = {};
+        let kissAchieved = {};
         let currentProfile = null;
         let currentPhotoIndex = 0;
         let currentMatchForChat = null;
+        let currentDatePartner = null;
+        let isWaitingForResponse = false;
+        let ttsEnabled = true;
 
-        // Touch/Drag Variables
-        let startX = 0;
-        let startY = 0;
-        let currentX = 0;
-        let isDragging = false;
+        // Editor state
+        let editingProfileId = null;
+        let editingPhotos = [];
+        let editingMoods = {};
+        let currentMoodType = null;
+        let modalPhotoIndex = 0;
+        let modalProfile = null;
+
+        // Touch/Drag
+        let startX = 0, currentX = 0, isDragging = false;
 
         // Initialize
-        function init() {
-            // Shuffle and set available profiles
-            availableProfiles = [...profiles].sort(() => Math.random() - 0.5);
-            
-            // Shuffle photos within each profile
-            availableProfiles.forEach(profile => {
-                profile.photos = profile.photos.sort(() => Math.random() - 0.5);
-            });
+        function initApp() {
+            loadData();
+            renderBackgroundsGrid();
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('astrologia_data');
+            if (saved) {
+                const data = JSON.parse(saved);
+                profiles = data.profiles || [...defaultProfiles];
+                backgrounds = data.backgrounds || [];
+                matches = data.matches || [];
+                chats = data.chats || {};
+                loveMeters = data.loveMeters || {};
+                kissMeters = data.kissMeters || {};
+                dateAchieved = data.dateAchieved || {};
+                kissAchieved = data.kissAchieved || {};
+            } else {
+                profiles = [...defaultProfiles];
+            }
+        }
+
+        function saveData() {
+            const data = {
+                profiles, backgrounds, matches, chats,
+                loveMeters, kissMeters, dateAchieved, kissAchieved
+            };
+            localStorage.setItem('astrologia_data', JSON.stringify(data));
+        }
+
+        function exportData() {
+            const data = {
+                profiles, backgrounds, matches, chats,
+                loveMeters, kissMeters, dateAchieved, kissAchieved
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'astrologia_data.json';
+            a.click();
+        }
+
+        function importData(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        profiles = data.profiles || profiles;
+                        backgrounds = data.backgrounds || backgrounds;
+                        matches = data.matches || [];
+                        chats = data.chats || {};
+                        loveMeters = data.loveMeters || {};
+                        kissMeters = data.kissMeters || {};
+                        dateAchieved = data.dateAchieved || {};
+                        kissAchieved = data.kissAchieved || {};
+                        saveData();
+                        renderProfilesList();
+                        renderBackgroundsGrid();
+                        alert('Dades importades!');
+                    } catch(err) {
+                        alert('Error important dades');
+                    }
+                };
+                reader.readAsText(file);
+            }
         }
 
         // Screen Navigation
-        function showProfileSetup() {
-            document.getElementById('splash-screen').classList.remove('active');
-            document.getElementById('profile-setup').classList.add('active');
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
         }
+
+        function showProfileSetup() { showScreen('profile-setup'); }
+
+        function showEditor() {
+            showScreen('editor-screen');
+            renderProfilesList();
+            renderBackgroundsGrid();
+        }
+
+        function closeEditor() {
+            if (userData.name) {
+                showScreen('main-app');
+            } else {
+                showScreen('splash-screen');
+            }
+        }
+
+        function showProfileView() {
+            document.getElementById('profile-view-photo').src = userData.photo;
+            document.getElementById('profile-view-name').textContent = userData.name;
+            document.getElementById('profile-view-age').textContent = `${userData.age} anys`;
+            document.getElementById('profile-view-bio').textContent = userData.bio || '';
+            showScreen('profile-view');
+        }
+
+        function closeProfileView() { showScreen('main-app'); }
 
         function startApp() {
             userData.name = document.getElementById('user-name').value;
             userData.age = document.getElementById('user-age').value;
-            
-            document.getElementById('profile-setup').classList.remove('active');
-            document.getElementById('main-app').classList.add('active');
-            
-            init();
+            userData.bio = document.getElementById('user-bio').value;
+            userData.apiKey = document.getElementById('api-key').value;
+            showScreen('main-app');
+            initProfiles();
             loadNextProfile();
+        }
+
+        function initProfiles() {
+            availableProfiles = [...profiles].sort(() => Math.random() - 0.5);
+        }
+
+        function refillProfiles() {
+            const unmatched = profiles.filter(p => !matches.find(m => m.id === p.id));
+            availableProfiles = (unmatched.length > 0 ? unmatched : profiles)
+                .map(p => ({...p}))
+                .sort(() => Math.random() - 0.5);
         }
 
         // Photo Upload
@@ -1157,62 +2283,86 @@
             }
         }
 
-        function checkFormValidity() {
-            const name = document.getElementById('user-name').value.trim();
-            const age = document.getElementById('user-age').value;
-            const photo = userData.photo;
-            
-            document.getElementById('start-btn').disabled = !(name && age && photo);
+        async function openWebcam() {
+            try {
+                webcamStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
+                document.getElementById('webcam-video').srcObject = webcamStream;
+                document.getElementById('webcam-modal').classList.add('active');
+            } catch (err) {
+                alert('No s\'ha pogut accedir a la càmera');
+            }
         }
 
-        // Tab Navigation
+        function closeWebcam() {
+            if (webcamStream) {
+                webcamStream.getTracks().forEach(track => track.stop());
+                webcamStream = null;
+            }
+            document.getElementById('webcam-modal').classList.remove('active');
+        }
+
+        function capturePhoto() {
+            const video = document.getElementById('webcam-video');
+            const canvas = document.getElementById('webcam-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, 0, 0);
+            userData.photo = canvas.toDataURL('image/jpeg', 0.9);
+            document.getElementById('photo-placeholder').style.display = 'none';
+            document.getElementById('user-photo-preview').src = userData.photo;
+            document.getElementById('user-photo-preview').style.display = 'block';
+            closeWebcam();
+            checkFormValidity();
+        }
+
+        function checkFormValidity() {
+            const valid = document.getElementById('user-name').value.trim() &&
+                         document.getElementById('user-age').value &&
+                         userData.photo &&
+                         document.getElementById('api-key').value.trim();
+            document.getElementById('start-btn').disabled = !valid;
+        }
+
+        // Tabs
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             event.target.classList.add('active');
             document.getElementById(`${tab === 'swipe' ? 'swipe' : tab}-content`).classList.add('active');
-            
-            if (tab === 'matches') {
-                renderMatches();
-            } else if (tab === 'chats') {
-                renderChats();
-            }
+            if (tab === 'matches') renderMatches();
+            if (tab === 'chats') renderChats();
         }
 
         // Profile Cards
         function loadNextProfile() {
             const container = document.getElementById('card-container');
             container.innerHTML = '';
-            
+
+            if (availableProfiles.length === 0) refillProfiles();
             if (availableProfiles.length === 0) {
-                container.innerHTML = `
-                    <div class="no-profiles">
-                        <span>🌟</span>
-                        <h3>No hi ha més perfils</h3>
-                        <p>Has vist tots els perfils disponibles. Torna més tard!</p>
-                    </div>
-                `;
+                container.innerHTML = '<div class="no-profiles"><span>🔥</span><h3>Ja has vist tots!</h3></div>';
                 return;
             }
-            
+
             currentProfile = availableProfiles[0];
             currentPhotoIndex = 0;
-            
             const card = createProfileCard(currentProfile);
             container.appendChild(card);
-            
             setupCardInteractions(card);
         }
 
         function createProfileCard(profile) {
             const card = document.createElement('div');
             card.className = 'profile-card';
+            const photos = profile.photos || [];
             card.innerHTML = `
                 <div class="photo-container">
-                    <img src="${profile.photos[0]}" alt="${profile.name}" id="profile-photo">
+                    <img src="${photos[0] || ''}" alt="${profile.name}" id="profile-photo">
                     <div class="photo-indicators">
-                        ${profile.photos.map((_, i) => `<div class="photo-indicator ${i === 0 ? 'active' : ''}"></div>`).join('')}
+                        ${photos.map((_, i) => `<div class="photo-indicator ${i === 0 ? 'active' : ''}"></div>`).join('')}
                     </div>
                     <div class="photo-nav left" onclick="prevPhoto(event)"></div>
                     <div class="photo-nav right" onclick="nextPhoto(event)"></div>
@@ -1227,37 +2377,36 @@
             return card;
         }
 
-        function prevPhoto(event) {
-            event.stopPropagation();
+        function prevPhoto(e) {
+            e.stopPropagation();
             if (currentPhotoIndex > 0) {
                 currentPhotoIndex--;
                 updatePhoto();
             }
         }
 
-        function nextPhoto(event) {
-            event.stopPropagation();
-            if (currentPhotoIndex < currentProfile.photos.length - 1) {
+        function nextPhoto(e) {
+            e.stopPropagation();
+            const photos = currentProfile.photos || [];
+            if (currentPhotoIndex < photos.length - 1) {
                 currentPhotoIndex++;
                 updatePhoto();
             }
         }
 
         function updatePhoto() {
-            document.getElementById('profile-photo').src = currentProfile.photos[currentPhotoIndex];
+            const photos = currentProfile.photos || [];
+            document.getElementById('profile-photo').src = photos[currentPhotoIndex] || '';
             document.querySelectorAll('.photo-indicator').forEach((ind, i) => {
                 ind.classList.toggle('active', i === currentPhotoIndex);
             });
         }
 
-        // Card Interactions (Touch & Mouse)
+        // Card Interactions
         function setupCardInteractions(card) {
-            // Touch Events
             card.addEventListener('touchstart', handleDragStart, { passive: true });
             card.addEventListener('touchmove', handleDragMove, { passive: false });
             card.addEventListener('touchend', handleDragEnd);
-            
-            // Mouse Events
             card.addEventListener('mousedown', handleDragStart);
             document.addEventListener('mousemove', handleDragMove);
             document.addEventListener('mouseup', handleDragEnd);
@@ -1265,112 +2414,65 @@
 
         function handleDragStart(e) {
             if (e.target.classList.contains('photo-nav')) return;
-            
             isDragging = true;
             const card = document.querySelector('.profile-card');
-            card.classList.add('dragging');
-            
-            if (e.type === 'touchstart') {
-                startX = e.touches[0].clientX;
-                startY = e.touches[0].clientY;
-            } else {
-                startX = e.clientX;
-                startY = e.clientY;
-            }
+            if (card) card.classList.add('dragging');
+            startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
         }
 
         function handleDragMove(e) {
             if (!isDragging) return;
-            
             const card = document.querySelector('.profile-card');
             if (!card) return;
-            
-            let clientX, clientY;
-            if (e.type === 'touchmove') {
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
-                e.preventDefault();
-            } else {
-                clientX = e.clientX;
-                clientY = e.clientY;
-            }
-            
+            const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+            if (e.type === 'touchmove') e.preventDefault();
             currentX = clientX - startX;
-            const rotation = currentX * 0.1;
-            
-            card.style.transform = `translateX(${currentX}px) rotate(${rotation}deg)`;
-            
-            // Show indicators
-            const likeIndicator = card.querySelector('.swipe-indicator.like');
-            const nopeIndicator = card.querySelector('.swipe-indicator.nope');
-            
-            if (currentX > 50) {
-                likeIndicator.style.opacity = Math.min((currentX - 50) / 100, 1);
-                nopeIndicator.style.opacity = 0;
-            } else if (currentX < -50) {
-                nopeIndicator.style.opacity = Math.min((-currentX - 50) / 100, 1);
-                likeIndicator.style.opacity = 0;
-            } else {
-                likeIndicator.style.opacity = 0;
-                nopeIndicator.style.opacity = 0;
-            }
+            card.style.transform = `translateX(${currentX}px) rotate(${currentX * 0.1}deg)`;
+            const like = card.querySelector('.swipe-indicator.like');
+            const nope = card.querySelector('.swipe-indicator.nope');
+            like.style.opacity = currentX > 50 ? Math.min((currentX - 50) / 100, 1) : 0;
+            nope.style.opacity = currentX < -50 ? Math.min((-currentX - 50) / 100, 1) : 0;
         }
 
         function handleDragEnd() {
             if (!isDragging) return;
             isDragging = false;
-            
             const card = document.querySelector('.profile-card');
             if (!card) return;
-            
             card.classList.remove('dragging');
-            
-            if (currentX > 100) {
-                swipeOut('right');
-            } else if (currentX < -100) {
-                swipeOut('left');
-            } else {
+            if (currentX > 100) swipeOut('right');
+            else if (currentX < -100) swipeOut('left');
+            else {
                 card.style.transform = '';
                 card.querySelector('.swipe-indicator.like').style.opacity = 0;
                 card.querySelector('.swipe-indicator.nope').style.opacity = 0;
             }
-            
             currentX = 0;
         }
 
-        function swipeAction(direction) {
-            const card = document.querySelector('.profile-card');
-            if (!card || !currentProfile) return;
-            
-            swipeOut(direction);
+        function swipeAction(dir) {
+            if (!currentProfile) return;
+            swipeOut(dir);
         }
 
-        function swipeOut(direction) {
+        function swipeOut(dir) {
             const card = document.querySelector('.profile-card');
             if (!card) return;
-            
-            const translateX = direction === 'right' ? 500 : -500;
-            const rotation = direction === 'right' ? 30 : -30;
-            
             card.style.transition = 'transform 0.3s ease';
-            card.style.transform = `translateX(${translateX}px) rotate(${rotation}deg)`;
-            
+            card.style.transform = `translateX(${dir === 'right' ? 500 : -500}px) rotate(${dir === 'right' ? 30 : -30}deg)`;
             setTimeout(() => {
-                if (direction === 'right') {
-                    handleMatch();
-                }
+                if (dir === 'right') handleMatch();
                 availableProfiles.shift();
                 loadNextProfile();
             }, 300);
         }
 
         function superLike() {
+            if (!currentProfile) return;
             const card = document.querySelector('.profile-card');
-            if (!card || !currentProfile) return;
-            
+            if (!card) return;
             card.style.transition = 'transform 0.3s ease';
             card.style.transform = 'translateY(-500px) scale(1.1)';
-            
             setTimeout(() => {
                 handleMatch();
                 availableProfiles.shift();
@@ -1379,22 +2481,24 @@
         }
 
         function handleMatch() {
-            // Everyone matches! It's a joke app after all
-            matches.push({...currentProfile});
-            chats[currentProfile.id] = [];
-            
-            // Show match popup
+            if (!matches.find(m => m.id === currentProfile.id)) {
+                matches.push({...currentProfile});
+                chats[currentProfile.id] = [];
+                loveMeters[currentProfile.id] = 0;
+                kissMeters[currentProfile.id] = 0;
+                dateAchieved[currentProfile.id] = false;
+                kissAchieved[currentProfile.id] = false;
+                saveData();
+            }
             document.getElementById('match-name').textContent = currentProfile.name;
             document.getElementById('match-user-photo').src = userData.photo;
-            document.getElementById('match-partner-photo').src = currentProfile.photos[0];
+            document.getElementById('match-partner-photo').src = (currentProfile.photos || [])[0] || '';
             document.getElementById('match-popup').classList.add('active');
-            
             currentMatchForChat = currentProfile;
         }
 
         function closeMatchPopup() {
             document.getElementById('match-popup').classList.remove('active');
-            currentMatchForChat = null;
         }
 
         function sendMessageFromMatch() {
@@ -1406,54 +2510,52 @@
         function renderMatches() {
             const grid = document.getElementById('matches-grid');
             const noMatches = document.getElementById('no-matches');
-            
             if (matches.length === 0) {
                 grid.style.display = 'none';
                 noMatches.style.display = 'block';
                 return;
             }
-            
             grid.style.display = 'grid';
             noMatches.style.display = 'none';
-            
-            grid.innerHTML = matches.map(match => `
-                <div class="match-card" onclick="openChat(profiles.find(p => p.id === '${match.id}'))">
-                    <img src="${match.photos[0]}" alt="${match.name}">
+            grid.innerHTML = matches.map(m => {
+                const love = loveMeters[m.id] || 0;
+                const hasDate = dateAchieved[m.id];
+                const hasKiss = kissAchieved[m.id];
+                return `
+                <div class="match-card" onclick="showProfileModal(profiles.find(p => p.id === '${m.id}'))">
+                    <img src="${(m.photos || [])[0] || ''}" alt="${m.name}">
+                    <div class="love-badge">${hasKiss ? '💋' : hasDate ? '💑' : love + '%'}</div>
+                    ${hasDate && !hasKiss ? `<button class="date-btn" onclick="event.stopPropagation(); startDateWith('${m.id}')">💋 Cita</button>` : ''}
                     <div class="match-info">
-                        <h4>${match.name}, ${match.age}</h4>
-                        <p>Nou match!</p>
+                        <h4>${m.name}, ${m.age}</h4>
+                        <p>${hasKiss ? 'Completat!' : hasDate ? 'Tens una cita!' : love >= 50 ? 'Li agrades!' : 'Match'}</p>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
         }
 
         // Chats
         function renderChats() {
             const list = document.getElementById('chat-list');
             const noChats = document.getElementById('no-chats');
-            
             const chatProfiles = matches.filter(m => chats[m.id]);
-            
             if (chatProfiles.length === 0) {
                 list.style.display = 'none';
                 noChats.style.display = 'block';
                 return;
             }
-            
             list.style.display = 'flex';
             noChats.style.display = 'none';
-            
-            list.innerHTML = chatProfiles.map(profile => {
-                const messages = chats[profile.id];
-                const lastMessage = messages.length > 0 ? messages[messages.length - 1].text : 'Comença a parlar!';
+            list.innerHTML = chatProfiles.map(p => {
+                const msgs = chats[p.id] || [];
+                const last = msgs.length > 0 ? msgs[msgs.length - 1].text : 'Comença a parlar!';
                 return `
-                    <div class="chat-item" onclick="openChat(profiles.find(p => p.id === '${profile.id}'))">
-                        <img src="${profile.photos[0]}" alt="${profile.name}">
+                    <div class="chat-item" onclick="openChat(profiles.find(pr => pr.id === '${p.id}'))">
+                        <img src="${(p.photos || [])[0] || ''}" alt="${p.name}">
                         <div class="chat-info">
-                            <h4>${profile.name}</h4>
-                            <p>${lastMessage.substring(0, 30)}${lastMessage.length > 30 ? '...' : ''}</p>
+                            <h4>${p.name} (${loveMeters[p.id] || 0}% ❤️)</h4>
+                            <p>${last.substring(0, 30)}${last.length > 30 ? '...' : ''}</p>
                         </div>
-                        <span class="chat-time">Ara</span>
                     </div>
                 `;
             }).join('');
@@ -1461,83 +2563,757 @@
 
         function openChat(profile) {
             currentMatchForChat = profile;
-            
-            document.getElementById('chat-partner-photo').src = profile.photos[0];
+            document.getElementById('chat-partner-photo').src = (profile.photos || [])[0] || '';
             document.getElementById('chat-partner-name').textContent = profile.name;
-            
+            updateLoveMeterUI();
             renderMessages();
-            
-            document.getElementById('main-app').classList.remove('active');
-            document.getElementById('chat-screen').classList.add('active');
+            showScreen('chat-screen');
         }
 
         function closeChat() {
-            document.getElementById('chat-screen').classList.remove('active');
-            document.getElementById('main-app').classList.add('active');
+            showScreen('main-app');
             currentMatchForChat = null;
+        }
+
+        function updateLoveMeterUI() {
+            const love = loveMeters[currentMatchForChat.id] || 0;
+            document.getElementById('love-meter-fill').style.width = love + '%';
+            document.getElementById('love-percentage').textContent = love + '%';
+            let status = 'Interès inicial';
+            if (love >= 100) status = '💑 Tens una cita!';
+            else if (love >= 80) status = '😍 Molt interessat/da!';
+            else if (love >= 60) status = '💕 Li agrades molt!';
+            else if (love >= 40) status = '😊 Bona connexió';
+            else if (love >= 20) status = '🙂 Connectant...';
+            document.getElementById('chat-love-status').textContent = status;
+        }
+
+        function showPointsChange(points) {
+            // Create floating indicator
+            const indicator = document.createElement('div');
+            indicator.className = 'points-indicator ' + (points >= 0 ? 'positive' : 'negative');
+            indicator.textContent = (points >= 0 ? '+' : '') + points + ' ❤️';
+            document.querySelector('.love-meter-container').appendChild(indicator);
+
+            // Animate and remove
+            setTimeout(() => indicator.classList.add('show'), 10);
+            setTimeout(() => {
+                indicator.classList.remove('show');
+                setTimeout(() => indicator.remove(), 300);
+            }, 1500);
         }
 
         function renderMessages() {
             const container = document.getElementById('chat-messages');
-            const messages = chats[currentMatchForChat.id] || [];
-            
-            if (messages.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; color: #999; padding: 2rem;">
-                        <p>Encara no hi ha missatges</p>
-                        <p style="font-size: 0.85rem;">Envia el primer missatge!</p>
-                    </div>
-                `;
+            const msgs = chats[currentMatchForChat.id] || [];
+            if (msgs.length === 0) {
+                container.innerHTML = `<div style="text-align:center;color:#999;padding:2rem;"><p>Envia el primer missatge a ${currentMatchForChat.name}!</p></div>`;
                 return;
             }
-            
-            container.innerHTML = messages.map(msg => `
-                <div class="message ${msg.sent ? 'sent' : 'received'}">
-                    ${msg.text}
-                </div>
-            `).join('');
-            
+            container.innerHTML = msgs.map(m => `<div class="message ${m.sent ? 'sent' : 'received'}">${m.text}</div>`).join('');
             container.scrollTop = container.scrollHeight;
         }
 
-        function sendMessage() {
+        async function sendMessage() {
             const input = document.getElementById('chat-input');
             const text = input.value.trim();
-            
-            if (!text || !currentMatchForChat) return;
-            
-            chats[currentMatchForChat.id].push({
-                text: text,
-                sent: true,
-                timestamp: Date.now()
-            });
-            
+            if (!text || !currentMatchForChat || isWaitingForResponse) return;
+
+            chats[currentMatchForChat.id].push({ text, sent: true, timestamp: Date.now() });
             input.value = '';
             renderMessages();
+            saveData();
+
+            isWaitingForResponse = true;
+            document.getElementById('chat-input').disabled = true;
+            document.getElementById('send-btn').disabled = true;
+
+            const typing = document.createElement('div');
+            typing.className = 'message typing';
+            typing.textContent = `${currentMatchForChat.name} està escrivint...`;
+            document.getElementById('chat-messages').appendChild(typing);
+
+            try {
+                const response = await getAIResponse(currentMatchForChat, text, 'chat');
+                typing.remove();
+                chats[currentMatchForChat.id].push({ text: response.message, sent: false, timestamp: Date.now() });
+
+                const oldLove = loveMeters[currentMatchForChat.id] || 0;
+                const newLove = Math.max(0, Math.min(100, oldLove + response.loveChange));
+                loveMeters[currentMatchForChat.id] = newLove;
+
+                renderMessages();
+                updateLoveMeterUI();
+                saveData();
+
+                // Show points change indicator
+                showPointsChange(response.loveChange);
+
+                if (newLove >= 100 && !dateAchieved[currentMatchForChat.id]) {
+                    dateAchieved[currentMatchForChat.id] = true;
+                    saveData();
+                    showDateReadyPopup(currentMatchForChat.name);
+                }
+            } catch (err) {
+                console.error('Chat error:', err);
+                typing.remove();
+                chats[currentMatchForChat.id].push({ text: "Error de connexió...", sent: false, timestamp: Date.now() });
+                renderMessages();
+            }
+
+            isWaitingForResponse = false;
+            document.getElementById('chat-input').disabled = false;
+            document.getElementById('send-btn').disabled = false;
         }
 
-        // Profile View
-        function showProfileView() {
-            document.getElementById('profile-view-photo').src = userData.photo;
-            document.getElementById('profile-view-name').textContent = userData.name;
-            document.getElementById('profile-view-age').textContent = `${userData.age} anys`;
-            
-            document.getElementById('main-app').classList.remove('active');
-            document.getElementById('profile-view').classList.add('active');
+        async function getAIResponse(profile, userMessage, mode = 'chat') {
+            const history = (mode === 'chat' ? chats[profile.id] : dateMessages).map(m => ({
+                role: m.sent ? 'user' : 'assistant',
+                content: m.text
+            }));
+
+            const moodInstruction = mode === 'date' ? `
+TAMBÉ has de retornar el "mood" actual: angry, sad, neutral, happy, love, o kiss.
+El mood ha de reflectir com et sents amb el que diu ${userData.name}.
+Si ${userData.name} et demana un petó de manera romàntica i ja hi ha molta connexió, pots respondre amb mood "kiss" i acceptar!` : '';
+
+            const systemPrompt = `${profile.personality || ''}
+
+CONTEXT:
+- Parles amb ${userData.name}, ${userData.age} anys.
+- La seva descripció: "${userData.bio}"
+- Adreça't per nom de vegades.
+
+${mode === 'date' ? 'ESTEU EN UNA CITA! Sigues més romàntic/a i personal. Mostra interès!' : ''}
+
+INSTRUCCIONS:
+- Respon NOMÉS en català
+- Respostes curtes (1-3 frases)
+- Sigues coherent amb la teva personalitat
+- Sigues amable i receptiu/va en general, però reacciona negativament si et falten al respecte
+- T'agrada ${userData.name} i vols conèixer-lo/la millor
+${moodInstruction}
+
+FORMAT DE RESPOSTA - HAS DE RETORNAR NOMÉS JSON VÀLID:
+{"message": "la teva resposta aquí", "${mode === 'date' ? 'kissChange' : 'loveChange'}": 8${mode === 'date' ? ', "mood": "happy"' : ''}}
+
+IMPORTANT: ${mode === 'date' ? 'kissChange' : 'loveChange'} HA DE SER UN NÚMERO ENTER, NO TEXT!
+
+PUNTUACIÓ (${mode === 'date' ? 'kissChange' : 'loveChange'}) - SEMPRE posa un número:
+- Si ${userData.name} diu algo bonic, divertit o interessant: entre +8 i +15
+- Si és una conversa normal i agradable: entre +4 i +8
+- Si és neutral però correcte: entre +2 i +4
+- Si és una mica avorrit o fred: entre 0 i +2
+- Si és desagradable o fa vergonya: entre -5 i -10
+
+PER DEFECTE, si la conversa va bé, posa entre +5 i +10. Sigues generós/a!`;
+
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userData.apiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o-mini',
+                    messages: [
+                        { role: 'system', content: systemPrompt },
+                        ...history,
+                        { role: 'user', content: userMessage }
+                    ],
+                    max_tokens: 200,
+                    temperature: 0.8,
+                    response_format: { type: "json_object" }
+                })
+            });
+
+            if (!response.ok) throw new Error('API error');
+            const data = await response.json();
+            let aiText = data.choices[0].message.content.trim();
+
+            // Clean up markdown code blocks if present
+            aiText = aiText.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+
+            try {
+                const parsed = JSON.parse(aiText);
+
+                // Get the score value with proper null checking
+                let scoreChange = 0;
+                if (mode === 'date') {
+                    scoreChange = typeof parsed.kissChange === 'number' ? parsed.kissChange :
+                                  typeof parsed.loveChange === 'number' ? parsed.loveChange : 5;
+                } else {
+                    scoreChange = typeof parsed.loveChange === 'number' ? parsed.loveChange :
+                                  typeof parsed.kissChange === 'number' ? parsed.kissChange : 5;
+                }
+
+                // Ensure there's always SOME change (minimum +3 for normal responses)
+                if (scoreChange === 0 && parsed.message && parsed.message.length > 10) {
+                    scoreChange = 3;
+                }
+
+                console.log('AI Response:', { message: parsed.message, scoreChange, mood: parsed.mood });
+
+                return {
+                    message: parsed.message || "...",
+                    loveChange: mode === 'chat' ? scoreChange : 0,
+                    kissChange: mode === 'date' ? scoreChange : 0,
+                    mood: parsed.mood || 'neutral'
+                };
+            } catch (e) {
+                console.error('JSON Parse error:', e, 'Raw:', aiText);
+                // If parsing fails, still give some points for engaging
+                return { message: aiText || "Hmm...", loveChange: 3, kissChange: 3, mood: 'neutral' };
+            }
         }
 
-        function closeProfileView() {
-            document.getElementById('profile-view').classList.remove('active');
-            document.getElementById('main-app').classList.add('active');
+        function showDateReadyPopup(name) {
+            document.getElementById('date-message').textContent = `${name} vol quedar amb tu!`;
+            document.getElementById('date-popup').classList.add('active');
         }
 
-        // Handle Enter key in chat
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('chat-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    sendMessage();
+        function closeDatePopup() {
+            document.getElementById('date-popup').classList.remove('active');
+        }
+
+        function startDate() {
+            closeDatePopup();
+            startDateWith(currentMatchForChat.id);
+        }
+
+        // Profile Modal
+        function showProfileModal(profile) {
+            if (!profile) return;
+            modalProfile = profile;
+            modalPhotoIndex = 0;
+            const photos = profile.photos || [];
+            document.getElementById('modal-photo').src = photos[0] || '';
+            document.getElementById('modal-name').textContent = profile.name;
+            document.getElementById('modal-age').textContent = profile.age;
+            document.getElementById('modal-bio').textContent = profile.bio;
+            const love = loveMeters[profile.id] || 0;
+            document.getElementById('modal-love').textContent = love + '%';
+            document.getElementById('modal-love-fill').style.width = love + '%';
+            document.getElementById('modal-date-btn').disabled = !dateAchieved[profile.id];
+
+            const nav = document.getElementById('modal-photo-nav');
+            nav.innerHTML = photos.map((_, i) => `<div class="photo-dot ${i === 0 ? 'active' : ''}" onclick="changeModalPhoto(${i})"></div>`).join('');
+
+            document.getElementById('profile-modal').classList.add('active');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profile-modal').classList.remove('active');
+        }
+
+        function changeModalPhoto(idx) {
+            modalPhotoIndex = idx;
+            const photos = modalProfile.photos || [];
+            document.getElementById('modal-photo').src = photos[idx] || '';
+            document.querySelectorAll('.photo-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+        }
+
+        function openChatFromModal() {
+            closeProfileModal();
+            openChat(modalProfile);
+        }
+
+        function startDateFromModal() {
+            closeProfileModal();
+            startDateWith(modalProfile.id);
+        }
+
+        // Date Mode
+        let dateMessages = [];
+
+        function startDateWith(profileId) {
+            const profile = profiles.find(p => p.id === profileId);
+            if (!profile) return;
+
+            currentDatePartner = profile;
+            dateMessages = [];
+            kissMeters[profileId] = kissMeters[profileId] || 0;
+
+            document.getElementById('date-partner-name').textContent = profile.name;
+
+            // Reset and show character image
+            const charImg = document.getElementById('date-character-img');
+            charImg.style.display = 'block';
+
+            updateKissMeterUI();
+            updateDateCharacter('happy');
+
+            const bg = backgrounds.length > 0 ? backgrounds[Math.floor(Math.random() * backgrounds.length)] : '';
+            document.getElementById('date-background').style.backgroundImage = bg ? `url(${bg})` : 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)';
+
+            renderDateMessages();
+            showScreen('date-screen');
+
+            // NPC takes initiative - sends first message
+            setTimeout(() => initiateDate(), 500);
+        }
+
+        async function initiateDate() {
+            if (!currentDatePartner) return;
+
+            // Show typing indicator
+            const typing = document.createElement('div');
+            typing.className = 'message typing';
+            typing.textContent = `${currentDatePartner.name} està parlant...`;
+            document.getElementById('date-messages').appendChild(typing);
+
+            try {
+                const response = await getNPCInitiative(currentDatePartner);
+                typing.remove();
+
+                dateMessages.push({ text: response.message, sent: false });
+                updateDateCharacter(response.mood);
+                renderDateMessages();
+
+                if (ttsEnabled) {
+                    speak(response.message);
+                }
+            } catch (err) {
+                typing.remove();
+                dateMessages.push({ text: `Ei ${userData.name}, per fi estem sols! Què tal?`, sent: false });
+                renderDateMessages();
+            }
+        }
+
+        async function getNPCInitiative(profile) {
+            const kissLevel = kissMeters[profile.id] || 0;
+
+            const systemPrompt = `${profile.personality || ''}
+
+CONTEXT:
+- Estàs en una CITA amb ${userData.name}, ${userData.age} anys.
+- La seva descripció: "${userData.bio}"
+- Nivell de connexió actual: ${kissLevel}%
+- TU TENS LA INICIATIVA! Has de fer preguntes o comentaris.
+
+INSTRUCCIONS:
+- Respon NOMÉS en català
+- TU comences la conversa o continues prenent la iniciativa
+- Fes preguntes personals, atrevides o romàntiques segons el nivell de connexió
+- Si el nivell és baix (0-30%): Preguntes per conèixer-se, flirteig suau
+- Si el nivell és mig (30-60%): Preguntes més personals, compliments atrevits
+- Si el nivell és alt (60-90%): Preguntes íntimes, insinuacions romàntiques
+- Si el nivell és molt alt (90%+): Moments romàntics, preparar el petó
+- Sigues directe/a i mostra interès genuí en ${userData.name}
+- Adreça't sempre per nom
+
+FORMAT JSON:
+{"message": "la teva pregunta o comentari", "mood": "happy"}
+
+Moods: neutral, happy, love (segons com et sents)`;
+
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${userData.apiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o-mini',
+                    messages: [{ role: 'system', content: systemPrompt }],
+                    max_tokens: 150,
+                    temperature: 0.9,
+                    response_format: { type: "json_object" }
+                })
+            });
+
+            if (!response.ok) throw new Error('API error');
+            const data = await response.json();
+            let aiText = data.choices[0].message.content.trim();
+            aiText = aiText.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+
+            try {
+                const parsed = JSON.parse(aiText);
+                return {
+                    message: parsed.message || "Ei, com estàs?",
+                    mood: parsed.mood || 'happy'
+                };
+            } catch {
+                return { message: aiText, mood: 'happy' };
+            }
+        }
+
+        function closeDate() {
+            showScreen('main-app');
+            currentDatePartner = null;
+        }
+
+        function updateKissMeterUI() {
+            const kiss = kissMeters[currentDatePartner.id] || 0;
+            document.getElementById('kiss-meter-fill').style.width = kiss + '%';
+            document.getElementById('kiss-percentage').textContent = kiss + '%';
+            let status = 'Primera cita';
+            if (kiss >= 90) status = '💋 A punt del petó!';
+            else if (kiss >= 70) status = '😍 Molt romàntic!';
+            else if (kiss >= 50) status = '💕 Bona connexió';
+            else if (kiss >= 30) status = '😊 Còmode';
+            document.getElementById('date-status').textContent = status;
+        }
+
+        function showKissPointsChange(points) {
+            const indicator = document.createElement('div');
+            indicator.className = 'points-indicator ' + (points >= 0 ? 'positive' : 'negative');
+            indicator.textContent = (points >= 0 ? '+' : '') + points + ' 💋';
+            document.querySelector('.kiss-meter-container').appendChild(indicator);
+
+            setTimeout(() => indicator.classList.add('show'), 10);
+            setTimeout(() => {
+                indicator.classList.remove('show');
+                setTimeout(() => indicator.remove(), 300);
+            }, 1500);
+        }
+
+        function updateDateCharacter(mood) {
+            const moods = currentDatePartner.moods || {};
+            const photos = currentDatePartner.photos || [];
+            const img = document.getElementById('date-character-img');
+
+            // Priority: requested mood -> neutral -> first profile photo
+            const candidates = [
+                moods[mood],
+                moods.neutral,
+                photos[0]
+            ].filter(src => src && src.length > 0);
+
+            if (candidates.length === 0) {
+                img.src = '';
+                return;
+            }
+
+            // Try to load the first valid image
+            let currentIndex = 0;
+
+            function tryLoadImage() {
+                if (currentIndex >= candidates.length) {
+                    img.src = '';
+                    return;
+                }
+
+                const testImg = new Image();
+                testImg.onload = function() {
+                    img.src = candidates[currentIndex];
+                };
+                testImg.onerror = function() {
+                    currentIndex++;
+                    tryLoadImage();
+                };
+                testImg.src = candidates[currentIndex];
+            }
+
+            // If it's a data URL (base64), use directly - these always work
+            if (candidates[0].startsWith('data:')) {
+                img.src = candidates[0];
+            } else {
+                tryLoadImage();
+            }
+        }
+
+        function handleDateImageError() {
+            // Fallback when image fails to load - try to use first profile photo
+            if (!currentDatePartner) return;
+            const photos = currentDatePartner.photos || [];
+            const img = document.getElementById('date-character-img');
+
+            // Try profile photos as fallback
+            for (const photo of photos) {
+                if (photo && photo.startsWith('data:')) {
+                    img.src = photo;
+                    return;
+                }
+            }
+
+            // If all else fails, hide the image
+            img.style.display = 'none';
+        }
+
+        function renderDateMessages() {
+            const container = document.getElementById('date-messages');
+            if (dateMessages.length === 0) {
+                container.innerHTML = `<div style="text-align:center;color:rgba(255,255,255,0.5);padding:1rem;font-size:0.9rem;">La cita comença... Digues alguna cosa!</div>`;
+                return;
+            }
+            container.innerHTML = dateMessages.map(m => `<div class="message ${m.sent ? 'sent' : 'received'}">${m.text}</div>`).join('');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function sendDateMessage() {
+            const input = document.getElementById('date-input');
+            const text = input.value.trim();
+            if (!text || !currentDatePartner || isWaitingForResponse) return;
+
+            dateMessages.push({ text, sent: true });
+            input.value = '';
+            renderDateMessages();
+
+            isWaitingForResponse = true;
+            document.getElementById('date-input').disabled = true;
+            document.getElementById('date-send-btn').disabled = true;
+
+            try {
+                const response = await getAIResponse(currentDatePartner, text, 'date');
+                dateMessages.push({ text: response.message, sent: false });
+
+                const oldKiss = kissMeters[currentDatePartner.id] || 0;
+                const newKiss = Math.max(0, Math.min(100, oldKiss + response.kissChange));
+                kissMeters[currentDatePartner.id] = newKiss;
+
+                updateDateCharacter(response.mood);
+                renderDateMessages();
+                updateKissMeterUI();
+                saveData();
+
+                // Show points change
+                showKissPointsChange(response.kissChange);
+
+                // Text to Speech
+                if (ttsEnabled) {
+                    speak(response.message);
+                }
+
+                // Check for kiss
+                if (response.mood === 'kiss' || newKiss >= 100) {
+                    if (!kissAchieved[currentDatePartner.id]) {
+                        kissAchieved[currentDatePartner.id] = true;
+                        saveData();
+                        setTimeout(() => {
+                            updateDateCharacter('kiss');
+                            showKissPopup(currentDatePartner.name);
+                        }, 1500);
+                    }
+                }
+            } catch (err) {
+                console.error('Date error:', err);
+                dateMessages.push({ text: "...", sent: false });
+                renderDateMessages();
+            }
+
+            isWaitingForResponse = false;
+            document.getElementById('date-input').disabled = false;
+            document.getElementById('date-send-btn').disabled = false;
+        }
+
+        // Text to Speech
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ca-ES';
+                utterance.rate = 1;
+                utterance.pitch = 1;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function toggleTTS() {
+            ttsEnabled = !ttsEnabled;
+            document.getElementById('tts-toggle').classList.toggle('active', ttsEnabled);
+        }
+
+        function showKissPopup(name) {
+            document.getElementById('kiss-message').textContent = `Has aconseguit un petó amb ${name}! El joc s'ha completat amb aquest personatge. 💋`;
+            document.getElementById('kiss-popup').classList.add('active');
+        }
+
+        function closeKissPopup() {
+            document.getElementById('kiss-popup').classList.remove('active');
+            closeDate();
+            renderMatches();
+        }
+
+        // Editor Functions
+        function renderProfilesList() {
+            const list = document.getElementById('profiles-list');
+            list.innerHTML = profiles.map(p => `
+                <div class="profile-list-item">
+                    <img src="${(p.photos || [])[0] || ''}" alt="${p.name}" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/></svg>'">
+                    <div class="info">
+                        <h4>${p.name}</h4>
+                        <p>${p.age} anys</p>
+                    </div>
+                    <div class="actions">
+                        <button class="edit-btn" onclick="editProfile('${p.id}')">✏️</button>
+                        <button class="delete-btn" onclick="deleteProfile('${p.id}')">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderBackgroundsGrid() {
+            const grid = document.getElementById('backgrounds-grid');
+            grid.innerHTML = backgrounds.map((bg, i) => `
+                <div class="photo-item">
+                    <img src="${bg}" alt="Background">
+                    <button class="remove-photo" onclick="removeBackground(${i})">✕</button>
+                </div>
+            `).join('') + '<div class="add-photo-btn" onclick="document.getElementById(\'background-input\').click()">+</div>';
+        }
+
+        function handleBackgroundUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    backgrounds.push(e.target.result);
+                    saveData();
+                    renderBackgroundsGrid();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeBackground(idx) {
+            backgrounds.splice(idx, 1);
+            saveData();
+            renderBackgroundsGrid();
+        }
+
+        function showProfileForm(profile = null) {
+            editingProfileId = profile ? profile.id : null;
+            editingPhotos = profile ? [...(profile.photos || [])] : [];
+            editingMoods = profile ? {...(profile.moods || {})} : {};
+
+            document.getElementById('form-title').textContent = profile ? 'Editar Perfil' : 'Nou Perfil';
+            document.getElementById('edit-name').value = profile ? profile.name : '';
+            document.getElementById('edit-age').value = profile ? profile.age : '';
+            document.getElementById('edit-bio').value = profile ? profile.bio : '';
+            document.getElementById('edit-personality').value = profile ? (profile.personality || '') : '';
+
+            renderEditPhotosGrid();
+            renderMoodPreviews();
+
+            document.getElementById('profiles-list-section').style.display = 'none';
+            document.getElementById('editor-form').classList.add('active');
+        }
+
+        function renderEditPhotosGrid() {
+            const grid = document.getElementById('edit-photos-grid');
+            grid.innerHTML = editingPhotos.map((p, i) => `
+                <div class="photo-item">
+                    <img src="${p}" alt="Photo">
+                    <button class="remove-photo" onclick="removeEditPhoto(${i})">✕</button>
+                </div>
+            `).join('') + '<div class="add-photo-btn" onclick="addProfilePhoto()">+</div>';
+        }
+
+        function removeEditPhoto(idx) {
+            editingPhotos.splice(idx, 1);
+            renderEditPhotosGrid();
+        }
+
+        function addProfilePhoto() {
+            document.getElementById('profile-photo-input').click();
+        }
+
+        function handleProfilePhoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    editingPhotos.push(e.target.result);
+                    renderEditPhotosGrid();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function renderMoodPreviews() {
+            ['angry', 'sad', 'neutral', 'happy', 'love', 'kiss'].forEach(mood => {
+                const preview = document.getElementById(`mood-${mood}-preview`);
+                const placeholder = document.getElementById(`mood-${mood}-placeholder`);
+                if (editingMoods[mood]) {
+                    preview.src = editingMoods[mood];
+                    preview.style.display = 'block';
+                    placeholder.style.display = 'none';
+                } else {
+                    preview.style.display = 'none';
+                    placeholder.style.display = 'block';
                 }
             });
+        }
+
+        function selectMoodPhoto(mood) {
+            currentMoodType = mood;
+            document.getElementById('mood-photo-input').click();
+        }
+
+        function handleMoodPhoto(event) {
+            const file = event.target.files[0];
+            if (file && currentMoodType) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    editingMoods[currentMoodType] = e.target.result;
+                    renderMoodPreviews();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function cancelProfileEdit() {
+            document.getElementById('editor-form').classList.remove('active');
+            document.getElementById('profiles-list-section').style.display = 'block';
+            editingProfileId = null;
+            editingPhotos = [];
+            editingMoods = {};
+        }
+
+        function saveProfile() {
+            const name = document.getElementById('edit-name').value.trim();
+            const age = document.getElementById('edit-age').value.trim();
+            const bio = document.getElementById('edit-bio').value.trim();
+            const personality = document.getElementById('edit-personality').value.trim();
+
+            if (!name) {
+                alert('El nom és obligatori');
+                return;
+            }
+
+            const profile = {
+                id: editingProfileId || name.toLowerCase().replace(/\s+/g, '_') + '_' + Date.now(),
+                name, age, bio, personality,
+                photos: editingPhotos,
+                moods: editingMoods
+            };
+
+            if (editingProfileId) {
+                const idx = profiles.findIndex(p => p.id === editingProfileId);
+                if (idx >= 0) profiles[idx] = profile;
+            } else {
+                profiles.push(profile);
+            }
+
+            saveData();
+            cancelProfileEdit();
+            renderProfilesList();
+        }
+
+        function editProfile(id) {
+            const profile = profiles.find(p => p.id === id);
+            if (profile) showProfileForm(profile);
+        }
+
+        function deleteProfile(id) {
+            if (confirm('Segur que vols eliminar aquest perfil?')) {
+                profiles = profiles.filter(p => p.id !== id);
+                saveData();
+                renderProfilesList();
+            }
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            initApp();
+            document.getElementById('chat-input').addEventListener('keypress', e => {
+                if (e.key === 'Enter') sendMessage();
+            });
+            document.getElementById('date-input').addEventListener('keypress', e => {
+                if (e.key === 'Enter') sendDateMessage();
+            });
+            document.getElementById('tts-toggle').classList.add('active');
         });
     </script>
 </body>
