@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Astrologia Dating Sim</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #FF6B6B;
+            --primary-dark: #ee5a5a;
+            --secondary: #4ECDC4;
+            --accent: #FFE66D;
+            --dark: #2C2C54;
+            --light: #F7F7F7;
+            --gradient: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
+            --card-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--dark);
+            min-height: 100vh;
+            overflow: hidden;
+            color: var(--dark);
+        }
+
+        .app-container {
+            max-width: 430px;
+            margin: 0 auto;
+            height: 100vh;
+            background: var(--light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Screens */
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            background: var(--light);
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Splash Screen */
+        #splash-screen {
+            background: var(--gradient);
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .splash-logo {
+            text-align: center;
+            color: white;
+        }
+
+        .splash-logo h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .splash-logo p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .splash-logo .logo-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .splash-btn {
+            margin-top: 3rem;
+            padding: 1rem 3rem;
+            background: white;
+            color: var(--primary);
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .splash-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Profile Setup Screen */
+        #profile-setup {
+            padding: 2rem 1.5rem;
+        }
+
+        .setup-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .setup-header h2 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .setup-header p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .photo-upload {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 2rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            overflow: hidden;
+            border: 4px solid var(--primary);
+            position: relative;
+        }
+
+        .photo-upload img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-upload .placeholder {
+            text-align: center;
+            color: #999;
+        }
+
+        .photo-upload .placeholder span {
+            font-size: 3rem;
+        }
+
+        .photo-upload .placeholder p {
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .start-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .start-btn:not(:disabled):active {
+            transform: scale(0.98);
+        }
+
+        /* Main App Screen */
+        #main-app {
+            background: #f0f0f0;
+        }
+
+        /* Header */
+        .app-header {
+            background: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 10;
+        }
+
+        .app-header h1 {
+            font-size: 1.3rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background 0.2s;
+        }
+
+        .header-icon:active {
+            background: #e0e0e0;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            background: white;
+            padding: 0.5rem;
+            margin: 0.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #999;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--gradient);
+            color: white;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .tab-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            padding: 1rem;
+        }
+
+        .tab-content.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Swipe Area */
+        #swipe-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 0;
+        }
+
+        .card-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .profile-card {
+            position: absolute;
+            width: calc(100% - 1rem);
+            height: calc(100% - 6rem);
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            cursor: grab;
+            user-select: none;
+            transition: transform 0.1s ease-out;
+        }
+
+        .profile-card.dragging {
+            cursor: grabbing;
+            transition: none;
+        }
+
+        .profile-card .photo-container {
+            position: relative;
+            width: 100%;
+            height: 70%;
+            overflow: hidden;
+        }
+
+        .profile-card .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-indicators {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            gap: 4px;
+        }
+
+        .photo-indicator {
+            flex: 1;
+            height: 4px;
+            background: rgba(255,255,255,0.4);
+            border-radius: 2px;
+        }
+
+        .photo-indicator.active {
+            background: white;
+        }
+
+        .photo-nav {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 50%;
+            cursor: pointer;
+        }
+
+        .photo-nav.left { left: 0; }
+        .photo-nav.right { right: 0; }
+
+        .profile-info {
+            padding: 1rem 1.2rem;
+            height: 30%;
+            overflow-y: auto;
+        }
+
+        .profile-info h3 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .profile-info h3 span {
+            font-weight: 400;
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .profile-info p {
+            margin-top: 0.5rem;
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Swipe Indicators */
+        .swipe-indicator {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            opacity: 0;
+            transition: opacity 0.1s;
+            pointer-events: none;
+        }
+
+        .swipe-indicator.like {
+            right: 20px;
+            border: 4px solid #4CAF50;
+            color: #4CAF50;
+            transform: translateY(-50%) rotate(15deg);
+        }
+
+        .swipe-indicator.nope {
+            left: 20px;
+            border: 4px solid #f44336;
+            color: #f44336;
+            transform: translateY(-50%) rotate(-15deg);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            padding: 1rem;
+            background: transparent;
+        }
+
+        .action-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .action-btn:active {
+            transform: scale(0.9);
+        }
+
+        .action-btn.dislike {
+            background: white;
+            color: #f44336;
+        }
+
+        .action-btn.superlike {
+            background: white;
+            color: #2196F3;
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+        }
+
+        .action-btn.like {
+            background: white;
+            color: #4CAF50;
+        }
+
+        /* No More Profiles */
+        .no-profiles {
+            text-align: center;
+            color: #999;
+            padding: 2rem;
+        }
+
+        .no-profiles span {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .no-profiles h3 {
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        /* Matches Section */
+        #matches-content {
+            overflow-y: auto;
+        }
+
+        .matches-section h3 {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .matches-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .match-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .match-card:active {
+            transform: scale(0.95);
+        }
+
+        .match-card img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+        }
+
+        .match-card .match-info {
+            padding: 0.8rem;
+        }
+
+        .match-card .match-info h4 {
+            font-size: 1rem;
+        }
+
+        .match-card .match-info p {
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        .no-matches {
+            text-align: center;
+            color: #999;
+            padding: 3rem 1rem;
+        }
+
+        .no-matches span {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        /* Chat Section */
+        #chats-content {
+            overflow-y: auto;
+        }
+
+        .chat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .chat-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .chat-item:active {
+            background: #f5f5f5;
+        }
+
+        .chat-item img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .chat-item .chat-info {
+            flex: 1;
+        }
+
+        .chat-item .chat-info h4 {
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .chat-item .chat-info p {
+            font-size: 0.85rem;
+            color: #999;
+        }
+
+        .chat-item .chat-time {
+            font-size: 0.75rem;
+            color: #999;
+        }
+
+        .no-chats {
+            text-align: center;
+            color: #999;
+            padding: 3rem 1rem;
+        }
+
+        .no-chats span {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        /* Chat Screen */
+        #chat-screen {
+            background: #f5f5f5;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .chat-header .back-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: var(--light);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .chat-header img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .chat-header h3 {
+            flex: 1;
+            font-size: 1.1rem;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 0.8rem 1rem;
+            border-radius: 18px;
+            font-size: 0.95rem;
+        }
+
+        .message.received {
+            background: white;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message.sent {
+            background: var(--gradient);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+            background: white;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .chat-input-area input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .chat-input-area button {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            background: var(--gradient);
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        /* Match Popup */
+        .match-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .match-popup.active {
+            display: flex;
+        }
+
+        .match-popup-content {
+            text-align: center;
+            color: white;
+            padding: 2rem;
+        }
+
+        .match-popup h2 {
+            font-size: 2.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .match-popup p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+
+        .match-photos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .match-photos img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+        }
+
+        .match-photos .heart {
+            font-size: 2rem;
+            color: var(--primary);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .match-popup-btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .match-popup-btns button {
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .match-popup-btns button:active {
+            transform: scale(0.95);
+        }
+
+        .match-popup-btns .send-msg {
+            background: var(--gradient);
+            color: white;
+            border: none;
+        }
+
+        .match-popup-btns .keep-swiping {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        /* Profile View */
+        #profile-view {
+            background: var(--light);
+        }
+
+        .profile-view-header {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+        }
+
+        .profile-view-header .back-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: var(--light);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .profile-view-header h3 {
+            flex: 1;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .profile-view-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .profile-view-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+            margin: 2rem auto 1rem;
+            border: 4px solid var(--primary);
+        }
+
+        .profile-view-info {
+            text-align: center;
+            padding: 0 2rem;
+        }
+
+        .profile-view-info h2 {
+            font-size: 1.5rem;
+        }
+
+        .profile-view-info .age {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .profile-view-info .bio {
+            margin-top: 1rem;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Hidden file input */
+        #camera-input {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (min-height: 800px) {
+            .profile-card {
+                height: calc(100% - 7rem);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Splash Screen -->
+        <div id="splash-screen" class="screen active">
+            <div class="splash-logo">
+                <div class="logo-icon">🔮</div>
+                <h1>Astrologia</h1>
+                <p>Dating Sim</p>
+            </div>
+            <button class="splash-btn" onclick="showProfileSetup()">Comença</button>
+        </div>
+
+        <!-- Profile Setup Screen -->
+        <div id="profile-setup" class="screen">
+            <div class="setup-header">
+                <h2>Crea el teu perfil</h2>
+                <p>Afegeix una foto i les teves dades</p>
+            </div>
+            
+            <div class="photo-upload" onclick="document.getElementById('camera-input').click()">
+                <div class="placeholder" id="photo-placeholder">
+                    <span>📷</span>
+                    <p>Toca per afegir foto</p>
+                </div>
+                <img id="user-photo-preview" style="display: none;">
+            </div>
+            <input type="file" id="camera-input" accept="image/*" capture="user" onchange="handlePhotoUpload(event)">
+            
+            <div class="form-group">
+                <label for="user-name">Nom</label>
+                <input type="text" id="user-name" placeholder="Com et dius?" oninput="checkFormValidity()">
+            </div>
+            
+            <div class="form-group">
+                <label for="user-age">Edat</label>
+                <input type="number" id="user-age" placeholder="Quants anys tens?" min="18" max="99" oninput="checkFormValidity()">
+            </div>
+            
+            <button class="start-btn" id="start-btn" disabled onclick="startApp()">Començar a buscar 💖</button>
+        </div>
+
+        <!-- Main App Screen -->
+        <div id="main-app" class="screen">
+            <div class="app-header">
+                <h1>🔮 Astrologia</h1>
+                <div class="header-icons">
+                    <div class="header-icon" onclick="showProfileView()">👤</div>
+                </div>
+            </div>
+            
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="switchTab('swipe')">Descobrir</button>
+                <button class="tab-btn" onclick="switchTab('matches')">Matches</button>
+                <button class="tab-btn" onclick="switchTab('chats')">Xats</button>
+            </div>
+            
+            <div class="content-area">
+                <!-- Swipe Tab -->
+                <div id="swipe-content" class="tab-content active">
+                    <div id="swipe-area">
+                        <div class="card-container" id="card-container">
+                            <!-- Cards will be inserted here -->
+                        </div>
+                        <div class="action-buttons">
+                            <button class="action-btn dislike" onclick="swipeAction('left')">✕</button>
+                            <button class="action-btn superlike" onclick="superLike()">⭐</button>
+                            <button class="action-btn like" onclick="swipeAction('right')">♥</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Matches Tab -->
+                <div id="matches-content" class="tab-content">
+                    <div class="matches-section">
+                        <h3>Els teus matches</h3>
+                        <div class="matches-grid" id="matches-grid">
+                            <!-- Matches will be inserted here -->
+                        </div>
+                        <div class="no-matches" id="no-matches">
+                            <span>💔</span>
+                            <h3>Encara no tens matches</h3>
+                            <p>Continua buscant per trobar algú especial!</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chats Tab -->
+                <div id="chats-content" class="tab-content">
+                    <div class="chat-list" id="chat-list">
+                        <!-- Chats will be inserted here -->
+                    </div>
+                    <div class="no-chats" id="no-chats">
+                        <span>💬</span>
+                        <h3>Encara no tens xats</h3>
+                        <p>Fes match amb algú per començar a parlar!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Screen -->
+        <div id="chat-screen" class="screen">
+            <div class="chat-header">
+                <button class="back-btn" onclick="closeChat()">←</button>
+                <img id="chat-partner-photo" src="" alt="">
+                <h3 id="chat-partner-name"></h3>
+            </div>
+            <div class="chat-messages" id="chat-messages">
+                <!-- Messages will be inserted here -->
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Escriu un missatge...">
+                <button onclick="sendMessage()">➤</button>
+            </div>
+        </div>
+
+        <!-- Profile View -->
+        <div id="profile-view" class="screen">
+            <div class="profile-view-header">
+                <button class="back-btn" onclick="closeProfileView()">←</button>
+                <h3>El meu perfil</h3>
+                <div style="width: 40px;"></div>
+            </div>
+            <div class="profile-view-content">
+                <img class="profile-view-photo" id="profile-view-photo" src="" alt="">
+                <div class="profile-view-info">
+                    <h2 id="profile-view-name"></h2>
+                    <p class="age" id="profile-view-age"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Match Popup -->
+        <div class="match-popup" id="match-popup">
+            <div class="match-popup-content">
+                <h2>It's a Match! 💖</h2>
+                <p>Tu i <span id="match-name"></span> us agradeu mútuament</p>
+                <div class="match-photos">
+                    <img id="match-user-photo" src="" alt="Tu">
+                    <span class="heart">❤️</span>
+                    <img id="match-partner-photo" src="" alt="">
+                </div>
+                <div class="match-popup-btns">
+                    <button class="send-msg" onclick="sendMessageFromMatch()">Enviar missatge</button>
+                    <button class="keep-swiping" onclick="closeMatchPopup()">Seguir buscant</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Profile Data
+        const profiles = [
+            {
+                id: 'alby',
+                name: 'Alby',
+                age: 27,
+                bio: "Guitarrista amateur buscant algú per fer rutes pel bosc mentre parlem de música. Si t'agrada el rock progressiu, potser som ànimes bessones. Avís: faré referència a lletres de cançons constantment. 🎸🌲",
+                photos: ['resources/Alby_date_1.jpg', 'resources/Alby_date_2.jpg', 'resources/Alby_date_3.jpg']
+            },
+            {
+                id: 'lluc',
+                name: 'Lluc',
+                age: 24,
+                bio: "Tranqui, sense pressa per res. M'agrada el que m'agrada des de sempre i no penso canviar. Si vols fer un Minecraft o maratonar anime, ja tenim pla. La vida és massa curta per estressar-se. 🎮✨",
+                photos: ['resources/Lluc_date_1.jpg', 'resources/Lluc_date_2.jpg', 'resources/Lluc_date_3.jpg']
+            },
+            {
+                id: 'marti',
+                name: 'Martí',
+                age: 27,
+                bio: "Profe de primària, m'encanta el que faig i connectar amb la gent. Quan no estic treballant, segurament estic jugant a FIFA o simplement passant l'estona. Busco algú relaxat, sense drames. ⚽🍃",
+                photos: ['resources/Marti_date_1.jpg', 'resources/Marti_date_2.jpg', 'resources/Marti_date_3.jpg']
+            },
+            {
+                id: 'moma',
+                name: 'Moma',
+                age: '??',
+                bio: "Al gym de dilluns a divendres, cantant Katy Perry als auriculars. Tinc la meva rutina i m'encanta. Busco algú que sàpiga apreciar un bon pop i que no tingui por de ser ell mateix. Slay. 💅🏋️",
+                photos: ['resources/Moma_date_1.jpg', 'resources/Moma_date_2.jpg', 'resources/Moma_date_3.jpg']
+            }
+        ];
+
+        // App State
+        let userData = {
+            name: '',
+            age: '',
+            photo: ''
+        };
+        let availableProfiles = [];
+        let matches = [];
+        let chats = {};
+        let currentProfile = null;
+        let currentPhotoIndex = 0;
+        let currentMatchForChat = null;
+
+        // Touch/Drag Variables
+        let startX = 0;
+        let startY = 0;
+        let currentX = 0;
+        let isDragging = false;
+
+        // Initialize
+        function init() {
+            // Shuffle and set available profiles
+            availableProfiles = [...profiles].sort(() => Math.random() - 0.5);
+            
+            // Shuffle photos within each profile
+            availableProfiles.forEach(profile => {
+                profile.photos = profile.photos.sort(() => Math.random() - 0.5);
+            });
+        }
+
+        // Screen Navigation
+        function showProfileSetup() {
+            document.getElementById('splash-screen').classList.remove('active');
+            document.getElementById('profile-setup').classList.add('active');
+        }
+
+        function startApp() {
+            userData.name = document.getElementById('user-name').value;
+            userData.age = document.getElementById('user-age').value;
+            
+            document.getElementById('profile-setup').classList.remove('active');
+            document.getElementById('main-app').classList.add('active');
+            
+            init();
+            loadNextProfile();
+        }
+
+        // Photo Upload
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    userData.photo = e.target.result;
+                    document.getElementById('photo-placeholder').style.display = 'none';
+                    const preview = document.getElementById('user-photo-preview');
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    checkFormValidity();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function checkFormValidity() {
+            const name = document.getElementById('user-name').value.trim();
+            const age = document.getElementById('user-age').value;
+            const photo = userData.photo;
+            
+            document.getElementById('start-btn').disabled = !(name && age && photo);
+        }
+
+        // Tab Navigation
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`${tab === 'swipe' ? 'swipe' : tab}-content`).classList.add('active');
+            
+            if (tab === 'matches') {
+                renderMatches();
+            } else if (tab === 'chats') {
+                renderChats();
+            }
+        }
+
+        // Profile Cards
+        function loadNextProfile() {
+            const container = document.getElementById('card-container');
+            container.innerHTML = '';
+            
+            if (availableProfiles.length === 0) {
+                container.innerHTML = `
+                    <div class="no-profiles">
+                        <span>🌟</span>
+                        <h3>No hi ha més perfils</h3>
+                        <p>Has vist tots els perfils disponibles. Torna més tard!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            currentProfile = availableProfiles[0];
+            currentPhotoIndex = 0;
+            
+            const card = createProfileCard(currentProfile);
+            container.appendChild(card);
+            
+            setupCardInteractions(card);
+        }
+
+        function createProfileCard(profile) {
+            const card = document.createElement('div');
+            card.className = 'profile-card';
+            card.innerHTML = `
+                <div class="photo-container">
+                    <img src="${profile.photos[0]}" alt="${profile.name}" id="profile-photo">
+                    <div class="photo-indicators">
+                        ${profile.photos.map((_, i) => `<div class="photo-indicator ${i === 0 ? 'active' : ''}"></div>`).join('')}
+                    </div>
+                    <div class="photo-nav left" onclick="prevPhoto(event)"></div>
+                    <div class="photo-nav right" onclick="nextPhoto(event)"></div>
+                    <div class="swipe-indicator like">LIKE</div>
+                    <div class="swipe-indicator nope">NOPE</div>
+                </div>
+                <div class="profile-info">
+                    <h3>${profile.name} <span>${profile.age}</span></h3>
+                    <p>${profile.bio}</p>
+                </div>
+            `;
+            return card;
+        }
+
+        function prevPhoto(event) {
+            event.stopPropagation();
+            if (currentPhotoIndex > 0) {
+                currentPhotoIndex--;
+                updatePhoto();
+            }
+        }
+
+        function nextPhoto(event) {
+            event.stopPropagation();
+            if (currentPhotoIndex < currentProfile.photos.length - 1) {
+                currentPhotoIndex++;
+                updatePhoto();
+            }
+        }
+
+        function updatePhoto() {
+            document.getElementById('profile-photo').src = currentProfile.photos[currentPhotoIndex];
+            document.querySelectorAll('.photo-indicator').forEach((ind, i) => {
+                ind.classList.toggle('active', i === currentPhotoIndex);
+            });
+        }
+
+        // Card Interactions (Touch & Mouse)
+        function setupCardInteractions(card) {
+            // Touch Events
+            card.addEventListener('touchstart', handleDragStart, { passive: true });
+            card.addEventListener('touchmove', handleDragMove, { passive: false });
+            card.addEventListener('touchend', handleDragEnd);
+            
+            // Mouse Events
+            card.addEventListener('mousedown', handleDragStart);
+            document.addEventListener('mousemove', handleDragMove);
+            document.addEventListener('mouseup', handleDragEnd);
+        }
+
+        function handleDragStart(e) {
+            if (e.target.classList.contains('photo-nav')) return;
+            
+            isDragging = true;
+            const card = document.querySelector('.profile-card');
+            card.classList.add('dragging');
+            
+            if (e.type === 'touchstart') {
+                startX = e.touches[0].clientX;
+                startY = e.touches[0].clientY;
+            } else {
+                startX = e.clientX;
+                startY = e.clientY;
+            }
+        }
+
+        function handleDragMove(e) {
+            if (!isDragging) return;
+            
+            const card = document.querySelector('.profile-card');
+            if (!card) return;
+            
+            let clientX, clientY;
+            if (e.type === 'touchmove') {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+                e.preventDefault();
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            
+            currentX = clientX - startX;
+            const rotation = currentX * 0.1;
+            
+            card.style.transform = `translateX(${currentX}px) rotate(${rotation}deg)`;
+            
+            // Show indicators
+            const likeIndicator = card.querySelector('.swipe-indicator.like');
+            const nopeIndicator = card.querySelector('.swipe-indicator.nope');
+            
+            if (currentX > 50) {
+                likeIndicator.style.opacity = Math.min((currentX - 50) / 100, 1);
+                nopeIndicator.style.opacity = 0;
+            } else if (currentX < -50) {
+                nopeIndicator.style.opacity = Math.min((-currentX - 50) / 100, 1);
+                likeIndicator.style.opacity = 0;
+            } else {
+                likeIndicator.style.opacity = 0;
+                nopeIndicator.style.opacity = 0;
+            }
+        }
+
+        function handleDragEnd() {
+            if (!isDragging) return;
+            isDragging = false;
+            
+            const card = document.querySelector('.profile-card');
+            if (!card) return;
+            
+            card.classList.remove('dragging');
+            
+            if (currentX > 100) {
+                swipeOut('right');
+            } else if (currentX < -100) {
+                swipeOut('left');
+            } else {
+                card.style.transform = '';
+                card.querySelector('.swipe-indicator.like').style.opacity = 0;
+                card.querySelector('.swipe-indicator.nope').style.opacity = 0;
+            }
+            
+            currentX = 0;
+        }
+
+        function swipeAction(direction) {
+            const card = document.querySelector('.profile-card');
+            if (!card || !currentProfile) return;
+            
+            swipeOut(direction);
+        }
+
+        function swipeOut(direction) {
+            const card = document.querySelector('.profile-card');
+            if (!card) return;
+            
+            const translateX = direction === 'right' ? 500 : -500;
+            const rotation = direction === 'right' ? 30 : -30;
+            
+            card.style.transition = 'transform 0.3s ease';
+            card.style.transform = `translateX(${translateX}px) rotate(${rotation}deg)`;
+            
+            setTimeout(() => {
+                if (direction === 'right') {
+                    handleMatch();
+                }
+                availableProfiles.shift();
+                loadNextProfile();
+            }, 300);
+        }
+
+        function superLike() {
+            const card = document.querySelector('.profile-card');
+            if (!card || !currentProfile) return;
+            
+            card.style.transition = 'transform 0.3s ease';
+            card.style.transform = 'translateY(-500px) scale(1.1)';
+            
+            setTimeout(() => {
+                handleMatch();
+                availableProfiles.shift();
+                loadNextProfile();
+            }, 300);
+        }
+
+        function handleMatch() {
+            // Everyone matches! It's a joke app after all
+            matches.push({...currentProfile});
+            chats[currentProfile.id] = [];
+            
+            // Show match popup
+            document.getElementById('match-name').textContent = currentProfile.name;
+            document.getElementById('match-user-photo').src = userData.photo;
+            document.getElementById('match-partner-photo').src = currentProfile.photos[0];
+            document.getElementById('match-popup').classList.add('active');
+            
+            currentMatchForChat = currentProfile;
+        }
+
+        function closeMatchPopup() {
+            document.getElementById('match-popup').classList.remove('active');
+            currentMatchForChat = null;
+        }
+
+        function sendMessageFromMatch() {
+            closeMatchPopup();
+            openChat(currentMatchForChat);
+        }
+
+        // Matches
+        function renderMatches() {
+            const grid = document.getElementById('matches-grid');
+            const noMatches = document.getElementById('no-matches');
+            
+            if (matches.length === 0) {
+                grid.style.display = 'none';
+                noMatches.style.display = 'block';
+                return;
+            }
+            
+            grid.style.display = 'grid';
+            noMatches.style.display = 'none';
+            
+            grid.innerHTML = matches.map(match => `
+                <div class="match-card" onclick="openChat(profiles.find(p => p.id === '${match.id}'))">
+                    <img src="${match.photos[0]}" alt="${match.name}">
+                    <div class="match-info">
+                        <h4>${match.name}, ${match.age}</h4>
+                        <p>Nou match!</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Chats
+        function renderChats() {
+            const list = document.getElementById('chat-list');
+            const noChats = document.getElementById('no-chats');
+            
+            const chatProfiles = matches.filter(m => chats[m.id]);
+            
+            if (chatProfiles.length === 0) {
+                list.style.display = 'none';
+                noChats.style.display = 'block';
+                return;
+            }
+            
+            list.style.display = 'flex';
+            noChats.style.display = 'none';
+            
+            list.innerHTML = chatProfiles.map(profile => {
+                const messages = chats[profile.id];
+                const lastMessage = messages.length > 0 ? messages[messages.length - 1].text : 'Comença a parlar!';
+                return `
+                    <div class="chat-item" onclick="openChat(profiles.find(p => p.id === '${profile.id}'))">
+                        <img src="${profile.photos[0]}" alt="${profile.name}">
+                        <div class="chat-info">
+                            <h4>${profile.name}</h4>
+                            <p>${lastMessage.substring(0, 30)}${lastMessage.length > 30 ? '...' : ''}</p>
+                        </div>
+                        <span class="chat-time">Ara</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openChat(profile) {
+            currentMatchForChat = profile;
+            
+            document.getElementById('chat-partner-photo').src = profile.photos[0];
+            document.getElementById('chat-partner-name').textContent = profile.name;
+            
+            renderMessages();
+            
+            document.getElementById('main-app').classList.remove('active');
+            document.getElementById('chat-screen').classList.add('active');
+        }
+
+        function closeChat() {
+            document.getElementById('chat-screen').classList.remove('active');
+            document.getElementById('main-app').classList.add('active');
+            currentMatchForChat = null;
+        }
+
+        function renderMessages() {
+            const container = document.getElementById('chat-messages');
+            const messages = chats[currentMatchForChat.id] || [];
+            
+            if (messages.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: #999; padding: 2rem;">
+                        <p>Encara no hi ha missatges</p>
+                        <p style="font-size: 0.85rem;">Envia el primer missatge!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = messages.map(msg => `
+                <div class="message ${msg.sent ? 'sent' : 'received'}">
+                    ${msg.text}
+                </div>
+            `).join('');
+            
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            
+            if (!text || !currentMatchForChat) return;
+            
+            chats[currentMatchForChat.id].push({
+                text: text,
+                sent: true,
+                timestamp: Date.now()
+            });
+            
+            input.value = '';
+            renderMessages();
+        }
+
+        // Profile View
+        function showProfileView() {
+            document.getElementById('profile-view-photo').src = userData.photo;
+            document.getElementById('profile-view-name').textContent = userData.name;
+            document.getElementById('profile-view-age').textContent = `${userData.age} anys`;
+            
+            document.getElementById('main-app').classList.remove('active');
+            document.getElementById('profile-view').classList.add('active');
+        }
+
+        function closeProfileView() {
+            document.getElementById('profile-view').classList.remove('active');
+            document.getElementById('main-app').classList.add('active');
+        }
+
+        // Handle Enter key in chat
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('chat-input').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
