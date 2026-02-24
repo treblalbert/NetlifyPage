@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Setmana 1 · Bases de Mates I — PAU +25</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="initMath()"></script>
+<style>
+:root {
+  --bg: #FAF7F2;
+  --bg2: #F2EDE5;
+  --card: #FFFFFF;
+  --text: #2C2416;
+  --text2: #6B5D4D;
+  --accent: #C4501A;
+  --accent2: #E8753D;
+  --blue: #2563EB;
+  --blue-bg: #EFF6FF;
+  --blue-border: #BFDBFE;
+  --green: #16A34A;
+  --green-bg: #F0FDF4;
+  --green-border: #BBF7D0;
+  --purple: #7C3AED;
+  --purple-bg: #F5F3FF;
+  --purple-border: #DDD6FE;
+  --amber: #D97706;
+  --amber-bg: #FFFBEB;
+  --amber-border: #FDE68A;
+  --border: #E5DED3;
+  --shadow: 0 1px 3px rgba(44,36,22,0.06), 0 4px 12px rgba(44,36,22,0.04);
+  --shadow-lg: 0 4px 12px rgba(44,36,22,0.08), 0 16px 40px rgba(44,36,22,0.06);
+  --radius: 12px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ── HEADER ── */
+.site-header {
+  background: linear-gradient(135deg, #2C2416 0%, #4A3728 60%, #3D2E1F 100%);
+  padding: 2rem 1.5rem 1.5rem;
+  position: relative; overflow: hidden;
+}
+.site-header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.015) 20px, rgba(255,255,255,0.015) 40px);
+}
+.header-inner { max-width: 960px; margin: 0 auto; position: relative; z-index: 1; }
+.back-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  color: rgba(250,247,242,0.6); font-size: 0.82rem; text-decoration: none;
+  margin-bottom: 1rem; transition: color 0.2s;
+}
+.back-btn:hover { color: rgba(250,247,242,0.9); }
+.header-inner h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.7rem, 4vw, 2.4rem); color: #FAF7F2;
+  font-weight: 400; letter-spacing: -0.3px; margin-bottom: 0.2rem;
+}
+.header-inner .subtitle { color: rgba(250,247,242,0.55); font-size: 0.9rem; margin-bottom: 1.2rem; }
+.header-tags { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.tag {
+  padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+  background: rgba(255,255,255,0.1); color: rgba(250,247,242,0.8); border: 1px solid rgba(255,255,255,0.12);
+}
+
+/* ── DAY NAVIGATION ── */
+.day-nav-wrap { background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50; box-shadow: var(--shadow); }
+.day-nav { max-width: 960px; margin: 0 auto; padding: 0 1.5rem; display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; }
+.day-nav::-webkit-scrollbar { display: none; }
+.day-tab {
+  padding: 0.9rem 1.2rem; font-size: 0.82rem; font-weight: 600;
+  color: var(--text2); cursor: pointer; white-space: nowrap;
+  border-bottom: 3px solid transparent; transition: all 0.2s; user-select: none;
+  display: flex; flex-direction: column; align-items: center; gap: 0.15rem;
+}
+.day-tab .tab-date { font-size: 0.7rem; font-family: 'JetBrains Mono', monospace; color: var(--text2); opacity: 0.7; }
+.day-tab:hover { color: var(--accent); background: var(--bg); }
+.day-tab.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--bg); }
+
+/* ── MAIN LAYOUT ── */
+.main { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+.day-panel { display: none; animation: fadeUp 0.3s ease; }
+.day-panel.active { display: block; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.day-intro { margin-bottom: 2rem; }
+.day-intro h2 { font-family: 'DM Serif Display', serif; font-size: 1.6rem; font-weight: 400; margin-bottom: 0.3rem; }
+.day-intro p { color: var(--text2); font-size: 0.92rem; }
+
+/* ── SECTION ── */
+.section { margin-bottom: 2.5rem; }
+.section-header {
+  display: flex; align-items: center; gap: 0.75rem;
+  margin-bottom: 1.2rem; padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--border);
+}
+.section-icon { font-size: 1.4rem; }
+.section-title { font-family: 'DM Serif Display', serif; font-size: 1.25rem; font-weight: 400; }
+.section-badge {
+  margin-left: auto; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.5px; padding: 0.2rem 0.6rem; border-radius: 6px;
+}
+.badge-alta { background: #FEE2E2; color: #DC2626; }
+.badge-fonamental { background: #EEF2FF; color: #3730A3; }
+.badge-aplicat { background: #F0FDF4; color: #16A34A; }
+
+/* ── THEORY BLOCK ── */
+.theory { background: var(--bg2); border-radius: 10px; padding: 1.2rem 1.4rem; margin-bottom: 1rem; border-left: 4px solid var(--blue); }
+.theory p { font-size: 0.9rem; margin-bottom: 0.6rem; }
+.theory p:last-child { margin-bottom: 0; }
+.theory ul, .theory ol { padding-left: 1.3rem; margin-top: 0.3rem; }
+.theory li { font-size: 0.9rem; margin-bottom: 0.3rem; }
+.theory strong { color: var(--accent); }
+
+/* ── FORMULA BOX ── */
+.formula-box {
+  background: #FFF7ED; border: 1.5px solid var(--accent2);
+  border-radius: 10px; padding: 1.1rem 1.4rem; margin-bottom: 1rem;
+}
+.formula-box .formula-title {
+  font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--accent); margin-bottom: 0.7rem;
+}
+.formula-box .formula-row { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.5rem; font-size: 0.92rem; }
+.formula-box .formula-row:last-child { margin-bottom: 0; }
+.formula-box .formula-label { font-size: 0.78rem; color: var(--text2); min-width: 140px; }
+.formula-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+@media (max-width: 600px) { .formula-grid { grid-template-columns: 1fr; } }
+.formula-item { background: white; border-radius: 8px; padding: 0.7rem 1rem; border: 1px solid var(--border); font-size: 0.88rem; }
+.formula-item .fi-label { font-size: 0.72rem; color: var(--text2); margin-bottom: 0.2rem; }
+
+/* ── TIP BOX ── */
+.tip {
+  background: var(--green-bg); border: 1px solid var(--green-border);
+  border-radius: 10px; padding: 0.9rem 1.2rem; margin-bottom: 1rem;
+  display: flex; gap: 0.7rem; align-items: flex-start; font-size: 0.88rem;
+}
+.tip .tip-icon { font-size: 1rem; flex-shrink: 0; margin-top: 0.1rem; }
+
+/* ── EXAMPLE ── */
+.example {
+  background: var(--purple-bg); border: 1px solid var(--purple-border);
+  border-radius: 10px; padding: 1.2rem 1.4rem; margin-bottom: 1rem;
+}
+.example .ex-title { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--purple); margin-bottom: 0.5rem; }
+.example .ex-problem { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.8rem; }
+.example .ex-steps { border-top: 1px solid var(--purple-border); padding-top: 0.8rem; }
+.step { display: flex; gap: 0.8rem; margin-bottom: 0.6rem; align-items: flex-start; }
+.step:last-child { margin-bottom: 0; }
+.step-num {
+  width: 22px; height: 22px; background: var(--purple); color: white;
+  border-radius: 50%; font-size: 0.72rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.15rem;
+}
+.step-content { font-size: 0.88rem; flex: 1; }
+.result-box {
+  background: white; border: 1.5px solid var(--purple); border-radius: 8px;
+  padding: 0.6rem 1rem; margin-top: 0.7rem; font-size: 0.9rem; font-weight: 600;
+  color: var(--purple); display: flex; align-items: center; gap: 0.5rem;
+}
+
+/* ── EXERCISE ── */
+.exercise {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 1.1rem 1.4rem; margin-bottom: 0.8rem;
+  box-shadow: var(--shadow);
+}
+.exercise .ex-num {
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--text2); margin-bottom: 0.4rem;
+}
+.exercise .ex-q { font-size: 0.92rem; margin-bottom: 0.8rem; }
+.show-sol-btn {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 7px; padding: 0.4rem 1rem; font-size: 0.8rem;
+  font-weight: 600; color: var(--text2); cursor: pointer; transition: all 0.2s;
+}
+.show-sol-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+.solution {
+  display: none; margin-top: 0.8rem; padding-top: 0.8rem;
+  border-top: 1px dashed var(--border); font-size: 0.88rem;
+}
+.solution.visible { display: block; animation: fadeUp 0.2s ease; }
+.solution .sol-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--green); margin-bottom: 0.4rem; }
+.sol-step { display: flex; gap: 0.6rem; margin-bottom: 0.4rem; align-items: flex-start; font-size: 0.86rem; }
+.sol-step-num {
+  width: 18px; height: 18px; background: var(--green); color: white;
+  border-radius: 50%; font-size: 0.65rem; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 0.15rem;
+}
+.sol-result { font-weight: 700; color: var(--green); margin-top: 0.4rem; font-size: 0.9rem; }
+
+/* ── RUFFINI TABLE ── */
+.ruffini-wrap { overflow-x: auto; margin: 0.8rem 0; }
+.ruffini-table { border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; }
+.ruffini-table td { padding: 0.35rem 0.75rem; text-align: center; min-width: 40px; }
+.ruffini-table .coef-row td { border-bottom: 2px solid var(--purple); font-weight: 500; }
+.ruffini-table .root-cell { font-weight: 700; color: var(--accent); border-right: 2px solid var(--purple); }
+.ruffini-table .mult-row td { color: var(--blue); font-size: 0.78rem; }
+.ruffini-table .result-row td { font-weight: 700; color: var(--purple); }
+.ruffini-table .result-row .remainder { color: var(--accent); border-left: 1px dashed var(--border); }
+
+/* ── FORMULARI ── */
+.formulari-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+@media (max-width: 640px) { .formulari-grid { grid-template-columns: 1fr; } }
+.formulari-card {
+  background: var(--card); border-radius: var(--radius); padding: 1.2rem 1.4rem;
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+}
+.formulari-card h3 { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.8rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; }
+.formulari-item { font-size: 0.85rem; padding: 0.3rem 0; border-bottom: 1px solid var(--bg2); }
+.formulari-item:last-child { border-bottom: none; }
+.formulari-item .fi-name { font-size: 0.75rem; color: var(--text2); }
+
+/* ── EXERCISES HEADER ── */
+.ex-section-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 1rem; margin-top: 1.5rem; color: var(--text); display: flex; align-items: center; gap: 0.5rem; }
+
+/* ── SVG DIAGRAMS ── */
+.diagram { display: flex; justify-content: center; margin: 1rem 0; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  .site-header { padding: 1.5rem 1rem 1.2rem; }
+  .main { padding: 1.5rem 1rem 3rem; }
+  .day-nav { padding: 0 0.5rem; }
+  .day-tab { padding: 0.8rem 0.9rem; font-size: 0.78rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════ HEADER ══════════════ -->
+<div class="site-header">
+  <div class="header-inner">
+    <a href="../index.html" class="back-btn">← Tornar al pla general</a>
+    <h1>Setmana 1 · Bases de Mates I</h1>
+    <div class="subtitle">25 de febrer – 1 de març · Matemàtiques</div>
+    <div class="header-tags">
+      <span class="tag">📐 Àlgebra bàsica</span>
+      <span class="tag">🔢 Equacions</span>
+      <span class="tag">📏 Geometria</span>
+      <span class="tag">📊 Polinomis</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ DAY NAVIGATION ══════════════ -->
+<div class="day-nav-wrap">
+  <div class="day-nav">
+    <div class="day-tab active" onclick="showDay(1)">
+      <span>Dia 1</span>
+      <span class="tab-date">25/02</span>
+    </div>
+    <div class="day-tab" onclick="showDay(2)">
+      <span>Dia 2</span>
+      <span class="tab-date">26/02</span>
+    </div>
+    <div class="day-tab" onclick="showDay(3)">
+      <span>Dia 3</span>
+      <span class="tab-date">27/02</span>
+    </div>
+    <div class="day-tab" onclick="showDay(4)">
+      <span>Dia 4</span>
+      <span class="tab-date">28/02</span>
+    </div>
+    <div class="day-tab" onclick="showDay(5)">
+      <span>Repàs</span>
+      <span class="tab-date">01/03</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ MAIN CONTENT ══════════════ -->
+<div class="main">
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║  DIA 1 — Nombres, Algebra, Productes ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<div id="dia1" class="day-panel active">
+  <div class="day-intro">
+    <h2>Dia 1 · Nombres, Expressions Algebraiques i Productes Notables</h2>
+    <p>Dimecres 25 de febrer · 4 hores · El fonament de tot. Sense dominar això, res del que ve després funciona.</p>
+  </div>
+
+  <!-- SECCIÓ 1: Nombres i fraccions -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🔢</span>
+      <span class="section-title">Nombres enters i fraccions</span>
+      <span class="section-badge badge-fonamental">Fonamental</span>
+    </div>
+
+    <div class="theory">
+      <p><strong>Nombres enters:</strong> ..., −3, −2, −1, 0, 1, 2, 3, ...</p>
+      <p><strong>Regla dels signes (multiplicació/divisió):</strong></p>
+      <ul>
+        <li>(+) · (+) = (+) &nbsp;&nbsp; Exemple: 3 · 4 = 12</li>
+        <li>(−) · (−) = (+) &nbsp;&nbsp; Exemple: (−3) · (−4) = 12</li>
+        <li>(+) · (−) = (−) &nbsp;&nbsp; Exemple: 3 · (−4) = −12</li>
+        <li>(−) · (+) = (−) &nbsp;&nbsp; Exemple: (−3) · 4 = −12</li>
+      </ul>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-title">Operacions amb fraccions</div>
+      <div class="formula-grid">
+        <div class="formula-item">
+          <div class="fi-label">Suma/Resta (mateix denominador)</div>
+          \[\frac{a}{c} \pm \frac{b}{c} = \frac{a \pm b}{c}\]
+        </div>
+        <div class="formula-item">
+          <div class="fi-label">Suma/Resta (distint denominador — MCM)</div>
+          \[\frac{a}{b} \pm \frac{c}{d} = \frac{ad \pm bc}{bd}\]
+        </div>
+        <div class="formula-item">
+          <div class="fi-label">Multiplicació</div>
+          \[\frac{a}{b} \cdot \frac{c}{d} = \frac{a \cdot c}{b \cdot d}\]
+        </div>
+        <div class="formula-item">
+          <div class="fi-label">Divisió (multiplicar per la inversa)</div>
+          \[\frac{a}{b} \div \frac{c}{d} = \frac{a}{b} \cdot \frac{d}{c} = \frac{ad}{bc}\]
+        </div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <span class="tip-icon">💡</span>
+      <span>Per sumar fraccions, sempre troba el <strong>MCM</strong> dels denominadors. El MCM de 4 i 6 és 12, no 24. Simplificar primer estalvia errors.</span>
+    </div>
+
+    <div class="example">
+      <div class="ex-title">Exemple 1 — Operacions amb fraccions</div>
+      <div class="ex-problem">Calcula: \(\dfrac{2}{3} + \dfrac{3}{4} - \dfrac{1}{6}\)</div>
+      <div class="ex-steps">
+        <div class="step"><span class="step-num">1</span><span class="step-content">Troba el MCM de 3, 4 i 6. Descomposició: \(3 = 3,\ 4 = 2^2,\ 6 = 2 \cdot 3\). MCM = \(2^2 \cdot 3 = 12\)</span></div>
+        <div class="step"><span class="step-num">2</span><span class="step-content">Converteix cada fracció: \(\dfrac{2}{3} = \dfrac{8}{12},\quad \dfrac{3}{4} = \dfrac{9}{12},\quad \dfrac{1}{6} = \dfrac{2}{12}\)</span></div>
+        <div class="step"><span class="step-num">3</span><span class="step-content">Suma: \(\dfrac{8}{12} + \dfrac{9}{12} - \dfrac{2}{12} = \dfrac{8 + 9 - 2}{12} = \dfrac{15}{12}\)</span></div>
+        <div class="step"><span class="step-num">4</span><span class="step-content">Simplifica dividint per MCD(15,12) = 3: \(\dfrac{15}{12} = \dfrac{5}{4}\)</span></div>
+        <div class="result-box">✓ Resultat: \(\dfrac{5}{4} = 1{,}25\)</div>
+      </div>
+    </div>
+
+    <div class="ex-section-title">✏️ Exercicis</div>
+    <div class="exercise">
+      <div class="ex-num">Exercici 1.1</div>
+      <div class="ex-q">Calcula i simplifica: \(\dfrac{3}{8} \cdot \dfrac{4}{9} + \dfrac{1}{6}\)</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>Multiplicació primer: \(\dfrac{3}{8} \cdot \dfrac{4}{9} = \dfrac{12}{72} = \dfrac{1}{6}\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>Suma: \(\dfrac{1}{6} + \dfrac{1}{6} = \dfrac{2}{6} = \dfrac{1}{3}\)</span></div>
+        <div class="sol-result">Resultat: \(\dfrac{1}{3}\)</div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="ex-num">Exercici 1.2</div>
+      <div class="ex-q">Calcula: \(\left(\dfrac{3}{5} - \dfrac{1}{2}\right) \div \dfrac{2}{5}\)</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>Parèntesi: \(\dfrac{3}{5} - \dfrac{1}{2} = \dfrac{6}{10} - \dfrac{5}{10} = \dfrac{1}{10}\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>Divisió: \(\dfrac{1}{10} \div \dfrac{2}{5} = \dfrac{1}{10} \cdot \dfrac{5}{2} = \dfrac{5}{20} = \dfrac{1}{4}\)</span></div>
+        <div class="sol-result">Resultat: \(\dfrac{1}{4}\)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓ 2: Potències i arrels -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">⚡</span>
+      <span class="section-title">Potències i arrels</span>
+      <span class="section-badge badge-fonamental">Fonamental</span>
+    </div>
+
+    <div class="theory">
+      <p><strong>Potència:</strong> \(a^n = \underbrace{a \cdot a \cdot \ldots \cdot a}_{n\ \text{vegades}}\)</p>
+      <p><strong>Arrel:</strong> \(\sqrt[n]{a} = a^{1/n}\) &nbsp;→&nbsp; La arrel n-èssima d'un nombre.</p>
+      <p>Simplificació d'arrels: treu factors perfectes. \(\sqrt{12} = \sqrt{4 \cdot 3} = 2\sqrt{3}\)</p>
+      <p>Racionalització: elimina arrels del denominador. \(\dfrac{1}{\sqrt{2}} = \dfrac{\sqrt{2}}{2}\)</p>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-title">Propietats de les potències — aprèn-les de memòria</div>
+      <div class="formula-grid">
+        <div class="formula-item"><div class="fi-label">Producte (mateixa base)</div>\(a^m \cdot a^n = a^{m+n}\)</div>
+        <div class="formula-item"><div class="fi-label">Quocient (mateixa base)</div>\(\dfrac{a^m}{a^n} = a^{m-n}\)</div>
+        <div class="formula-item"><div class="fi-label">Potència d'una potència</div>\((a^m)^n = a^{m \cdot n}\)</div>
+        <div class="formula-item"><div class="fi-label">Potència d'un producte</div>\((a \cdot b)^n = a^n \cdot b^n\)</div>
+        <div class="formula-item"><div class="fi-label">Exponent zero</div>\(a^0 = 1 \quad (a \neq 0)\)</div>
+        <div class="formula-item"><div class="fi-label">Exponent negatiu</div>\(a^{-n} = \dfrac{1}{a^n}\)</div>
+        <div class="formula-item"><div class="fi-label">Arrel com a potència fraccionària</div>\(\sqrt[n]{a} = a^{1/n}\)</div>
+        <div class="formula-item"><div class="fi-label">Arrel d'un producte</div>\(\sqrt{a \cdot b} = \sqrt{a} \cdot \sqrt{b}\)</div>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-title">Exemple 2 — Simplificació</div>
+      <div class="ex-problem">Simplifica: \(\dfrac{2^3 \cdot 4^2}{8^2}\)</div>
+      <div class="ex-steps">
+        <div class="step"><span class="step-num">1</span><span class="step-content">Converteix tot a base 2: \(4 = 2^2,\quad 8 = 2^3\)</span></div>
+        <div class="step"><span class="step-num">2</span><span class="step-content">Substitueix: \(\dfrac{2^3 \cdot (2^2)^2}{(2^3)^2} = \dfrac{2^3 \cdot 2^4}{2^6}\)</span></div>
+        <div class="step"><span class="step-num">3</span><span class="step-content">Numerador: \(2^3 \cdot 2^4 = 2^{3+4} = 2^7\)</span></div>
+        <div class="step"><span class="step-num">4</span><span class="step-content">Divisió: \(\dfrac{2^7}{2^6} = 2^{7-6} = 2^1 = 2\)</span></div>
+        <div class="result-box">✓ Resultat: 2</div>
+      </div>
+    </div>
+
+    <div class="ex-section-title">✏️ Exercicis</div>
+    <div class="exercise">
+      <div class="ex-num">Exercici 2.1</div>
+      <div class="ex-q">Simplifica: \(\dfrac{(3^2)^3 \cdot 3}{3^5}\)</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>\((3^2)^3 = 3^6\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>Numerador: \(3^6 \cdot 3^1 = 3^7\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">3</span><span>\(\dfrac{3^7}{3^5} = 3^{7-5} = 3^2 = 9\)</span></div>
+        <div class="sol-result">Resultat: 9</div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="ex-num">Exercici 2.2</div>
+      <div class="ex-q">Simplifica i racionalitza: \(\dfrac{3}{\sqrt{3}} + \sqrt{12}\)</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>Racionalitza: \(\dfrac{3}{\sqrt{3}} = \dfrac{3\sqrt{3}}{3} = \sqrt{3}\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>Simplifica: \(\sqrt{12} = \sqrt{4 \cdot 3} = 2\sqrt{3}\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">3</span><span>Suma: \(\sqrt{3} + 2\sqrt{3} = 3\sqrt{3}\)</span></div>
+        <div class="sol-result">Resultat: \(3\sqrt{3}\)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓ 3: Monomis i polinomis -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📝</span>
+      <span class="section-title">Monomis i polinomis</span>
+      <span class="section-badge badge-fonamental">Fonamental</span>
+    </div>
+
+    <div class="theory">
+      <p><strong>Monomi:</strong> expressió del tipus \(a \cdot x^n\) (un sol terme). Exemple: \(-3x^2y\)</p>
+      <ul>
+        <li><strong>Coeficient:</strong> la part numèrica (\(-3\))</li>
+        <li><strong>Part literal:</strong> les variables (\(x^2 y\))</li>
+        <li><strong>Grau:</strong> suma dels exponents (\(2 + 1 = 3\))</li>
+      </ul>
+      <p><strong>Polinomi:</strong> suma de monomis. Exemple: \(p(x) = 3x^2 - 2x + 1\)</p>
+      <p><strong>Termes semblants:</strong> mateixa part literal. Exemple: \(3x^2\) i \(-5x^2\) → es poden sumar: \(-2x^2\)</p>
+      <p><strong>Grau del polinomi:</strong> el grau del monomi de major grau. Ex: \(3x^4 - x + 2\) → grau 4.</p>
+    </div>
+
+    <div class="example">
+      <div class="ex-title">Exemple 3 — Operacions amb polinomis</div>
+      <div class="ex-problem">Calcula \((3x^2 - 2x + 1) + (x^2 + 5x - 3)\) i \((2x+1)(x-3)\)</div>
+      <div class="ex-steps">
+        <div class="step"><span class="step-num">1</span><span class="step-content"><strong>Suma:</strong> agrupa termes semblants: \((3+1)x^2 + (-2+5)x + (1-3) = 4x^2 + 3x - 2\)</span></div>
+        <div class="step"><span class="step-num">2</span><span class="step-content"><strong>Producte:</strong> aplica la propietat distributiva (cada terme del primer per cada terme del segon):</span></div>
+        <div class="step"><span class="step-num">3</span><span class="step-content">\(2x \cdot x + 2x \cdot (-3) + 1 \cdot x + 1 \cdot (-3) = 2x^2 - 6x + x - 3\)</span></div>
+        <div class="step"><span class="step-num">4</span><span class="step-content">Suma semblants: \(2x^2 - 5x - 3\)</span></div>
+        <div class="result-box">✓ Suma: \(4x^2 + 3x - 2\) &nbsp;|&nbsp; Producte: \(2x^2 - 5x - 3\)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓ 4: Productes notables ⭐ -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">⭐</span>
+      <span class="section-title">Productes notables</span>
+      <span class="section-badge badge-alta">Alta prioritat PAU</span>
+    </div>
+
+    <div class="theory">
+      <p>Els productes notables apareixen <strong>cada any</strong> a la PAU, tant directament com en exercicis de factorització i equacions. <strong>Has de saber-los de memòria</strong>, tant en sentit directe com invers.</p>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-title">Les 3 identitats fonamentals — memoritza-les</div>
+      <div class="formula-row">
+        <span class="formula-label">Quadrat de la suma:</span>
+        \[(a + b)^2 = a^2 + 2ab + b^2\]
+      </div>
+      <div class="formula-row">
+        <span class="formula-label">Quadrat de la diferència:</span>
+        \[(a - b)^2 = a^2 - 2ab + b^2\]
+      </div>
+      <div class="formula-row">
+        <span class="formula-label">Suma per diferència:</span>
+        \[(a + b)(a - b) = a^2 - b^2\]
+      </div>
+    </div>
+
+    <div class="tip">
+      <span class="tip-icon">🎯</span>
+      <span>Truc mnemotècnic per \((a+b)^2\): <em>"quadrat del primer, més doble del producte, més quadrat del segon"</em>. Per \((a-b)^2\) igual però el signe del mig és menys.</span>
+    </div>
+
+    <div class="example">
+      <div class="ex-title">Exemple 4a — Quadrat de la suma</div>
+      <div class="ex-problem">Expandeix: \((3x + 2)^2\)</div>
+      <div class="ex-steps">
+        <div class="step"><span class="step-num">1</span><span class="step-content">Identifica: \(a = 3x,\ b = 2\)</span></div>
+        <div class="step"><span class="step-num">2</span><span class="step-content">Aplica \((a+b)^2 = a^2 + 2ab + b^2\):</span></div>
+        <div class="step"><span class="step-num">3</span><span class="step-content">\((3x)^2 + 2 \cdot (3x) \cdot 2 + 2^2 = 9x^2 + 12x + 4\)</span></div>
+        <div class="result-box">✓ \((3x+2)^2 = 9x^2 + 12x + 4\)</div>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-title">Exemple 4b — Suma per diferència</div>
+      <div class="ex-problem">Calcula: \((x + 5)(x - 5)\)</div>
+      <div class="ex-steps">
+        <div class="step"><span class="step-num">1</span><span class="step-content">Reconeix la forma \((a+b)(a-b)\) amb \(a = x,\ b = 5\)</span></div>
+        <div class="step"><span class="step-num">2</span><span class="step-content">Aplica directament: \(a^2 - b^2 = x^2 - 25\)</span></div>
+        <div class="result-box">✓ \((x+5)(x-5) = x^2 - 25\)</div>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-title">Exemple 4c — Factorització inversa (molt important!)</div>
+      <div class="ex-problem">Factoritza: \(4x^2 - 12x + 9\)</div>
+      <div class="ex-steps">
+        <div class="step"><span class="step-num">1</span><span class="step-content">Reconeix que \(4x^2 = (2x)^2\) i \(9 = 3^2\)</span></div>
+        <div class="step"><span class="step-num">2</span><span class="step-content">El terme del mig: \(12x = 2 \cdot (2x) \cdot 3\) ✓ → és un quadrat de diferència</span></div>
+        <div class="step"><span class="step-num">3</span><span class="step-content">\(4x^2 - 12x + 9 = (2x - 3)^2\)</span></div>
+        <div class="result-box">✓ \(4x^2 - 12x + 9 = (2x-3)^2\)</div>
+      </div>
+    </div>
+
+    <div class="ex-section-title">✏️ Exercicis</div>
+
+    <div class="exercise">
+      <div class="ex-num">Exercici 4.1</div>
+      <div class="ex-q">Expandeix usant productes notables: \((2x - 3y)^2\)</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>\(a = 2x,\ b = 3y\) → formula \((a-b)^2 = a^2 - 2ab + b^2\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>\((2x)^2 - 2(2x)(3y) + (3y)^2 = 4x^2 - 12xy + 9y^2\)</span></div>
+        <div class="sol-result">Resultat: \(4x^2 - 12xy + 9y^2\)</div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="ex-num">Exercici 4.2</div>
+      <div class="ex-q">Calcula usant productes notables (sense multiplicar directament): \((x+7)(x-7)\)</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>Forma \((a+b)(a-b)\) amb \(a=x,\ b=7\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>\(x^2 - 7^2 = x^2 - 49\)</span></div>
+        <div class="sol-result">Resultat: \(x^2 - 49\)</div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="ex-num">Exercici 4.3 ⭐ (estil PAU)</div>
+      <div class="ex-q">Factoritza completament: \(9x^2 - 4\)</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>Reconeix: \(9x^2 = (3x)^2\) i \(4 = 2^2\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>Forma \(a^2 - b^2 = (a+b)(a-b)\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">3</span><span>\(9x^2 - 4 = (3x)^2 - 2^2 = (3x+2)(3x-2)\)</span></div>
+        <div class="sol-result">Resultat: \((3x+2)(3x-2)\)</div>
+      </div>
+    </div>
+  </div>
+</div><!-- /dia1 -->
+
+<!-- ╔════════════════════════════════╗ -->
+<!-- ║  DIA 2 — Equacions 1r i 2n    ║ -->
+<!-- ╚════════════════════════════════╝ -->
+<div id="dia2" class="day-panel">
+  <div class="day-intro">
+    <h2>Dia 2 · Equacions de 1r i 2n grau</h2>
+    <p>Dijous 26 de febrer · 4 hores · Les equacions apareixen a tots els exàmens PAU. Dominar la fórmula quadràtica és <strong>obligatori</strong>.</p>
+  </div>
+
+  <!-- SECCIÓ 1: Equació 1r grau -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📏</span>
+      <span class="section-title">Equació de 1r grau</span>
+      <span class="section-badge badge-fonamental">Fonamental</span>
+    </div>
+
+    <div class="theory">
+      <p><strong>Forma general:</strong> \(ax + b = 0\) amb \(a \neq 0\)</p>
+      <p><strong>Solució:</strong> \(x = -\dfrac{b}{a}\)</p>
+      <p><strong>Passos generals per resoldre:</strong></p>
+      <ol>
+        <li>Si hi ha fraccions, multiplica tots els membres pel MCM dels denominadors</li>
+        <li>Elimina parèntesis (distributiva)</li>
+        <li>Agrupa termes amb \(x\) a l'esquerra, termes independents a la dreta</li>
+        <li>Aïlla \(x\)</li>
+      </ol>
+    </div>
+
+    <div class="example">
+      <div class="ex-title">Exemple 1 — Equació simple</div>
+      <div class="ex-problem">Resol: \(3x - 7 = 2x + 5\)</div>
+      <div class="ex-steps">
+        <div class="step"><span class="step-num">1</span><span class="step-content">Passa els \(x\) a l'esquerra i els nombres a la dreta: \(3x - 2x = 5 + 7\)</span></div>
+        <div class="step"><span class="step-num">2</span><span class="step-content">\(x = 12\)</span></div>
+        <div class="step"><span class="step-num">3</span><span class="step-content"><strong>Verificació:</strong> \(3(12)-7 = 29\) i \(2(12)+5 = 29\) ✓</span></div>
+        <div class="result-box">✓ \(x = 12\)</div>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-title">Exemple 2 — Equació amb fraccions</div>
+      <div class="ex-problem">Resol: \(\dfrac{x+1}{3} = \dfrac{x-2}{4}\)</div>
+      <div class="ex-steps">
+        <div class="step"><span class="step-num">1</span><span class="step-content">MCM(3, 4) = 12. Multiplica tot per 12:</span></div>
+        <div class="step"><span class="step-num">2</span><span class="step-content">\(12 \cdot \dfrac{x+1}{3} = 12 \cdot \dfrac{x-2}{4} \Rightarrow 4(x+1) = 3(x-2)\)</span></div>
+        <div class="step"><span class="step-num">3</span><span class="step-content">Distribueix: \(4x + 4 = 3x - 6\)</span></div>
+        <div class="step"><span class="step-num">4</span><span class="step-content">\(4x - 3x = -6 - 4 \Rightarrow x = -10\)</span></div>
+        <div class="result-box">✓ \(x = -10\)</div>
+      </div>
+    </div>
+
+    <div class="ex-section-title">✏️ Exercicis</div>
+    <div class="exercise">
+      <div class="ex-num">Exercici 1.1</div>
+      <div class="ex-q">Resol: \(2(x - 3) = 5x + 9\)</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>Distribueix: \(2x - 6 = 5x + 9\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>\(2x - 5x = 9 + 6 \Rightarrow -3x = 15\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">3</span><span>\(x = -5\)</span></div>
+        <div class="sol-result">Resultat: \(x = -5\)</div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="ex-num">Exercici 1.2</div>
+      <div class="ex-q">Resol: \(\dfrac{2x-1}{5} - \dfrac{x+3}{2} = 1\)</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>MCM(5,2) = 10. Multiplica per 10: \(2(2x-1) - 5(x+3) = 10\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>\(4x - 2 - 5x - 15 = 10 \Rightarrow -x - 17 = 10\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">3</span><span>\(-x = 27 \Rightarrow x = -27\)</span></div>
+        <div class="sol-result">Resultat: \(x = -27\)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓ 2: Equació 2n grau -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📐</span>
+      <span class="section-title">Equació de 2n grau</span>
+      <span class="section-badge badge-alta">Alta prioritat PAU</span>
+    </div>
+
+    <div class="theory">
+      <p><strong>Forma general:</strong> \(ax^2 + bx + c = 0\) amb \(a \neq 0\)</p>
+      <p>Per resoldre-la sempre utilitza la <strong>fórmula quadràtica</strong> (de Bhaskara).</p>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-title">⭐ Fórmula quadràtica — memoritza-la</div>
+      <div class="formula-row">
+        \[x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}\]
+      </div>
+      <div class="formula-row">
+        <span class="formula-label">Discriminant:</span>
+        \[\Delta = b^2 - 4ac\]
+      </div>
+      <div class="formula-row" style="flex-direction:column; gap:0.3rem; align-items:flex-start;">
+        <div>Si \(\Delta > 0\): <strong>2 solucions reals i distintes</strong> &nbsp;\(x_1 = \frac{-b+\sqrt{\Delta}}{2a},\quad x_2 = \frac{-b-\sqrt{\Delta}}{2a}\)</div>
+        <div>Si \(\Delta = 0\): <strong>1 solució doble</strong> &nbsp;\(x = \frac{-b}{2a}\)</div>
+        <div>Si \(\Delta &lt; 0\): <strong>sense solució real</strong> (arrels complexes)</div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <span class="tip-icon">💡</span>
+      <span><strong>Relació de Vieta:</strong> si \(x_1\) i \(x_2\) són les arrels, llavors \(x_1 + x_2 = -\dfrac{b}{a}\) i \(x_1 \cdot x_2 = \dfrac{c}{a}\). Útil per verificar resultats ràpidament!</span>
+    </div>
+
+    <div class="example">
+      <div class="ex-title">Exemple 3 — Cas Δ &gt; 0 (dues solucions)</div>
+      <div class="ex-problem">Resol: \(x^2 - 5x + 6 = 0\)</div>
+      <div class="ex-steps">
+        <div class="step"><span class="step-num">1</span><span class="step-content">Identifica: \(a = 1,\ b = -5,\ c = 6\)</span></div>
+        <div class="step"><span class="step-num">2</span><span class="step-content">Discriminant: \(\Delta = (-5)^2 - 4(1)(6) = 25 - 24 = 1 > 0\) → 2 solucions</span></div>
+        <div class="step"><span class="step-num">3</span><span class="step-content">\(x = \dfrac{5 \pm \sqrt{1}}{2} = \dfrac{5 \pm 1}{2}\)</span></div>
+        <div class="step"><span class="step-num">4</span><span class="step-content">\(x_1 = \dfrac{6}{2} = 3 \qquad x_2 = \dfrac{4}{2} = 2\)</span></div>
+        <div class="step"><span class="step-num">5</span><span class="step-content">Verificació Vieta: \(x_1 + x_2 = 5 = -\frac{-5}{1}\) ✓ &nbsp; \(x_1 \cdot x_2 = 6 = \frac{6}{1}\) ✓</span></div>
+        <div class="result-box">✓ \(x_1 = 3\quad x_2 = 2\)</div>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-title">Exemple 4 — Cas Δ = 0 (solució doble)</div>
+      <div class="ex-problem">Resol: \(x^2 - 6x + 9 = 0\)</div>
+      <div class="ex-steps">
+        <div class="step"><span class="step-num">1</span><span class="step-content">\(a=1,\ b=-6,\ c=9\)</span></div>
+        <div class="step"><span class="step-num">2</span><span class="step-content">\(\Delta = 36 - 36 = 0\) → solució doble</span></div>
+        <div class="step"><span class="step-num">3</span><span class="step-content">\(x = \dfrac{6}{2} = 3\)</span></div>
+        <div class="step"><span class="step-num">4</span><span class="step-content">Nota: \(x^2 - 6x + 9 = (x-3)^2\) → producte notable!</span></div>
+        <div class="result-box">✓ \(x = 3\) (solució doble)</div>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-title">Exemple 5 — Equació incompleta (\(c = 0\))</div>
+      <div class="ex-problem">Resol: \(2x^2 - 6x = 0\)</div>
+      <div class="ex-steps">
+        <div class="step"><span class="step-num">1</span><span class="step-content">Treu factor comú: \(x(2x - 6) = 0\)</span></div>
+        <div class="step"><span class="step-num">2</span><span class="step-content">Producte = 0 → algun factor és zero: \(x = 0\) o \(2x - 6 = 0\)</span></div>
+        <div class="step"><span class="step-num">3</span><span class="step-content">\(2x = 6 \Rightarrow x = 3\)</span></div>
+        <div class="result-box">✓ \(x_1 = 0\quad x_2 = 3\)</div>
+      </div>
+    </div>
+
+    <div class="ex-section-title">✏️ Exercicis</div>
+
+    <div class="exercise">
+      <div class="ex-num">Exercici 2.1</div>
+      <div class="ex-q">Resol: \(2x^2 + 3x - 2 = 0\)</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>\(a=2,\ b=3,\ c=-2\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>\(\Delta = 9 - 4(2)(-2) = 9 + 16 = 25\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">3</span><span>\(x = \dfrac{-3 \pm 5}{4}\) → \(x_1 = \dfrac{2}{4} = \dfrac{1}{2}\), \(x_2 = \dfrac{-8}{4} = -2\)</span></div>
+        <div class="sol-result">Resultat: \(x_1 = \dfrac{1}{2},\quad x_2 = -2\)</div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="ex-num">Exercici 2.2</div>
+      <div class="ex-q">Resol: \(x^2 + x + 1 = 0\). Quin és el discriminant? Quantes solucions reals té?</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>\(a=1,\ b=1,\ c=1\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>\(\Delta = 1 - 4 = -3 < 0\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">3</span><span>Com que \(\Delta < 0\), no hi ha solucions reals.</span></div>
+        <div class="sol-result">Sense solució real (\(\Delta = -3 < 0\))</div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="ex-num">Exercici 2.3 ⭐ (estil PAU)</div>
+      <div class="ex-q">Resol: \(3x^2 - 12 = 0\) (equació incompleta, \(b = 0\))</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>\(3x^2 = 12 \Rightarrow x^2 = 4\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>\(x = \pm\sqrt{4} = \pm 2\)</span></div>
+        <div class="sol-result">Resultat: \(x_1 = 2,\quad x_2 = -2\)</div>
+      </div>
+    </div>
+  </div>
+</div><!-- /dia2 -->
+
+<!-- ╔═════════════════════════════════════════╗ -->
+<!-- ║  DIA 3 — Sistemes, Proporcionalitat, Tales ║ -->
+<!-- ╚═════════════════════════════════════════╝ -->
+<div id="dia3" class="day-panel">
+  <div class="day-intro">
+    <h2>Dia 3 · Sistemes, Proporcionalitat i Semblança</h2>
+    <p>Divendres 27 de febrer · 4 hores · Els sistemes d'equacions apareixen <strong>cada any</strong> a la PAU, sovint com a plantejament de problemes reals.</p>
+  </div>
+
+  <!-- SECCIÓ 1: Sistemes -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">⚖️</span>
+      <span class="section-title">Sistemes de 2 equacions amb 2 incògnites</span>
+      <span class="section-badge badge-alta">Alta prioritat PAU</span>
+    </div>
+
+    <div class="theory">
+      <p>Un sistema 2×2 té la forma:</p>
+      \[\begin{cases} ax + by = e \\ cx + dy = f \end{cases}\]
+      <p>Tres mètodes de resolució: <strong>substitució, igualació i reducció</strong>. Tria el que sembli més fàcil per al sistema concret.</p>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-title">Els 3 mètodes resumits</div>
+      <div class="formula-row" style="flex-direction:column; gap:0.5rem;">
+        <div><strong>Substitució:</strong> aïllar una incògnita d'una equació i substituir-la a l'altra.</div>
+        <div><strong>Igualació:</strong> expressar la mateixa incògnita des de les dues equacions i igualar les expressions.</div>
+        <div><strong>Reducció:</strong> multiplicar les equacions per números adequats de manera que, en sumar-les o restar-les, una incògnita desaparegui.</div>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-title">Exemple 1 — Mètode de substitució</div>
+      <div class="ex-problem">Resol: \(\begin{cases} 2x + y = 7 \\ x - y = 2 \end{cases}\)</div>
+      <div class="ex-steps">
+        <div class="step"><span class="step-num">1</span><span class="step-content">De la 2a equació: \(x = y + 2\)</span></div>
+        <div class="step"><span class="step-num">2</span><span class="step-content">Substitueix a la 1a: \(2(y+2) + y = 7 \Rightarrow 2y + 4 + y = 7 \Rightarrow 3y = 3 \Rightarrow y = 1\)</span></div>
+        <div class="step"><span class="step-num">3</span><span class="step-content">Troba \(x\): \(x = 1 + 2 = 3\)</span></div>
+        <div class="step"><span class="step-num">4</span><span class="step-content">Verificació: \(2(3)+1=7\) ✓ i \(3-1=2\) ✓</span></div>
+        <div class="result-box">✓ \(x = 3,\quad y = 1\)</div>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-title">Exemple 2 — Mètode de reducció</div>
+      <div class="ex-problem">Resol: \(\begin{cases} 3x + 2y = 11 \\ 2x - 2y = 4 \end{cases}\)</div>
+      <div class="ex-steps">
+        <div class="step"><span class="step-num">1</span><span class="step-content">Les \(y\) ja tenen coeficients oposats (+2 i −2). Sumem les equacions directament:</span></div>
+        <div class="step"><span class="step-num">2</span><span class="step-content">\((3x+2y) + (2x-2y) = 11+4 \Rightarrow 5x = 15 \Rightarrow x = 3\)</span></div>
+        <div class="step"><span class="step-num">3</span><span class="step-content">Substitueix \(x=3\) a la 2a: \(2(3) - 2y = 4 \Rightarrow 6 - 2y = 4 \Rightarrow y = 1\)</span></div>
+        <div class="result-box">✓ \(x = 3,\quad y = 1\)</div>
+      </div>
+    </div>
+
+    <div class="ex-section-title">✏️ Exercicis</div>
+
+    <div class="exercise">
+      <div class="ex-num">Exercici 1.1</div>
+      <div class="ex-q">Resol pel mètode que vulguis: \(\begin{cases} x + 2y = 8 \\ 3x - y = 1 \end{cases}\)</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució (per substitució)</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>De la 1a: \(x = 8 - 2y\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>A la 2a: \(3(8-2y) - y = 1 \Rightarrow 24 - 6y - y = 1 \Rightarrow -7y = -23 \Rightarrow y = \dfrac{23}{7}\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">3</span><span>\(x = 8 - 2 \cdot \dfrac{23}{7} = 8 - \dfrac{46}{7} = \dfrac{56-46}{7} = \dfrac{10}{7}\)</span></div>
+        <div class="sol-result">Resultat: \(x = \dfrac{10}{7},\quad y = \dfrac{23}{7}\)</div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="ex-num">Exercici 1.2 ⭐ (plantejament de problema)</div>
+      <div class="ex-q">La suma de dos nombres és 20 i el doble del primer menys el segon és 4. Troba els dos nombres.</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>Anomena els nombres \(x\) i \(y\). Sistema: \(\begin{cases} x + y = 20 \\ 2x - y = 4 \end{cases}\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>Reducció (suma les equacions): \(3x = 24 \Rightarrow x = 8\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">3</span><span>\(y = 20 - 8 = 12\)</span></div>
+        <div class="sol-result">Els nombres són 8 i 12.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓ 2: Proporcionalitat -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📊</span>
+      <span class="section-title">Proporcionalitat directa i inversa</span>
+      <span class="section-badge badge-fonamental">Fonamental</span>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-title">Proporcionalitat directa vs inversa</div>
+      <div class="formula-grid">
+        <div class="formula-item">
+          <div class="fi-label">Directa: quan x augmenta, y augmenta</div>
+          \[y = k \cdot x \quad \Leftrightarrow \quad \frac{y}{x} = k\]
+          Regla de tres: \(\dfrac{x_1}{y_1} = \dfrac{x_2}{y_2}\)
+        </div>
+        <div class="formula-item">
+          <div class="fi-label">Inversa: quan x augmenta, y disminueix</div>
+          \[y = \frac{k}{x} \quad \Leftrightarrow \quad x \cdot y = k\]
+          Regla de tres: \(x_1 \cdot y_1 = x_2 \cdot y_2\)
+        </div>
+      </div>
+    </div>
+
+    <div class="tip">
+      <span class="tip-icon">🎯</span>
+      <span><strong>Com distingir-les?</strong> Pregunta't: "si doblo x, què passa amb y?" Si y també es dobla → directa. Si y es redueix a la meitat → inversa.</span>
+    </div>
+
+    <div class="example">
+      <div class="ex-title">Exemple 3 — Proporcionalitat inversa</div>
+      <div class="ex-problem">4 operaris acaben una obra en 6 dies. Quants dies trigaran 3 operaris?</div>
+      <div class="ex-steps">
+        <div class="step"><span class="step-num">1</span><span class="step-content">Més operaris → menys dies → proporcionalitat <strong>inversa</strong></span></div>
+        <div class="step"><span class="step-num">2</span><span class="step-content">\(x_1 \cdot y_1 = x_2 \cdot y_2 \Rightarrow 4 \cdot 6 = 3 \cdot y_2\)</span></div>
+        <div class="step"><span class="step-num">3</span><span class="step-content">\(24 = 3 y_2 \Rightarrow y_2 = 8\) dies</span></div>
+        <div class="result-box">✓ 3 operaris trigaran 8 dies</div>
+      </div>
+    </div>
+
+    <div class="ex-section-title">✏️ Exercicis</div>
+
+    <div class="exercise">
+      <div class="ex-num">Exercici 2.1</div>
+      <div class="ex-q">Un cotxe viatja a 90 km/h i tarda 4 hores. A quina velocitat hauria d'anar per tardar 3 hores?</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>Velocitat i temps: proporcionalitat <strong>inversa</strong> (velocitat major → menys temps)</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>\(90 \cdot 4 = v \cdot 3 \Rightarrow 360 = 3v \Rightarrow v = 120\) km/h</span></div>
+        <div class="sol-result">Hauria d'anar a 120 km/h</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓ 3: Teorema de Tales -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📐</span>
+      <span class="section-title">Teorema de Tales</span>
+      <span class="section-badge badge-aplicat">Aplicat</span>
+    </div>
+
+    <div class="theory">
+      <p><strong>Enunciat:</strong> Si tres o més rectes paral·leles tallen dues transversals, els segments que determinen en les transversals son proporcionals.</p>
+    </div>
+
+    <div class="diagram">
+      <svg width="280" height="180" viewBox="0 0 280 180" style="font-family:'DM Sans',sans-serif;">
+        <!-- Parallel lines -->
+        <line x1="0" y1="30" x2="280" y2="30" stroke="#C7D2FE" stroke-width="1.5" stroke-dasharray="6,4"/>
+        <line x1="0" y1="90" x2="280" y2="90" stroke="#C7D2FE" stroke-width="1.5" stroke-dasharray="6,4"/>
+        <line x1="0" y1="150" x2="280" y2="150" stroke="#C7D2FE" stroke-width="1.5" stroke-dasharray="6,4"/>
+        <!-- Transversal 1 -->
+        <line x1="60" y1="10" x2="90" y2="170" stroke="#7C3AED" stroke-width="2"/>
+        <!-- Transversal 2 -->
+        <line x1="180" y1="10" x2="210" y2="170" stroke="#7C3AED" stroke-width="2"/>
+        <!-- Points -->
+        <circle cx="63" cy="30" r="4" fill="#C4501A"/><text x="48" y="35" font-size="13" fill="#C4501A">A</text>
+        <circle cx="72" cy="90" r="4" fill="#C4501A"/><text x="57" y="95" font-size="13" fill="#C4501A">B</text>
+        <circle cx="81" cy="150" r="4" fill="#C4501A"/><text x="66" y="155" font-size="13" fill="#C4501A">C</text>
+        <circle cx="183" cy="30" r="4" fill="#2563EB"/><text x="192" y="35" font-size="13" fill="#2563EB">A'</text>
+        <circle cx="192" cy="90" r="4" fill="#2563EB"/><text x="201" y="95" font-size="13" fill="#2563EB">B'</text>
+        <circle cx="201" cy="150" r="4" fill="#2563EB"/><text x="210" y="155" font-size="13" fill="#2563EB">C'</text>
+        <!-- Labels a, b -->
+        <text x="38" y="65" font-size="11" fill="#6B5D4D" font-style="italic">a</text>
+        <text x="38" y="125" font-size="11" fill="#6B5D4D" font-style="italic">b</text>
+        <text x="218" y="65" font-size="11" fill="#6B5D4D" font-style="italic">a'</text>
+        <text x="218" y="125" font-size="11" fill="#6B5D4D" font-style="italic">b'</text>
+      </svg>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-title">Teorema de Tales</div>
+      <div class="formula-row">
+        \[\frac{AB}{BC} = \frac{A'B'}{B'C'} \qquad \text{és a dir} \qquad \frac{a}{b} = \frac{a'}{b'}\]
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-title">Exemple 4 — Calcular segment desconegut</div>
+      <div class="ex-problem">Tres rectes paral·leles tallen dues transversals. A la primera transversal, els segments són \(AB = 6\) i \(BC = 9\). A la segona, \(A'B' = 4\). Calcula \(B'C'\).</div>
+      <div class="ex-steps">
+        <div class="step"><span class="step-num">1</span><span class="step-content">Per Tales: \(\dfrac{AB}{BC} = \dfrac{A'B'}{B'C'}\)</span></div>
+        <div class="step"><span class="step-num">2</span><span class="step-content">\(\dfrac{6}{9} = \dfrac{4}{B'C'}\)</span></div>
+        <div class="step"><span class="step-num">3</span><span class="step-content">Producte en creu: \(6 \cdot B'C' = 9 \cdot 4 = 36 \Rightarrow B'C' = 6\)</span></div>
+        <div class="result-box">✓ \(B'C' = 6\)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECCIÓ 4: Semblança de triangles -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🔺</span>
+      <span class="section-title">Semblança de triangles</span>
+      <span class="section-badge badge-alta">Alta prioritat PAU</span>
+    </div>
+
+    <div class="theory">
+      <p>Dos triangles són <strong>semblants</strong> (\(\triangle ABC \sim \triangle A'B'C'\)) si tenen la mateixa forma (angles iguals i costats proporcionals).</p>
+      <p><strong>Criteris de semblança:</strong></p>
+      <ul>
+        <li><strong>AA</strong> (angle-angle): dos angles iguals impliquen el tercer també igual i els triangles semblants.</li>
+        <li><strong>LLL</strong> (costat-costat-costat): els tres parells de costats proporcionals.</li>
+        <li><strong>LAL</strong> (costat-angle-costat): dos costats proporcionals i l'angle inclòs igual.</li>
+      </ul>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-title">Raó de semblança k</div>
+      <div class="formula-row">
+        \[k = \frac{AB}{A'B'} = \frac{BC}{B'C'} = \frac{AC}{A'C'}\]
+      </div>
+      <div class="formula-row">
+        <span class="formula-label">Raó de perímètres:</span>
+        \[\frac{P}{P'} = k\]
+      </div>
+      <div class="formula-row">
+        <span class="formula-label">Raó d'àrees:</span>
+        \[\frac{S}{S'} = k^2\]
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="ex-title">Exemple 5 — Estil Salou PAU</div>
+      <div class="ex-problem">Dos triangles semblants tenen costats de bases \(AB = 12\) i \(A'B' = 8\). L'àrea del gran és 54 m². Calcula l'àrea del petit.</div>
+      <div class="ex-steps">
+        <div class="step"><span class="step-num">1</span><span class="step-content">Raó de semblança: \(k = \dfrac{AB}{A'B'} = \dfrac{12}{8} = \dfrac{3}{2}\)</span></div>
+        <div class="step"><span class="step-num">2</span><span class="step-content">Raó d'àrees: \(\dfrac{S}{S'} = k^2 = \left(\dfrac{3}{2}\right)^2 = \dfrac{9}{4}\)</span></div>
+        <div class="step"><span class="step-num">3</span><span class="step-content">\(\dfrac{54}{S'} = \dfrac{9}{4} \Rightarrow S' = \dfrac{54 \cdot 4}{9} = 24\) m²</span></div>
+        <div class="result-box">✓ Àrea del triangle petit: 24 m²</div>
+      </div>
+    </div>
+
+    <div class="ex-section-title">✏️ Exercicis</div>
+    <div class="exercise">
+      <div class="ex-num">Exercici 4.1</div>
+      <div class="ex-q">Un triangle de perímetre 30 cm és semblant a un altre de perímetre 20 cm. Si el costat més llarg del gran és 13 cm, quin és el costat corresponent del petit?</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>Raó de perímètres = raó de semblança: \(k = \dfrac{30}{20} = \dfrac{3}{2}\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>Costat del petit: \(\dfrac{13}{k} = \dfrac{13}{3/2} = 13 \cdot \dfrac{2}{3} = \dfrac{26}{3} \approx 8{,}67\) cm</span></div>
+        <div class="sol-result">Resultat: \(\dfrac{26}{3} \approx 8{,}67\) cm</div>
+      </div>
+    </div>
+  </div>
+</div><!-- /dia3 -->
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║  DIA 4 — Ruffini i Factorització    ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<div id="dia4" class="day-panel">
+  <div class="day-intro">
+    <h2>Dia 4 · Polinomis: Ruffini, Arrels i Factorització</h2>
+    <p>Dissabte 28 de febrer · 4 hores · La regla de Ruffini és una eina essencial que apareix cada any. Practica-la fins que et surti automàticament.</p>
+  </div>
+
+  <!-- SECCIÓ 1: Divisió de polinomis -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">➗</span>
+      <span class="section-title">Divisió de polinomis</span>
+      <span class="section-badge badge-fonamental">Fonamental</span>
+    </div>
+
+    <div class="theory">
+      <p><strong>Algoritme de la divisió:</strong> Donat un dividend \(D(x)\) i un divisor \(d(x)\), existeixen únics un quocient \(Q(x)\) i una resta \(R(x)\) tals que:</p>
+      \[D(x) = d(x) \cdot Q(x) + R(x), \qquad \text{amb } \text{gr}(R) < \text{gr}(d)\]
+      <p>Si la resta és zero, \(d(x)\) és un <strong>factor</strong> de \(D(x)\).</p>
+      <p><strong>Teorema del residu:</strong> la resta de dividir \(D(x)\) per \((x - a)\) és igual a \(D(a)\).</p>
+    </div>
+  </div>
+
+  <!-- SECCIÓ 2: Regla de Ruffini -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📊</span>
+      <span class="section-title">Regla de Ruffini</span>
+      <span class="section-badge badge-alta">Alta prioritat PAU</span>
+    </div>
+
+    <div class="theory">
+      <p>La regla de Ruffini és un algorisme ràpid per dividir un polinomi <strong>per un binomi de la forma \((x - a)\)</strong>.</p>
+      <p><strong>Passos:</strong></p>
+      <ol>
+        <li>Escriu els coeficients del dividend en ordre decreixent. Posa <strong>0</strong> pels termes que falten.</li>
+        <li>Escriu el valor \(a\) (arrel del divisor) a la dreta.</li>
+        <li>Baixa el primer coeficient.</li>
+        <li>Multiplica pel valor \(a\) i suma al següent coeficient. Repeteix.</li>
+        <li>L'últim nombre és la <strong>resta</strong>. Els altres formen el <strong>quocient</strong>.</li>
+      </ol>
+    </div>
+
+    <div class="example">
+      <div class="ex-title">Exemple 1 — Ruffini bàsic</div>
+      <div class="ex-problem">Divideix \(p(x) = 2x^3 - 3x^2 + x - 5\) per \((x - 2)\)</div>
+      <div class="ex-steps">
+        <div class="step"><span class="step-num">1</span><span class="step-content">Coeficients: 2, −3, 1, −5. Valor \(a = 2\).</span></div>
+        <div class="step"><span class="step-num">2</span><span class="step-content">Aplica Ruffini:</span></div>
+      </div>
+      <div class="ruffini-wrap">
+        <table class="ruffini-table">
+          <tr class="coef-row">
+            <td class="root-cell">2</td>
+            <td>2</td><td>−3</td><td>1</td><td>−5</td>
+          </tr>
+          <tr class="mult-row">
+            <td></td><td></td><td>+4</td><td>+2</td><td>+6</td>
+          </tr>
+          <tr class="result-row">
+            <td></td>
+            <td>2</td><td>1</td><td>3</td><td class="remainder">1</td>
+          </tr>
+        </table>
+      </div>
+      <div class="step"><span class="step-num">3</span><span class="step-content">Quocient: \(2x^2 + x + 3\). Resta: \(1\).</span></div>
+      <div class="result-box">✓ \(p(x) = (x-2)(2x^2+x+3) + 1\)</div>
+      <div class="step" style="margin-top:0.5rem"><span class="step-num">4</span><span class="step-content">Verificació: \(p(2) = 2(8) - 3(4) + 2 - 5 = 16 - 12 + 2 - 5 = 1\) ✓ (teorema del residu)</span></div>
+    </div>
+
+    <div class="example">
+      <div class="ex-title">Exemple 2 — Ruffini per trobar arrel</div>
+      <div class="ex-problem">Comprova que \(x = 1\) és arrel de \(q(x) = x^3 - x^2 - x + 1\) i factoritza.</div>
+      <div class="ex-steps">
+        <div class="step"><span class="step-num">1</span><span class="step-content">Comprova: \(q(1) = 1 - 1 - 1 + 1 = 0\) ✓ → \((x-1)\) és factor.</span></div>
+        <div class="step"><span class="step-num">2</span><span class="step-content">Aplica Ruffini amb \(a = 1\):</span></div>
+      </div>
+      <div class="ruffini-wrap">
+        <table class="ruffini-table">
+          <tr class="coef-row">
+            <td class="root-cell">1</td>
+            <td>1</td><td>−1</td><td>−1</td><td>1</td>
+          </tr>
+          <tr class="mult-row">
+            <td></td><td></td><td>+1</td><td>0</td><td>−1</td>
+          </tr>
+          <tr class="result-row">
+            <td></td>
+            <td>1</td><td>0</td><td>−1</td><td class="remainder">0</td>
+          </tr>
+        </table>
+      </div>
+      <div class="step"><span class="step-num">3</span><span class="step-content">Resta = 0, quocient: \(x^2 - 1\)</span></div>
+      <div class="step"><span class="step-num">4</span><span class="step-content">Factoritza el quocient: \(x^2 - 1 = (x+1)(x-1)\)</span></div>
+      <div class="result-box">✓ \(q(x) = (x-1)(x+1)(x-1) = (x-1)^2(x+1)\)</div>
+    </div>
+
+    <div class="ex-section-title">✏️ Exercicis</div>
+
+    <div class="exercise">
+      <div class="ex-num">Exercici 2.1</div>
+      <div class="ex-q">Divideix \(p(x) = x^3 + 2x^2 - 5x - 6\) per \((x - 2)\) usant Ruffini.</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="ruffini-wrap">
+          <table class="ruffini-table">
+            <tr class="coef-row"><td class="root-cell">2</td><td>1</td><td>2</td><td>−5</td><td>−6</td></tr>
+            <tr class="mult-row"><td></td><td></td><td>+2</td><td>+8</td><td>+6</td></tr>
+            <tr class="result-row"><td></td><td>1</td><td>4</td><td>3</td><td class="remainder">0</td></tr>
+          </table>
+        </div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>Resta = 0 → \(x=2\) és arrel!</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>Quocient: \(x^2 + 4x + 3\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">3</span><span>Factoritza quocient: \(x^2+4x+3 = (x+1)(x+3)\) (arrels: \(-1\) i \(-3\))</span></div>
+        <div class="sol-result">Factorització completa: \(p(x) = (x-2)(x+1)(x+3)\)</div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="ex-num">Exercici 2.2 ⭐ (estil PAU 2024)</div>
+      <div class="ex-q">Factoritza completament: \(p(x) = x^3 - 6x^2 + 11x - 6\). Indica totes les arrels.</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>Provem arrels candidates ±1, ±2, ±3, ±6: \(p(1)=1-6+11-6=0\) ✓</span></div>
+        <div class="ruffini-wrap">
+          <table class="ruffini-table">
+            <tr class="coef-row"><td class="root-cell">1</td><td>1</td><td>−6</td><td>11</td><td>−6</td></tr>
+            <tr class="mult-row"><td></td><td></td><td>+1</td><td>−5</td><td>+6</td></tr>
+            <tr class="result-row"><td></td><td>1</td><td>−5</td><td>6</td><td class="remainder">0</td></tr>
+          </table>
+        </div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>Quocient: \(x^2-5x+6\). Arrels: \(x = \frac{5\pm\sqrt{25-24}}{2} = \frac{5\pm1}{2}\) → \(x=3\) i \(x=2\)</span></div>
+        <div class="sol-result">Factorització: \(p(x) = (x-1)(x-2)(x-3)\). Arrels: 1, 2, 3</div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="ex-num">Exercici 2.3</div>
+      <div class="ex-q">Factoritza: \(p(x) = 2x^3 + x^2 - 5x + 2\). Pista: prova \(x = 1\) i \(x = -2\).</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>\(p(1) = 2+1-5+2 = 0\) ✓. Ruffini amb \(a=1\):</span></div>
+        <div class="ruffini-wrap">
+          <table class="ruffini-table">
+            <tr class="coef-row"><td class="root-cell">1</td><td>2</td><td>1</td><td>−5</td><td>2</td></tr>
+            <tr class="mult-row"><td></td><td></td><td>+2</td><td>+3</td><td>−2</td></tr>
+            <tr class="result-row"><td></td><td>2</td><td>3</td><td>−2</td><td class="remainder">0</td></tr>
+          </table>
+        </div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>Quocient: \(2x^2+3x-2\). Fórmula: \(x = \frac{-3\pm\sqrt{9+16}}{4} = \frac{-3\pm5}{4}\) → \(x=\frac{1}{2}\) o \(x=-2\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">3</span><span>\(2x^2+3x-2 = 2(x-\frac{1}{2})(x+2) = (2x-1)(x+2)\)</span></div>
+        <div class="sol-result">Factorització: \(p(x) = (x-1)(2x-1)(x+2)\)</div>
+      </div>
+    </div>
+  </div>
+</div><!-- /dia4 -->
+
+<!-- ╔══════════════════════════════════════╗ -->
+<!-- ║  DIA 5 — REPÀS + FORMULARI          ║ -->
+<!-- ╚══════════════════════════════════════╝ -->
+<div id="dia5" class="day-panel">
+  <div class="day-intro">
+    <h2>Repàs Setmanal · Formulari i Exercicis Mixtos</h2>
+    <p>Diumenge 1 de març · 2 hores · Consolida tot el que has après. Si alguna cosa no et surt, torna als dies anteriors.</p>
+  </div>
+
+  <!-- Formulari -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📋</span>
+      <span class="section-title">Formulari complet — Setmana 1</span>
+      <span class="section-badge badge-alta">Guarda-ho!</span>
+    </div>
+
+    <div class="formulari-grid">
+      <div class="formulari-card">
+        <h3>Productes notables</h3>
+        <div class="formulari-item"><div class="fi-name">Quadrat suma</div>\((a+b)^2 = a^2+2ab+b^2\)</div>
+        <div class="formulari-item"><div class="fi-name">Quadrat diferència</div>\((a-b)^2 = a^2-2ab+b^2\)</div>
+        <div class="formulari-item"><div class="fi-name">Suma × diferència</div>\((a+b)(a-b) = a^2-b^2\)</div>
+      </div>
+      <div class="formulari-card">
+        <h3>Equació de 2n grau</h3>
+        <div class="formulari-item"><div class="fi-name">Fórmula general</div>\(x = \dfrac{-b \pm \sqrt{b^2-4ac}}{2a}\)</div>
+        <div class="formulari-item"><div class="fi-name">Discriminant</div>\(\Delta = b^2 - 4ac\)</div>
+        <div class="formulari-item"><div class="fi-name">Vieta</div>\(x_1+x_2 = -b/a,\quad x_1 x_2 = c/a\)</div>
+      </div>
+      <div class="formulari-card">
+        <h3>Potències</h3>
+        <div class="formulari-item">\(a^m \cdot a^n = a^{m+n}\)</div>
+        <div class="formulari-item">\(a^m / a^n = a^{m-n}\)</div>
+        <div class="formulari-item">\((a^m)^n = a^{mn}\)</div>
+        <div class="formulari-item">\(a^{-n} = 1/a^n\)</div>
+      </div>
+      <div class="formulari-card">
+        <h3>Semblança i Tales</h3>
+        <div class="formulari-item"><div class="fi-name">Raó semblança</div>\(k = AB/A'B'\)</div>
+        <div class="formulari-item"><div class="fi-name">Raó perímètres</div>\(P/P' = k\)</div>
+        <div class="formulari-item"><div class="fi-name">Raó àrees</div>\(S/S' = k^2\)</div>
+        <div class="formulari-item"><div class="fi-name">Tales</div>\(a/b = a'/b'\)</div>
+      </div>
+      <div class="formulari-card">
+        <h3>Fraccions</h3>
+        <div class="formulari-item">\(\dfrac{a}{b} \pm \dfrac{c}{d} = \dfrac{ad \pm bc}{bd}\)</div>
+        <div class="formulari-item">\(\dfrac{a}{b} \cdot \dfrac{c}{d} = \dfrac{ac}{bd}\)</div>
+        <div class="formulari-item">\(\dfrac{a}{b} \div \dfrac{c}{d} = \dfrac{ad}{bc}\)</div>
+      </div>
+      <div class="formulari-card">
+        <h3>Proporcionalitat</h3>
+        <div class="formulari-item"><div class="fi-name">Directa</div>\(y/x = k\) (constant)</div>
+        <div class="formulari-item"><div class="fi-name">Inversa</div>\(xy = k\) (constant)</div>
+        <div class="formulari-item"><div class="fi-name">Directa R3</div>\(x_1/y_1 = x_2/y_2\)</div>
+        <div class="formulari-item"><div class="fi-name">Inversa R3</div>\(x_1 y_1 = x_2 y_2\)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Exercicis mixtos -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🎯</span>
+      <span class="section-title">Exercicis mixtos estil PAU</span>
+      <span class="section-badge badge-alta">Pràctica final</span>
+    </div>
+
+    <div class="tip">
+      <span class="tip-icon">⏱</span>
+      <span>Intenta resoldre cada exercici <strong>sense mirar la solució</strong>. A la PAU no pots. Limita't a 10 minuts per exercici.</span>
+    </div>
+
+    <div class="exercise">
+      <div class="ex-num">Exercici Mixt 1 — Productes notables + Equació</div>
+      <div class="ex-q">Resol l'equació: \((x+3)^2 - (x-1)^2 = 16\)</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>Expandeix: \((x^2+6x+9) - (x^2-2x+1) = 16\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>Simplifica: \(x^2+6x+9-x^2+2x-1 = 16 \Rightarrow 8x+8 = 16\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">3</span><span>\(8x = 8 \Rightarrow x = 1\)</span></div>
+        <div class="sol-result">Resultat: \(x = 1\)</div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="ex-num">Exercici Mixt 2 — Sistema amb plantejament</div>
+      <div class="ex-q">En una gelateria es venen 2 boles de vainilla i 3 de xocolata per 4€, i 3 de vainilla i 1 de xocolata per 3€. Quant val cada bola?</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>Sigui \(v\) = preu vainilla, \(x\) = preu xocolata. Sistema: \(\begin{cases} 2v+3x=4 \\ 3v+x=3 \end{cases}\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>De la 2a: \(x = 3-3v\). Substitueix: \(2v+3(3-3v)=4 \Rightarrow 2v+9-9v=4 \Rightarrow -7v=-5 \Rightarrow v=\frac{5}{7}\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">3</span><span>\(x = 3-3\cdot\frac{5}{7} = 3-\frac{15}{7} = \frac{6}{7}\)</span></div>
+        <div class="sol-result">Vainilla: \(\frac{5}{7}\)€ ≈ 0,71€ · Xocolata: \(\frac{6}{7}\)€ ≈ 0,86€</div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="ex-num">Exercici Mixt 3 — Ruffini + Factorització</div>
+      <div class="ex-q">Factoritza completament \(p(x) = x^4 - 5x^2 + 4\). Pista: primer substitueix \(t = x^2\).</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>Substitueix \(t = x^2\): \(t^2 - 5t + 4 = 0\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>Discriminant: \(\Delta = 25-16 = 9\). Arrels: \(t = \frac{5\pm3}{2}\) → \(t_1=4,\ t_2=1\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">3</span><span>\(t_1=4 \Rightarrow x^2=4 \Rightarrow x=\pm2\) ; \(t_2=1 \Rightarrow x^2=1 \Rightarrow x=\pm1\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">4</span><span>\(p(x) = (x^2-4)(x^2-1) = (x-2)(x+2)(x-1)(x+1)\)</span></div>
+        <div class="sol-result">Factorització: \((x-2)(x+2)(x-1)(x+1)\)</div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="ex-num">Exercici Mixt 4 — Semblança aplicada</div>
+      <div class="ex-q">Una escala de mà de 5 m de llarg recolzada contra una paret toca la paret a 4 m d'alçada. Si una escala semblant toca la paret a 6 m, quant fa de llarga?</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>Les escales formen triangles semblants. Raó de semblança: \(k = \frac{6}{4} = \frac{3}{2}\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>Longitud de la nova escala: \(5 \cdot k = 5 \cdot \frac{3}{2} = 7{,}5\) m</span></div>
+        <div class="sol-result">La nova escala fa 7,5 m</div>
+      </div>
+    </div>
+
+    <div class="exercise">
+      <div class="ex-num">Exercici Mixt 5 ⭐ (dificultat alta)</div>
+      <div class="ex-q">Sabem que \(x = -1\) és arrel doble de \(p(x) = x^3 + ax^2 + bx + 1\). Troba \(a\) i \(b\).</div>
+      <button class="show-sol-btn" onclick="toggleSol(this)">Mostra solució</button>
+      <div class="solution">
+        <div class="sol-label">Solució</div>
+        <div class="sol-step"><span class="sol-step-num">1</span><span>Si \(x=-1\) és arrel doble, aleshores \(p(x) = (x+1)^2(x-r)\) per alguna arrel \(r\).</span></div>
+        <div class="sol-step"><span class="sol-step-num">2</span><span>Expandeix: \((x^2+2x+1)(x-r) = x^3-rx^2+2x^2-2rx+x-r = x^3+(2-r)x^2+(1-2r)x-r\)</span></div>
+        <div class="sol-step"><span class="sol-step-num">3</span><span>Terme independent: \(-r = 1 \Rightarrow r = -1\). Llavors \(x=-1\) és arrel triple!</span></div>
+        <div class="sol-step"><span class="sol-step-num">4</span><span>\(p(x) = (x+1)^3 = x^3+3x^2+3x+1\) → \(a=3,\ b=3\)</span></div>
+        <div class="sol-result">Resultat: \(a = 3,\quad b = 3\)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip" style="margin-top:1rem">
+    <span class="tip-icon">🚀</span>
+    <span><strong>Preparació per la Setmana 2:</strong> Dilluns comences funcions i domini. Repassa els conceptes de potències i logaritmes, i assegura't que les equacions de 2n grau te surti automàtic, perquè apareixes com a subproblema en molts dominis.</span>
+  </div>
+</div><!-- /dia5 -->
+
+</div><!-- /main -->
+
+<script>
+// ── Day switching ──
+function showDay(n) {
+  document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.day-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('dia' + n).classList.add('active');
+  document.querySelectorAll('.day-tab')[n - 1].classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Re-render KaTeX in the newly shown panel
+  if (window.renderMathInElement) {
+    renderMathInElement(document.getElementById('dia' + n), {
+      delimiters: [
+        {left: '\\[', right: '\\]', display: true},
+        {left: '\\(', right: '\\)', display: false}
+      ],
+      throwOnError: false
+    });
+  }
+}
+
+// ── Toggle exercise solution ──
+function toggleSol(btn) {
+  const sol = btn.nextElementSibling;
+  sol.classList.toggle('visible');
+  btn.textContent = sol.classList.contains('visible') ? 'Amaga solució' : 'Mostra solució';
+}
+
+// ── KaTeX init (called by auto-render onload) ──
+function initMath() {
+  renderMathInElement(document.body, {
+    delimiters: [
+      {left: '\\[', right: '\\]', display: true},
+      {left: '\\(', right: '\\)', display: false}
+    ],
+    throwOnError: false
+  });
+}
+
+// ── Auto-open today's day ──
+(function() {
+  const today = new Date();
+  const m = today.getMonth() + 1;
+  const d = today.getDate();
+  // Week 1: Feb 25–Mar 1
+  const map = {
+    '2-25': 1, '2-26': 2, '2-27': 3, '2-28': 4, '3-1': 5
+  };
+  const key = m + '-' + d;
+  if (map[key]) showDay(map[key]);
+})();
+</script>
+</body>
+</html>

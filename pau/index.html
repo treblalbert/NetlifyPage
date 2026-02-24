@@ -493,6 +493,7 @@ function renderWeek(wi) {
   const todayKey = getTodayKey();
   const wPct = w.days.length ? Math.round((weekChecked(wi) / w.days.length) * 100) : 0;
 
+  const studyGuides = { 0: 'setmana1/index.html' };
   let html = `<div class="panel active">`;
   html += `<div class="week-header">
     <h2>${w.full}</h2>
@@ -501,6 +502,7 @@ function renderWeek(wi) {
       <div class="bar-outer"><div class="bar-inner" style="width:${wPct}%"></div></div>
       <span class="pct">${wPct}%</span>
     </div>
+    ${studyGuides[wi] ? `<a href="${studyGuides[wi]}" style="display:inline-flex;align-items:center;gap:0.4rem;margin-top:0.8rem;padding:0.5rem 1.1rem;background:var(--accent);color:white;border-radius:8px;font-size:0.82rem;font-weight:600;text-decoration:none;">📖 Guia d'estudi detallada →</a>` : ''}
   </div>`;
 
   w.days.forEach((d, di) => {
