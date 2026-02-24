@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pla d'Estudi — Accés +25 anys</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #FAF7F2;
+  --bg2: #F2EDE5;
+  --card: #FFFFFF;
+  --text: #2C2416;
+  --text2: #6B5D4D;
+  --accent: #C4501A;
+  --accent2: #E8753D;
+  --blue: #2563EB;
+  --green: #16A34A;
+  --green2: #22C55E;
+  --purple: #7C3AED;
+  --red: #DC2626;
+  --border: #E5DED3;
+  --shadow: 0 1px 3px rgba(44,36,22,0.06), 0 4px 12px rgba(44,36,22,0.04);
+  --shadow-lg: 0 4px 12px rgba(44,36,22,0.08), 0 16px 40px rgba(44,36,22,0.06);
+  --radius: 12px;
+  --mates-bg: #EEF2FF;
+  --mates-border: #C7D2FE;
+  --mates-text: #3730A3;
+  --fisica-bg: #FEF3C7;
+  --fisica-border: #FCD34D;
+  --fisica-text: #92400E;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.hero {
+  background: linear-gradient(135deg, #2C2416 0%, #4A3728 50%, #3D2E1F 100%);
+  padding: 3rem 1.5rem 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.015) 20px, rgba(255,255,255,0.015) 40px);
+}
+.hero-inner { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+.hero h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  color: #FAF7F2;
+  font-weight: 400;
+  letter-spacing: -0.5px;
+  margin-bottom: 0.3rem;
+}
+.hero .subtitle {
+  color: rgba(250,247,242,0.6);
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+.hero-stats { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.hero-stat { display: flex; flex-direction: column; gap: 0.15rem; }
+.hero-stat .val {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem; color: var(--accent2);
+}
+.hero-stat .lbl { font-size: 0.75rem; color: rgba(250,247,242,0.5); text-transform: uppercase; letter-spacing: 1px; }
+
+.progress-wrap {
+  max-width: 900px; margin: -1.2rem auto 0; padding: 0 1.5rem; position: relative; z-index: 2;
+}
+.progress-card {
+  background: var(--card); border-radius: var(--radius); padding: 1.2rem 1.5rem;
+  box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+}
+.progress-card .label { font-weight: 600; font-size: 0.85rem; color: var(--text2); white-space: nowrap; }
+.progress-bar-outer {
+  flex: 1; min-width: 200px; height: 10px; background: var(--bg2); border-radius: 5px; overflow: hidden;
+}
+.progress-bar-inner {
+  height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 5px; transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  width: 0%;
+}
+.progress-pct { font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 0.95rem; color: var(--accent); min-width: 42px; }
+
+.nav-wrap { max-width: 900px; margin: 1.5rem auto 0; padding: 0 1.5rem; }
+.nav-tabs {
+  display: flex; gap: 0.4rem; overflow-x: auto; padding-bottom: 0.5rem;
+  scrollbar-width: none;
+}
+.nav-tabs::-webkit-scrollbar { display: none; }
+.nav-tab {
+  padding: 0.55rem 1rem; border-radius: 8px; font-size: 0.82rem; font-weight: 600;
+  cursor: pointer; white-space: nowrap; border: 1.5px solid var(--border);
+  background: var(--card); color: var(--text2); transition: all 0.2s;
+  user-select: none;
+}
+.nav-tab:hover { border-color: var(--accent); color: var(--accent); }
+.nav-tab.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+.nav-tab.tab-analysis { margin-left: auto; border-color: var(--accent); color: var(--accent); }
+.nav-tab.tab-analysis.active { background: var(--accent); color: white; border-color: var(--accent); }
+.nav-tab.tab-tips { border-color: var(--green); color: var(--green); }
+.nav-tab.tab-tips.active { background: var(--green); color: white; border-color: var(--green); }
+
+.main { max-width: 900px; margin: 1.2rem auto 3rem; padding: 0 1.5rem; }
+
+.panel { display: none; }
+.panel.active { display: block; animation: fadeUp 0.35s ease; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.week-header { margin-bottom: 1rem; }
+.week-header h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.5rem; font-weight: 400; margin-bottom: 0.2rem;
+}
+.week-header .week-obj { font-size: 0.9rem; color: var(--text2); font-style: italic; }
+.week-progress-mini { margin-top: 0.6rem; display: flex; align-items: center; gap: 0.6rem; }
+.week-progress-mini .bar-outer { flex: 1; height: 6px; background: var(--bg2); border-radius: 3px; overflow: hidden; }
+.week-progress-mini .bar-inner {
+  height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, var(--green), var(--green2));
+  transition: width 0.5s ease;
+}
+.week-progress-mini .pct {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem; color: var(--green); font-weight: 500; min-width: 36px;
+}
+
+.day-card {
+  background: var(--card); border-radius: var(--radius); padding: 0;
+  box-shadow: var(--shadow); margin-bottom: 0.75rem; overflow: hidden;
+  border: 1px solid var(--border); transition: box-shadow 0.2s;
+}
+.day-card:hover { box-shadow: var(--shadow-lg); }
+.day-card.completed { opacity: 0.6; }
+.day-card.completed .day-head { background: var(--green); }
+.day-card.completed .day-head * { color: white !important; }
+
+.day-head {
+  display: flex; align-items: center; gap: 0.8rem; padding: 0.8rem 1.2rem;
+  background: var(--bg2); cursor: pointer; user-select: none; transition: background 0.2s;
+}
+.day-head:hover { background: var(--border); }
+.day-check {
+  width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  cursor: pointer; transition: all 0.2s; background: white;
+}
+.day-check.checked { background: var(--green); border-color: var(--green); }
+.day-check.checked::after { content: '✓'; color: white; font-size: 14px; font-weight: 700; }
+.day-name { font-weight: 700; font-size: 0.9rem; flex: 1; }
+.day-hours {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem; color: var(--text2); background: white;
+  padding: 0.2rem 0.6rem; border-radius: 6px;
+}
+.day-toggle { font-size: 0.8rem; color: var(--text2); transition: transform 0.2s; }
+.day-card.open .day-toggle { transform: rotate(180deg); }
+
+.day-body { padding: 0 1.2rem 1rem; display: none; }
+.day-card.open .day-body { display: block; animation: fadeUp 0.25s ease; }
+
+.subject-block {
+  margin-top: 0.8rem; padding: 0.8rem 1rem; border-radius: 8px;
+  border-left: 3px solid;
+}
+.subject-block.mates { background: var(--mates-bg); border-color: var(--mates-border); }
+.subject-block.fisica { background: var(--fisica-bg); border-color: var(--fisica-border); }
+.subject-label {
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 0.3rem;
+}
+.subject-block.mates .subject-label { color: var(--mates-text); }
+.subject-block.fisica .subject-label { color: var(--fisica-text); }
+.subject-content { font-size: 0.88rem; color: var(--text); line-height: 1.5; }
+
+.day-sunday .day-head { background: #E8F5E9; }
+.day-simulacre .day-head { background: #FFF3E0; }
+.day-exam .day-head { background: #FEE2E2; }
+
+.analysis-section { margin-bottom: 2rem; }
+.analysis-section h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.4rem; font-weight: 400; margin-bottom: 0.3rem;
+}
+.analysis-section p { font-size: 0.9rem; color: var(--text2); margin-bottom: 1rem; }
+
+.topic-grid { display: grid; gap: 0.6rem; }
+.topic-row {
+  display: grid; grid-template-columns: 1fr 2fr auto auto;
+  gap: 0.8rem; align-items: center;
+  background: var(--card); border-radius: 10px; padding: 0.8rem 1rem;
+  border: 1px solid var(--border); font-size: 0.85rem;
+}
+.topic-name { font-weight: 600; }
+.topic-desc { color: var(--text2); font-size: 0.82rem; }
+.topic-freq {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem; color: var(--text2); text-align: center;
+}
+.priority-badge {
+  padding: 0.2rem 0.65rem; border-radius: 6px; font-size: 0.72rem;
+  font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; text-align: center;
+}
+.priority-badge.alta { background: #FEE2E2; color: #DC2626; }
+.priority-badge.mitjana { background: #FEF3C7; color: #D97706; }
+.priority-badge.baixa { background: #DCFCE7; color: #16A34A; }
+
+.exam-structure {
+  background: var(--card); border-radius: var(--radius); padding: 1.2rem 1.5rem;
+  border: 1px solid var(--border); margin-bottom: 1.5rem;
+}
+.struct-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.8rem; margin-top: 0.8rem; }
+.struct-item { padding: 0.8rem; border-radius: 8px; text-align: center; }
+.struct-item.part1 { background: var(--mates-bg); border: 1px solid var(--mates-border); }
+.struct-item.part2 { background: var(--fisica-bg); border: 1px solid var(--fisica-border); }
+.struct-item .big { font-family: 'DM Serif Display', serif; font-size: 1.8rem; }
+.struct-item .desc { font-size: 0.8rem; color: var(--text2); margin-top: 0.2rem; }
+
+.tip-card {
+  background: var(--card); border-radius: var(--radius); padding: 1.2rem 1.5rem;
+  border: 1px solid var(--border); margin-bottom: 0.8rem; box-shadow: var(--shadow);
+}
+.tip-card h3 { font-size: 1rem; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem; }
+.tip-card p { font-size: 0.88rem; color: var(--text2); line-height: 1.6; }
+.tip-icon { font-size: 1.2rem; }
+
+.claude-prompts { display: grid; gap: 0.5rem; margin-top: 1rem; }
+.claude-prompt {
+  background: var(--bg2); border-radius: 8px; padding: 0.7rem 1rem;
+  font-size: 0.85rem; border: 1px solid var(--border);
+}
+.claude-prompt code {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent); font-size: 0.82rem;
+}
+
+.day-card.today { border-color: var(--accent); border-width: 2px; }
+.day-card.today .day-head { background: #FFF7ED; }
+.today-badge {
+  font-size: 0.65rem; background: var(--accent); color: white;
+  padding: 0.1rem 0.45rem; border-radius: 4px; font-weight: 700; text-transform: uppercase;
+}
+
+.countdown-wrap {
+  display: flex; align-items: center; gap: 0.5rem; margin-top: 0.8rem;
+  padding: 0.6rem 1rem; background: rgba(255,255,255,0.08); border-radius: 8px; width: fit-content;
+}
+.countdown-wrap .cd-label { font-size: 0.75rem; color: rgba(250,247,242,0.5); }
+.countdown-wrap .cd-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem; color: var(--accent2); font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .hero { padding: 2rem 1rem 2rem; }
+  .progress-wrap, .nav-wrap, .main { padding: 0 1rem; }
+  .hero-stats { gap: 1rem; }
+  .topic-row { grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+  .topic-desc { grid-column: 1 / -1; }
+  .progress-card { gap: 0.5rem; }
+  .struct-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <h1>Pla d'Estudi Intensiu</h1>
+    <div class="subtitle">Proves d'accés a la universitat · Majors de 25 anys · Matemàtiques & Física</div>
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="val">8</span><span class="lbl">Setmanes</span></div>
+      <div class="hero-stat"><span class="val">55</span><span class="lbl">Dies</span></div>
+      <div class="hero-stat"><span class="val">25 feb</span><span class="lbl">Inici</span></div>
+      <div class="hero-stat"><span class="val">20 abr</span><span class="lbl">Objectiu</span></div>
+    </div>
+    <div class="countdown-wrap">
+      <span class="cd-label">Falten</span>
+      <span class="cd-val" id="countdown">—</span>
+      <span class="cd-label">dies</span>
+    </div>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-card">
+    <span class="label">Progrés total</span>
+    <div class="progress-bar-outer"><div class="progress-bar-inner" id="globalBar"></div></div>
+    <span class="progress-pct" id="globalPct">0%</span>
+  </div>
+</div>
+
+<div class="nav-wrap">
+  <div class="nav-tabs" id="navTabs"></div>
+</div>
+
+<div class="main" id="mainContent"></div>
+
+<script>
+const WEEKS = [
+  {
+    title: "Setmana 1",
+    range: "25 feb – 1 mar",
+    full: "Bases de Mates I",
+    obj: "Àlgebra bàsica, equacions, proporcionalitat i polinomis",
+    days: [
+      { day: "Dimecres 25/02", mates: "Nombres enters, fraccions, potències i arrels. Expressions algebraiques: monomis, polinomis. Productes notables: (a+b)², (a-b)², (a+b)(a-b).", fisica: null, hours: "4h Mates" },
+      { day: "Dijous 26/02", mates: "Equacions de 1r grau. Equacions de 2n grau: fórmula general, discriminant. Exemples pràctics.", fisica: null, hours: "4h Mates" },
+      { day: "Divendres 27/02", mates: "Sistemes de 2 equacions amb 2 incògnites (substitució, igualació, reducció). Proporcionalitat directa i inversa. Teorema de Tales. Semblança de triangles (ex. Salou 2023).", fisica: null, hours: "4h Mates" },
+      { day: "Dissabte 28/02", mates: "Polinomis: divisió (Ruffini), arrels, factorització (ex. arrels polinomi 2024). Exercicis de consolidació.", fisica: null, hours: "4h Mates" },
+      { day: "Diumenge 01/03", mates: "Repàs setmanal + exercicis mixtos de tot el que hem vist", fisica: null, hours: "2h Repàs", sunday: true },
+    ]
+  },
+  {
+    title: "Setmana 2",
+    range: "2 – 8 mar",
+    full: "Bases de Mates II + Inici Física",
+    obj: "Funcions, trigonometria bàsica + Unitats SI i conversions",
+    days: [
+      { day: "Dilluns 02/03", mates: "Funcions: concepte, domini, recorregut, gràfiques. Domini de funcions racionals i irracionals (ex. 2024, 2025).", fisica: null, hours: "4h Mates" },
+      { day: "Dimarts 03/03", mates: "Funció lineal i quadràtica. Gràfiques. Interpretació visual.", fisica: null, hours: "4h Mates" },
+      { day: "Dimecres 04/03", mates: "Trigonometria: sinus, cosinus, tangent. Triangle rectangle. Relacions fonamentals.", fisica: null, hours: "3h Mates" },
+      { day: "Dijous 05/03", mates: "Funcions trigonomètriques, logarítmiques i exponencials. Propietats dels logaritmes.", fisica: "Unitats del SI. Conversions d'unitats. Factors de conversió (ex. Física 2023, 2025).", hours: "2h Mates + 2h Fís" },
+      { day: "Divendres 06/03", mates: "Equacions logarítmiques i exponencials (ex. 2023).", fisica: "Anàlisi dimensional. Unitats alternatives (ex. 2024). Errors de mesura: error absolut i relatiu (ex. 2025).", hours: "2h Mates + 2h Fís" },
+      { day: "Dissabte 07/03", mates: "Exercicis mixtos: dominis, equacions, trigonometria.", fisica: "Exercicis de conversions i anàlisi dimensional.", hours: "2h Mates + 1h Fís" },
+      { day: "Diumenge 08/03", mates: "Repàs setmanal", fisica: "Repàs setmanal", hours: "2h Repàs", sunday: true },
+    ]
+  },
+  {
+    title: "Setmana 3",
+    range: "9 – 15 mar",
+    full: "Derivades + Cinemàtica",
+    obj: "Derivades i aplicacions + Moviment rectilini (MRU, MRUA)",
+    days: [
+      { day: "Dilluns 09/03", mates: "Concepte de derivada. Límit i derivada com a pendent. Derivades bàsiques: xⁿ, sin, cos, eˣ, ln(x).", fisica: null, hours: "4h Mates" },
+      { day: "Dimarts 10/03", mates: "Regles de derivació: suma, producte, quocient, regla de la cadena.", fisica: null, hours: "4h Mates" },
+      { day: "Dimecres 11/03", mates: "Aplicació de derivades: màxims i mínims. Creixement i decreixement. Anàlisi gràfica de f'(x) (ex. 2023).", fisica: null, hours: "4h Mates" },
+      { day: "Dijous 12/03", mates: null, fisica: "Cinemàtica: posició, velocitat, acceleració. MRU: equacions i gràfiques.", hours: "4h Física" },
+      { day: "Divendres 13/03", mates: null, fisica: "MRUA: equacions, caiguda lliure. Problema de la caiguda (ex. 2023). Gràfiques v-t, a-t (ex. 2025).", hours: "4h Física" },
+      { day: "Dissabte 14/03", mates: "Exercicis de derivades.", fisica: "Problemes de cinemàtica combinats.", hours: "2h Mates + 2h Fís" },
+      { day: "Diumenge 15/03", mates: "Repàs", fisica: "Repàs", hours: "2h Repàs", sunday: true },
+    ]
+  },
+  {
+    title: "Setmana 4",
+    range: "16 – 22 mar",
+    full: "Integrals + Dinàmica i Forces",
+    obj: "Primitives + Lleis de Newton, força centrípeta, gravitació",
+    days: [
+      { day: "Dilluns 16/03", mates: "Integrals (primitives): concepte. Primitives bàsiques: xⁿ, eˣ, 1/x, sin, cos.", fisica: null, hours: "4h Mates" },
+      { day: "Dimarts 17/03", mates: "Tècniques d'integració bàsiques. Primitives amb regla de la cadena inversa (ex. 2023, 2024, 2025).", fisica: null, hours: "4h Mates" },
+      { day: "Dimecres 18/03", mates: null, fisica: "Lleis de Newton (1a, 2a, 3a). Força, massa, acceleració. Pes vs massa.", hours: "4h Física" },
+      { day: "Dijous 19/03", mates: null, fisica: "Moviment circular: força centrípeta. Muntanyes russes (ex. 2023). Ciclista en corba (ex. 2025).", hours: "4h Física" },
+      { day: "Divendres 20/03", mates: null, fisica: "Gravitació universal. Gravetat a diferents altures (ex. 2023). Òrbites i satèl·lits: Kepler (ex. 2024).", hours: "4h Física" },
+      { day: "Dissabte 21/03", mates: "Més exercicis d'integrals.", fisica: "Problemes de dinàmica i gravitació.", hours: "2h Mates + 2h Fís" },
+      { day: "Diumenge 22/03", mates: "Repàs", fisica: "Repàs", hours: "2h Repàs", sunday: true },
+    ]
+  },
+  {
+    title: "Setmana 5",
+    range: "23 – 29 mar",
+    full: "Matrius + Ones i MHS",
+    obj: "Matrius, determinants, sistemes + Moviment harmònic simple i ones",
+    days: [
+      { day: "Dilluns 23/03", mates: "Matrius: definició, tipus, operacions (suma, producte, transposada). Propietats (ex. 2023).", fisica: null, hours: "4h Mates" },
+      { day: "Dimarts 24/03", mates: "Determinants 2x2 i 3x3 (Sarrus). Propietats dels determinants. Matriu inversa.", fisica: null, hours: "4h Mates" },
+      { day: "Dimecres 25/03", mates: "Rang d'una matriu (ex. 2024). Sistemes 3x3: Cramer, Gauss. Sistemes homogenis (ex. 2025).", fisica: null, hours: "4h Mates" },
+      { day: "Dijous 26/03", mates: "Problemes de sistemes 3x3 (ex. gelateria 2023). Equacions matricials (ex. 2025).", fisica: null, hours: "4h Mates" },
+      { day: "Divendres 27/03", mates: null, fisica: "MHS: equació, període, freqüència, amplitud. Molla: constant elàstica (ex. 2024). Energia en MHS.", hours: "4h Física" },
+      { day: "Dissabte 28/03", mates: null, fisica: "Ones: equació ona harmònica, longitud d'ona, velocitat propagació. So (ex. 2023, 2024).", hours: "4h Física" },
+      { day: "Diumenge 29/03", mates: "Repàs matrius", fisica: "Repàs ones + MHS", hours: "2h Repàs", sunday: true },
+    ]
+  },
+  {
+    title: "Setmana 6",
+    range: "30 mar – 5 abr",
+    full: "Geometria + Electricitat",
+    obj: "Geometria analítica 2D/3D + Circuits, camps elèctrics i magnètics",
+    days: [
+      { day: "Dilluns 30/03", mates: "Vectors 2D: operacions, mòdul, producte escalar. Equació de la recta. Distància entre punts.", fisica: null, hours: "4h Mates" },
+      { day: "Dimarts 31/03", mates: "Geometria 2D: rectes paral·leles i perpendiculars. Punt mitjà. Problemes (ex. quadrat 2023, baricentre 2025).", fisica: null, hours: "4h Mates" },
+      { day: "Dimecres 01/04", mates: "Vectors 3D. Equació del pla per 3 punts (ex. 2023). Coplanaritat (ex. 2025). Rectes i plans (ex. 2024).", fisica: null, hours: "4h Mates" },
+      { day: "Dijous 02/04", mates: null, fisica: "Electrostàtica: càrrega, llei de Coulomb, camp elèctric. Càrregues en quadrat (ex. 2023).", hours: "4h Física" },
+      { day: "Divendres 03/04", mates: null, fisica: "Circuits: llei d'Ohm, resistències en sèrie/paral·lel. Condensadors. Circuit RC (ex. 2023, 2024).", hours: "4h Física" },
+      { day: "Dissabte 04/04", mates: null, fisica: "Camp magnètic: força de Lorentz (ex. 2025). Inducció de Faraday. Alternadors (ex. 2024). Espectròmetre (ex. 2024).", hours: "4h Física" },
+      { day: "Diumenge 05/04", mates: "Repàs geometria", fisica: "Repàs electricitat", hours: "2h Repàs", sunday: true },
+    ]
+  },
+  {
+    title: "Setmana 7",
+    range: "6 – 12 abr",
+    full: "Complementaris + Simulacre 1",
+    obj: "Òptica, moment lineal, optimització + primer simulacre complet",
+    days: [
+      { day: "Dilluns 06/04", mates: "Optimització: problemes de màxims i mínims aplicats (ex. empresa AFSA 2025).", fisica: null, hours: "4h Mates" },
+      { day: "Dimarts 07/04", mates: null, fisica: "Òptica: refracció, llei de Snell, reflexió total interna (ex. cub 2024). Salt astronauta/impuls (ex. 2024).", hours: "4h Física" },
+      { day: "Dimecres 08/04", mates: null, fisica: "Moment lineal i xocs: conservació del moment, xocs elàstics/inelàstics (ex. billar 2023). Energia cinètica i potencial.", hours: "4h Física" },
+      { day: "Dijous 09/04", mates: "🎯 SIMULACRE 1: Examen Mates 2023 complet (cronometrat 90 min).", fisica: null, hours: "2h Exam + 2h Corr", simulacre: true },
+      { day: "Divendres 10/04", mates: null, fisica: "🎯 SIMULACRE 1: Examen Física 2023 complet (cronometrat 90 min).", hours: "2h Exam + 2h Corr", simulacre: true },
+      { day: "Dissabte 11/04", mates: "Anàlisi d'errors. Reforç punts febles.", fisica: "Anàlisi d'errors. Reforç punts febles.", hours: "2h Mates + 2h Fís" },
+      { day: "Diumenge 12/04", mates: "Repàs general", fisica: "Repàs general", hours: "2h Repàs", sunday: true },
+    ]
+  },
+  {
+    title: "Setmana 8",
+    range: "13 – 20 abr",
+    full: "Simulacres finals + Repàs intensiu",
+    obj: "Consolidar tot, simulacres 2024 i 2025, polir punts febles",
+    days: [
+      { day: "Dilluns 13/04", mates: "🎯 SIMULACRE 2: Examen Mates 2024 (cronometrat 90 min). Correcció immediata.", fisica: null, hours: "2h Exam + 2h Corr", simulacre: true },
+      { day: "Dimarts 14/04", mates: null, fisica: "🎯 SIMULACRE 2: Examen Física 2024 (cronometrat 90 min). Correcció immediata.", hours: "2h Exam + 2h Corr", simulacre: true },
+      { day: "Dimecres 15/04", mates: "Repàs intensiu dels temes que més han fallat als simulacres.", fisica: "Repàs intensiu dels temes que més han fallat als simulacres.", hours: "2h Mates + 2h Fís" },
+      { day: "Dijous 16/04", mates: "🎯 SIMULACRE 3: Examen Mates 2025 (cronometrat 90 min). Correcció.", fisica: null, hours: "2h Exam + 2h Corr", simulacre: true },
+      { day: "Divendres 17/04", mates: null, fisica: "🎯 SIMULACRE 3: Examen Física 2025 (cronometrat 90 min). Correcció.", hours: "2h Exam + 2h Corr", simulacre: true },
+      { day: "Dissabte 18/04", mates: "Repàs de fórmules clau i trucs d'examen.", fisica: "Repàs de fórmules clau i trucs d'examen.", hours: "2h Mates + 2h Fís" },
+      { day: "Diumenge 19/04", mates: "Repàs lleuger. Formulari final.", fisica: "Repàs lleuger. Formulari final.", hours: "1h Mates + 1h Fís", sunday: true },
+      { day: "Dilluns 20/04", mates: "Últim repàs mental. Revisar formularis. Descans i confiança!", fisica: "Últim repàs mental. Revisar formularis. Descans i confiança!", hours: "Prep final", exam: true },
+    ]
+  }
+];
+
+// ── State ──
+let checked = {};
+try { checked = JSON.parse(localStorage.getItem('studyChecked25') || '{}'); } catch(e) {}
+let activePanel = 'w0';
+
+function save() { try { localStorage.setItem('studyChecked25', JSON.stringify(checked)); } catch(e) {} }
+
+function totalDays() { return WEEKS.reduce((s, w) => s + w.days.length, 0); }
+function checkedCount() { return Object.values(checked).filter(Boolean).length; }
+function weekChecked(wi) { return WEEKS[wi].days.filter((_, di) => checked[`${wi}-${di}`]).length; }
+
+function getTodayKey() {
+  const today = new Date();
+  const m = today.getMonth() + 1, d = today.getDate();
+  for (let wi = 0; wi < WEEKS.length; wi++) {
+    for (let di = 0; di < WEEKS[wi].days.length; di++) {
+      const match = WEEKS[wi].days[di].day.match(/(\d{2})\/(\d{2})/);
+      if (match && parseInt(match[1]) === d && parseInt(match[2]) === m) return `${wi}-${di}`;
+    }
+  }
+  return null;
+}
+
+function updateCountdown() {
+  const target = new Date(2026, 3, 20); // April 20, 2026
+  const now = new Date();
+  const diff = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+  const el = document.getElementById('countdown');
+  if (el) el.textContent = diff > 0 ? diff : '0';
+}
+
+// ── Render ──
+function renderNav() {
+  const tabs = document.getElementById('navTabs');
+  let html = '';
+  WEEKS.forEach((w, i) => {
+    const wPct = w.days.length ? Math.round((weekChecked(i) / w.days.length) * 100) : 0;
+    const check = wPct === 100 ? ' ✓' : '';
+    html += `<div class="nav-tab ${activePanel === 'w'+i ? 'active' : ''}" onclick="showPanel('w${i}')">${w.title}${check}</div>`;
+  });
+  html += `<div class="nav-tab tab-analysis ${activePanel === 'analysis' ? 'active' : ''}" onclick="showPanel('analysis')">📊 Anàlisi</div>`;
+  html += `<div class="nav-tab tab-tips ${activePanel === 'tips' ? 'active' : ''}" onclick="showPanel('tips')">💡 Consells</div>`;
+  tabs.innerHTML = html;
+}
+
+function renderProgress() {
+  const pct = totalDays() ? Math.round((checkedCount() / totalDays()) * 100) : 0;
+  document.getElementById('globalBar').style.width = pct + '%';
+  document.getElementById('globalPct').textContent = pct + '%';
+}
+
+function renderWeek(wi) {
+  const w = WEEKS[wi];
+  const todayKey = getTodayKey();
+  const wPct = w.days.length ? Math.round((weekChecked(wi) / w.days.length) * 100) : 0;
+
+  let html = `<div class="panel active">`;
+  html += `<div class="week-header">
+    <h2>${w.full}</h2>
+    <div class="week-obj">${w.obj}</div>
+    <div class="week-progress-mini">
+      <div class="bar-outer"><div class="bar-inner" style="width:${wPct}%"></div></div>
+      <span class="pct">${wPct}%</span>
+    </div>
+  </div>`;
+
+  w.days.forEach((d, di) => {
+    const key = `${wi}-${di}`;
+    const isChecked = checked[key];
+    const isToday = todayKey === key;
+    const cls = [
+      'day-card',
+      isChecked ? 'completed' : '',
+      isToday ? 'today' : '',
+      d.sunday ? 'day-sunday' : '',
+      d.simulacre ? 'day-simulacre' : '',
+      d.exam ? 'day-exam' : '',
+    ].filter(Boolean).join(' ');
+
+    html += `<div class="${cls}" id="card-${key}">
+      <div class="day-head" onclick="toggleCard('${key}')">
+        <div class="day-check ${isChecked ? 'checked' : ''}" onclick="event.stopPropagation(); toggleCheck('${key}')"></div>
+        <span class="day-name">${d.day}${isToday ? ' <span class="today-badge">Avui</span>' : ''}${d.simulacre ? ' 🎯' : ''}${d.exam ? ' 🏁' : ''}</span>
+        <span class="day-hours">${d.hours}</span>
+        <span class="day-toggle">▾</span>
+      </div>
+      <div class="day-body">`;
+
+    if (d.mates) {
+      html += `<div class="subject-block mates">
+        <div class="subject-label">📐 Matemàtiques</div>
+        <div class="subject-content">${d.mates}</div>
+      </div>`;
+    }
+    if (d.fisica) {
+      html += `<div class="subject-block fisica">
+        <div class="subject-label">⚡ Física</div>
+        <div class="subject-content">${d.fisica}</div>
+      </div>`;
+    }
+
+    html += `</div></div>`;
+  });
+
+  html += '</div>';
+  return html;
+}
+
+function topicRow(name, desc, freq, priority) {
+  return `<div class="topic-row">
+    <div class="topic-name">${name}</div>
+    <div class="topic-desc">${desc}</div>
+    <div class="topic-freq">${freq}</div>
+    <div class="priority-badge ${priority}">${priority}</div>
+  </div>`;
+}
+
+function renderAnalysis() {
+  return `<div class="panel active">
+    <div class="analysis-section">
+      <h2>Estructura de l'examen</h2>
+      <p>Format idèntic per Mates i Física. Es permet calculadora científica (no programàtica).</p>
+      <div class="exam-structure">
+        <div class="struct-grid">
+          <div class="struct-item part1">
+            <div class="big">6 pts</div>
+            <div class="desc">Part 1 — Tria 4 de 6 qüestions<br>(1.5 pts cadascuna)</div>
+          </div>
+          <div class="struct-item part2">
+            <div class="big">4 pts</div>
+            <div class="desc">Part 2 — Resol 1 de 2 problemes<br>(4 pts el problema)</div>
+          </div>
+        </div>
+        <p style="margin-top:1rem;font-size:0.85rem;color:var(--text2)"><strong>🎯 Estratègia clau:</strong> Com que tries 4 de 6, no cal dominar-ho tot. Si controles bé 5 temes, sempre podràs triar les 4 que et van millor!</p>
+      </div>
+    </div>
+    <div class="analysis-section">
+      <h2>📐 Temes de Matemàtiques</h2>
+      <p>Freqüència d'aparició als exàmens 2023, 2024 i 2025</p>
+      <div class="topic-grid">
+        ${topicRow("Funcions i domini", "Domini de funcions racionals, irracionals, logarítmiques", "3/3", "alta")}
+        ${topicRow("Derivades", "Concepte, regles, màxims/mínims, anàlisi gràfica", "2/3", "alta")}
+        ${topicRow("Integrals (Primitives)", "Primitives bàsiques: eˣ, xⁿ, trigonomètriques", "3/3", "alta")}
+        ${topicRow("Matrius i determinants", "Operacions, propietats, rang, equacions matricials", "3/3", "alta")}
+        ${topicRow("Geometria 3D", "Pla per 3 punts, coplanaritat, rectes i plans", "3/3", "alta")}
+        ${topicRow("Equacions i polinomis", "2n grau, Ruffini, logarítmiques", "3/3", "alta")}
+        ${topicRow("Sistemes d'equacions", "3x3, plantejament, Cramer/Gauss", "2/3", "mitjana")}
+        ${topicRow("Geometria 2D", "Rectes, distàncies, àrees, baricentre", "2/3", "mitjana")}
+        ${topicRow("Optimització", "Màxims/mínims aplicats a problemes reals", "1/3", "mitjana")}
+        ${topicRow("Trigonometria", "Semblança, triangle rectangle", "1/3", "baixa")}
+      </div>
+    </div>
+    <div class="analysis-section">
+      <h2>⚡ Temes de Física</h2>
+      <p>Freqüència d'aparició als exàmens 2023, 2024 i 2025</p>
+      <div class="topic-grid">
+        ${topicRow("Unitats SI i conversions", "Factors de conversió, anàlisi dimensional, errors", "3/3", "alta")}
+        ${topicRow("Cinemàtica", "MRU, MRUA, caiguda lliure, gràfiques v-t / a-t", "3/3", "alta")}
+        ${topicRow("Dinàmica i forces", "Lleis Newton, força centrípeta, impuls", "3/3", "alta")}
+        ${topicRow("MHS i ones", "Equació MHS, molla, ones harmòniques, so", "3/3", "alta")}
+        ${topicRow("Circuits elèctrics", "Llei Ohm, sèrie/paral·lel, condensadors", "2/3", "alta")}
+        ${topicRow("Gravitació", "Llei gravitació, òrbites, Kepler, satèl·lits", "2/3", "alta")}
+        ${topicRow("Electromagnetisme", "Força Lorentz, inducció Faraday, alternadors", "2/3", "mitjana")}
+        ${topicRow("Òptica", "Refracció, Snell, reflexió total", "1/3", "mitjana")}
+        ${topicRow("Xocs i moment lineal", "Conservació moment, xocs elàstics/inelàstics", "1/3", "mitjana")}
+        ${topicRow("Electrostàtica", "Coulomb, camp elèctric", "1/3", "baixa")}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderTips() {
+  return `<div class="panel active">
+    <div class="analysis-section"><h2>Consells d'examen</h2></div>
+    <div class="tip-card">
+      <h3><span class="tip-icon">⏱</span> Gestió del temps</h3>
+      <p>Tens 90 minuts. Dedica ~50 min a les 4 qüestions (12 min cadascuna) i ~40 min al problema. Llegeix TOT l'examen abans de començar i tria primer.</p>
+    </div>
+    <div class="tip-card">
+      <h3><span class="tip-icon">🎯</span> Tria estratègica</h3>
+      <p>Tria les 4 qüestions que millor domines. Si dubtes entre dues, comença per la que segur que saps fer bé. Recorda: no cal contestar-les totes!</p>
+    </div>
+    <div class="tip-card">
+      <h3><span class="tip-icon">📝</span> Mostra sempre el procés</h3>
+      <p>Escriu tots els passos, no només el resultat. Si t'equivoques en un càlcul però el procés és correcte, et puntuen parcialment.</p>
+    </div>
+    <div class="tip-card">
+      <h3><span class="tip-icon">📏</span> Revisa unitats (Física)</h3>
+      <p>Assegura't que les unitats quadren al resultat. Si demanen metres i et surten km, converteix. Això dona punts fàcils.</p>
+    </div>
+    <div class="tip-card">
+      <h3><span class="tip-icon">🧠</span> Fórmules clau — Mates</h3>
+      <p>Fórmula quadràtica, derivades bàsiques (xⁿ, sin, cos, eˣ, ln), primitives bàsiques, determinant 3x3 (Sarrus), distància entre punts, equació del pla.</p>
+    </div>
+    <div class="tip-card">
+      <h3><span class="tip-icon">🧠</span> Fórmules clau — Física</h3>
+      <p>x = x₀+v₀t+½at², v = v₀+at, F = ma, F꜀ = mv²/r, F꜆ = GMm/r², V = IR, T = 2π/ω, λ = v/f, Snell: n₁sinθ₁ = n₂sinθ₂</p>
+    </div>
+    <div class="analysis-section" style="margin-top:2rem"><h2>Com estudiar amb Claude</h2></div>
+    <div class="tip-card">
+      <h3><span class="tip-icon">💬</span> Demana'm ajuda en qualsevol moment</h3>
+      <p>Pots usar aquests prompts per estudiar de forma eficient:</p>
+      <div class="claude-prompts">
+        <div class="claude-prompt"><code>"Explica'm les derivades des de zero"</code> → T'ho explico pas a pas amb exemples</div>
+        <div class="claude-prompt"><code>"Resol el problema 1 de l'examen de Mates 2023"</code> → Et guio la resolució completa</div>
+        <div class="claude-prompt"><code>"Fes-me un exercici de pràctica de gravitació"</code> → Et genero exercicis personalitzats</div>
+        <div class="claude-prompt"><code>"No entenc les matrius, explica-m'ho diferent"</code> → Analogies i exemples visuals</div>
+        <div class="claude-prompt"><code>"Corregeix-me aquest exercici"</code> → Reviso el teu treball i t'indico errors</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── Interactions ──
+function showPanel(id) {
+  activePanel = id;
+  renderNav();
+  const main = document.getElementById('mainContent');
+  if (id.startsWith('w')) {
+    main.innerHTML = renderWeek(parseInt(id.slice(1)));
+    const todayKey = getTodayKey();
+    if (todayKey && todayKey.startsWith(id.slice(1) + '-')) {
+      const card = document.getElementById('card-' + todayKey);
+      if (card) card.classList.add('open');
+    }
+  } else if (id === 'analysis') {
+    main.innerHTML = renderAnalysis();
+  } else if (id === 'tips') {
+    main.innerHTML = renderTips();
+  }
+}
+
+function toggleCard(key) {
+  const card = document.getElementById('card-' + key);
+  if (card) card.classList.toggle('open');
+}
+
+function toggleCheck(key) {
+  checked[key] = !checked[key];
+  save();
+  showPanel(activePanel);
+  renderProgress();
+}
+
+function findCurrentWeek() {
+  const todayKey = getTodayKey();
+  if (todayKey) return 'w' + todayKey.split('-')[0];
+  return 'w0';
+}
+
+activePanel = findCurrentWeek();
+renderNav();
+showPanel(activePanel);
+renderProgress();
+updateCountdown();
+setInterval(updateCountdown, 60000);
+</script>
+</body>
+</html>
