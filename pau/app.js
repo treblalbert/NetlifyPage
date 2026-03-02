@@ -8,37 +8,166 @@ const MONTHS = [
       {
         name: "Àlgebra bàsica",
         mates: "Nombres enters, fraccions, potències i arrels. Expressions algebraiques: monomis i polinomis. Productes notables: (a±b)², (a+b)(a-b). Operatoria bàsica.",
-        fisica: null
+        fisica: null,
+        explanation: "Les potències segueixen regles clau: a^n·a^m = a^(n+m), a^n/a^m = a^(n−m), (a^n)^m = a^(n·m), a^0 = 1, a^(−n) = 1/a^n. Els productes notables que més surten: (a+b)² = a²+2ab+b², (a−b)² = a²−2ab+b², (a+b)(a−b) = a²−b². Memoritza'ls, apareixen en molts exercicis de factorització i domini de funcions.",
+        exercises: [
+          {
+            q: "1. Simplifica l'expressió: (x+3)² − (x−3)²",
+            a: "Desenvolupem cada quadrat: (x+3)² = x²+6x+9 i (x−3)² = x²−6x+9. Restant: x²+6x+9 − (x²−6x+9) = 12x"
+          },
+          {
+            q: "2. Simplifica la fracció algebraica: (x²−4) / (x²−4x+4)",
+            a: "Factoritzem numerador i denominador: x²−4 = (x+2)(x−2) i x²−4x+4 = (x−2)². Simplificant: (x+2)(x−2)/(x−2)² = (x+2)/(x−2), amb x ≠ 2"
+          },
+          {
+            q: "3. Calcula: 2³ · 4⁻¹ + √16 − 3⁰",
+            a: "2³ = 8, 4⁻¹ = 1/4, √16 = 4, 3⁰ = 1. Resultat: 8·(1/4) + 4 − 1 = 2 + 4 − 1 = 5"
+          },
+          {
+            q: "4. Desenvolupa i simplifica: (2x−1)² − (x+1)(x−1)",
+            a: "(2x−1)² = 4x²−4x+1. (x+1)(x−1) = x²−1. Restant: 4x²−4x+1 − x²+1 = 3x²−4x+2"
+          }
+        ]
       },
       {
         name: "Equacions i sistemes",
         mates: "Equacions de 1r grau. Equacions de 2n grau: fórmula general i discriminant. Sistemes de 2 equacions amb 2 incògnites: substitució, igualació i reducció.",
-        fisica: null
+        fisica: null,
+        explanation: "Fórmula general del 2n grau: x = (−b ± √(b²−4ac)) / 2a. El discriminant Δ = b²−4ac diu quantes solucions hi ha: Δ > 0 dues solucions reals, Δ = 0 solució doble, Δ < 0 sense solucions reals. Per als sistemes 2×2, el mètode de substitució és el més intuïtiu: aïllar una incògnita en una equació i substituir a l'altra.",
+        exercises: [
+          {
+            q: "1. Resol: 2x² − 5x + 3 = 0",
+            a: "a=2, b=−5, c=3. Discriminant: (−5)²−4·2·3 = 25−24 = 1. x = (5±1)/4. Solucions: x₁ = 6/4 = 3/2, x₂ = 4/4 = 1"
+          },
+          {
+            q: "2. Resol el sistema: { 3x + 2y = 12 / x − y = 1 }",
+            a: "De la 2a equació: x = y+1. Substituint a la 1a: 3(y+1)+2y = 12 → 3y+3+2y = 12 → 5y = 9 → y = 9/5. Llavors x = 9/5+1 = 14/5"
+          },
+          {
+            q: "3. Resol: x² − 4x + 4 = 0",
+            a: "Discriminant: 16−16 = 0 → solució doble. x = 4/2 = 2. Nota: es pot factoritzar directament com (x−2)² = 0"
+          },
+          {
+            q: "4. Resol el sistema per reducció: { 2x + 3y = 7 / 4x − 3y = 5 }",
+            a: "Sumem les dues equacions (s'elimina y): 6x = 12 → x = 2. Substituïm a la 1a: 4+3y = 7 → 3y = 3 → y = 1. Solució: (2, 1)"
+          }
+        ]
       },
       {
         name: "Polinomis i proporcionalitat",
         mates: "Divisió de polinomis (Ruffini). Arrels i factorització. Teorema del residu. Proporcionalitat directa i inversa. Semblança de triangles i Teorema de Tales.",
-        fisica: null
+        fisica: null,
+        explanation: "Ruffini serveix per dividir un polinomi per (x−a). Si el residu és 0, 'a' és arrel. Per trobar arrels candidates, prova els divisors enters del terme independent. Ordre de treball: 1) Prova divisors ±1, ±2, ±3... 2) Quan trobes arrel, aplica Ruffini. 3) Factoritza el polinomi resultant. Semblança: si dos triangles són semblants, tots els costats són proporcionals per la mateixa raó.",
+        exercises: [
+          {
+            q: "1. Factoritza completament: p(x) = x³ − 6x² + 11x − 6",
+            a: "Provem divisors del terme independent (−6): x=1: 1−6+11−6 = 0 ✓ arrel! Ruffini amb a=1: [1|−6|11|−6] → [1|−5|6|0]. Quocient: x²−5x+6 = (x−2)(x−3). Resultat final: (x−1)(x−2)(x−3)"
+          },
+          {
+            q: "2. Factoritza: p(x) = x³ − 7x + 6",
+            a: "x=1: 1−7+6 = 0 ✓. Ruffini: [1|0|−7|6] amb a=1 → [1|1|−6|0]. Quocient: x²+x−6 = (x+3)(x−2). Resultat: (x−1)(x+3)(x−2)"
+          },
+          {
+            q: "3. Un triangle té costats 6 i 8. Un triangle semblant té el costat proporcional al de 6 que mesura 9. Quant mesura el costat proporcional al de 8?",
+            a: "La raó de semblança és k = 9/6 = 3/2. El segon costat = 8 · (3/2) = 12"
+          }
+        ]
       },
       {
         name: "Funcions: concepte i gràfiques",
         mates: "Concepte de funció, domini, recorregut i gràfiques. Funció lineal i quadràtica. Domini de funcions racionals, irracionals i logarítmiques.",
-        fisica: null
+        fisica: null,
+        explanation: "El domini és on la funció 'funciona'. Restriccions: denominador ≠ 0 (fracció), expressió ≥ 0 (arrel quadrada), argument > 0 (logaritme). Per a una arrel en el denominador cal > 0 estricte. Estratègia: escriu les condicions, resol les desigualtats, combina-les (intersecció si és 'i', unió si és 'o').",
+        exercises: [
+          {
+            q: "1. Troba el domini de f(x) = √(2x−6) / (x−5)",
+            a: "Condicions: 2x−6 ≥ 0 → x ≥ 3 (arrel), i x−5 ≠ 0 → x ≠ 5 (denominador). Domini: [3, 5) ∪ (5, +∞)"
+          },
+          {
+            q: "2. Troba el domini de f(x) = ln(x² − 1)",
+            a: "Condició: x²−1 > 0 → x² > 1 → |x| > 1, és a dir x < −1 o x > 1. Domini: (−∞, −1) ∪ (1, +∞)"
+          },
+          {
+            q: "3. Troba el domini de f(x) = (x+2) / √(x²−4)",
+            a: "L'arrel és al denominador, cal que x²−4 > 0 (estricte!). (x+2)(x−2) > 0 → x < −2 o x > 2. Domini: (−∞, −2) ∪ (2, +∞)"
+          },
+          {
+            q: "4. Trova el domini de f(x) = √(5−x) + 1/(x−2)",
+            a: "Condicions: 5−x ≥ 0 → x ≤ 5, i x−2 ≠ 0 → x ≠ 2. Intersecció: x ≤ 5 i x ≠ 2. Domini: (−∞, 2) ∪ (2, 5]"
+          }
+        ]
       },
       {
         name: "Funcions especials",
         mates: "Trigonometria: sinus, cosinus, tangent, triangle rectangle, relacions fonamentals. Funcions logarítmiques i exponencials: propietats i equacions.",
-        fisica: null
+        fisica: null,
+        explanation: "Propietats dels logaritmes: log(a·b) = log(a)+log(b), log(a/b) = log(a)−log(b), log(aⁿ) = n·log(a), log_a(aˣ) = x. Per equacions exponencials: igualem bases (2^x = 8 → 2^x = 2³ → x=3) o apliquem log. Identitat trigonomètrica fonamental: sin²(α) + cos²(α) = 1. Recorda el signe de sin, cos i tan en cada quadrant.",
+        exercises: [
+          {
+            q: "1. Resol l'equació exponencial: 4^(x+1) = 32",
+            a: "Passem tot a base 2: 2^(2(x+1)) = 2⁵ → 2(x+1) = 5 → x+1 = 5/2 → x = 3/2"
+          },
+          {
+            q: "2. Resol: log₂(x) + log₂(x+2) = 3",
+            a: "Apliquem propietat: log₂[x(x+2)] = 3 → x(x+2) = 2³ = 8 → x²+2x−8 = 0 → (x+4)(x−2) = 0. Com cal x > 0, la solució és x = 2"
+          },
+          {
+            q: "3. Sabent que sin(α) = 4/5 i α ∈ (0°, 90°), calcula cos(α) i tan(α)",
+            a: "Identitat: sin²+cos² = 1 → cos²(α) = 1−16/25 = 9/25 → cos(α) = 3/5 (positiu al 1r quadrant). tan(α) = sin/cos = (4/5)/(3/5) = 4/3"
+          },
+          {
+            q: "4. Resol: log(x+3) + log(x−1) = log(5)",
+            a: "log[(x+3)(x−1)] = log(5) → (x+3)(x−1) = 5 → x²+2x−3 = 5 → x²+2x−8 = 0 → (x+4)(x−2) = 0. Condicions: x+3>0 i x−1>0 → x>1. Solució: x = 2"
+          }
+        ]
       },
       {
         name: "Unitats SI i mesures",
         mates: null,
-        fisica: "Unitats del SI. Conversions d'unitats i factors de conversió. Anàlisi dimensional. Errors de mesura: error absolut i relatiu."
+        fisica: "Unitats del SI. Conversions d'unitats i factors de conversió. Anàlisi dimensional. Errors de mesura: error absolut i relatiu.",
+        explanation: "El truc de les conversions: multiplica per fraccions equivalent a 1 on les unitats que vols eliminar quedin al denominador. Exemple: 90 km/h × (1000 m/1 km) × (1 h/3600 s) = 25 m/s. L'anàlisi dimensional verifica que el resultat té les unitats correctes. Error relatiu = error absolut / valor mesurat (sense unitats, sovint en %).",
+        exercises: [
+          {
+            q: "1. Converteix 108 km/h a m/s",
+            a: "108 km/h × (1000 m/1 km) × (1 h/3600 s) = 108·1000/3600 = 108000/3600 = 30 m/s"
+          },
+          {
+            q: "2. Una força de 50 N actua sobre una superfície de 200 cm². Calcula la pressió en Pa",
+            a: "Primer, convertim: 200 cm² = 200·(10⁻²)² m² = 200·10⁻⁴ m² = 0.02 m². P = F/A = 50/0.02 = 2500 Pa"
+          },
+          {
+            q: "3. Mesurem una taula i obtenim 1.47 m, amb una incertesa de ±0.01 m. Calcula l'error absolut i el relatiu",
+            a: "Error absolut: Δl = 0.01 m. Error relatiu: Δl/l = 0.01/1.47 ≈ 0.0068 ≈ 0.68%"
+          },
+          {
+            q: "4. Una partícula recorre 3.6 km en 0.5 hores. Expressa la velocitat en m/s i en cm/s",
+            a: "v = 3.6 km/0.5 h = 7.2 km/h. En m/s: 7.2 × 1000/3600 = 2 m/s. En cm/s: 2 m/s × 100 = 200 cm/s"
+          }
+        ]
       },
       {
         name: "Cinemàtica",
         mates: null,
-        fisica: "Posició, velocitat i acceleració. MRU: equacions i gràfiques. MRUA: equacions, caiguda lliure. Interpretació de gràfiques x-t, v-t i a-t."
+        fisica: "Posició, velocitat i acceleració. MRU: equacions i gràfiques. MRUA: equacions, caiguda lliure. Interpretació de gràfiques x-t, v-t i a-t.",
+        explanation: "Equacions del MRUA: x = x₀ + v₀·t + ½·a·t² i v = v₀ + a·t. Relació útil: v² = v₀² + 2·a·Δx (evita calcular el temps). En caiguda lliure: a = g ≈ 9.8 m/s² (usem g=10 a la majoria d'exàmens), v₀ = 0 si es deixa caure des del repòs. En el MRU: x = x₀ + v·t i l'acceleració és zero. Truc: en gràfics v-t, l'àrea sota la corba = desplaçament.",
+        exercises: [
+          {
+            q: "1. Un cos cau des del repòs a 45 m d'alçada. Quant tarda a arribar al terra? (g = 10 m/s²)",
+            a: "Usem x = ½·g·t²: 45 = ½·10·t² → t² = 9 → t = 3 s. Velocitat en arribar: v = g·t = 10·3 = 30 m/s"
+          },
+          {
+            q: "2. Un cotxe accelera de 0 a 72 km/h en 8 s. Calcula l'acceleració i la distància recorreguda",
+            a: "v = 72 km/h = 20 m/s. a = Δv/Δt = 20/8 = 2.5 m/s². Distància: x = ½·a·t² = ½·2.5·64 = 80 m (o x = v_mig·t = 10·8 = 80 m)"
+          },
+          {
+            q: "3. Un cotxe va a 25 m/s i frena amb a = −5 m/s². Quant tarda a aturar-se i quina distància fa fins que para?",
+            a: "v = v₀+a·t → 0 = 25−5t → t = 5 s. Distància: x = v₀·t + ½·a·t² = 25·5 + ½·(−5)·25 = 125−62.5 = 62.5 m"
+          },
+          {
+            q: "4. Un tren en MRU va a 54 km/h. A les 10:00h és al punt x=0. On serà a les 10:20h?",
+            a: "v = 54 km/h = 15 m/s. t = 20 min = 1200 s. x = v·t = 15·1200 = 18000 m = 18 km"
+          }
+        ]
       }
     ]
   },
@@ -240,8 +369,7 @@ function findCurrentMonth() {
 }
 
 function updateCountdown() {
-  // Data aproximada de l'examen — ajusta si cal
-  const target = new Date(2026, 8, 15); // 15 de setembre 2026
+  const target = new Date(2026, 8, 15); // 15 de setembre 2026 — ajusta si cal
   const now = new Date();
   const diff = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
   const el = document.getElementById('countdown');
@@ -291,14 +419,10 @@ function renderMonth(mi) {
     const cls = ['topic-card', isChecked ? 'completed' : '', t.simulacre ? 'simulacre' : ''].filter(Boolean).join(' ');
 
     let tags = '';
-    if (t.mates && t.fisica) {
-      tags = `<span class="topic-tag mates">Mates</span><span class="topic-tag fisica">Física</span>`;
-    } else if (t.mates) {
-      tags = `<span class="topic-tag mates">Mates</span>`;
-    } else if (t.fisica) {
-      tags = `<span class="topic-tag fisica">Física</span>`;
-    }
-    if (t.simulacre) tags += `<span class="topic-tag sim">Simulacre</span>`;
+    if (t.mates && t.fisica)      tags = `<span class="topic-tag mates">Mates</span><span class="topic-tag fisica">Física</span>`;
+    else if (t.mates)             tags = `<span class="topic-tag mates">Mates</span>`;
+    else if (t.fisica)            tags = `<span class="topic-tag fisica">Física</span>`;
+    if (t.simulacre)              tags += `<span class="topic-tag sim">Simulacre</span>`;
 
     html += `<div class="${cls}" id="card-${key}">
       <div class="topic-head" onclick="toggleTopic('${key}')">
@@ -311,15 +435,36 @@ function renderMonth(mi) {
 
     if (t.mates) {
       html += `<div class="subject-block mates">
-        <div class="subject-label">📐 Matemàtiques</div>
+        <div class="subject-label">📐 Matemàtiques — Temari</div>
         <div class="subject-content">${t.mates}</div>
       </div>`;
     }
     if (t.fisica) {
       html += `<div class="subject-block fisica">
-        <div class="subject-label">⚡ Física</div>
+        <div class="subject-label">⚡ Física — Temari</div>
         <div class="subject-content">${t.fisica}</div>
       </div>`;
+    }
+
+    if (t.explanation) {
+      html += `<div class="theory-block">
+        <div class="theory-label">💡 Teoria breu</div>
+        <div class="theory-content">${t.explanation}</div>
+      </div>`;
+    }
+
+    if (t.exercises && t.exercises.length) {
+      html += `<div class="exercises-section">
+        <div class="exercises-header">✏️ Exercicis de pràctica</div>`;
+      t.exercises.forEach((ex, idx) => {
+        const ansId = `ans-${key}-${idx}`;
+        html += `<div class="exercise-item">
+          <div class="exercise-q">${ex.q}</div>
+          <button class="reveal-btn" onclick="revealAnswer('${ansId}')">Veure resposta</button>
+          <div class="exercise-a hidden" id="${ansId}">${ex.a}</div>
+        </div>`;
+      });
+      html += `</div>`;
     }
 
     html += `</div></div>`;
@@ -458,6 +603,21 @@ function toggleCheck(key) {
   save();
   showPanel(activePanel);
   renderProgress();
+}
+
+function revealAnswer(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const btn = el.previousElementSibling;
+  if (el.classList.contains('hidden')) {
+    el.classList.remove('hidden');
+    btn.textContent = 'Amagar resposta';
+    btn.classList.add('revealed');
+  } else {
+    el.classList.add('hidden');
+    btn.textContent = 'Veure resposta';
+    btn.classList.remove('revealed');
+  }
 }
 
 // ── Init ──
