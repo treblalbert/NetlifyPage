@@ -539,14 +539,27 @@
         }
 
         .blog-entry-body img {
-            max-width: 100%;
+            display: none;
+        }
+
+        .blog-post-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .blog-post-gallery img {
+            height: 80px;
+            width: auto;
             border-radius: 3px;
             border: 1px solid var(--steam-border-dark);
             cursor: zoom-in;
+            object-fit: cover;
             transition: opacity 0.15s ease, border-color 0.15s ease;
         }
 
-        .blog-entry-body img:hover {
+        .blog-post-gallery img:hover {
             opacity: 0.85;
             border-color: var(--steam-green);
         }
@@ -851,12 +864,25 @@
                     const dateStr = new Date(post.date + 'T00:00:00').toLocaleDateString('en-US', {
                         year: 'numeric', month: 'short', day: 'numeric'
                     });
+
+                    // Extract images from body and move to gallery at bottom
+                    const temp = document.createElement('div');
+                    temp.innerHTML = html;
+                    const imgs = Array.from(temp.querySelectorAll('img'));
+                    let galleryHtml = '';
+                    if (imgs.length > 0) {
+                        galleryHtml = '<div class="blog-post-gallery">' +
+                            imgs.map(img => `<img src="${img.src || img.getAttribute('src')}" alt="${img.alt || ''}">`).join('') +
+                            '</div>';
+                    }
+
                     return `<div class="blog-entry">
                         <div class="blog-entry-header">
                             <span class="blog-entry-title">${post.title}</span>
                             <span class="blog-entry-date">${dateStr}</span>
                         </div>
                         <div class="blog-entry-body">${html}</div>
+                        ${galleryHtml}
                     </div>`;
                 } catch {
                     return '';
@@ -899,7 +925,7 @@
     });
 
     function initLightbox() {
-        document.querySelectorAll('.blog-entry-body img').forEach(img => {
+        document.querySelectorAll('.blog-post-gallery img').forEach(img => {
             img.addEventListener('click', () => openLightbox(img.src, img.alt));
         });
     }
