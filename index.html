@@ -542,6 +542,78 @@
             max-width: 100%;
             border-radius: 3px;
             border: 1px solid var(--steam-border-dark);
+            cursor: zoom-in;
+            transition: opacity 0.15s ease, border-color 0.15s ease;
+        }
+
+        .blog-entry-body img:hover {
+            opacity: 0.85;
+            border-color: var(--steam-green);
+        }
+
+        /* Lightbox */
+        .lightbox-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            cursor: zoom-out;
+            animation: lightboxFadeIn 0.2s ease;
+        }
+
+        .lightbox-overlay.active {
+            display: flex;
+        }
+
+        @keyframes lightboxFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .lightbox-img {
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 3px;
+            border: 1px solid var(--steam-border);
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.8);
+            cursor: default;
+            animation: lightboxImgIn 0.2s ease;
+        }
+
+        @keyframes lightboxImgIn {
+            from { transform: scale(0.92); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .lightbox-close {
+            position: fixed;
+            top: 20px;
+            right: 24px;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(180deg, #576a50 0%, #3e4d38 100%);
+            border: 1px solid var(--steam-border);
+            border-radius: 3px;
+            color: var(--steam-text-light);
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            transition: background 0.15s ease, color 0.15s ease;
+            z-index: 1001;
+            line-height: 1;
+        }
+
+        .lightbox-close:hover {
+            background: linear-gradient(180deg, #8bc53f 0%, #5c7e10 100%);
+            color: #fff;
         }
 
         .blog-entry-body h1,
@@ -721,6 +793,11 @@
     </footer>
 </div>
 
+<div class="lightbox-overlay" id="lightbox">
+    <button class="lightbox-close" id="lightbox-close" title="Close">&#x2715;</button>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="">
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
     const navButtons = document.querySelectorAll('.nav-btn');
@@ -787,9 +864,44 @@
             }));
 
             container.innerHTML = entries.join('');
+            initLightbox();
         } catch {
             container.innerHTML = '<p style="color: var(--steam-text-dim); font-size: 13px;">Could not load posts.</p>';
         }
+    }
+
+    // Lightbox
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxClose = document.getElementById('lightbox-close');
+
+    function openLightbox(src, alt) {
+        lightboxImg.src = src;
+        lightboxImg.alt = alt || '';
+        lightbox.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        lightbox.classList.remove('active');
+        document.body.style.overflow = '';
+        lightboxImg.src = '';
+    }
+
+    lightboxClose.addEventListener('click', closeLightbox);
+
+    lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeLightbox();
+    });
+
+    function initLightbox() {
+        document.querySelectorAll('.blog-entry-body img').forEach(img => {
+            img.addEventListener('click', () => openLightbox(img.src, img.alt));
+        });
     }
 
     // Load blog when the tab is first clicked

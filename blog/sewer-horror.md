@@ -10,9 +10,13 @@ The game is almost finished. In the end, actually making the game took less time
 
 Now, about the game itself.
 
+![Sewer Horror screenshot 1](blog/Sewer_1.png)
+
 It is called Sewer Horror, and it is exactly what it sounds like. It is a first-person horror game set in procedurally generated sewers. To progress deeper, you need to solve puzzles while exploring the environment. The system is piece-based, which makes it easy to expand. I can keep modeling new sections and adding puzzles, so updating the game should be pretty straightforward.
 
 Of course, it would not be a proper horror game without something chasing you. There are creepy enemies roaming around, and the game includes stealth elements so you can avoid them instead of just running blindly.
+
+![Sewer Horror screenshot 2](blog/Sewer_2.png)
 
 I will make another post when it is released.
 
