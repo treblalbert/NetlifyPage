@@ -19,6 +19,7 @@
 <!-- Firebase SDK (v10 compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
 <style>
 :root {
@@ -102,6 +103,8 @@ body::before{
 .screen{
   position:fixed;inset:0;z-index:1;
   overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
   display:none;flex-direction:column;
   padding-bottom:calc(80px + env(safe-area-inset-bottom,0px));
 }
@@ -1121,10 +1124,21 @@ input[type=date]{color-scheme:dark}
 <div class="screen-inner">
   <div class="app-hd">
     <div class="app-hd-title">Profile</div>
-    <button class="btn btn-ghost btn-sm" onclick="resetApp()" id="profile-reset-btn">Reset</button>
   </div>
   <div id="profile-content"></div>
 </div>
+</div>
+
+<!-- ============ RESET CONFIRM MODAL ============ -->
+<div id="reset-modal" style="display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:24px">
+  <div style="background:#131620;border:1px solid var(--border2);border-radius:var(--r);padding:24px;max-width:300px;width:100%;box-shadow:var(--shadow)">
+    <div style="font-size:18px;font-weight:800;margin-bottom:8px">Reset everything?</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.5">Deletes your profile, all workouts, and history. This cannot be undone.</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeResetModal()">Cancel</button>
+      <button class="btn btn-danger" style="flex:1" onclick="doReset()">Delete all</button>
+    </div>
+  </div>
 </div>
 
 <!-- ============ BOTTOM NAV ============ -->
@@ -1217,7 +1231,7 @@ const firebaseConfig = {
   appId:             "1:123139288226:web:38c2f431b95c0b31687bfb"
 };
 
-let fbApp, fbAuth, currentUid = 'local';
+let fbApp, fbAuth, fbDb, currentUid = 'local';
 
 function fbConfigured() {
   return !firebaseConfig.apiKey.startsWith('REPLACE_');
@@ -1226,8 +1240,8 @@ function fbConfigured() {
 if (fbConfigured()) {
   fbApp  = firebase.initializeApp(firebaseConfig);
   fbAuth = firebase.auth();
+  fbDb   = firebase.firestore();
 } else {
-  // Firebase not yet configured — run without auth so you can still test the UI
   console.warn('Firebase not configured. Running in local (no-auth) mode.');
 }
 
@@ -1592,10 +1606,42 @@ let state = {
 //  STORAGE
 // =====================================================================
 function storageKey() { return 'maxer_v2_' + currentUid; }
+
+// ── Cloud sync (Firestore) ────────────────────────────────────────────
+let _syncTimer = null;
+function syncToCloud() {
+  if (!fbDb || currentUid === 'local') return;
+  clearTimeout(_syncTimer);
+  _syncTimer = setTimeout(() => {
+    fbDb.collection('users').doc(currentUid).set({
+      profile:  state.profile  || null,
+      split:    state.split    || null,
+      log:      state.log      || [],
+      settings: state.settings || {}
+    }).catch(e => console.warn('Cloud sync failed:', e));
+  }, 2000);
+}
+async function loadFromCloud(uid) {
+  if (!fbDb) return false;
+  try {
+    const doc = await fbDb.collection('users').doc(uid).get();
+    if (doc.exists) {
+      const d = doc.data();
+      if (d.profile)            state.profile  = d.profile;
+      if (d.split)              state.split    = d.split;
+      if (Array.isArray(d.log)) state.log      = d.log;
+      if (d.settings)           state.settings = Object.assign({restSeconds:60}, d.settings);
+      return true;
+    }
+  } catch(e) { console.warn('Cloud load failed:', e); }
+  return false;
+}
+
 function save() {
   try { localStorage.setItem(storageKey(), JSON.stringify(state)); } catch(e) {
     console.warn('Save failed:', e);
   }
+  syncToCloud();
 }
 function load() {
   try {
@@ -2785,25 +2831,18 @@ function selectSwap(newId) {
 }
 
 function resetApp() {
-  // window.confirm() is silently blocked in iOS PWA standalone mode — use inline confirm instead
-  // Remove any existing confirm UI first
-  document.getElementById('reset-confirm')?.remove();
-  // Find whichever reset button triggered this and insert confirm after it
-  const btn = document.querySelector('button[onclick="resetApp()"]') ||
-              document.getElementById('profile-reset-btn');
-  const target = btn?.closest('.app-hd') || btn?.closest('div') || document.getElementById('profile-content');
-  if (!target) return;
-  const div = document.createElement('div');
-  div.id = 'reset-confirm';
-  div.style.cssText = 'display:flex;gap:8px;margin-top:10px;padding:0 0 4px';
-  div.innerHTML = `
-    <button class="btn btn-danger" style="flex:1" onclick="doReset()">Yes, delete everything</button>
-    <button class="btn btn-ghost" style="flex:1" onclick="document.getElementById('reset-confirm').remove()">Cancel</button>`;
-  target.appendChild(div);
+  const m = document.getElementById('reset-modal');
+  m.style.display = 'flex';
 }
-function doReset() {
+function closeResetModal() {
+  document.getElementById('reset-modal').style.display = 'none';
+}
+async function doReset() {
+  closeResetModal();
   try { localStorage.removeItem(storageKey()); } catch(e) {}
-  // Reset in-memory state
+  if (fbDb && currentUid !== 'local') {
+    fbDb.collection('users').doc(currentUid).delete().catch(() => {});
+  }
   state = { profile: null, split: null, log: [], settings: { restSeconds: 60 } };
   obData = {};
   obStep = 0;
@@ -2910,8 +2949,8 @@ async function authSignOut() {
 // =====================================================================
 //  INIT
 // =====================================================================
-function init() {
-  load();
+function init(skipLoad = false) {
+  if (!skipLoad) load();
   if (!state.settings) state.settings = {};
   if (!state.settings.restSeconds) state.settings.restSeconds = 60;
   if (!state.profile) {
@@ -2939,18 +2978,26 @@ if (!isCapacitor && 'serviceWorker' in navigator) {
 initTheme();
 
 if (fbConfigured()) {
-  // Firebase is set up — gate app behind auth
-  fbAuth.onAuthStateChanged(user => {
+  fbAuth.onAuthStateChanged(async user => {
     if (user) {
       currentUid = user.uid;
       authHideScreen();
-      init();
+      const fromCloud = await loadFromCloud(user.uid);
+      if (fromCloud) {
+        // Save to localStorage as local cache, then start
+        try { localStorage.setItem(storageKey(), JSON.stringify(state)); } catch(e) {}
+        init(true);
+      } else {
+        // Nothing in cloud yet — try localStorage (handles first-device migration)
+        init();
+        // Push whatever was in localStorage up to cloud
+        syncToCloud();
+      }
     } else {
       authShowScreen();
     }
   });
 } else {
-  // Firebase not configured yet — skip auth gate so you can still develop/test
   authHideScreen();
   init();
 }
