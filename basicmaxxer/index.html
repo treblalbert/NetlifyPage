@@ -582,6 +582,71 @@ select option{background:#1e2028;color:var(--text)}
 .opt-card.selected .goal-check{display:flex}
 .goal-limit-hint{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
 input[type=date]{color-scheme:dark}
+
+/* ===== EQUIPMENT GRID ===== */
+.gear-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.gear-card{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 12px;background:var(--glass);border:1.5px solid var(--border);
+  border-radius:var(--rs);cursor:pointer;transition:all .15s;position:relative;
+}
+.gear-card.selected{border-color:var(--accent);background:rgba(163,230,53,0.08)}
+.gear-card:active{transform:scale(.97)}
+.gear-icon{font-size:20px;flex-shrink:0;width:24px;text-align:center}
+.gear-info{flex:1;min-width:0}
+.gear-name{font-size:12px;font-weight:700;line-height:1.2}
+.gear-desc{font-size:10px;color:var(--muted);margin-top:1px;line-height:1.3}
+.gear-check{
+  width:18px;height:18px;border-radius:50%;
+  background:var(--accent);color:#0d1a00;
+  display:none;align-items:center;justify-content:center;
+  font-size:10px;font-weight:900;flex-shrink:0;
+}
+.gear-card.selected .gear-check{display:flex}
+
+/* ===== WEEKLY SCHEDULE BUILDER ===== */
+.sched-list{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.sched-row{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;background:var(--glass);border:1px solid var(--border);
+  border-radius:var(--rs);cursor:pointer;transition:all .15s;
+}
+.sched-row:active{background:var(--glass2)}
+.sched-day{font-size:12px;font-weight:700;color:var(--muted2);width:32px;flex-shrink:0}
+.sched-focus{flex:1;display:flex;align-items:center;gap:6px}
+.sched-focus-icon{font-size:16px}
+.sched-focus-name{font-size:13px;font-weight:700}
+.sched-focus-meta{font-size:11px;color:var(--muted);margin-left:auto}
+.sched-edit-hint{font-size:10px;color:var(--muted);margin-left:auto;flex-shrink:0}
+
+/* ===== DAY FOCUS PICKER MODAL ===== */
+#day-focus-modal{
+  position:fixed;inset:0;z-index:400;
+  background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  display:none;align-items:flex-end;justify-content:center;
+}
+#day-focus-modal.open{display:flex}
+.dfm-card{
+  width:100%;max-width:520px;
+  background:#131620;border:1px solid var(--border2);
+  border-radius:var(--r) var(--r) 0 0;
+  padding:20px 16px;
+  padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));
+  transform:translateY(100%);transition:transform .3s cubic-bezier(.34,1.2,.64,1);
+  max-height:80vh;overflow-y:auto;
+}
+#day-focus-modal.open .dfm-card{transform:translateY(0)}
+.dfm-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.dfm-opt{
+  display:flex;align-items:center;gap:8px;
+  padding:12px;background:var(--glass);border:1.5px solid var(--border);
+  border-radius:var(--rs);cursor:pointer;transition:all .15s;
+}
+.dfm-opt:active{background:var(--glass2);transform:scale(.97)}
+.dfm-opt.current{border-color:var(--accent);background:rgba(163,230,53,0.08)}
+.dfm-opt-icon{font-size:18px;flex-shrink:0}
+.dfm-opt-name{font-size:12px;font-weight:700;line-height:1.2}
+.dfm-opt-desc{font-size:10px;color:var(--muted);margin-top:1px}
 </style>
 </head>
 <body>
@@ -597,6 +662,7 @@ input[type=date]{color-scheme:dark}
     <div class="step-dot" id="dot-1"></div>
     <div class="step-dot" id="dot-2"></div>
     <div class="step-dot" id="dot-3"></div>
+    <div class="step-dot" id="dot-4"></div>
   </div>
 
   <!-- Step 0: Identity + Body stats -->
@@ -706,8 +772,75 @@ input[type=date]{color-scheme:dark}
     </div>
   </div>
 
-  <!-- Step 3: Duration -->
+  <!-- Step 3: Equipment -->
   <div class="ob-step" id="ob-step-3">
+    <div class="ob-title">What equipment do you have?</div>
+    <div class="ob-sub">Select everything available — at home, in your gym, or both. Workouts adapt automatically.</div>
+    <div class="gear-grid" id="gear-opts">
+      <div class="gear-card selected" data-val="floor" onclick="toggleGearCard(this)">
+        <div class="gear-icon">🧘</div>
+        <div class="gear-info"><div class="gear-name">Floor / Mat</div><div class="gear-desc">Bodyweight only</div></div>
+        <div class="gear-check">✓</div>
+      </div>
+      <div class="gear-card" data-val="pullbar" onclick="toggleGearCard(this)">
+        <div class="gear-icon">🔝</div>
+        <div class="gear-info"><div class="gear-name">Pull-up Bar</div><div class="gear-desc">Door or wall mount</div></div>
+        <div class="gear-check">✓</div>
+      </div>
+      <div class="gear-card" data-val="dumbbells" onclick="toggleGearCard(this)">
+        <div class="gear-icon">🏋️</div>
+        <div class="gear-info"><div class="gear-name">Dumbbells</div><div class="gear-desc">Fixed or adjustable</div></div>
+        <div class="gear-check">✓</div>
+      </div>
+      <div class="gear-card" data-val="barbell" onclick="toggleGearCard(this)">
+        <div class="gear-icon">⚡</div>
+        <div class="gear-info"><div class="gear-name">Barbell + Bench</div><div class="gear-desc">Full free weight setup</div></div>
+        <div class="gear-check">✓</div>
+      </div>
+      <div class="gear-card" data-val="dipbars" onclick="toggleGearCard(this)">
+        <div class="gear-icon">🤸</div>
+        <div class="gear-info"><div class="gear-name">Dip Bars</div><div class="gear-desc">Parallel bars / station</div></div>
+        <div class="gear-check">✓</div>
+      </div>
+      <div class="gear-card" data-val="cables" onclick="toggleGearCard(this)">
+        <div class="gear-icon">🔧</div>
+        <div class="gear-info"><div class="gear-name">Cable Machine</div><div class="gear-desc">Cable tower / functional</div></div>
+        <div class="gear-check">✓</div>
+      </div>
+      <div class="gear-card" data-val="machines" onclick="toggleGearCard(this)">
+        <div class="gear-icon">🏟️</div>
+        <div class="gear-info"><div class="gear-name">Gym Machines</div><div class="gear-desc">Leg press, hack squat…</div></div>
+        <div class="gear-check">✓</div>
+      </div>
+      <div class="gear-card" data-val="rings" onclick="toggleGearCard(this)">
+        <div class="gear-icon">⭕</div>
+        <div class="gear-info"><div class="gear-name">Gymnastic Rings</div><div class="gear-desc">Rings or TRX straps</div></div>
+        <div class="gear-check">✓</div>
+      </div>
+      <div class="gear-card" data-val="bands" onclick="toggleGearCard(this)">
+        <div class="gear-icon">🎗️</div>
+        <div class="gear-info"><div class="gear-name">Resistance Bands</div><div class="gear-desc">Light to heavy bands</div></div>
+        <div class="gear-check">✓</div>
+      </div>
+      <div class="gear-card" data-val="kettlebell" onclick="toggleGearCard(this)">
+        <div class="gear-icon">🔔</div>
+        <div class="gear-info"><div class="gear-name">Kettlebell</div><div class="gear-desc">One or more KBs</div></div>
+        <div class="gear-check">✓</div>
+      </div>
+      <div class="gear-card" data-val="box" onclick="toggleGearCard(this)">
+        <div class="gear-icon">📦</div>
+        <div class="gear-info"><div class="gear-name">Plyo Box / Bench</div><div class="gear-desc">Step, box or flat bench</div></div>
+        <div class="gear-check">✓</div>
+      </div>
+    </div>
+    <div class="ob-actions">
+      <button class="btn btn-ghost" onclick="obBack(3)">← Back</button>
+      <button class="btn btn-primary" style="flex:2" onclick="obNext(3)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- Step 4: Duration -->
+  <div class="ob-step" id="ob-step-4">
     <div class="ob-title">How long is your program?</div>
     <div class="ob-sub">Minimum 90 days for real results. After your goal period, Basic Maxxer switches you to a maintenance plan automatically.</div>
     <div class="opt-grid cols3" id="months-opts">
@@ -737,7 +870,7 @@ input[type=date]{color-scheme:dark}
       </div>
     </div>
     <div class="ob-actions">
-      <button class="btn btn-ghost" onclick="obBack(3)">← Back</button>
+      <button class="btn btn-ghost" onclick="obBack(4)">← Back</button>
       <button class="btn btn-primary" style="flex:2" onclick="finishOnboarding()">Start Program 🚀</button>
     </div>
   </div>
@@ -883,6 +1016,15 @@ input[type=date]{color-scheme:dark}
   </div>
 </div>
 
+<!-- ============ DAY FOCUS MODAL ============ -->
+<div id="day-focus-modal" onclick="closeDayFocusModal(event)">
+  <div class="dfm-card">
+    <div class="modal-title" id="dfm-title">Set Day Focus</div>
+    <div class="modal-sub">What do you want to train on this day?</div>
+    <div class="dfm-opts" id="dfm-opts"></div>
+  </div>
+</div>
+
 <!-- ============ SWAP EXERCISE MODAL ============ -->
 <div id="swap-modal" onclick="closeSwapModal(event)">
   <div class="swap-modal-card">
@@ -962,58 +1104,140 @@ const SCHEDULES = {
 };
 
 // ─────────────────────────────────────────────────────────────────────
-//  EXERCISE DEFINITIONS  (each: name, sets, minReps, maxReps, note, type, icon)
+//  EQUIPMENT OPTIONS
+// ─────────────────────────────────────────────────────────────────────
+const EQUIPMENT_OPTIONS = [
+  { id:'floor',      label:'Floor / Mat',       icon:'🧘', desc:'Bodyweight only' },
+  { id:'pullbar',    label:'Pull-up Bar',        icon:'🔝', desc:'Door or wall mount' },
+  { id:'dumbbells',  label:'Dumbbells',          icon:'🏋️', desc:'Fixed or adjustable' },
+  { id:'barbell',    label:'Barbell + Bench',    icon:'⚡', desc:'Full free weight setup' },
+  { id:'dipbars',    label:'Dip Bars',           icon:'🤸', desc:'Parallel bars' },
+  { id:'cables',     label:'Cable Machine',      icon:'🔧', desc:'Cable tower / functional' },
+  { id:'machines',   label:'Gym Machines',       icon:'🏟️', desc:'Leg press, machines…' },
+  { id:'rings',      label:'Gymnastic Rings',    icon:'⭕', desc:'Rings or TRX' },
+  { id:'bands',      label:'Resistance Bands',   icon:'🎗️', desc:'Light to heavy' },
+  { id:'kettlebell', label:'Kettlebell',         icon:'🔔', desc:'One or more KBs' },
+  { id:'box',        label:'Plyo Box / Bench',   icon:'📦', desc:'Box, step or bench' },
+];
+
+// ─────────────────────────────────────────────────────────────────────
+//  EXERCISE DEFINITIONS  — gear: array of equipment types (need at least one)
 // ─────────────────────────────────────────────────────────────────────
 const E = {
-  // PUSH
-  bench:      {name:'Bench Press',      icon:'🏋️', type:'barbell',      muscles:'Chest, Triceps, Shoulders', note:'Retract scapula, feet flat. Bar to lower chest.'},
-  ohp:        {name:'Overhead Press',   icon:'🏋️', type:'barbell',      muscles:'Shoulders, Triceps', note:'Brace core, press straight up. No lower back arch.'},
-  incline:    {name:'Incline Press',    icon:'🏋️', type:'barbell',      muscles:'Upper Chest, Shoulders', note:'30-45° incline. Same cues as flat bench.'},
-  dips:       {name:'Dips',             icon:'💪', type:'calisthenics', muscles:'Chest, Triceps', note:'Lean forward for chest, upright for triceps.'},
-  pushups:    {name:'Push-ups',         icon:'💪', type:'calisthenics', muscles:'Chest, Triceps, Core', note:'Full range of motion, engage core throughout.'},
-  pikepush:   {name:'Pike Push-ups',    icon:'💪', type:'calisthenics', muscles:'Shoulders, Triceps', note:'Hips high, head between arms at bottom.'},
-  lat_raise:  {name:'Lateral Raises',   icon:'🏋️', type:'dumbbell',    muscles:'Side Delts', note:'Slight bend in elbow, lead with elbows.'},
-  tri_dip:    {name:'Tricep Dips',      icon:'💪', type:'calisthenics', muscles:'Triceps', note:'Elbows behind you, lower until 90°.'},
-  // PULL
-  pullup:     {name:'Pull-ups',         icon:'💪', type:'calisthenics', muscles:'Lats, Biceps', note:'Full hang to chin over bar. Squeeze lats at top.'},
-  chinup:     {name:'Chin-ups',         icon:'💪', type:'calisthenics', muscles:'Biceps, Lats', note:'Supinated grip (palms toward you).'},
-  bbrow:      {name:'Barbell Row',      icon:'🏋️', type:'barbell',      muscles:'Back, Biceps', note:'Hinge at hips ~45°, pull bar to lower chest.'},
-  dbrow:      {name:'Dumbbell Row',     icon:'🏋️', type:'dumbbell',    muscles:'Back, Biceps', note:'Brace on bench, full stretch at bottom.'},
-  facepull:   {name:'Face Pulls',       icon:'🏋️', type:'cable',        muscles:'Rear Delts, Upper Back', note:'Pull to forehead, elbows high.'},
-  curl:       {name:'Bicep Curls',      icon:'🏋️', type:'dumbbell',    muscles:'Biceps', note:'No swinging. Full range, pause at top.'},
-  hammer:     {name:'Hammer Curls',     icon:'🏋️', type:'dumbbell',    muscles:'Biceps, Brachialis', note:'Neutral grip, same as regular curls.'},
-  invrow:     {name:'Inverted Rows',    icon:'💪', type:'calisthenics', muscles:'Back, Biceps', note:'Body straight, pull chest to bar.'},
-  // LEGS
-  squat:      {name:'Squat',            icon:'🏋️', type:'barbell',      muscles:'Quads, Glutes, Hamstrings', note:'Chest up, knees out, break parallel.'},
-  deadlift:   {name:'Deadlift',         icon:'🏋️', type:'barbell',      muscles:'Hamstrings, Glutes, Back', note:'Neutral spine, push floor away, lock hips at top.'},
-  rdl:        {name:'Romanian DL',      icon:'🏋️', type:'barbell',      muscles:'Hamstrings, Glutes', note:'Slight knee bend, bar stays close, feel stretch.'},
-  lunge:      {name:'Lunges',           icon:'💪', type:'bodyweight',   muscles:'Quads, Glutes', note:'Knee over toe, torso upright.'},
-  bss:        {name:'Bulgarian Split Squat', icon:'💪', type:'bodyweight', muscles:'Quads, Glutes', note:'Back foot elevated, front knee tracks toes.'},
-  legpress:   {name:'Leg Press',        icon:'🏋️', type:'machine',      muscles:'Quads, Glutes', note:'Full range, don\'t lock out knees.'},
-  calfr:      {name:'Calf Raises',      icon:'💪', type:'bodyweight',   muscles:'Calves', note:'Full stretch at bottom, pause at top.'},
-  jumpsquat:  {name:'Jump Squats',      icon:'💪', type:'calisthenics', muscles:'Quads, Glutes', note:'Land soft, absorb through hips and knees.'},
-  // CORE
-  plank:      {name:'Plank',            icon:'💪', type:'calisthenics', muscles:'Core', note:'Neutral spine, squeeze glutes and abs. Hold.'},
-  hollow:     {name:'Hollow Body Hold', icon:'💪', type:'calisthenics', muscles:'Core', note:'Lower back pressed to floor, legs and arms extended.'},
-  legraise:   {name:'Leg Raises',       icon:'💪', type:'calisthenics', muscles:'Lower Abs', note:'Control the descent. Don\'t swing.'},
-  mtnclimb:   {name:'Mountain Climbers',icon:'💪', type:'calisthenics', muscles:'Core, Cardio', note:'Keep hips level, drive knees fast.'},
-  twist:      {name:'Russian Twists',   icon:'💪', type:'calisthenics', muscles:'Obliques', note:'Lean back ~45°, rotate controlled.'},
-  // CARDIO
-  run:        {name:'Running',          icon:'🏃', type:'cardio',       muscles:'Full Body, Cardiovascular', note:''},
+  // ── PUSH ─────────────────────────────────────────────────────────
+  bench:         {name:'Bench Press',            icon:'🏋️', type:'barbell',      muscles:'Chest, Triceps, Shoulders',     gear:['barbell'],                              note:'Retract scapula, feet flat. Bar to lower chest.'},
+  ohp:           {name:'Overhead Press',         icon:'🏋️', type:'barbell',      muscles:'Shoulders, Triceps',            gear:['barbell','dumbbells','kettlebell'],      note:'Brace core, press straight up. No lower back arch.'},
+  incline:       {name:'Incline Bench Press',    icon:'🏋️', type:'barbell',      muscles:'Upper Chest, Shoulders',        gear:['barbell','dumbbells'],                  note:'30-45° incline. Same cues as flat bench.'},
+  dips:          {name:'Dips',                   icon:'💪', type:'calisthenics', muscles:'Chest, Triceps',                gear:['dipbars','rings'],                       note:'Lean forward for chest, upright for triceps.'},
+  pushups:       {name:'Push-ups',               icon:'💪', type:'calisthenics', muscles:'Chest, Triceps, Core',          gear:['floor'],                                note:'Full range of motion, engage core throughout.'},
+  diamond:       {name:'Diamond Push-ups',       icon:'💪', type:'calisthenics', muscles:'Triceps, Chest',                gear:['floor'],                                note:'Hands form a diamond, elbows track back.'},
+  pikepush:      {name:'Pike Push-ups',          icon:'💪', type:'calisthenics', muscles:'Shoulders, Triceps',            gear:['floor'],                                note:'Hips high, head between arms at bottom.'},
+  lat_raise:     {name:'Lateral Raises',         icon:'🏋️', type:'dumbbell',    muscles:'Side Delts',                    gear:['dumbbells','cables','bands','kettlebell'],note:'Slight bend in elbow, lead with elbows.'},
+  tri_dip:       {name:'Bench Dips',             icon:'💪', type:'calisthenics', muscles:'Triceps',                       gear:['box','floor','dipbars'],                 note:'Elbows behind you, lower until 90°.'},
+  dbpress:       {name:'DB Bench Press',         icon:'🏋️', type:'dumbbell',    muscles:'Chest, Triceps, Shoulders',     gear:['dumbbells'],                            note:'Neutral or pronated grip, full range to chest.'},
+  dbshoulder:    {name:'DB Shoulder Press',      icon:'🏋️', type:'dumbbell',    muscles:'Shoulders, Triceps',            gear:['dumbbells','kettlebell'],               note:'Press straight up, don\'t flare elbows too wide.'},
+  dbfly:         {name:'DB Chest Fly',           icon:'🏋️', type:'dumbbell',    muscles:'Chest, Front Delts',            gear:['dumbbells'],                            note:'Slight bend in elbows, feel stretch at bottom.'},
+  cablefly:      {name:'Cable Crossover',        icon:'🔧', type:'cable',        muscles:'Chest, Front Delts',            gear:['cables'],                               note:'High to low or level, meet hands in front.'},
+  tridpushdown:  {name:'Tricep Pushdown',        icon:'🔧', type:'cable',        muscles:'Triceps',                       gear:['cables','bands'],                        note:'Lock elbows to sides, full extension at bottom.'},
+  overhtriext:   {name:'Overhead Tricep Extension',icon:'🏋️',type:'dumbbell',  muscles:'Triceps (long head)',            gear:['dumbbells','cables','bands','kettlebell'],note:'Elbows point up, lower behind head, full stretch.'},
+  ringdip:       {name:'Ring Dips',              icon:'⭕', type:'rings',        muscles:'Chest, Triceps, Shoulders',     gear:['rings'],                                note:'Rings turned out at top, controlled descent.'},
+  kbpress:       {name:'KB Press',               icon:'🔔', type:'kettlebell',   muscles:'Shoulders, Triceps',            gear:['kettlebell'],                           note:'Rack position, press straight up, lock out top.'},
+
+  // ── PULL ─────────────────────────────────────────────────────────
+  pullup:        {name:'Pull-ups',               icon:'💪', type:'calisthenics', muscles:'Lats, Biceps',                  gear:['pullbar','rings'],                       note:'Full hang to chin over bar. Squeeze lats at top.'},
+  chinup:        {name:'Chin-ups',               icon:'💪', type:'calisthenics', muscles:'Biceps, Lats',                  gear:['pullbar','rings'],                       note:'Supinated grip (palms toward you).'},
+  bbrow:         {name:'Barbell Row',            icon:'🏋️', type:'barbell',      muscles:'Back, Biceps',                  gear:['barbell'],                              note:'Hinge at hips ~45°, pull bar to lower chest.'},
+  dbrow:         {name:'Dumbbell Row',           icon:'🏋️', type:'dumbbell',    muscles:'Back, Biceps',                  gear:['dumbbells','kettlebell'],               note:'Brace on bench, full stretch at bottom.'},
+  facepull:      {name:'Face Pulls',             icon:'🏋️', type:'cable',        muscles:'Rear Delts, Upper Back',        gear:['cables','bands'],                        note:'Pull to forehead, elbows high.'},
+  curl:          {name:'Bicep Curls',            icon:'🏋️', type:'dumbbell',    muscles:'Biceps',                        gear:['barbell','dumbbells','cables','bands','kettlebell'], note:'No swinging. Full range, pause at top.'},
+  hammer:        {name:'Hammer Curls',           icon:'🏋️', type:'dumbbell',    muscles:'Biceps, Brachialis',            gear:['dumbbells','cables','bands','kettlebell'],note:'Neutral grip, same as regular curls.'},
+  invrow:        {name:'Inverted Rows',          icon:'💪', type:'calisthenics', muscles:'Back, Biceps',                  gear:['pullbar','rings','dipbars'],             note:'Body straight, pull chest to bar.'},
+  latpull:       {name:'Lat Pulldown',           icon:'🔧', type:'cable',        muscles:'Lats, Biceps',                  gear:['cables','machines','bands'],             note:'Pull to upper chest, elbows down and back.'},
+  seatedrow:     {name:'Seated Cable Row',       icon:'🔧', type:'cable',        muscles:'Mid Back, Biceps',              gear:['cables','machines'],                     note:'Chest up, pull to belly, squeeze scapulae.'},
+  ringrow:       {name:'Ring Rows',              icon:'⭕', type:'rings',        muscles:'Back, Biceps',                  gear:['rings'],                                note:'Feet forward = harder. Pull rings to chest.'},
+  bandpull:      {name:'Band Pull-Apart',        icon:'🎗️', type:'bands',        muscles:'Rear Delts, Upper Back',        gear:['bands'],                                note:'Arms straight, pull band apart at chest height.'},
+  kbrow:         {name:'KB Single-Arm Row',      icon:'🔔', type:'kettlebell',   muscles:'Back, Biceps',                  gear:['kettlebell'],                           note:'Brace on thigh, row to hip, full range.'},
+
+  // ── LEGS ─────────────────────────────────────────────────────────
+  squat:         {name:'Squat',                  icon:'🏋️', type:'barbell',      muscles:'Quads, Glutes, Hamstrings',     gear:['barbell','floor','dumbbells','kettlebell','bands','machines'], note:'Chest up, knees out, break parallel.'},
+  deadlift:      {name:'Deadlift',               icon:'🏋️', type:'barbell',      muscles:'Hamstrings, Glutes, Back',      gear:['barbell','dumbbells','kettlebell'],      note:'Neutral spine, push floor away, lock hips at top.'},
+  rdl:           {name:'Romanian Deadlift',      icon:'🏋️', type:'barbell',      muscles:'Hamstrings, Glutes',            gear:['barbell','dumbbells','kettlebell','bands'],note:'Slight knee bend, bar stays close, feel stretch.'},
+  lunge:         {name:'Lunges',                 icon:'💪', type:'bodyweight',   muscles:'Quads, Glutes',                 gear:['floor','dumbbells','barbell','kettlebell','bands'],note:'Knee over toe, torso upright.'},
+  bss:           {name:'Bulgarian Split Squat',  icon:'💪', type:'bodyweight',   muscles:'Quads, Glutes',                 gear:['floor','dumbbells','barbell','box'],      note:'Back foot elevated, front knee tracks toes.'},
+  legpress:      {name:'Leg Press',              icon:'🏋️', type:'machine',      muscles:'Quads, Glutes',                 gear:['machines'],                             note:'Full range, don\'t lock out knees.'},
+  calfr:         {name:'Calf Raises',            icon:'💪', type:'bodyweight',   muscles:'Calves',                        gear:['floor','barbell','dumbbells','machines','box'],note:'Full stretch at bottom, pause at top.'},
+  jumpsquat:     {name:'Jump Squats',            icon:'💪', type:'calisthenics', muscles:'Quads, Glutes, Power',          gear:['floor'],                                note:'Land soft, absorb through hips and knees.'},
+  gobsquat:      {name:'Goblet Squat',           icon:'🔔', type:'dumbbell',    muscles:'Quads, Glutes, Core',           gear:['dumbbells','kettlebell'],               note:'Hold weight at chest, elbows inside knees.'},
+  kbswing:       {name:'KB Swing',               icon:'🔔', type:'kettlebell',   muscles:'Hamstrings, Glutes, Back',      gear:['kettlebell','dumbbells'],               note:'Hinge hard, drive hips forward. Arms are just a pendulum.'},
+  hipthrust:     {name:'Hip Thrust',             icon:'💪', type:'bodyweight',   muscles:'Glutes, Hamstrings',            gear:['floor','barbell','dumbbells','bands','box'],note:'Shoulders on bench/box, drive hips to ceiling.'},
+  glubridge:     {name:'Glute Bridge',           icon:'💪', type:'calisthenics', muscles:'Glutes, Hamstrings',            gear:['floor','dumbbells','bands'],             note:'Feet flat, drive hips up, squeeze at top.'},
+  hacksquat:     {name:'Hack Squat',             icon:'🏟️', type:'machine',      muscles:'Quads, Glutes',                 gear:['machines'],                             note:'Feet shoulder-width, full range of motion.'},
+  legcurl:       {name:'Leg Curl',               icon:'🏟️', type:'machine',      muscles:'Hamstrings',                    gear:['machines','bands'],                      note:'Controlled curl, don\'t let hips rise.'},
+  wallsit:       {name:'Wall Sit',               icon:'💪', type:'calisthenics', muscles:'Quads, Glutes',                 gear:['floor'],                                note:'90° at knees, back flat to wall. Hold.'},
+
+  // ── CORE ─────────────────────────────────────────────────────────
+  plank:         {name:'Plank',                  icon:'💪', type:'calisthenics', muscles:'Core',                          gear:['floor'],                                note:'Neutral spine, squeeze glutes and abs. Hold.'},
+  sideplank:     {name:'Side Plank',             icon:'💪', type:'calisthenics', muscles:'Obliques, Core',                gear:['floor'],                                note:'Stack feet or stagger, raise hip fully, hold.'},
+  hollow:        {name:'Hollow Body Hold',       icon:'💪', type:'calisthenics', muscles:'Core',                          gear:['floor'],                                note:'Lower back pressed to floor, legs and arms extended.'},
+  legraise:      {name:'Leg Raises',             icon:'💪', type:'calisthenics', muscles:'Lower Abs',                     gear:['floor','pullbar','rings'],               note:'Control the descent. Don\'t swing.'},
+  toetobar:      {name:'Toes to Bar',            icon:'💪', type:'calisthenics', muscles:'Core, Lats',                    gear:['pullbar','rings'],                       note:'Full hang, raise toes to bar, control down.'},
+  mtnclimb:      {name:'Mountain Climbers',      icon:'💪', type:'calisthenics', muscles:'Core, Cardio',                  gear:['floor'],                                note:'Keep hips level, drive knees fast.'},
+  twist:         {name:'Russian Twists',         icon:'💪', type:'calisthenics', muscles:'Obliques',                      gear:['floor'],                                note:'Lean back ~45°, rotate controlled.'},
+  deadbug:       {name:'Dead Bug',               icon:'💪', type:'calisthenics', muscles:'Core, Stability',               gear:['floor'],                                note:'Lower back pressed down, extend opposite arm+leg slow.'},
+  bicyclecrunch: {name:'Bicycle Crunches',       icon:'💪', type:'calisthenics', muscles:'Abs, Obliques',                 gear:['floor'],                                note:'Rotate elbow to opposite knee, full extension.'},
+
+  // ── CARDIO ───────────────────────────────────────────────────────
+  run:           {name:'Running',                icon:'🏃', type:'cardio',       muscles:'Full Body, Cardiovascular',     gear:['floor'],                                note:''},
 };
 
-// Exercise groups for swap suggestions
+// Exercise groups for swap suggestions (by muscle category)
 const EX_GROUPS = {
-  push:  ['bench','ohp','incline','dips','pushups','pikepush','lat_raise','tri_dip'],
-  pull:  ['pullup','chinup','bbrow','dbrow','facepull','curl','hammer','invrow'],
-  legs:  ['squat','deadlift','rdl','lunge','bss','legpress','calfr','jumpsquat'],
-  core:  ['plank','hollow','legraise','mtnclimb','twist'],
+  push: ['bench','ohp','incline','dips','pushups','diamond','pikepush','lat_raise','tri_dip',
+         'dbpress','dbshoulder','dbfly','cablefly','tridpushdown','overhtriext','ringdip','kbpress'],
+  pull: ['pullup','chinup','bbrow','dbrow','facepull','curl','hammer','invrow',
+         'latpull','seatedrow','ringrow','bandpull','kbrow'],
+  legs: ['squat','deadlift','rdl','lunge','bss','legpress','calfr','jumpsquat',
+         'gobsquat','kbswing','hipthrust','glubridge','hacksquat','legcurl','wallsit'],
+  core: ['plank','sideplank','hollow','legraise','toetobar','mtnclimb','twist','deadbug','bicyclecrunch'],
 };
 function getExGroup(id) {
   for (const [grp, ids] of Object.entries(EX_GROUPS)) {
     if (ids.includes(id)) return grp;
   }
   return null;
+}
+
+// ─────────────────────────────────────────────────────────────────────
+//  GEAR FILTERING
+// ─────────────────────────────────────────────────────────────────────
+function getUserGear() {
+  const g = state.settings?.gear;
+  if (!g || g.length === 0) return null; // null = no restriction
+  return g.includes('floor') ? g : ['floor', ...g]; // floor always available
+}
+function canDoEx(exId, userGear) {
+  if (!userGear) return true;
+  const ex = E[exId];
+  if (!ex?.gear) return true;
+  return ex.gear.some(g => userGear.includes(g));
+}
+function bestGearAlternative(exId, group, userGear) {
+  if (!userGear) return exId;
+  const candidates = EX_GROUPS[group] || [];
+  const alt = candidates.find(id => id !== exId && canDoEx(id, userGear));
+  return alt || exId;
+}
+function adaptWorkoutToGear(workout, userGear) {
+  if (!userGear) return workout;
+  return {
+    ...workout,
+    exercises: workout.exercises.map(ex => {
+      if (canDoEx(ex.id, userGear)) return ex;
+      const grp = getExGroup(ex.id);
+      const alt = grp ? bestGearAlternative(ex.id, grp, userGear) : ex.id;
+      return {...ex, id: alt};
+    })
+  };
 }
 
 // ─────────────────────────────────────────────────────────────────────
@@ -1236,16 +1460,10 @@ function getBaseSchedule() {
   return isMaintenancePhase() ? MAINTENANCE_SCHEDULE : (SCHEDULES[state.split] || SCHEDULES.full_body_3);
 }
 function getCurrentSchedule() {
-  const base = getBaseSchedule();
-  const customDays = state.settings?.trainingDays;
-  if (!customDays || customDays.length === 0) return base;
-  // Extract non-rest workout slots in order, redistribute to custom days
-  const slots = base.filter(k => k !== 'rest');
-  const sched = Array(7).fill('rest');
-  [...customDays].sort((a,b) => a-b).forEach((day, i) => {
-    if (i < slots.length) sched[day] = slots[i];
-  });
-  return sched;
+  // Full custom schedule takes highest priority
+  const custom = state.settings?.customSchedule;
+  if (custom && Array.isArray(custom) && custom.length === 7) return custom;
+  return getBaseSchedule();
 }
 function getPhase(weekNum, total) {
   const pct = weekNum / total;
@@ -1288,7 +1506,10 @@ function getWorkoutForKey(key, applyPhase = true) {
   const phase = getPhase(weekOfProgram(), totalWeeks());
   const goal = (state.profile?.goals || [state.profile?.goal || 'muscle_gain'])[0];
   let workout = applyPhaseModifiers(base, phase, goal);
-  // Apply persistent exercise swaps
+  // Apply gear adaptation (replace incompatible exercises automatically)
+  const userGear = getUserGear();
+  if (userGear) workout = adaptWorkoutToGear(workout, userGear);
+  // Apply persistent exercise swaps (user's manual choices override gear adaptation)
   const swaps = state.settings?.exSwaps?.[key];
   if (swaps && Object.keys(swaps).length) {
     workout = {...workout, exercises: workout.exercises.map((ex, i) => {
@@ -1433,6 +1654,18 @@ function getWeightKg() {
 let obData = {};
 let obStep = 0;
 
+function toggleGearCard(el) {
+  const val = el.dataset.val;
+  if (val === 'floor') return; // floor always selected
+  el.classList.toggle('selected');
+  if (!obData.gear) obData.gear = ['floor'];
+  if (el.classList.contains('selected')) {
+    if (!obData.gear.includes(val)) obData.gear.push(val);
+  } else {
+    obData.gear = obData.gear.filter(g => g !== val);
+  }
+}
+
 function obNext(step) {
   if (step === 0) {
     const name = document.getElementById('inp-name')?.value.trim();
@@ -1445,7 +1678,6 @@ function obNext(step) {
     if (!h || h < 100 || h > 250) return alert('Enter a valid height.');
     if (!w || w < 30 || w > 300)  return alert('Enter a valid weight.');
     obData.name = name; obData.birthday = birthday; obData.height = h; obData.weight = w; obData.unit = currentUnit;
-    // Personalize step 1 greeting
     const s1 = document.querySelector('#ob-step-1 .ob-title');
     if (s1) s1.textContent = `Hey ${name}, your daily activity?`;
   }
@@ -1456,6 +1688,12 @@ function obNext(step) {
   }
   if (step === 2) {
     if (!obData.goals || obData.goals.length === 0) return alert('Select at least one goal.');
+  }
+  if (step === 3) {
+    // Collect selected gear from cards
+    const selected = [];
+    document.querySelectorAll('#gear-opts .gear-card.selected').forEach(c => selected.push(c.dataset.val));
+    obData.gear = selected.length ? selected : ['floor'];
   }
   goToObStep(step + 1);
 }
@@ -1529,6 +1767,8 @@ function finishOnboarding() {
   };
   state.split = split;
   state.log = [];
+  if (!state.settings) state.settings = {};
+  state.settings.gear = obData.gear && obData.gear.length ? obData.gear : ['floor'];
   save();
   showScreen('dashboard');
   renderDashboard();
@@ -2125,25 +2365,54 @@ function renderProfile() {
       </div>
     </div>
     ${(()=>{
-      const baseSched = getBaseSchedule();
-      const defaultDays = baseSched.map((k,i) => k!=='rest'?i:null).filter(i=>i!==null);
-      const selectedDays = state.settings?.trainingDays || defaultDays;
-      const scheduledCount = defaultDays.length;
-      const hasCustom = !!state.settings?.trainingDays;
+      // Equipment section
+      const userGear = state.settings?.gear || ['floor'];
       return `<div class="card card-sm" style="margin-bottom:12px">
         <div class="card-body">
           <div class="flex-between mb4">
-            <div class="section-title">Training Days</div>
-            ${hasCustom ? `<button class="btn btn-ghost btn-xs" onclick="resetTrainingDays()">Reset</button>` : ''}
+            <div class="section-title">Equipment</div>
+            <button class="btn btn-ghost btn-xs" onclick="showGearEditor()">Edit</button>
           </div>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:2px">Your program has ${scheduledCount} sessions/week. Pick which days.</div>
-          <div class="day-picker">
-            ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map((d,i) => {
-              const sel = selectedDays.includes(i);
-              return `<button class="day-pick-btn ${sel?'selected':''}" onclick="toggleTrainingDay(${i})">${d}</button>`;
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            ${EQUIPMENT_OPTIONS.filter(o=>userGear.includes(o.id)).map(o=>`<span class="tag tag-green">${o.icon} ${o.label}</span>`).join('')}
+          </div>
+        </div>
+      </div>`;
+    })()}
+    ${(()=>{
+      // Weekly schedule builder
+      const sched = getCurrentSchedule();
+      const hasCustom = !!(state.settings?.customSchedule);
+      const DAY_LABELS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      const focusMap = {
+        rest:'😴 Rest',full_a:'💪 Full Body A',full_b:'🔋 Full Body B',
+        push:'⬆️ Push',pull:'⬇️ Pull',legs:'🦵 Legs',
+        upper_a:'💪 Upper A',upper_b:'🔋 Upper B',
+        lower_a:'🦵 Lower A',lower_b:'🔥 Lower B',
+        run:'🏃 Cardio',optional:'🚶 Optional Cardio',
+      };
+      return `<div class="card card-sm" style="margin-bottom:12px">
+        <div class="card-body">
+          <div class="flex-between mb4">
+            <div class="section-title">Weekly Schedule</div>
+            ${hasCustom ? `<button class="btn btn-ghost btn-xs" onclick="resetCustomSchedule()">Reset</button>` : ''}
+          </div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Tap any day to change its focus.</div>
+          <div class="sched-list">
+            ${DAY_LABELS.map((d,i) => {
+              const key = sched[i] || 'rest';
+              const label = focusMap[key] || key;
+              const isRest = key === 'rest';
+              return `<div class="sched-row" onclick="openDayFocusModal(${i})">
+                <div class="sched-day">${d}</div>
+                <div class="sched-focus">
+                  <span style="font-size:15px">${label.split(' ')[0]}</span>
+                  <span style="font-size:13px;font-weight:700;color:${isRest?'var(--muted)':'var(--text)'}">${label.split(' ').slice(1).join(' ')}</span>
+                </div>
+                <span style="font-size:10px;color:var(--muted)">›</span>
+              </div>`;
             }).join('')}
           </div>
-          <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px">${selectedDays.length} of ${scheduledCount} days selected</div>
         </div>
       </div>`;
     })()}
@@ -2161,32 +2430,97 @@ function adjRest(delta) {
   if (el) el.textContent = state.settings.restSeconds + 's';
 }
 
-function toggleTrainingDay(dayIdx) {
+// =====================================================================
+//  EQUIPMENT EDITOR (profile)
+// =====================================================================
+function showGearEditor() {
+  const userGear = state.settings?.gear || ['floor'];
+  const opts = EQUIPMENT_OPTIONS.map(o => {
+    const sel = userGear.includes(o.id);
+    const locked = o.id === 'floor';
+    return `<div class="gear-card ${sel?'selected':''} ${locked?'':''}" data-val="${o.id}"
+      onclick="${locked?'':'profileToggleGear(this)'}">
+      <div class="gear-icon">${o.icon}</div>
+      <div class="gear-info"><div class="gear-name">${o.label}</div><div class="gear-desc">${o.desc}</div></div>
+      <div class="gear-check">✓</div>
+    </div>`;
+  }).join('');
+  document.getElementById('profile-content').innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <button class="btn btn-ghost btn-sm" onclick="renderProfile()">← Back</button>
+      <div style="font-size:17px;font-weight:800">Edit Equipment</div>
+    </div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:12px">Select everything you have access to. Workouts auto-adapt.</div>
+    <div class="gear-grid">${opts}</div>
+    <div style="margin-top:16px">
+      <button class="btn btn-primary btn-block" onclick="saveGearFromEditor()">Save Equipment</button>
+    </div>
+  `;
+}
+function profileToggleGear(el) {
+  el.classList.toggle('selected');
+}
+function saveGearFromEditor() {
   if (!state.settings) state.settings = {};
-  const baseSched = getBaseSchedule();
-  const defaultDays = baseSched.map((k,i) => k!=='rest'?i:null).filter(i=>i!==null);
-  const scheduledCount = defaultDays.length;
-  let days = [...(state.settings.trainingDays || defaultDays)];
-  const idx = days.indexOf(dayIdx);
-  if (idx >= 0) {
-    if (days.length > 1) days.splice(idx, 1);
-  } else {
-    if (days.length < scheduledCount) {
-      days.push(dayIdx);
-    } else {
-      days.shift();
-      days.push(dayIdx);
-    }
+  const selected = [];
+  document.querySelectorAll('#profile-content .gear-card.selected').forEach(c => selected.push(c.dataset.val));
+  state.settings.gear = selected.length ? selected : ['floor'];
+  if (!state.settings.gear.includes('floor')) state.settings.gear.unshift('floor');
+  save();
+  renderProfile();
+}
+
+// =====================================================================
+//  CUSTOM SCHEDULE / DAY FOCUS
+// =====================================================================
+const DAY_FOCUS_OPTIONS = [
+  { key:'rest',    label:'Rest Day',    icon:'😴', desc:'Recovery — no training' },
+  { key:'full_a',  label:'Full Body A', icon:'💪', desc:'Squat · Bench · Row · OHP' },
+  { key:'full_b',  label:'Full Body B', icon:'🔋', desc:'Deadlift · Pull-ups · Dips' },
+  { key:'push',    label:'Push',        icon:'⬆️', desc:'Chest · Shoulders · Triceps' },
+  { key:'pull',    label:'Pull',        icon:'⬇️', desc:'Back · Biceps · Rear Delts' },
+  { key:'legs',    label:'Legs',        icon:'🦵', desc:'Quads · Hamstrings · Glutes' },
+  { key:'upper_a', label:'Upper A',     icon:'💪', desc:'Bench · Row · OHP · Pull-up' },
+  { key:'upper_b', label:'Upper B',     icon:'🔋', desc:'Incline · DB Row · Dips' },
+  { key:'lower_a', label:'Lower A',     icon:'🦵', desc:'Squat · Leg Press · Lunges' },
+  { key:'lower_b', label:'Lower B',     icon:'🔥', desc:'Deadlift · RDL · Split Squat' },
+  { key:'run',     label:'Cardio',      icon:'🏃', desc:'Running or cardio session' },
+];
+
+let dayFocusState = { dayIdx: -1 };
+
+function openDayFocusModal(dayIdx) {
+  dayFocusState.dayIdx = dayIdx;
+  const DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const current = getCurrentSchedule()[dayIdx] || 'rest';
+  document.getElementById('dfm-title').textContent = DAY_NAMES[dayIdx];
+  document.getElementById('dfm-opts').innerHTML = DAY_FOCUS_OPTIONS.map(o => `
+    <div class="dfm-opt ${o.key===current?'current':''}" onclick="setDayFocus('${o.key}')">
+      <div class="dfm-opt-icon">${o.icon}</div>
+      <div><div class="dfm-opt-name">${o.label}</div><div class="dfm-opt-desc">${o.desc}</div></div>
+    </div>`).join('');
+  document.getElementById('day-focus-modal').classList.add('open');
+}
+function closeDayFocusModal(e) {
+  if (e && e.target !== document.getElementById('day-focus-modal')) return;
+  document.getElementById('day-focus-modal').classList.remove('open');
+}
+function setDayFocus(focusKey) {
+  const { dayIdx } = dayFocusState;
+  if (dayIdx < 0) return;
+  if (!state.settings) state.settings = {};
+  if (!state.settings.customSchedule) {
+    state.settings.customSchedule = [...getCurrentSchedule()];
   }
-  state.settings.trainingDays = days;
+  state.settings.customSchedule[dayIdx] = focusKey;
+  document.getElementById('day-focus-modal').classList.remove('open');
   save();
   renderProfile();
   renderDashboard();
 }
-
-function resetTrainingDays() {
-  if (!state.settings) state.settings = {};
-  delete state.settings.trainingDays;
+function resetCustomSchedule() {
+  if (!state.settings) return;
+  delete state.settings.customSchedule;
   save();
   renderProfile();
   renderDashboard();
@@ -2208,13 +2542,16 @@ function openSwapModal(ei) {
   document.getElementById('swap-modal-title').textContent = `Swap: ${E[ex.id]?.name || ex.id}`;
   document.getElementById('swap-modal-sub').textContent = group.charAt(0).toUpperCase() + group.slice(1) + ' alternatives';
   const candidates = EX_GROUPS[group] || [];
+  const userGear = getUserGear();
   document.getElementById('swap-list').innerHTML = candidates.map(id => {
     const def = E[id]; if (!def) return '';
     const isCurrent = id === ex.id;
-    return `<div class="swap-item ${isCurrent?'current':''}" onclick="selectSwap('${id}')">
+    const doable = canDoEx(id, userGear);
+    const gearNote = !doable ? ` <span class="tag tag-red" style="font-size:9px">need gear</span>` : '';
+    return `<div class="swap-item ${isCurrent?'current':''}" onclick="selectSwap('${id}')" style="${!doable?'opacity:.5':''}">
       <div class="swap-item-icon">${def.icon}</div>
       <div class="swap-item-info">
-        <div class="swap-item-name">${def.name}${isCurrent?' <span class="tag tag-green" style="font-size:9px">current</span>':''}</div>
+        <div class="swap-item-name">${def.name}${isCurrent?' <span class="tag tag-green" style="font-size:9px">current</span>':''}${gearNote}</div>
         <div class="swap-item-meta">${def.muscles} · ${def.type}</div>
       </div>
     </div>`;
