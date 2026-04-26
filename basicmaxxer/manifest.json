@@ -1,0 +1,33 @@
+{
+  "name": "Basic Maxxer",
+  "short_name": "BasicMaxxer",
+  "description": "Your personal training coach. Real basics. Real results.",
+  "id": "/basicmaxxer/",
+  "start_url": "/basicmaxxer/",
+  "scope": "/basicmaxxer/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#07080d",
+  "theme_color": "#07080d",
+  "categories": ["health", "fitness"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

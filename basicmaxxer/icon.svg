@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#07080d"/>
+  <rect x="0" y="368" width="512" height="144" fill="rgba(163,230,53,0.06)"/>
+  <!-- center bar -->
+  <rect x="130" y="232" width="252" height="24" rx="8" fill="#a3e635"/>
+  <!-- left collar -->
+  <rect x="108" y="200" width="30" height="88" rx="8" fill="#a3e635"/>
+  <!-- left plate -->
+  <rect x="72" y="168" width="38" height="152" rx="10" fill="#a3e635"/>
+  <!-- right collar -->
+  <rect x="374" y="200" width="30" height="88" rx="8" fill="#a3e635"/>
+  <!-- right plate -->
+  <rect x="402" y="168" width="38" height="152" rx="10" fill="#a3e635"/>
+  <text x="256" y="430" font-family="system-ui,-apple-system,Arial,sans-serif"
+    font-size="52" font-weight="900" fill="rgba(163,230,53,0.6)"
+    text-anchor="middle" letter-spacing="3">MAXXER</text>
+</svg>

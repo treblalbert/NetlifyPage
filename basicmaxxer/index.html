@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
 <title>Basic Maxxer</title>
+
+<!-- PWA / iOS install meta tags -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#07080d">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BasicMaxxer">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
 <style>
 :root {
   --bg: #07080d;
@@ -2265,6 +2276,14 @@ function init() {
 // Extra save triggers for mobile browsers that may unload without beforeunload
 window.addEventListener('pagehide', save);
 document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
+
+// Register service worker for offline support
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/basicmaxxer/sw.js', { scope: '/basicmaxxer/' })
+      .catch(() => {}); // Silently fail if SW not supported
+  });
+}
 
 init();
 </script>
