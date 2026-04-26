@@ -15,6 +15,11 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
+
+<!-- Firebase SDK (v10 compat) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
 <style>
 :root {
   --bg: #07080d;
@@ -37,6 +42,44 @@
   --shadow: 0 8px 32px rgba(0,0,0,0.5);
   --shadow2: 0 2px 12px rgba(0,0,0,0.4);
 }
+
+/* ===== LIGHT THEME ===== */
+[data-theme="light"] {
+  --bg: #f0f4f8;
+  --glass: rgba(0,0,0,0.03);
+  --glass2: rgba(0,0,0,0.06);
+  --glass3: rgba(0,0,0,0.10);
+  --border: rgba(0,0,0,0.09);
+  --border2: rgba(0,0,0,0.16);
+  --accent: #4d7c0f;
+  --accent2: #365314;
+  --blue: #2563eb;
+  --red: #dc2626;
+  --yellow: #d97706;
+  --purple: #7c3aed;
+  --text: #0f172a;
+  --muted: #64748b;
+  --muted2: #475569;
+  --shadow: 0 8px 32px rgba(0,0,0,0.10);
+  --shadow2: 0 2px 12px rgba(0,0,0,0.06);
+}
+[data-theme="light"] body { background: var(--bg); }
+[data-theme="light"] body::before {
+  background:
+    radial-gradient(ellipse 80% 60% at 20% -10%, rgba(100,160,20,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 110%, rgba(37,99,235,0.05) 0%, transparent 55%);
+}
+[data-theme="light"] #nav { background: rgba(240,244,248,0.92); }
+[data-theme="light"] .workout-hd { background: rgba(240,244,248,0.92); }
+[data-theme="light"] .timer-card { background: rgba(240,244,248,0.96); }
+[data-theme="light"] .swap-modal-card,
+[data-theme="light"] .set-modal-card,
+[data-theme="light"] .dfm-card { background: #e2e8f0; }
+[data-theme="light"] select option { background: #e2e8f0; }
+[data-theme="light"] input[type=date] { color-scheme: light; }
+[data-theme="light"] .today-card { background: linear-gradient(135deg,rgba(77,124,15,0.12) 0%,rgba(77,124,15,0.04) 100%); }
+[data-theme="light"] .trainer-bubble { background: rgba(0,0,0,0.04); }
+
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden}
 body{
@@ -647,9 +690,112 @@ input[type=date]{color-scheme:dark}
 .dfm-opt-icon{font-size:18px;flex-shrink:0}
 .dfm-opt-name{font-size:12px;font-weight:700;line-height:1.2}
 .dfm-opt-desc{font-size:10px;color:var(--muted);margin-top:1px}
+
+/* ===== AUTH SCREEN ===== */
+#screen-auth{
+  position:fixed;inset:0;z-index:500;
+  background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 24px;overflow-y:auto;
+}
+#screen-auth.hidden{display:none}
+.auth-wrap{width:100%;max-width:380px}
+.auth-logo{font-size:28px;font-weight:900;letter-spacing:-1px;text-align:center;margin-bottom:4px}
+.auth-logo span{color:var(--accent)}
+.auth-tagline{font-size:13px;color:var(--muted);text-align:center;margin-bottom:36px}
+.auth-title{font-size:20px;font-weight:800;text-align:center;margin-bottom:4px}
+.auth-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:24px}
+.auth-divider{
+  display:flex;align-items:center;gap:12px;
+  margin:4px 0 16px;color:var(--muted);font-size:12px;font-weight:600;
+}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border2)}
+.auth-error{
+  display:none;color:var(--red);font-size:13px;
+  text-align:center;margin-bottom:12px;
+  background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.25);
+  border-radius:8px;padding:8px 12px;
+}
+.auth-social-btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;padding:13px 20px;border-radius:var(--rs);
+  background:var(--glass2);border:1px solid var(--border2);
+  color:var(--text);font-size:15px;font-weight:600;font-family:inherit;
+  cursor:pointer;transition:all .15s;margin-bottom:10px;
+}
+.auth-social-btn:active{transform:scale(.97);background:var(--glass3)}
+
+/* ===== THEME TOGGLE ===== */
+.theme-toggle{
+  display:flex;align-items:center;gap:10px;
+  padding:14px 16px;cursor:pointer;
+}
+.theme-toggle-track{
+  width:44px;height:24px;border-radius:999px;
+  background:var(--glass2);border:1px solid var(--border2);
+  position:relative;transition:background .2s;flex-shrink:0;
+}
+.theme-toggle-track.on{background:var(--accent)}
+.theme-toggle-thumb{
+  position:absolute;top:3px;left:3px;
+  width:18px;height:18px;border-radius:50%;
+  background:#fff;transition:left .2s;
+  box-shadow:0 1px 4px rgba(0,0,0,0.3);
+}
+.theme-toggle-track.on .theme-toggle-thumb{left:23px}
 </style>
 </head>
 <body>
+
+<!-- ============ AUTH ============ -->
+<div id="screen-auth">
+  <div class="auth-wrap">
+    <div class="auth-logo">BASIC <span>MAXXER</span></div>
+    <div class="auth-tagline">Your personal coach. Real basics. Real results.</div>
+
+    <!-- Login form -->
+    <div id="auth-panel-login">
+      <div class="auth-title">Welcome back</div>
+      <div class="auth-sub">Sign in to continue</div>
+
+      <button class="auth-social-btn" onclick="authGoogle()">
+        <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continue with Google
+      </button>
+      <button class="auth-social-btn" onclick="authApple()">
+        <svg width="17" height="20" viewBox="0 0 814 1000" fill="currentColor"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 376.7 0 280.8 0 190.5 0 85.3 62.7 32.2 124.5 32.2c60.2 0 102 41.4 162.3 41.4 57.9 0 107.4-43.1 170.5-43.1 64.2.1 108.7 46.4 130.8 46.4zm-88-52.4c-81.5 0-127.7 54.7-175.2 54.7-51.2 0-95.5-43.1-163.2-43.1C303.5 300.1 238 359 214.3 459.4c-23.2 99.2 12.3 217.4 68.7 288.9 49.3 61.7 103.1 99.8 154.3 99.8 53.5 0 86.1-36.7 153.8-36.7 67.5 0 97.1 36.7 155.8 36.7 58.9 0 117.5-51.2 166.9-107.5 33.5-38.7 61.2-92.8 75.4-130.5-4.8-1.9-93.9-36.7-93.9-148.4 0-94.2 73.6-139.5 77.8-142.8z"/></svg>
+        Continue with Apple
+      </button>
+
+      <div class="auth-divider"><span>or</span></div>
+
+      <div class="form-group">
+        <input type="email" id="auth-email" placeholder="Email address" autocomplete="email" inputmode="email">
+      </div>
+      <div class="form-group">
+        <input type="password" id="auth-pass" placeholder="Password" autocomplete="current-password">
+      </div>
+      <div id="auth-err-login" class="auth-error"></div>
+      <button class="btn btn-primary btn-block" style="margin-bottom:10px" onclick="authEmailSignIn()">Sign In</button>
+      <button class="btn btn-ghost btn-block btn-sm" onclick="authShowPanel('register')">No account? Create one →</button>
+    </div>
+
+    <!-- Register form -->
+    <div id="auth-panel-register" style="display:none">
+      <div class="auth-title">Create account</div>
+      <div class="auth-sub">Free forever, no subscription</div>
+      <div class="form-group">
+        <input type="email" id="auth-email-reg" placeholder="Email address" autocomplete="email" inputmode="email">
+      </div>
+      <div class="form-group">
+        <input type="password" id="auth-pass-reg" placeholder="Password (6+ characters)" autocomplete="new-password">
+      </div>
+      <div id="auth-err-reg" class="auth-error"></div>
+      <button class="btn btn-primary btn-block" style="margin-bottom:10px" onclick="authEmailRegister()">Create Account</button>
+      <button class="btn btn-ghost btn-block btn-sm" onclick="authShowPanel('login')">← Back to Sign In</button>
+    </div>
+  </div>
+</div>
 
 <!-- ============ ONBOARDING ============ -->
 <div id="screen-onboarding" class="screen">
@@ -995,6 +1141,10 @@ input[type=date]{color-scheme:dark}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
     History
   </button>
+  <button class="nav-btn" id="nav-profile" onclick="showScreen('profile')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    Profile
+  </button>
 </div>
 
 <!-- ============ REST TIMER ============ -->
@@ -1055,6 +1205,32 @@ input[type=date]{color-scheme:dark}
 </div>
 
 <script>
+// =====================================================================
+//  FIREBASE — replace values from Firebase Console > Project Settings
+// =====================================================================
+const firebaseConfig = {
+  apiKey:            "REPLACE_WITH_YOUR_API_KEY",
+  authDomain:        "REPLACE_WITH_YOUR_PROJECT_ID.firebaseapp.com",
+  projectId:         "REPLACE_WITH_YOUR_PROJECT_ID",
+  storageBucket:     "REPLACE_WITH_YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "REPLACE_WITH_YOUR_SENDER_ID",
+  appId:             "REPLACE_WITH_YOUR_APP_ID"
+};
+
+let fbApp, fbAuth, currentUid = 'local';
+
+function fbConfigured() {
+  return !firebaseConfig.apiKey.startsWith('REPLACE_');
+}
+
+if (fbConfigured()) {
+  fbApp  = firebase.initializeApp(firebaseConfig);
+  fbAuth = firebase.auth();
+} else {
+  // Firebase not yet configured — run without auth so you can still test the UI
+  console.warn('Firebase not configured. Running in local (no-auth) mode.');
+}
+
 // =====================================================================
 //  CONSTANTS
 // =====================================================================
@@ -1415,14 +1591,21 @@ let state = {
 // =====================================================================
 //  STORAGE
 // =====================================================================
+function storageKey() { return 'maxer_v2_' + currentUid; }
 function save() {
-  try { localStorage.setItem('maxer_v2', JSON.stringify(state)); } catch(e) {
+  try { localStorage.setItem(storageKey(), JSON.stringify(state)); } catch(e) {
     console.warn('Save failed:', e);
   }
 }
 function load() {
   try {
-    const d = localStorage.getItem('maxer_v2');
+    // Migrate legacy anonymous data on first sign-in
+    const legacyKey = 'maxer_v2';
+    const key = storageKey();
+    if (!localStorage.getItem(key) && localStorage.getItem(legacyKey)) {
+      localStorage.setItem(key, localStorage.getItem(legacyKey));
+    }
+    const d = localStorage.getItem(key);
     if (d) {
       const p = JSON.parse(d);
       if (p && typeof p === 'object') {
@@ -2416,7 +2599,19 @@ function renderProfile() {
         </div>
       </div>`;
     })()}
-    <div style="margin-top:8px">
+    <div class="card card-sm" style="margin-bottom:12px">
+      <div class="theme-toggle" onclick="toggleTheme()">
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:700">Light Mode</div>
+          <div style="font-size:11px;color:var(--muted)">Switch between dark and light theme</div>
+        </div>
+        <div class="theme-toggle-track${document.documentElement.getAttribute('data-theme') === 'light' ? ' on' : ''}" id="theme-track">
+          <div class="theme-toggle-thumb"></div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top:8px;display:flex;flex-direction:column;gap:8px">
+      ${fbConfigured() ? `<button class="btn btn-secondary btn-block btn-sm" onclick="authSignOut()">Sign Out</button>` : ''}
       <button class="btn btn-danger btn-block btn-sm" onclick="resetApp()">🗑 Reset & Start Over</button>
     </div>
   `;
@@ -2607,7 +2802,7 @@ function resetApp() {
   target.appendChild(div);
 }
 function doReset() {
-  try { localStorage.removeItem('maxer_v2'); } catch(e) {}
+  try { localStorage.removeItem(storageKey()); } catch(e) {}
   // Reset in-memory state
   state = { profile: null, split: null, log: [], settings: { restSeconds: 60 } };
   obData = {};
@@ -2617,6 +2812,99 @@ function doReset() {
   document.getElementById('nav').classList.remove('visible');
   showScreen('onboarding');
   goToObStep(0);
+}
+
+// =====================================================================
+//  THEME
+// =====================================================================
+function initTheme() {
+  const saved = localStorage.getItem('maxer_theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+}
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('maxer_theme', next);
+  // Refresh the toggle knob if profile is open
+  const track = document.getElementById('theme-track');
+  if (track) track.className = 'theme-toggle-track' + (next === 'light' ? ' on' : '');
+}
+
+// =====================================================================
+//  AUTH
+// =====================================================================
+function authShowPanel(panel) {
+  document.getElementById('auth-panel-login').style.display    = panel === 'login'    ? '' : 'none';
+  document.getElementById('auth-panel-register').style.display = panel === 'register' ? '' : 'none';
+}
+function authSetError(id, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  el.style.display = msg ? '' : 'none';
+}
+function authHideScreen() {
+  document.getElementById('screen-auth').classList.add('hidden');
+}
+function authShowScreen() {
+  document.getElementById('screen-auth').classList.remove('hidden');
+}
+
+async function authGoogle() {
+  if (!fbAuth) return;
+  authSetError('auth-err-login', '');
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    await fbAuth.signInWithPopup(provider);
+  } catch(e) {
+    authSetError('auth-err-login', e.message || 'Google sign-in failed.');
+  }
+}
+async function authApple() {
+  if (!fbAuth) return;
+  authSetError('auth-err-login', '');
+  try {
+    const provider = new firebase.auth.OAuthProvider('apple.com');
+    await fbAuth.signInWithPopup(provider);
+  } catch(e) {
+    authSetError('auth-err-login', e.message || 'Apple sign-in failed.');
+  }
+}
+async function authEmailSignIn() {
+  if (!fbAuth) return;
+  authSetError('auth-err-login', '');
+  const email = document.getElementById('auth-email').value.trim();
+  const pass  = document.getElementById('auth-pass').value;
+  if (!email || !pass) { authSetError('auth-err-login', 'Enter email and password.'); return; }
+  try {
+    await fbAuth.signInWithEmailAndPassword(email, pass);
+  } catch(e) {
+    authSetError('auth-err-login', e.message || 'Sign-in failed.');
+  }
+}
+async function authEmailRegister() {
+  if (!fbAuth) return;
+  authSetError('auth-err-reg', '');
+  const email = document.getElementById('auth-email-reg').value.trim();
+  const pass  = document.getElementById('auth-pass-reg').value;
+  if (!email || !pass) { authSetError('auth-err-reg', 'Enter email and password.'); return; }
+  if (pass.length < 6)  { authSetError('auth-err-reg', 'Password must be at least 6 characters.'); return; }
+  try {
+    await fbAuth.createUserWithEmailAndPassword(email, pass);
+  } catch(e) {
+    authSetError('auth-err-reg', e.message || 'Registration failed.');
+  }
+}
+async function authSignOut() {
+  if (fbAuth) await fbAuth.signOut();
+  currentUid = 'local';
+  state = { profile: null, split: null, log: [], settings: { restSeconds: 60 } };
+  obData = {}; obStep = 0;
+  stopTimer();
+  document.getElementById('nav').classList.remove('visible');
+  authShowScreen();
+  authShowPanel('login');
 }
 
 // =====================================================================
@@ -2638,15 +2926,34 @@ function init() {
 window.addEventListener('pagehide', save);
 document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
 
-// Register service worker for offline support
-if ('serviceWorker' in navigator) {
+// Register service worker for offline support (web only, not in Capacitor)
+const isCapacitor = !!window.Capacitor?.isNativePlatform?.();
+if (!isCapacitor && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/basicmaxxer/sw.js', { scope: '/basicmaxxer/' })
-      .catch(() => {}); // Silently fail if SW not supported
+      .catch(() => {});
   });
 }
 
-init();
+// Apply saved theme immediately
+initTheme();
+
+if (fbConfigured()) {
+  // Firebase is set up — gate app behind auth
+  fbAuth.onAuthStateChanged(user => {
+    if (user) {
+      currentUid = user.uid;
+      authHideScreen();
+      init();
+    } else {
+      authShowScreen();
+    }
+  });
+} else {
+  // Firebase not configured yet — skip auth gate so you can still develop/test
+  authHideScreen();
+  init();
+}
 </script>
 </body>
 </html>
