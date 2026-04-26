@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
 <title>Basic Maxxer</title>
 <style>
 :root {
@@ -49,7 +49,7 @@ body::before{
   position:fixed;inset:0;z-index:1;
   overflow-y:auto;overflow-x:hidden;
   display:none;flex-direction:column;
-  padding-bottom:80px;
+  padding-bottom:calc(80px + env(safe-area-inset-bottom,0px));
 }
 .screen.active{display:flex}
 .screen-inner{width:100%;max-width:520px;margin:0 auto;padding:20px 16px;}
@@ -74,8 +74,9 @@ body::before{
   backdrop-filter:blur(24px);
   -webkit-backdrop-filter:blur(24px);
   display:none;
-  justify-content:space-around;align-items:center;
-  height:64px;padding:0 8px;
+  justify-content:space-around;align-items:flex-start;
+  height:calc(64px + env(safe-area-inset-bottom,0px));
+  padding:0 8px env(safe-area-inset-bottom,0px);
 }
 #nav.visible{display:flex}
 .nav-btn{
@@ -263,11 +264,14 @@ select option{background:#1e2028;color:var(--text)}
 
 /* ===== REST TIMER ===== */
 #rest-timer{
-  position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(100px);
+  position:fixed;
+  bottom:calc(76px + env(safe-area-inset-bottom,0px));
+  left:50%;transform:translateX(-50%) translateY(200px);
   z-index:200;transition:transform .35s cubic-bezier(.34,1.56,.64,1);
-  width:calc(100% - 32px);max-width:320px;
+  width:calc(100% - 32px);max-width:360px;
+  pointer-events:none;
 }
-#rest-timer.visible{transform:translateX(-50%) translateY(0)}
+#rest-timer.visible{transform:translateX(-50%) translateY(0);pointer-events:auto}
 .timer-card{
   background:rgba(7,8,13,0.92);border:1px solid var(--border2);
   border-radius:var(--r);backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);
@@ -293,6 +297,55 @@ select option{background:#1e2028;color:var(--text)}
   font-family:inherit;transition:all .15s;
 }
 .timer-skip:active{transform:scale(.95)}
+
+/* ===== SWAP EXERCISE MODAL ===== */
+#swap-modal{
+  position:fixed;inset:0;z-index:350;
+  background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  display:none;align-items:flex-end;justify-content:center;
+}
+#swap-modal.open{display:flex}
+.swap-modal-card{
+  width:100%;max-width:520px;
+  background:#131620;border:1px solid var(--border2);
+  border-radius:var(--r) var(--r) 0 0;
+  padding:20px 16px;
+  padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));
+  transform:translateY(100%);transition:transform .3s cubic-bezier(.34,1.2,.64,1);
+  max-height:75vh;overflow-y:auto;
+}
+#swap-modal.open .swap-modal-card{transform:translateY(0)}
+.swap-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.swap-item{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;background:var(--glass);border:1.5px solid var(--border);
+  border-radius:var(--rs);cursor:pointer;transition:all .15s;
+}
+.swap-item:active{background:var(--glass2);transform:scale(.98)}
+.swap-item.current{border-color:var(--accent);background:rgba(163,230,53,0.08)}
+.swap-item-icon{font-size:22px;width:32px;text-align:center;flex-shrink:0}
+.swap-item-info{flex:1}
+.swap-item-name{font-size:14px;font-weight:700;margin-bottom:1px}
+.swap-item-meta{font-size:11px;color:var(--muted)}
+.swap-btn{
+  background:var(--glass2);border:1px solid var(--border);
+  border-radius:8px;padding:7px 12px;cursor:pointer;
+  font-size:13px;font-weight:700;color:var(--muted2);
+  font-family:inherit;transition:all .15s;white-space:nowrap;
+}
+.swap-btn:active{transform:scale(.93)}
+
+/* ===== TRAINING DAYS PICKER ===== */
+.day-picker{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:10px}
+.day-pick-btn{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:10px 2px;border-radius:8px;border:1.5px solid var(--border);
+  background:var(--glass);cursor:pointer;font-family:inherit;color:var(--muted);
+  transition:all .15s;font-size:10px;font-weight:700;letter-spacing:.3px;
+  text-transform:uppercase;
+}
+.day-pick-btn.selected{border-color:var(--accent);background:rgba(163,230,53,0.1);color:var(--accent)}
+.day-pick-btn:active{transform:scale(.93)}
 
 /* ===== SET MODAL ===== */
 #set-modal{
@@ -809,13 +862,22 @@ input[type=date]{color-scheme:dark}
         <circle class="timer-fg" cx="28" cy="28" r="24" id="timer-circle"
           stroke-dasharray="150.8" stroke-dashoffset="0"/>
       </svg>
-      <div class="timer-num" id="timer-num">90</div>
+      <div class="timer-num" id="timer-num">60</div>
     </div>
     <div class="timer-info">
       <div class="timer-label">Rest Time</div>
       <div class="timer-next" id="timer-next-ex">Next up: next set</div>
     </div>
     <button class="timer-skip" onclick="skipTimer()">Skip</button>
+  </div>
+</div>
+
+<!-- ============ SWAP EXERCISE MODAL ============ -->
+<div id="swap-modal" onclick="closeSwapModal(event)">
+  <div class="swap-modal-card">
+    <div class="modal-title" id="swap-modal-title">Swap Exercise</div>
+    <div class="modal-sub" id="swap-modal-sub">Choose an alternative</div>
+    <div class="swap-list" id="swap-list"></div>
   </div>
 </div>
 
@@ -928,6 +990,20 @@ const E = {
   // CARDIO
   run:        {name:'Running',          icon:'🏃', type:'cardio',       muscles:'Full Body, Cardiovascular', note:''},
 };
+
+// Exercise groups for swap suggestions
+const EX_GROUPS = {
+  push:  ['bench','ohp','incline','dips','pushups','pikepush','lat_raise','tri_dip'],
+  pull:  ['pullup','chinup','bbrow','dbrow','facepull','curl','hammer','invrow'],
+  legs:  ['squat','deadlift','rdl','lunge','bss','legpress','calfr','jumpsquat'],
+  core:  ['plank','hollow','legraise','mtnclimb','twist'],
+};
+function getExGroup(id) {
+  for (const [grp, ids] of Object.entries(EX_GROUPS)) {
+    if (ids.includes(id)) return grp;
+  }
+  return null;
+}
 
 // ─────────────────────────────────────────────────────────────────────
 //  WORKOUT TEMPLATES
@@ -1098,20 +1174,32 @@ let state = {
   profile: null,   // { name, birthday, height, weight, jobType, goals:[], goalMonths, startDate, unit }
   split: null,
   log: [],
-  settings: { restSeconds: 90 }
+  settings: { restSeconds: 60 }
 };
 
 // =====================================================================
 //  STORAGE
 // =====================================================================
 function save() {
-  try { localStorage.setItem('maxer_v2', JSON.stringify(state)); } catch(e) {}
+  try { localStorage.setItem('maxer_v2', JSON.stringify(state)); } catch(e) {
+    console.warn('Save failed:', e);
+  }
 }
 function load() {
   try {
     const d = localStorage.getItem('maxer_v2');
-    if (d) { const p = JSON.parse(d); if (p && p.profile) state = p; }
-  } catch(e) {}
+    if (d) {
+      const p = JSON.parse(d);
+      if (p && typeof p === 'object') {
+        if (p.profile) state.profile = p.profile;
+        if (p.split) state.split = p.split;
+        if (Array.isArray(p.log)) state.log = p.log;
+        if (p.settings) state.settings = Object.assign({restSeconds:60}, p.settings);
+      }
+    }
+  } catch(e) {
+    console.warn('Load failed:', e);
+  }
 }
 
 // =====================================================================
@@ -1133,8 +1221,20 @@ function totalWeeks() {
   return Math.round((state.profile?.goalMonths || 3) * 4.33);
 }
 function isMaintenancePhase() { return weekOfProgram() >= totalWeeks(); }
-function getCurrentSchedule() {
+function getBaseSchedule() {
   return isMaintenancePhase() ? MAINTENANCE_SCHEDULE : (SCHEDULES[state.split] || SCHEDULES.full_body_3);
+}
+function getCurrentSchedule() {
+  const base = getBaseSchedule();
+  const customDays = state.settings?.trainingDays;
+  if (!customDays || customDays.length === 0) return base;
+  // Extract non-rest workout slots in order, redistribute to custom days
+  const slots = base.filter(k => k !== 'rest');
+  const sched = Array(7).fill('rest');
+  [...customDays].sort((a,b) => a-b).forEach((day, i) => {
+    if (i < slots.length) sched[day] = slots[i];
+  });
+  return sched;
 }
 function getPhase(weekNum, total) {
   const pct = weekNum / total;
@@ -1176,7 +1276,16 @@ function getWorkoutForKey(key, applyPhase = true) {
   if (!applyPhase || base.exercises.length === 0) return base;
   const phase = getPhase(weekOfProgram(), totalWeeks());
   const goal = (state.profile?.goals || [state.profile?.goal || 'muscle_gain'])[0];
-  return applyPhaseModifiers(base, phase, goal);
+  let workout = applyPhaseModifiers(base, phase, goal);
+  // Apply persistent exercise swaps
+  const swaps = state.settings?.exSwaps?.[key];
+  if (swaps && Object.keys(swaps).length) {
+    workout = {...workout, exercises: workout.exercises.map((ex, i) => {
+      const sid = swaps[i];
+      return (sid && E[sid]) ? {...ex, id: sid} : ex;
+    })};
+  }
+  return workout;
 }
 function isRestKey(key) { return key === 'rest'; }
 function isRunKey(key) { return key === 'run' || key === 'optional'; }
@@ -1418,6 +1527,7 @@ function finishOnboarding() {
 //  SCREEN NAVIGATION
 // =====================================================================
 function showScreen(name) {
+  if (name !== 'workout') stopTimer();
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(`screen-${name}`)?.classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b => {
@@ -1702,6 +1812,7 @@ function renderExerciseList() {
       }).join('') + `</div>`;
     }
 
+    const isSwapped = !!(state.settings?.exSwaps?.[activeWorkout.key]?.[ei]);
     return `<div class="ex-card ${allDone ? 'done-ex' : ''}" id="ex-card-${ei}">
       <div class="ex-header">
         <div class="ex-info">
@@ -1709,9 +1820,13 @@ function renderExerciseList() {
           <div class="ex-meta">
             <span>${ex.timed ? ex.sets + '×' + ex.seconds + 's' : ex.amrap ? ex.sets+'×AMRAP' : ex.sets+'×'+ex.minReps+'-'+ex.maxReps}</span>
             <span class="tag tag-muted" style="font-size:10px">${def.type}</span>
+            ${isSwapped ? `<span class="tag tag-yellow" style="font-size:9px">swapped</span>` : ''}
           </div>
         </div>
-        <div class="ex-check">${allDone ? '✓' : ''}</div>
+        <div style="display:flex;align-items:center;gap:6px">
+          ${!ex.cardio && getExGroup(ex.id) ? `<button class="swap-btn" onclick="event.stopPropagation();openSwapModal(${ei})">⇄</button>` : ''}
+          <div class="ex-check">${allDone ? '✓' : ''}</div>
+        </div>
       </div>
       ${def.note ? `<div class="note-box" style="margin:0 16px 10px;font-size:11px">${def.note}</div>` : ''}
       ${setsHTML}
@@ -1863,7 +1978,7 @@ const CIRCUMFERENCE = 150.8;
 
 function startTimer(exId, exIdx, setIdx) {
   stopTimer();
-  const restSec = state.settings?.restSeconds || 90;
+  const restSec = state.settings?.restSeconds || 60;
   timerRemaining = restSec;
 
   // Next set label
@@ -1991,13 +2106,36 @@ function renderProfile() {
         <div style="display:flex;align-items:center;gap:12px;margin-top:10px">
           <button class="adj-btn" onclick="adjRest(-15)">−</button>
           <div style="flex:1;text-align:center">
-            <div style="font-size:24px;font-weight:800" id="rest-display">${state.settings?.restSeconds||90}s</div>
+            <div style="font-size:24px;font-weight:800" id="rest-display">${state.settings?.restSeconds||60}s</div>
             <div style="font-size:11px;color:var(--muted)">between sets</div>
           </div>
           <button class="adj-btn" onclick="adjRest(15)">+</button>
         </div>
       </div>
     </div>
+    ${(()=>{
+      const baseSched = getBaseSchedule();
+      const defaultDays = baseSched.map((k,i) => k!=='rest'?i:null).filter(i=>i!==null);
+      const selectedDays = state.settings?.trainingDays || defaultDays;
+      const scheduledCount = defaultDays.length;
+      const hasCustom = !!state.settings?.trainingDays;
+      return `<div class="card card-sm" style="margin-bottom:12px">
+        <div class="card-body">
+          <div class="flex-between mb4">
+            <div class="section-title">Training Days</div>
+            ${hasCustom ? `<button class="btn btn-ghost btn-xs" onclick="resetTrainingDays()">Reset</button>` : ''}
+          </div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:2px">Your program has ${scheduledCount} sessions/week. Pick which days.</div>
+          <div class="day-picker">
+            ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map((d,i) => {
+              const sel = selectedDays.includes(i);
+              return `<button class="day-pick-btn ${sel?'selected':''}" onclick="toggleTrainingDay(${i})">${d}</button>`;
+            }).join('')}
+          </div>
+          <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px">${selectedDays.length} of ${scheduledCount} days selected</div>
+        </div>
+      </div>`;
+    })()}
     <div style="margin-top:8px">
       <button class="btn btn-danger btn-block btn-sm" onclick="resetApp()">🗑 Reset & Start Over</button>
     </div>
@@ -2006,10 +2144,101 @@ function renderProfile() {
 
 function adjRest(delta) {
   if (!state.settings) state.settings = {};
-  state.settings.restSeconds = Math.max(15, Math.min(300, (state.settings.restSeconds||90) + delta));
+  state.settings.restSeconds = Math.max(15, Math.min(300, (state.settings.restSeconds||60) + delta));
   save();
   const el = document.getElementById('rest-display');
   if (el) el.textContent = state.settings.restSeconds + 's';
+}
+
+function toggleTrainingDay(dayIdx) {
+  if (!state.settings) state.settings = {};
+  const baseSched = getBaseSchedule();
+  const defaultDays = baseSched.map((k,i) => k!=='rest'?i:null).filter(i=>i!==null);
+  const scheduledCount = defaultDays.length;
+  let days = [...(state.settings.trainingDays || defaultDays)];
+  const idx = days.indexOf(dayIdx);
+  if (idx >= 0) {
+    if (days.length > 1) days.splice(idx, 1);
+  } else {
+    if (days.length < scheduledCount) {
+      days.push(dayIdx);
+    } else {
+      days.shift();
+      days.push(dayIdx);
+    }
+  }
+  state.settings.trainingDays = days;
+  save();
+  renderProfile();
+  renderDashboard();
+}
+
+function resetTrainingDays() {
+  if (!state.settings) state.settings = {};
+  delete state.settings.trainingDays;
+  save();
+  renderProfile();
+  renderDashboard();
+}
+
+// =====================================================================
+//  SWAP EXERCISE MODAL
+// =====================================================================
+let swapModalState = { exIdx: -1, workoutKey: '' };
+
+function openSwapModal(ei) {
+  if (!activeWorkout) return;
+  const { key, workout } = activeWorkout;
+  const ex = workout.exercises[ei];
+  if (!ex) return;
+  const group = getExGroup(ex.id);
+  if (!group) return;
+  swapModalState = { exIdx: ei, workoutKey: key };
+  document.getElementById('swap-modal-title').textContent = `Swap: ${E[ex.id]?.name || ex.id}`;
+  document.getElementById('swap-modal-sub').textContent = group.charAt(0).toUpperCase() + group.slice(1) + ' alternatives';
+  const candidates = EX_GROUPS[group] || [];
+  document.getElementById('swap-list').innerHTML = candidates.map(id => {
+    const def = E[id]; if (!def) return '';
+    const isCurrent = id === ex.id;
+    return `<div class="swap-item ${isCurrent?'current':''}" onclick="selectSwap('${id}')">
+      <div class="swap-item-icon">${def.icon}</div>
+      <div class="swap-item-info">
+        <div class="swap-item-name">${def.name}${isCurrent?' <span class="tag tag-green" style="font-size:9px">current</span>':''}</div>
+        <div class="swap-item-meta">${def.muscles} · ${def.type}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('swap-modal').classList.add('open');
+}
+
+function closeSwapModal(e) {
+  if (e && e.target !== document.getElementById('swap-modal')) return;
+  document.getElementById('swap-modal').classList.remove('open');
+}
+
+function selectSwap(newId) {
+  const { exIdx, workoutKey } = swapModalState;
+  if (!state.settings) state.settings = {};
+  if (!state.settings.exSwaps) state.settings.exSwaps = {};
+  if (!state.settings.exSwaps[workoutKey]) state.settings.exSwaps[workoutKey] = {};
+  const currentId = activeWorkout?.workout.exercises[exIdx]?.id;
+  if (newId === currentId) {
+    delete state.settings.exSwaps[workoutKey][exIdx];
+  } else {
+    state.settings.exSwaps[workoutKey][exIdx] = newId;
+    // Update active workout in memory and reset sets for swapped exercise
+    if (activeWorkout) {
+      activeWorkout.workout.exercises[exIdx].id = newId;
+      const logEntry = state.log[activeWorkout.logIndex];
+      if (logEntry?.exercises[exIdx]) {
+        logEntry.exercises[exIdx].id = newId;
+        logEntry.exercises[exIdx].sets = logEntry.exercises[exIdx].sets.map(() => ({reps:null,weight:0,done:false}));
+      }
+    }
+  }
+  save();
+  document.getElementById('swap-modal').classList.remove('open');
+  renderExerciseList();
 }
 
 function resetApp() {
@@ -2023,6 +2252,8 @@ function resetApp() {
 // =====================================================================
 function init() {
   load();
+  if (!state.settings) state.settings = {};
+  if (!state.settings.restSeconds) state.settings.restSeconds = 60;
   if (!state.profile) {
     showScreen('onboarding');
   } else {
@@ -2030,6 +2261,11 @@ function init() {
     renderDashboard();
   }
 }
+
+// Extra save triggers for mobile browsers that may unload without beforeunload
+window.addEventListener('pagehide', save);
+document.addEventListener('visibilitychange', () => { if (document.hidden) save(); });
+
 init();
 </script>
 </body>
