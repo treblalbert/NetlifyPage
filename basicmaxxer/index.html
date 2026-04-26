@@ -975,7 +975,7 @@ input[type=date]{color-scheme:dark}
 <div class="screen-inner">
   <div class="app-hd">
     <div class="app-hd-title">Profile</div>
-    <button class="btn btn-ghost btn-sm" onclick="resetApp()">Reset</button>
+    <button class="btn btn-ghost btn-sm" onclick="resetApp()" id="profile-reset-btn">Reset</button>
   </div>
   <div id="profile-content"></div>
 </div>
@@ -2590,9 +2590,33 @@ function selectSwap(newId) {
 }
 
 function resetApp() {
-  if (!confirm('Reset all data and start over?')) return;
-  localStorage.removeItem('maxer_v2');
-  location.reload();
+  // window.confirm() is silently blocked in iOS PWA standalone mode — use inline confirm instead
+  // Remove any existing confirm UI first
+  document.getElementById('reset-confirm')?.remove();
+  // Find whichever reset button triggered this and insert confirm after it
+  const btn = document.querySelector('button[onclick="resetApp()"]') ||
+              document.getElementById('profile-reset-btn');
+  const target = btn?.closest('.app-hd') || btn?.closest('div') || document.getElementById('profile-content');
+  if (!target) return;
+  const div = document.createElement('div');
+  div.id = 'reset-confirm';
+  div.style.cssText = 'display:flex;gap:8px;margin-top:10px;padding:0 0 4px';
+  div.innerHTML = `
+    <button class="btn btn-danger" style="flex:1" onclick="doReset()">Yes, delete everything</button>
+    <button class="btn btn-ghost" style="flex:1" onclick="document.getElementById('reset-confirm').remove()">Cancel</button>`;
+  target.appendChild(div);
+}
+function doReset() {
+  try { localStorage.removeItem('maxer_v2'); } catch(e) {}
+  // Reset in-memory state
+  state = { profile: null, split: null, log: [], settings: { restSeconds: 60 } };
+  obData = {};
+  obStep = 0;
+  stopTimer();
+  closeSetModal();
+  document.getElementById('nav').classList.remove('visible');
+  showScreen('onboarding');
+  goToObStep(0);
 }
 
 // =====================================================================
