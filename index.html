@@ -6,23 +6,23 @@
     <title>Albert Adroer Prats | Portfolio</title>
     <style>
         :root {
-            --steam-darkest: #1a2613;
-            --steam-dark: #2a3626;
-            --steam-bg: #3b4a37;
-            --steam-panel: #4b5944;
-            --steam-panel-light: #576a50;
-            --steam-border: #5a6a54;
-            --steam-border-dark: #2a3325;
-            --steam-border-light: #6b7b64;
-            --steam-green: #8bc53f;
-            --steam-green-dark: #5c7e10;
-            --steam-green-bright: #96c83c;
-            --steam-text: #acba98;
-            --steam-text-light: #d4d9cc;
-            --steam-text-dim: #7a8a6e;
-            --steam-highlight: #a4d44e;
-            --steam-inset-shadow: inset 1px 1px 0 rgba(255,255,255,0.07), inset -1px -1px 0 rgba(0,0,0,0.3);
-            --steam-outset-shadow: 1px 1px 0 rgba(255,255,255,0.05), -1px -1px 0 rgba(0,0,0,0.4);
+            --steam-darkest: #060905;
+            --steam-dark: #0b0f08;
+            --steam-bg: #111708;
+            --steam-panel: #182010;
+            --steam-panel-light: #1e2816;
+            --steam-border: #28381c;
+            --steam-border-dark: #07090500;
+            --steam-border-light: #384e28;
+            --steam-green: #6db52a;
+            --steam-green-dark: #3e6e14;
+            --steam-green-bright: #80cc30;
+            --steam-text: #8aaa70;
+            --steam-text-light: #b4cc90;
+            --steam-text-dim: #44583a;
+            --steam-highlight: #98d038;
+            --steam-inset-shadow: inset 1px 1px 0 rgba(255,255,255,0.05), inset -1px -1px 0 rgba(0,0,0,0.55);
+            --steam-outset-shadow: 1px 1px 0 rgba(255,255,255,0.03), -1px -1px 0 rgba(0,0,0,0.65);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -36,48 +36,51 @@
             overflow-x: hidden;
         }
 
-        /* OG Steam textured background */
+        /* Dark military background */
         .bg-orbs {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             pointer-events: none;
             z-index: 0;
             overflow: hidden;
-            background:
-                linear-gradient(180deg, #1a2613 0%, #2a3626 30%, #3b4a37 60%, #2a3626 100%);
+            background: linear-gradient(180deg, #050805 0%, #090d06 30%, #0d1309 60%, #090d06 100%);
         }
 
-        /* Subtle scanline / industrial texture overlay */
+        /* Scanline + vertical-stripe industrial texture */
         .bg-orbs::before {
             content: "";
             position: absolute;
             inset: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(0, 0, 0, 0.03) 2px,
-                rgba(0, 0, 0, 0.03) 4px
-            );
+            background:
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 3px,
+                    rgba(0,0,0,0.12) 3px,
+                    rgba(0,0,0,0.12) 4px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 80px,
+                    rgba(255,255,255,0.007) 80px,
+                    rgba(255,255,255,0.007) 81px
+                );
             pointer-events: none;
         }
 
-        /* Subtle vignette */
+        /* Deep vignette */
         .bg-orbs::after {
             content: "";
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.4) 100%);
+            background: radial-gradient(ellipse at center, transparent 35%, rgba(0,0,0,0.7) 100%);
             pointer-events: none;
         }
 
-        /* Hide the orb divs */
         .orb { display: none; }
 
-        /* Steam-style top header bar */
         .container {
             max-width: 900px;
             margin: 0 auto;
@@ -86,22 +89,22 @@
             z-index: 1;
         }
 
-        /* Top metallic strip */
+        /* Glowing top strip */
         .container::before {
             content: "";
             display: block;
-            height: 4px;
-            background: linear-gradient(90deg, var(--steam-green-dark), var(--steam-green), var(--steam-green-dark));
-            box-shadow: 0 1px 4px rgba(139, 197, 63, 0.3);
+            height: 3px;
+            background: linear-gradient(90deg, #1a3808, var(--steam-green) 30%, #4a8a18 50%, var(--steam-green) 70%, #1a3808);
+            box-shadow: 0 0 10px rgba(109,181,42,0.6), 0 1px 0 rgba(0,0,0,0.9);
         }
 
         header {
             text-align: left;
             margin-bottom: 0;
             padding: 20px 24px 0;
-            background: linear-gradient(180deg, #2d3b28 0%, #3b4a37 100%);
-            border-bottom: 1px solid var(--steam-border-dark);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(180deg, #070b05 0%, #0b0f08 70%, #0f1409 100%);
+            border-bottom: 2px solid #030503;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.025);
         }
 
         h1 {
@@ -110,7 +113,7 @@
             letter-spacing: 0.02em;
             margin-bottom: 2px;
             color: var(--steam-text-light);
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+            text-shadow: 0 1px 4px rgba(0,0,0,0.9), 0 0 24px rgba(109,181,42,0.12);
         }
 
         .subtitle {
@@ -118,118 +121,121 @@
             font-size: 0.85rem;
             font-weight: 400;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.13em;
+            text-shadow: 0 0 12px rgba(109,181,42,0.35);
         }
 
-        /* Steam-style tab navigation */
         .nav-hotbar {
             display: inline-flex;
             gap: 0;
             padding: 0;
             margin-top: 16px;
             background: transparent;
-            border-radius: 0;
-            border: none;
-            box-shadow: none;
-            backdrop-filter: none;
         }
 
         .nav-btn {
             padding: 8px 20px;
-            border: 1px solid var(--steam-border-dark);
+            border: 1px solid #050805;
             border-bottom: none;
-            background: linear-gradient(180deg, #3e4d38 0%, #354530 100%);
+            background: linear-gradient(180deg, #131a0d 0%, #0d1209 100%);
             color: var(--steam-text-dim);
             font-family: Tahoma, Arial, Helvetica, sans-serif;
             font-size: 12px;
             font-weight: 700;
             cursor: pointer;
-            border-radius: 4px 4px 0 0;
+            border-radius: 3px 3px 0 0;
             transition: all 0.15s ease;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.07em;
             margin-right: -1px;
             position: relative;
+            box-shadow: inset 1px 1px 0 rgba(255,255,255,0.035);
         }
 
         .nav-btn:hover {
-            color: var(--steam-text-light);
-            background: linear-gradient(180deg, #4b5944 0%, #3e4d38 100%);
+            color: var(--steam-text);
+            background: linear-gradient(180deg, #1a2412 0%, #131a0d 100%);
         }
 
         .nav-btn.active {
-            background: linear-gradient(180deg, #4b5944 0%, #4b5944 100%);
+            background: linear-gradient(180deg, #1a2412 0%, #162010 100%);
             color: var(--steam-green);
-            box-shadow: inset 0 2px 0 var(--steam-green);
-            border-color: var(--steam-border);
+            box-shadow: inset 0 2px 0 var(--steam-green), inset 1px 0 0 rgba(255,255,255,0.03);
+            border-color: #0d1209;
             z-index: 1;
         }
 
-        /* Main content area */
+        /* Content panel — sits inside the tab frame */
         .section {
             display: none;
-            animation: fadeIn 0.3s ease;
-            padding: 24px;
+            animation: fadeIn 0.25s ease;
+            padding: 20px 24px 24px;
+            background: linear-gradient(180deg, #111708 0%, #0d1209 100%);
+            border: 1px solid #040604;
+            border-top: none;
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.018),
+                inset 1px 0 0 rgba(255,255,255,0.01),
+                0 6px 20px rgba(0,0,0,0.7);
         }
         .section.active { display: block; }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(3px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
         .category-title {
             font-size: 11px;
             font-weight: 700;
             color: var(--steam-green);
-            margin: 28px 0 12px 0;
+            margin: 26px 0 10px 0;
             text-transform: uppercase;
-            letter-spacing: 0.12em;
-            padding-bottom: 6px;
-            border-bottom: 1px solid var(--steam-border-dark);
-            text-shadow: 0 0 8px rgba(139, 197, 63, 0.2);
+            letter-spacing: 0.15em;
+            padding: 4px 8px 5px;
+            border-left: 3px solid var(--steam-green-dark);
+            border-bottom: 1px solid #0d1209;
+            background: rgba(0,0,0,0.25);
+            text-shadow: 0 0 12px rgba(109,181,42,0.3);
         }
 
-        .category-title:first-child {
-            margin-top: 0;
-        }
+        .category-title:first-child { margin-top: 0; }
 
-        /* Steam-style panels (replaces glass cards) */
+        /* Dark steel panel */
         .glass-card {
-            background: linear-gradient(180deg, #4b5944 0%, #3e4d38 100%);
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-            border-radius: 3px;
-            border: 1px solid var(--steam-border-dark);
-            border-top-color: var(--steam-border-light);
-            border-left-color: var(--steam-border);
-            padding: 20px;
-            margin-bottom: 12px;
+            background: linear-gradient(180deg, #1c2514 0%, #16200e 55%, #111809 100%);
+            border-radius: 2px;
+            border: 1px solid #060905;
+            border-top-color: #283a1c;
+            border-left-color: #1e2e14;
+            padding: 16px 20px;
+            margin-bottom: 8px;
             box-shadow:
-                inset 1px 1px 0 rgba(255, 255, 255, 0.05),
-                inset -1px -1px 0 rgba(0, 0, 0, 0.2),
-                0 2px 6px rgba(0, 0, 0, 0.3);
-            transition: all 0.15s ease;
+                inset 1px 1px 0 rgba(255,255,255,0.04),
+                inset -1px -1px 0 rgba(0,0,0,0.5),
+                0 4px 12px rgba(0,0,0,0.6);
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
         }
 
         .glass-card:hover {
-            transform: none;
-            border-top-color: var(--steam-green);
+            border-top-color: var(--steam-green-dark);
             box-shadow:
-                inset 1px 1px 0 rgba(255, 255, 255, 0.08),
-                inset -1px -1px 0 rgba(0, 0, 0, 0.2),
-                0 2px 10px rgba(0, 0, 0, 0.4),
-                0 0 12px rgba(139, 197, 63, 0.08);
+                inset 1px 1px 0 rgba(255,255,255,0.05),
+                inset -1px -1px 0 rgba(0,0,0,0.5),
+                0 4px 16px rgba(0,0,0,0.7),
+                0 0 20px rgba(109,181,42,0.06);
         }
 
         .section-title {
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             font-weight: 700;
-            margin-bottom: 16px;
-            letter-spacing: 0.02em;
+            margin-bottom: 14px;
+            letter-spacing: 0.07em;
             color: var(--steam-text-light);
             text-transform: uppercase;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            padding-bottom: 8px;
+            border-bottom: 1px solid #0b0f07;
         }
 
         .about-text p {
@@ -250,17 +256,18 @@
         .project-icon {
             width: 48px;
             height: 48px;
-            border-radius: 3px;
+            border-radius: 2px;
             object-fit: cover;
             flex-shrink: 0;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--steam-border-dark);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+            border: 1px solid #060905;
+            border-top-color: #1e2e14;
         }
 
         .project-content { flex: 1; }
 
         .project-title {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 700;
             margin-bottom: 4px;
             color: var(--steam-text-light);
@@ -274,73 +281,81 @@
         }
 
         .instructions {
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0,0,0,0.35);
             padding: 10px 14px;
             border-radius: 2px;
             font-size: 11px;
             color: var(--steam-text);
             margin-bottom: 12px;
-            border: 1px solid var(--steam-border-dark);
+            border: 1px solid #060905;
             border-left: 3px solid var(--steam-green-dark);
         }
 
-        .instructions strong {
-            color: var(--steam-green);
-        }
+        .instructions strong { color: var(--steam-green); }
 
         .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
 
-        /* Classic Steam green gradient buttons */
         .btn {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 8px 16px;
-            background: linear-gradient(180deg, #8bc53f 0%, #6b9c2a 40%, #5c7e10 100%);
+            padding: 7px 16px;
+            background: linear-gradient(180deg, #78d030 0%, #52a01a 45%, #3a7010 100%);
             color: #fff;
             text-decoration: none;
-            border-radius: 3px;
+            border-radius: 2px;
             font-family: Tahoma, Arial, Helvetica, sans-serif;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             transition: all 0.15s ease;
-            border: 1px solid #4a6b0d;
+            border: 1px solid #265008;
+            border-bottom-color: #163404;
             cursor: pointer;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 3px rgba(0, 0, 0, 0.3);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.28),
+                inset 0 -1px 0 rgba(0,0,0,0.35),
+                0 2px 6px rgba(0,0,0,0.6);
             text-transform: uppercase;
-            letter-spacing: 0.03em;
+            letter-spacing: 0.04em;
         }
 
         .btn:hover {
-            background: linear-gradient(180deg, #96d44a 0%, #7bb832 40%, #6b9c2a 100%);
-            transform: none;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 1px 6px rgba(139, 197, 63, 0.3);
+            background: linear-gradient(180deg, #88e03a 0%, #62b824 45%, #4a8818 100%);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.35),
+                0 2px 10px rgba(109,181,42,0.45);
         }
 
         .btn:active {
-            background: linear-gradient(180deg, #5c7e10 0%, #4a6b0d 100%);
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
+            background: linear-gradient(180deg, #3a7010 0%, #265008 100%);
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.6);
         }
 
         .btn-secondary {
-            background: linear-gradient(180deg, #576a50 0%, #4b5944 40%, #3e4d38 100%);
+            background: linear-gradient(180deg, #1c2514 0%, #16200e 45%, #111809 100%);
             color: var(--steam-text);
-            border-color: var(--steam-border-dark);
-            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+            border-color: #060905;
+            border-top-color: #283a1c;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.04),
+                0 2px 5px rgba(0,0,0,0.5);
         }
 
         .btn-secondary:hover {
-            background: linear-gradient(180deg, #6b7b64 0%, #576a50 40%, #4b5944 100%);
+            background: linear-gradient(180deg, #24301a 0%, #1c2514 45%, #16200e 100%);
             color: var(--steam-text-light);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 4px rgba(0, 0, 0, 0.3);
+            border-top-color: var(--steam-green-dark);
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,0.06),
+                0 2px 8px rgba(0,0,0,0.6);
         }
 
-        /* Social grid - Steam style */
         .social-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 10px;
+            gap: 8px;
         }
 
         .social-card {
@@ -348,46 +363,55 @@
             align-items: center;
             gap: 12px;
             padding: 14px 18px;
-            background: linear-gradient(180deg, #4b5944 0%, #3e4d38 100%);
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-            border-radius: 3px;
-            border: 1px solid var(--steam-border-dark);
-            border-top-color: var(--steam-border);
+            background: linear-gradient(180deg, #1c2514 0%, #16200e 100%);
+            border-radius: 2px;
+            border: 1px solid #060905;
+            border-top-color: #283a1c;
             text-decoration: none;
             color: var(--steam-text);
             transition: all 0.15s ease;
             box-shadow:
-                inset 1px 1px 0 rgba(255, 255, 255, 0.05),
-                0 1px 4px rgba(0, 0, 0, 0.3);
+                inset 1px 1px 0 rgba(255,255,255,0.04),
+                0 2px 8px rgba(0,0,0,0.55);
         }
 
         .social-card:hover {
             border-top-color: var(--steam-green);
             color: var(--steam-text-light);
+            background: linear-gradient(180deg, #24301a 0%, #1c2514 100%);
             box-shadow:
-                inset 1px 1px 0 rgba(255, 255, 255, 0.08),
-                0 2px 8px rgba(0, 0, 0, 0.4),
-                0 0 8px rgba(139, 197, 63, 0.1);
+                inset 1px 1px 0 rgba(255,255,255,0.05),
+                0 3px 12px rgba(0,0,0,0.65),
+                0 0 14px rgba(109,181,42,0.08);
         }
 
         .social-icon {
             width: 28px;
             height: 28px;
+            opacity: 0.65;
+            filter: brightness(1.1) saturate(0.4);
+        }
+
+        .social-icon-white {
+            filter: brightness(0) invert(1) !important;
             opacity: 0.7;
-            filter: brightness(1.2) saturate(0.6);
         }
 
         .social-card:hover .social-icon {
+            opacity: 0.9;
+            filter: brightness(1.3) saturate(0.6);
+        }
+
+        .social-card:hover .social-icon-white {
+            filter: brightness(0) invert(1) !important;
             opacity: 1;
-            filter: brightness(1.4) saturate(0.8);
         }
 
         .social-label {
             font-weight: 700;
             font-size: 12px;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.07em;
         }
 
         .inline-link {
@@ -417,11 +441,11 @@
             transform: translateX(-50%);
             width: 320px;
             padding: 16px;
-            background: linear-gradient(180deg, #4b5944 0%, #3b4a37 100%);
-            border-radius: 3px;
-            border: 1px solid var(--steam-border);
+            background: linear-gradient(180deg, #1c2514 0%, #111809 100%);
+            border-radius: 2px;
+            border: 1px solid #283a1c;
             border-top: 2px solid var(--steam-green);
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 8px 36px rgba(0,0,0,0.8);
             font-size: 12px;
             z-index: 100;
             text-align: left;
@@ -436,7 +460,7 @@
 
         @keyframes tooltipFade {
             from { opacity: 0; transform: translateX(-50%) translateY(4px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+            to   { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
 
         footer {
@@ -449,22 +473,20 @@
             letter-spacing: 0.08em;
         }
 
-        /* Divider line above footer */
         footer::before {
             content: "";
             display: block;
             height: 1px;
-            background: linear-gradient(90deg, transparent, var(--steam-border), transparent);
+            background: linear-gradient(90deg, transparent, #283a1c, transparent);
             margin-bottom: 20px;
             margin-left: 24px;
             margin-right: 24px;
         }
 
-        /* Blog posts */
         .blog-entry {
             margin-bottom: 20px;
             padding-bottom: 20px;
-            border-bottom: 1px solid var(--steam-border-dark);
+            border-bottom: 1px solid #0b0f07;
         }
 
         .blog-entry:last-child {
@@ -516,31 +538,24 @@
         }
 
         .blog-entry-body code {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0,0,0,0.4);
             padding: 2px 6px;
             border-radius: 2px;
             font-size: 12px;
-            border: 1px solid var(--steam-border-dark);
+            border: 1px solid #0b0f07;
         }
 
         .blog-entry-body pre {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0,0,0,0.4);
             padding: 12px;
-            border-radius: 3px;
+            border-radius: 2px;
             overflow-x: auto;
-            border: 1px solid var(--steam-border-dark);
+            border: 1px solid #0b0f07;
             margin: 10px 0;
         }
 
-        .blog-entry-body pre code {
-            background: none;
-            padding: 0;
-            border: none;
-        }
-
-        .blog-entry-body img {
-            display: none;
-        }
+        .blog-entry-body pre code { background: none; padding: 0; border: none; }
+        .blog-entry-body img { display: none; }
 
         .blog-post-gallery {
             display: flex;
@@ -552,8 +567,8 @@
         .blog-post-gallery img {
             height: 80px;
             width: auto;
-            border-radius: 3px;
-            border: 1px solid var(--steam-border-dark);
+            border-radius: 2px;
+            border: 1px solid #0b0f07;
             cursor: zoom-in;
             object-fit: cover;
             transition: opacity 0.15s ease, border-color 0.15s ease;
@@ -564,12 +579,11 @@
             border-color: var(--steam-green);
         }
 
-        /* Lightbox */
         .lightbox-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0,0,0,0.92);
             z-index: 1000;
             align-items: center;
             justify-content: center;
@@ -577,29 +591,27 @@
             animation: lightboxFadeIn 0.2s ease;
         }
 
-        .lightbox-overlay.active {
-            display: flex;
-        }
+        .lightbox-overlay.active { display: flex; }
 
         @keyframes lightboxFadeIn {
             from { opacity: 0; }
-            to { opacity: 1; }
+            to   { opacity: 1; }
         }
 
         .lightbox-img {
             max-width: 90vw;
             max-height: 90vh;
             object-fit: contain;
-            border-radius: 3px;
-            border: 1px solid var(--steam-border);
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.8);
+            border-radius: 2px;
+            border: 1px solid #283a1c;
+            box-shadow: 0 8px 50px rgba(0,0,0,0.95);
             cursor: default;
             animation: lightboxImgIn 0.2s ease;
         }
 
         @keyframes lightboxImgIn {
             from { transform: scale(0.92); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+            to   { transform: scale(1);    opacity: 1; }
         }
 
         .lightbox-close {
@@ -608,9 +620,9 @@
             right: 24px;
             width: 36px;
             height: 36px;
-            background: linear-gradient(180deg, #576a50 0%, #3e4d38 100%);
-            border: 1px solid var(--steam-border);
-            border-radius: 3px;
+            background: linear-gradient(180deg, #1c2514 0%, #111809 100%);
+            border: 1px solid #283a1c;
+            border-radius: 2px;
             color: var(--steam-text-light);
             font-size: 18px;
             font-weight: 700;
@@ -618,15 +630,16 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.8);
             transition: background 0.15s ease, color 0.15s ease;
             z-index: 1001;
             line-height: 1;
         }
 
         .lightbox-close:hover {
-            background: linear-gradient(180deg, #8bc53f 0%, #5c7e10 100%);
+            background: linear-gradient(180deg, #78d030 0%, #3a7010 100%);
             color: #fff;
+            border-color: #265008;
         }
 
         .blog-entry-body h1,
@@ -684,7 +697,7 @@
         <div class="glass-card">
             <h2 class="section-title">About Me</h2>
             <div class="about-text">
-                <p>I'm a 27-year-old game developer and data analyst from Barcelona. You'll always find me working on a random videogame prototype, though I'm currently full time working on an <em>unannounced FPS game</em>.</p>
+                <p>I'm a <span id="age"></span>-year-old game developer and data analyst from Barcelona. You'll always find me working on a random videogame prototype, though I'm currently full time working on <em><a href="https://store.steampowered.com/app/4605870/Tactical_Roulette_Demo/" class="inline-link" target="_blank">Tactical Roulette</a></em> — a turn-based card game where every move is a gamble and every mistake can kill you, set to release on <em>July 10, 2026</em>.</p>
 
                 <p>My background in Unity development has given me hands-on experience building complete games, from prototypes to published titles. My first commercial release, <a href="https://albertfreeman.org/bald-ball/" class="inline-link" target="_blank">Bald Ball</a>, is available on Steam, and I regularly share smaller experiments on itch.io.</p>
 
@@ -698,6 +711,19 @@
     <section id="projects" class="section">
 
         <h3 class="category-title">Games</h3>
+
+        <div class="glass-card">
+            <div class="project-card">
+                <img src="resources/tr.png" class="project-icon" alt="Tactical Roulette">
+                <div class="project-content">
+                    <h3 class="project-title">Tactical Roulette <span style="font-size:11px; font-weight:400; color:var(--steam-green); text-transform:uppercase; letter-spacing:0.08em; margin-left:6px;">Releasing Jul 10, 2026</span></h3>
+                    <p class="project-desc">A turn-based card-Russian roulette game where every move is a gamble and every mistake can kill you. Features roguelite single-player, online PvP, and a local party mode where everyone plays on the same screen.</p>
+                    <div class="btn-group">
+                        <a href="https://store.steampowered.com/app/4605870/Tactical_Roulette_Demo/" class="btn" target="_blank">Demo on Steam</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="glass-card">
             <div class="project-card">
@@ -786,11 +812,11 @@
             <h2 class="section-title">Let's Connect</h2>
             <div class="social-grid">
                 <a href="https://github.com/treblalbert" class="social-card" target="_blank">
-                    <img src="resources/github-icon.png" alt="GitHub" class="social-icon">
+                    <img src="resources/github-icon.png" alt="GitHub" class="social-icon social-icon-white">
                     <span class="social-label">GitHub</span>
                 </a>
                 <a href="https://albertfreeman.itch.io/" class="social-card" target="_blank">
-                    <img src="resources/itch-icon.png" alt="Itch.io" class="social-icon">
+                    <img src="resources/itch-icon.png" alt="Itch.io" class="social-icon social-icon-white">
                     <span class="social-label">Itch.io</span>
                 </a>
                 <a href="mailto:albertadroer@gmail.com" class="social-card">
@@ -802,7 +828,7 @@
     </section>
 
     <footer>
-        <p>&copy; 2026 Albert Adroer Prats</p>
+        <p>&copy; <span id="copy-year"></span> Albert Adroer Prats</p>
     </footer>
 </div>
 
@@ -942,6 +968,15 @@
             });
         }
     });
+
+    (function() {
+        const now = new Date();
+        const birth = new Date(1998, 4, 23); // May 23 1998
+        let age = now.getFullYear() - birth.getFullYear();
+        if (now < new Date(now.getFullYear(), 4, 23)) age--;
+        document.getElementById('age').textContent = age;
+        document.getElementById('copy-year').textContent = now.getFullYear();
+    })();
 
     document.querySelector('.inline-link')?.addEventListener('click', (e) => {
         navButtons.forEach(b => b.classList.remove('active'));
