@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(du:*)",
-      "WebFetch(domain:store.steampowered.com)"
+      "WebFetch(domain:store.steampowered.com)",
+      "Bash(grep -E \"\\\\.\\(json|html|md|txt|yml|yaml\\)$\")"
     ]
   }
 }
